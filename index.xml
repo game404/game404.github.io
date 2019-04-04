@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>游戏不存在</title>
+    <link>https://game404.github.io/</link>
+    <description>Recent content on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>thebe2</copyright>
+    <lastBuildDate>Sun, 20 Aug 2017 21:38:52 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>关于</title>
+      <link>https://game404.github.io/about/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://game404.github.io/about/</guid>
+      <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»及掘金。 肖恩：码农，40+，全栈，游戏从业者。 关注以下内容: Python Go Microservice Docker Kubernetes 棋牌游戏 Warcraft III &amp;amp;&amp;amp; Dota</description>
+    </item>
+    
+    <item>
+      <title>kubernetes 1.14 升级指南</title>
+      <link>https://game404.github.io/post/kubernetes-1.14-upgrade-guide/</link>
+      <pubDate>Thu, 28 Mar 2019 23:28:08 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-1.14-upgrade-guide/</guid>
+      <description>一点题外话：kubernetes官方3月25号发布1.14，本文28号完成。1.14升级安装中文指南，目前全网大概最新吧，支持请赏个赞。 升级</description>
+    </item>
+    
+    <item>
+      <title>kubernetes 1.13 安装指南</title>
+      <link>https://game404.github.io/post/kubernetes-1.13-guide/</link>
+      <pubDate>Tue, 26 Mar 2019 23:27:54 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-1.13-guide/</guid>
+      <description>kubernetes官方提供了中文文档，网上也有不少中文教程，可是实际的安装过程中，还是遇到了不少的坑。主要有： kubernetes的版本迭</description>
+    </item>
+    
+    <item>
+      <title>Docker容器日志分析</title>
+      <link>https://game404.github.io/post/docker-log/</link>
+      <pubDate>Sun, 24 Mar 2019 18:41:26 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker-log/</guid>
+      <description>Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访</description>
+    </item>
+    
+    <item>
+      <title>Docker镜像时区设置</title>
+      <link>https://game404.github.io/post/docker-timezone/</link>
+      <pubDate>Sun, 17 Mar 2019 18:25:24 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker-timezone/</guid>
+      <description>alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到</description>
+    </item>
+    
+  </channel>
+</rss>

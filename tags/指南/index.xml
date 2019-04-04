@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>指南 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E6%8C%87%E5%8D%97/</link>
+    <description>Recent content in 指南 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>thebe2</copyright>
+    <lastBuildDate>Thu, 28 Mar 2019 23:28:08 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E6%8C%87%E5%8D%97/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>kubernetes 1.14 升级指南</title>
+      <link>https://game404.github.io/post/kubernetes-1.14-upgrade-guide/</link>
+      <pubDate>Thu, 28 Mar 2019 23:28:08 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-1.14-upgrade-guide/</guid>
+      <description>一点题外话：kubernetes官方3月25号发布1.14，本文28号完成。1.14升级安装中文指南，目前全网大概最新吧，支持请赏个赞。 升级</description>
+    </item>
+    
+    <item>
+      <title>kubernetes 1.13 安装指南</title>
+      <link>https://game404.github.io/post/kubernetes-1.13-guide/</link>
+      <pubDate>Tue, 26 Mar 2019 23:27:54 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-1.13-guide/</guid>
+      <description>kubernetes官方提供了中文文档，网上也有不少中文教程，可是实际的安装过程中，还是遇到了不少的坑。主要有： kubernetes的版本迭</description>
+    </item>
+    
+    <item>
+      <title>Docker镜像时区设置</title>
+      <link>https://game404.github.io/post/docker-timezone/</link>
+      <pubDate>Sun, 17 Mar 2019 18:25:24 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker-timezone/</guid>
+      <description>alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到</description>
+    </item>
+    
+  </channel>
+</rss>
