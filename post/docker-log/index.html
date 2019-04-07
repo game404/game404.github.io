@@ -485,7 +485,25 @@ echo &#39;Database initialized&#39;</pre></td></tr></table>
     </footer>
   </article>
         </div>
-        
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2019-03-24 18:41:26 \x2b0800 CST',
+        title: 'Docker容器日志分析',
+        link: decodeURI(location.href),
+        desc: 'Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http:\/\/127.0.0.1 访',
+        owner: 'game404',
+        repo: 'https:\/\/github.com\/game404\/game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
 
       </div>
     </main>

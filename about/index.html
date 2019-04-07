@@ -146,7 +146,25 @@
   </div>
 </article>
         </div>
-        
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2017-08-20 21:38:52 \x2b0800 CST',
+        title: '关于',
+        link: decodeURI(location.href),
+        desc: '肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»及掘金。 肖恩：码农，40\x2b，全栈，游戏从业者。 关注以下内容: Python Go Microservice Docker Kubernetes 棋牌游戏 Warcraft III \x26amp;\x26amp; Dota',
+        owner: 'game404',
+        repo: 'https:\/\/github.com\/game404\/game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
 
       </div>
     </main>
