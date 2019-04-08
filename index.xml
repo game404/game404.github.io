@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>在kubernetes集群中部署open-falcon</title>
+      <link>https://game404.github.io/post/kubernetes-open-falcon-deploy/</link>
+      <pubDate>Mon, 08 Apr 2019 23:46:25 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-open-falcon-deploy/</guid>
+      <description>公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f</description>
+    </item>
+    
+    <item>
       <title>Python虚拟环境指南2019版</title>
       <link>https://game404.github.io/post/python-env-2019/</link>
       <pubDate>Sat, 06 Apr 2019 03:29:53 +0800</pubDate>

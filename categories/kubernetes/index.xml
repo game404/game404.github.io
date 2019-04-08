@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 28 Mar 2019 23:28:08 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 08 Apr 2019 23:46:25 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>在kubernetes集群中部署open-falcon</title>
+      <link>https://game404.github.io/post/kubernetes-open-falcon-deploy/</link>
+      <pubDate>Mon, 08 Apr 2019 23:46:25 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/kubernetes-open-falcon-deploy/</guid>
+      <description>公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f</description>
+    </item>
     
     <item>
       <title>kubernetes 1.14 升级指南</title>

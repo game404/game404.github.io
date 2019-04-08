@@ -10,6 +10,13 @@
   </url>
   
   <url>
+    <loc>https://game404.github.io/post/kubernetes-open-falcon-deploy/</loc>
+    <lastmod>2019-04-08T23:46:25+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://game404.github.io/post/python-env-2019/</loc>
     <lastmod>2019-04-06T03:29:53+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -59,7 +66,7 @@
   
   <url>
     <loc>https://game404.github.io/post/</loc>
-    <lastmod>2019-04-06T03:29:53+08:00</lastmod>
+    <lastmod>2019-04-08T23:46:25+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -72,7 +79,7 @@
   
   <url>
     <loc>https://game404.github.io/categories/kubernetes/</loc>
-    <lastmod>2019-03-28T23:28:08+08:00</lastmod>
+    <lastmod>2019-04-08T23:46:25+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -86,7 +93,7 @@
   
   <url>
     <loc>https://game404.github.io/tags/%E6%8C%87%E5%8D%97/</loc>
-    <lastmod>2019-04-06T03:29:53+08:00</lastmod>
+    <lastmod>2019-04-08T23:46:25+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
