@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>Python 生成微信头图</title>
+      <link>https://game404.github.io/post/blackhole/</link>
+      <pubDate>Mon, 15 Apr 2019 00:26:09 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/blackhole/</guid>
+      <description>前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被</description>
+    </item>
+    
+    <item>
       <title>fluentd收集kubernetes 集群日志分析</title>
       <link>https://game404.github.io/post/k8s-fluentd-logging/</link>
       <pubDate>Sat, 13 Apr 2019 05:23:47 +0800</pubDate>
@@ -82,6 +91,15 @@
       
       <guid>https://game404.github.io/post/docker-timezone/</guid>
       <description>alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://game404.github.io/post/tmp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://game404.github.io/post/tmp/</guid>
+      <description></description>
     </item>
     
   </channel>

@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 06 Apr 2019 03:29:53 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 15 Apr 2019 00:26:09 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python 生成微信头图</title>
+      <link>https://game404.github.io/post/blackhole/</link>
+      <pubDate>Mon, 15 Apr 2019 00:26:09 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/blackhole/</guid>
+      <description>前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被</description>
+    </item>
     
     <item>
       <title>Python虚拟环境指南2019版</title>
