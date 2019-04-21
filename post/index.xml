@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 15 Apr 2019 00:26:09 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 22 Apr 2019 00:29:00 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Go 优秀库推荐 - 命令行工具 cobra</title>
+      <link>https://game404.github.io/post/go-cli-command/</link>
+      <pubDate>Mon, 22 Apr 2019 00:29:00 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/go-cli-command/</guid>
+      <description>spf13/cobra 和 urfave/cli 是Go的2个优秀命令行工具： 名称 star 简介 应用项目 spf13/cobra 11571 A Commander for modern Go CLI interactions docker, kubernetes, istio， hugo &amp;hellip; urfave/cli 10501 A simple, fast, and fun package for building command line apps in Go drone, peach, gogs &amp;hellip; 两个项目的简</description>
+    </item>
     
     <item>
       <title>Python 生成微信头图</title>
