@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 13 Apr 2019 05:23:47 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 May 2019 23:47:16 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/logging/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>更换docker日志驱动</title>
+      <link>https://game404.github.io/post/docker-syslog/</link>
+      <pubDate>Wed, 01 May 2019 23:47:16 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker-syslog/</guid>
+      <description>在之前的两篇文章: Docker容器日志分析 介绍过docker的json日志策略; fluentd收集kubernetes 集群日志分析 分析kub</description>
+    </item>
     
     <item>
       <title>fluentd收集kubernetes 集群日志分析</title>

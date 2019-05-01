@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>更换docker日志驱动</title>
+      <link>https://game404.github.io/post/docker-syslog/</link>
+      <pubDate>Wed, 01 May 2019 23:47:16 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker-syslog/</guid>
+      <description>在之前的两篇文章: Docker容器日志分析 介绍过docker的json日志策略; fluentd收集kubernetes 集群日志分析 分析kub</description>
+    </item>
+    
+    <item>
       <title>Go 优秀库推荐 - 命令行工具 cobra</title>
       <link>https://game404.github.io/post/go-cli-command/</link>
       <pubDate>Mon, 22 Apr 2019 00:29:00 +0800</pubDate>
