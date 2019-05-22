@@ -31,6 +31,15 @@
     </item>
     
     <item>
+      <title>容器化扩容之路-从docker到istio之一 - 使用compose部署应用</title>
+      <link>https://game404.github.io/post/docker2istio-compose/</link>
+      <pubDate>Fri, 17 May 2019 22:39:33 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker2istio-compose/</guid>
+      <description>前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包</description>
+    </item>
+    
+    <item>
       <title>更换docker日志驱动</title>
       <link>https://game404.github.io/post/docker-syslog/</link>
       <pubDate>Wed, 01 May 2019 23:47:16 +0800</pubDate>
