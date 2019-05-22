@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Fri, 17 May 2019 22:39:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 22 May 2019 22:39:33 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>容器化扩容之路-从docker到istio之二 - 使用compose部署应用</title>
+      <link>https://game404.github.io/post/docker2istio-compose/</link>
+      <pubDate>Wed, 22 May 2019 22:39:33 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/docker2istio-compose/</guid>
+      <description>前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包</description>
+    </item>
     
     <item>
       <title>容器化扩容之路-从docker到istio之一 - 使用Docker将应用容器化</title>
