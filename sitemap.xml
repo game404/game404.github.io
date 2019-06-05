@@ -10,6 +10,13 @@
   </url>
   
   <url>
+    <loc>https://game404.github.io/post/docker2istio-kubernetes/</loc>
+    <lastmod>2019-05-22T22:39:33+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://game404.github.io/post/docker2istio-compose/</loc>
     <lastmod>2019-05-22T22:39:33+08:00</lastmod>
     <changefreq>weekly</changefreq>
