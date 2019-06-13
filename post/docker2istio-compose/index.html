@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>容器化扩容之路-从docker到istio之二 - 使用compose部署应用 - 游戏不存在</title>
+  <title>从docker到istio之二 - 使用compose部署应用 - 游戏不存在</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -39,26 +39,26 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="容器化扩容之路-从docker到istio之二 - 使用compose部署应用" />
+<meta property="og:title" content="从docker到istio之二 - 使用compose部署应用" />
 <meta property="og:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/docker2istio-compose/" />
 <meta property="article:published_time" content="2019-05-22T22:39:33&#43;08:00"/>
 <meta property="article:modified_time" content="2019-05-22T22:39:33&#43;08:00"/>
 
-<meta itemprop="name" content="容器化扩容之路-从docker到istio之二 - 使用compose部署应用">
+<meta itemprop="name" content="从docker到istio之二 - 使用compose部署应用">
 <meta itemprop="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包">
 
 
 <meta itemprop="datePublished" content="2019-05-22T22:39:33&#43;08:00" />
 <meta itemprop="dateModified" content="2019-05-22T22:39:33&#43;08:00" />
-<meta itemprop="wordCount" content="2114">
+<meta itemprop="wordCount" content="2082">
 
 
 
 <meta itemprop="keywords" content="系列," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="容器化扩容之路-从docker到istio之二 - 使用compose部署应用"/>
+<meta name="twitter:title" content="从docker到istio之二 - 使用compose部署应用"/>
 <meta name="twitter:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包"/>
 
 <!--[if lte IE 9]>
@@ -126,7 +126,7 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">容器化扩容之路-从docker到istio之二 - 使用compose部署应用</h1>
+      <h1 class="post-title">从docker到istio之二 - 使用compose部署应用</h1>
 
       <div class="post-meta">
         <span class="post-time"> 2019-05-22 </span>
@@ -169,10 +169,10 @@
 <p>容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包括下面四篇文章。</p>
 
 <ul>
-<li><a href="https://game404.github.io/post/docker2istio-docker/">容器化实践之路-从docker到istio之一 - 使用Docker将应用容器化</a></li>
-<li>容器化实践之路-从docker到istio之二 - 使用compose部署应用</li>
-<li>容器化实践之路-从docker到istio之三 - kubernetes编排应用</li>
-<li>容器化实践之路-从docker到istio之四 - istio管理应用</li>
+<li><a href="https://game404.github.io/post/docker2istio-docker/">从docker到istio之一 - 使用Docker将应用容器化</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-compose/">从docker到istio之二 - 使用compose部署应用</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-kubernetes/">从docker到istio之三 - kubernetes编排应用</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-istio/">从docker到istio之四 - istio管理应用</a></li>
 </ul>
 
 <p>这是第二篇，使用compose部署应用，同样演示都在<strong>docker2istio</strong>目录。</p>
@@ -567,7 +567,7 @@ Removing network docker2istio_default</pre></td></tr></table>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
         <a class="next" href="/post/docker2istio-docker/">
-            <span class="next-text nav-default">容器化扩容之路-从docker到istio之一 - 使用Docker将应用容器化</span>
+            <span class="next-text nav-default">从docker到istio之一 - 使用Docker将应用容器化</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>
@@ -581,7 +581,7 @@ Removing network docker2istio_default</pre></td></tr></table>
     <script type="text/javascript">
       var gitment = new Gitment({
         id: '2019-05-22 22:39:33 \x2b0800 CST',
-        title: '容器化扩容之路-从docker到istio之二 - 使用compose部署应用',
+        title: '从docker到istio之二 - 使用compose部署应用',
         link: decodeURI(location.href),
         desc: '前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包',
         owner: 'game404',
