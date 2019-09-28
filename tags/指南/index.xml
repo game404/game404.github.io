@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 29 Jul 2019 00:14:49 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 28 Sep 2019 23:43:53 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%8C%87%E5%8D%97/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Celery 指南 - 1</title>
+      <link>https://game404.github.io/post/celery-1/</link>
+      <pubDate>Sat, 28 Sep 2019 23:43:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/celery-1/</guid>
+      <description>安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &amp;#34;celery[redis]&amp;#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8</description>
+    </item>
     
     <item>
       <title>Jupyter Notebook 使用入门</title>

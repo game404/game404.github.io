@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>Celery 指南 - 1</title>
+      <link>https://game404.github.io/post/celery-1/</link>
+      <pubDate>Sat, 28 Sep 2019 23:43:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/celery-1/</guid>
+      <description>安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &amp;#34;celery[redis]&amp;#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8</description>
+    </item>
+    
+    <item>
       <title>python从零到壹</title>
       <link>https://game404.github.io/post/python021/</link>
       <pubDate>Sat, 14 Sep 2019 22:16:48 +0800</pubDate>
