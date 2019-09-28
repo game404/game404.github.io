@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="shawn" /><meta name="description" content="安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &amp;#34;celery[redis]&amp;#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+<meta name="author" content="shawn" /><meta name="description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
 
 
 
@@ -40,26 +40,26 @@
 
 
 <meta property="og:title" content="Celery 指南 - 1" />
-<meta property="og:description" content="安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &#34;celery[redis]&#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8" />
+<meta property="og:description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/celery-1/" />
 <meta property="article:published_time" content="2019-09-28T23:43:53&#43;08:00"/>
 <meta property="article:modified_time" content="2019-09-28T23:43:53&#43;08:00"/>
 
 <meta itemprop="name" content="Celery 指南 - 1">
-<meta itemprop="description" content="安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &#34;celery[redis]&#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8">
+<meta itemprop="description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列">
 
 
 <meta itemprop="datePublished" content="2019-09-28T23:43:53&#43;08:00" />
 <meta itemprop="dateModified" content="2019-09-28T23:43:53&#43;08:00" />
-<meta itemprop="wordCount" content="703">
+<meta itemprop="wordCount" content="982">
 
 
 
 <meta itemprop="keywords" content="指南," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 指南 - 1"/>
-<meta name="twitter:description" content="安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env/bin/activate pip install -U &#34;celery[redis]&#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8"/>
+<meta name="twitter:description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -144,6 +144,7 @@
 <ul>
 <li>
 <ul>
+<li><a href="#celery是什么">celery是什么</a></li>
 <li><a href="#安装-celery">安装 celery</a></li>
 <li><a href="#使用-celery-任务">使用 celery 任务</a>
 <ul>
@@ -159,6 +160,18 @@
 </div>
     <div class="post-content">
       
+
+<h2 id="celery是什么">celery是什么</h2>
+
+<p>Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列发送一条消息，然后中间人（Broker）将消息传递给一个职程（Worker），最后由职程（Worker）进行执行中间人（Broker）分配的任务。</p>
+
+<p>Celery 可以有多个职程（Worker）和中间人（Broker），用来提高Celery的高可用性以及横向扩展能力。</p>
+
+<p>Celery 是用Python编写的，但是协议可以通过任何语言进行实现。</p>
+
+<blockquote>
+<p>转载自官方文档<a href="https://www.celerycn.io/ru-men/celery-jian-jie">https://www.celerycn.io/ru-men/celery-jian-jie</a></p>
+</blockquote>
 
 <h2 id="安装-celery">安装 celery</h2>
 
@@ -481,7 +494,7 @@ True
         id: '2019-09-28 23:43:53 \x2b0800 CST',
         title: 'Celery 指南 - 1',
         link: decodeURI(location.href),
-        desc: '安装 celery celery支持多种backend，我们选择redis。安装命令如下: 1 2 3 python3 -m venv env source env\/bin\/activate pip install -U \x26#34;celery[redis]\x26#34; 完成后，项目的包如下: 1 2 3 4 5 6 7 8',
+        desc: 'celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列',
         owner: 'game404',
         repo: 'game404.github.io',
         oauth: {
