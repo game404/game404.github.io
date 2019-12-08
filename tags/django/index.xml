@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>django on 游戏不存在</title>
+    <link>https://game404.github.io/tags/django/</link>
+    <description>Recent content in django on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sun, 08 Dec 2019 23:34:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/django/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Django Rbac 权限设计</title>
+      <link>https://game404.github.io/post/django-rbac-permission-design/</link>
+      <pubDate>Sun, 08 Dec 2019 23:34:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/django-rbac-permission-design/</guid>
+      <description>Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &amp;ldquo;Alice&amp;rdquo;: { &amp;ldquo;read&amp;rdquo;:</description>
+    </item>
+    
+  </channel>
+</rss>
