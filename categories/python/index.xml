@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 08 Dec 2019 23:34:12 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 21 Mar 2020 23:10:57 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python虚拟环境指南2020版</title>
+      <link>https://game404.github.io/post/python-env-2020/</link>
+      <pubDate>Sat, 21 Mar 2020 23:10:57 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2020/</guid>
+      <description>这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟</description>
+    </item>
     
     <item>
       <title>Django Rbac 权限设计</title>
