@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/kubernetes-open-falcon-deploy/" />
-<meta property="article:published_time" content="2019-04-08T23:46:25&#43;08:00"/>
-<meta property="article:modified_time" content="2019-04-08T23:46:25&#43;08:00"/>
-
+<meta property="article:published_time" content="2019-04-08T23:46:25+08:00" />
+<meta property="article:modified_time" content="2019-04-08T23:46:25+08:00" />
 <meta itemprop="name" content="在kubernetes集群中部署open-falcon">
 <meta itemprop="description" content="公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f">
-
-
 <meta itemprop="datePublished" content="2019-04-08T23:46:25&#43;08:00" />
 <meta itemprop="dateModified" content="2019-04-08T23:46:25&#43;08:00" />
 <meta itemprop="wordCount" content="1081">
 
 
 
-<meta itemprop="keywords" content="指南," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="在kubernetes集群中部署open-falcon"/>
 <meta name="twitter:description" content="公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f"/>
 
@@ -141,64 +137,56 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#kubernetes-环境">kubernetes 环境</a></li>
-<li><a href="#准备mysql服务">准备mysql服务</a></li>
-<li><a href="#准备redis服务">准备redis服务</a></li>
-<li><a href="#启动open-falcon后端服务全家桶">启动open-falcon后端服务全家桶</a></li>
-<li><a href="#启动open-falcon-dashboard">启动open-falcon-dashboard</a></li>
-<li><a href="#访问open-falcon-dashboard">访问open-falcon-dashboard</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#kubernetes-">kubernetes 环境</a></li>
+    <li><a href="#mysql">准备mysql服务</a></li>
+    <li><a href="#redis">准备redis服务</a></li>
+    <li><a href="#open-falcon">启动open-falcon后端服务全家桶</a></li>
+    <li><a href="#open-falcon-dashboard">启动open-falcon-dashboard</a></li>
+    <li><a href="#open-falcon-dashboard-1">访问open-falcon-dashboard</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<blockquote>
+      <blockquote>
 <p>公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-falcon团队最近没有更新维护，提交的PR没有反应，所以将部署方法记录到这里。</p>
 </blockquote>
-
-<h2 id="kubernetes-环境">kubernetes 环境</h2>
-
+<h2 id="kubernetes-">kubernetes 环境</h2>
 <p>部署环境为kubernetes 1.14 ,  详情见 <code>kubectl version</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&#34;v1.14.0&#34;, GitCommit:&#34;641856db18352033a0d96dbc99153fa3b27298e5&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2019-03-25T15:53:57Z&#34;, GoVersion:&#34;go1.12.1&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}
-Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&#34;v1.14.0&#34;, GitCommit:&#34;641856db18352033a0d96dbc99153fa3b27298e5&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2019-03-25T15:45:25Z&#34;, GoVersion:&#34;go1.12.1&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&#34;v1.14.0&#34;, GitCommit:&#34;641856db18352033a0d96dbc99153fa3b27298e5&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2019-03-25T15:53:57Z&#34;, GoVersion:&#34;go1.12.1&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}
+Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&#34;v1.14.0&#34;, GitCommit:&#34;641856db18352033a0d96dbc99153fa3b27298e5&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2019-03-25T15:45:25Z&#34;, GoVersion:&#34;go1.12.1&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="准备mysql服务">准备mysql服务</h2>
-
+</div><h2 id="mysql">准备mysql服务</h2>
 <p>如果已经有mysql服务了，可以跳过创建mysql服务这个步骤。创建mysql服务方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl apply -f mysql.yaml</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl apply -f mysql.yaml
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>然后，初始化open-falcon需要使用的mysql库：</p>
+</div><p>然后，初始化open-falcon需要使用的mysql库：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">sh init_mysql_data.sh</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sh init_mysql_data.sh
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>脚本内容如下:</p>
+</div><p>脚本内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -210,9 +198,9 @@ Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><span class="cp">#!/bin/sh
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/bin/sh
 </span><span class="cp"></span>
 <span class="nv">mysql_pod</span><span class="o">=</span><span class="k">$(</span>kubectl get pods <span class="p">|</span> grep mysql <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
 <span class="nb">cd</span> /tmp <span class="o">&amp;&amp;</span> <span class="se">\
@@ -223,46 +211,42 @@ Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;14&#34;, GitVersion:&
 	    kubectl <span class="nb">exec</span> -it <span class="nv">$mysql_pod</span> -- mysql -uroot -p123456 &lt; <span class="nv">$x</span><span class="p">;</span>
 	<span class="k">done</span>
 
-rm -rf /tmp/falcon-plus/</pre></td></tr></table>
+rm -rf /tmp/falcon-plus/
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这个脚本主要做了下面几件事:</p>
-
+</div><p>这个脚本主要做了下面几件事:</p>
 <ol>
 <li>获取集群中mysql服务的pod id。</li>
 <li>从open-falcon的github repo中下载数据初始化脚本。</li>
 <li>执行数据初始化脚本，初始化open-falcon的数据库。</li>
 <li>清理临时文件和目录</li>
 </ol>
-
 <blockquote>
 <p>注意： 按需修改 <strong>mysql.yaml</strong> 中的mysql密码，同样注意openfalcon-plus和dashboard中的mysql密码。</p>
 </blockquote>
-
-<h2 id="准备redis服务">准备redis服务</h2>
-
+<h2 id="redis">准备redis服务</h2>
 <p>如果已经有redis服务了，可以跳过创建redis服务这个步骤。创建redis服务方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl apply -f redis.yaml</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl apply -f redis.yaml
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="启动open-falcon后端服务全家桶">启动open-falcon后端服务全家桶</h2>
+</div><h2 id="open-falcon">启动open-falcon后端服务全家桶</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl apply -f openfalcon-plus.yaml</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl apply -f openfalcon-plus.yaml
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>其中主要的点在使用ConfigMap配置了 <strong>entrypoint.sh</strong></p>
+</div><p>其中主要的点在使用ConfigMap配置了 <strong>entrypoint.sh</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -270,37 +254,35 @@ rm -rf /tmp/falcon-plus/</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: v1
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: v1
 kind: ConfigMap
 metadata:
   name: openfalcon-configmap
 data:
   entrypoint.sh: |-
     #!/bin/bash
-    /bin/sh -c &#39;sleep 10 &amp;&amp; sh ctrl.sh start graph hbs judge transfer nodata aggregator gateway api alarm&#39;  &amp; /usr/bin/supervisord -c /etc/supervisord.conf</pre></td></tr></table>
+    /bin/sh -c &#39;sleep 10 &amp;&amp; sh ctrl.sh start graph hbs judge transfer nodata aggregator gateway api alarm&#39;  &amp; /usr/bin/supervisord -c /etc/supervisord.conf
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这样在不改动镜像和deployment的情况下，调整configmap就可以调整openfalcon启动的模块。当然正式环境下，从源码重新编译镜像更佳。因为supervisord管理进程的方式不 <strong>docker</strong> 。</p>
-
+</div><p>这样在不改动镜像和deployment的情况下，调整configmap就可以调整openfalcon启动的模块。当然正式环境下，从源码重新编译镜像更佳。因为supervisord管理进程的方式不 <strong>docker</strong> 。</p>
 <blockquote>
 <p><code>/bin/sh -c 'sleep 10 &amp;&amp; sh ctrl.sh start graph hbs judge transfer nodata aggregator gateway api alarm'  &amp; /usr/bin/supervisord -c /etc/supervisord.conf</code> 这个命令的逻辑是先启动supervisord，十秒后再启动openfalcon的全家桶模块。</p>
 </blockquote>
-
-<h2 id="启动open-falcon-dashboard">启动open-falcon-dashboard</h2>
+<h2 id="open-falcon-dashboard">启动open-falcon-dashboard</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl apply -f openfalcon-dashboard.yaml</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl apply -f openfalcon-dashboard.yaml
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>dashboard的部署，主要关注其中的 <strong>API_ADDR</strong> 这个环境变量是指向kubernetes集群中open-falcon服务。我这里偷懒，直接定义到deployment中了，合理的方式应该是configmap。</p>
+</div><p>dashboard的部署，主要关注其中的 <strong>API_ADDR</strong> 这个环境变量是指向kubernetes集群中open-falcon服务。我这里偷懒，直接定义到deployment中了，合理的方式应该是configmap。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -315,9 +297,9 @@ data:
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> containers:
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> containers:
       - name: open-falcon-dashboard
         image: openfalcon/falcon-dashboard:v0.2.1
         command: [&#34;sh&#34;,&#34;-c&#34;,&#34;cd /open-falcon/dashboard &amp;&amp;  ./control startfg&#34;]
@@ -331,32 +313,30 @@ data:
           value: mysql
         - name: PORTAL_DB_PORT
           value: &#34;3306&#34;
-        ....</pre></td></tr></table>
+        ....
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="访问open-falcon-dashboard">访问open-falcon-dashboard</h2>
-
+</div><h2 id="open-falcon-dashboard-1">访问open-falcon-dashboard</h2>
 <p>全部完成后，查看 <code>kubectl get svc</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
 kubernetes              ClusterIP   10.96.0.1       &lt;none&gt;        443/TCP                         105d
 mysql                   NodePort    10.110.20.201   &lt;none&gt;        3306:30535/TCP                  25m
 open-falcon             NodePort    10.97.12.125    &lt;none&gt;        8433:31952/TCP,8080:31957/TCP   53s
 open-falcon-dashboard   NodePort    10.96.119.231   &lt;none&gt;        8081:30191/TCP                  3s
-redis                   ClusterIP   10.98.212.126   &lt;none&gt;        6379/TCP                        32m</pre></td></tr></table>
+redis                   ClusterIP   10.98.212.126   &lt;none&gt;        6379/TCP                        32m
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>得到 <strong>open-falcon-dashboard</strong> 服务暴露的本地端口 <strong>30191</strong> , 然后浏览器访问  <code>http://192.168.10.21:30191</code>  。</p>
-
+</div><p>得到 <strong>open-falcon-dashboard</strong> 服务暴露的本地端口 <strong>30191</strong> , 然后浏览器访问  <code>http://192.168.10.21:30191</code>  。</p>
 <p><a href="https://github.com/thebe2/falcon-plus/tree/master/docker/k8s-example">全部yaml文件</a></p>
 
     </div>
@@ -441,7 +421,7 @@ redis                   ClusterIP   10.98.212.126   &lt;none&gt;        6379/TCP
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2020
+    2021
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

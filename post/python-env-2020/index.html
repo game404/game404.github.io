@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python-env-2020/" />
-<meta property="article:published_time" content="2020-03-21T23:10:57&#43;08:00"/>
-<meta property="article:modified_time" content="2020-03-21T23:10:57&#43;08:00"/>
-
+<meta property="article:published_time" content="2020-03-21T23:10:57+08:00" />
+<meta property="article:modified_time" content="2020-03-21T23:10:57+08:00" />
 <meta itemprop="name" content="Python虚拟环境指南2020版">
 <meta itemprop="description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟">
-
-
 <meta itemprop="datePublished" content="2020-03-21T23:10:57&#43;08:00" />
 <meta itemprop="dateModified" content="2020-03-21T23:10:57&#43;08:00" />
-<meta itemprop="wordCount" content="3478">
+<meta itemprop="wordCount" content="3479">
 
 
 
-<meta itemprop="keywords" content="指南," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Python虚拟环境指南2020版"/>
 <meta name="twitter:description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟"/>
 
@@ -141,44 +137,35 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#使用venv管理虚拟环境">使用venv管理虚拟环境</a></li>
-<li><a href="#使用pipenv管理虚拟环境">使用pipenv管理虚拟环境</a></li>
-<li><a href="#使用poetry管理虚拟环境">使用poetry管理虚拟环境</a></li>
-<li><a href="#三种虚拟环境工具使用及建议">三种虚拟环境工具使用及建议</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#venv">使用venv管理虚拟环境</a></li>
+        <li><a href="#pipenv">使用pipenv管理虚拟环境</a></li>
+        <li><a href="#poetry">使用poetry管理虚拟环境</a></li>
+        <li><a href="#heading">三种虚拟环境工具使用及建议</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>这是python虚拟环境指南的第二篇，第一篇请见  <a href="https://juejin.im/post/5ca7aec4e51d45354d704951">Python虚拟环境指南2019版
+      <p>这是python虚拟环境指南的第二篇，第一篇请见  <a href="https://juejin.im/post/5ca7aec4e51d45354d704951">Python虚拟环境指南2019版
 </a>。</p>
-
 <p>合理的python虚拟环境让让开发更有序和高效。关于虚拟环境的意义，pip的使用方法可以参考第一篇。本文主要结合python3介绍如何配置虚拟环境,满足项目管理需求，包括下面四个部分:</p>
-
 <ul>
 <li>使用<code>venv</code>管理虚拟环境</li>
 <li>使用<code>pipenv</code>管理虚拟环境</li>
 <li>使用<code>poetry</code>管理虚拟环境</li>
 <li>三种虚拟环境工具使用及建议</li>
 </ul>
-
-<hr />
-
-<h3 id="使用venv管理虚拟环境">使用venv管理虚拟环境</h3>
-
+<hr>
+<h3 id="venv">使用venv管理虚拟环境</h3>
 <p>python3 默认包含了 <code>venv</code> 模块，可以认为venv目前是python3推荐的虚拟环境管理工具。其使用命令大概如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -208,9 +195,9 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  todolist-web-py python3 -m venv --help
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  todolist-web-py python3 -m venv --help
 usage: venv [-h] [--system-site-packages] [--symlinks | --copies] [--clear]
             [--upgrade] [--without-pip] [--prompt PROMPT]
             ENV_DIR [ENV_DIR ...]
@@ -239,59 +226,58 @@ optional arguments:
                         environment.
 
 Once an environment has been created, you may wish to activate it, e.g. by
-sourcing an activate script in its bin directory.</pre></td></tr></table>
+sourcing an activate script in its bin directory.
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>首先创建一个虚拟环境，<code>.venv</code> 是我推荐的虚拟环境路径，虚拟环境创建在工作区也方便pycharm等工具配合使用。当然可以使用第一篇文章中的wrapper方案，将虚拟环境集中管理。不过这种方案有个弊端，时间久了难以记住当前虚拟环境的命名, 从而导致虚拟环境丢失，所以我不再推荐使用。</p>
+</div><p>首先创建一个虚拟环境，<code>.venv</code> 是我推荐的虚拟环境路径，虚拟环境创建在工作区也方便pycharm等工具配合使用。当然可以使用第一篇文章中的wrapper方案，将虚拟环境集中管理。不过这种方案有个弊端，时间久了难以记住当前虚拟环境的命名, 从而导致虚拟环境丢失，所以我不再推荐使用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  todolist-web-py python3 -m venv .venv</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  todolist-web-py python3 -m venv .venv
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>然后进入和退出虚拟环境</p>
+</div><p>然后进入和退出虚拟环境</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  todolist-web-py source .venv/bin/activate
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  todolist-web-py source .venv/bin/activate
 (.venv) ➜  todolist-web-py deactivated
 (.venv) ➜  todolist-web-py deactivate
-➜  todolist-web-py</pre></td></tr></table>
+➜  todolist-web-py
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>windows略有不同，请参见第一篇。</p>
-
+</div><p>windows略有不同，请参见第一篇。</p>
 <p>我们要创建一个基于django的todo-list项目，进入环境后，可以安装django包和requests包。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(.venv) ➜  todolist-web-py pip install django
-(.venv) ➜  todolist-web-py pip install requests</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(.venv) ➜  todolist-web-py pip install django
+(.venv) ➜  todolist-web-py pip install requests
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>并生成requirements文件</p>
+</div><p>并生成requirements文件</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(.venv) ➜  todolist-web-py pip freeze &gt; requirements.txt</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(.venv) ➜  todolist-web-py pip freeze &gt; requirements.txt
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>最后requirements显示项目安装了下面一些包:</p>
+</div><p>最后requirements显示项目安装了下面一些包:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -300,9 +286,9 @@ sourcing an activate script in its bin directory.</pre></td></tr></table>
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">asgiref==3.2.5
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">asgiref==3.2.5
 certifi==2019.11.28
 chardet==3.0.4
 Django==3.0.4
@@ -310,49 +296,46 @@ idna==2.9
 pytz==2019.3
 requests==2.23.0
 sqlparse==0.3.1
-urllib3==1.25.8</pre></td></tr></table>
+urllib3==1.25.8
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这样暴露出venv包依赖管理的弊端， todolist-web-py的requirements.txt中的包是平铺的，我们只是安装了django和requests两个包，然后各自依赖后形成9个包的列表，并且不清楚每个包是谁导入的，这样大型项目安装比较多包后就很混乱。</p>
-
+</div><p>这样暴露出venv包依赖管理的弊端， todolist-web-py的requirements.txt中的包是平铺的，我们只是安装了django和requests两个包，然后各自依赖后形成9个包的列表，并且不清楚每个包是谁导入的，这样大型项目安装比较多包后就很混乱。</p>
 <p>使用pycharm打开我们创建的 <code>todolist-web-py</code> 项目, 默认就会加载项目下的虚拟环境，cmd和ide可以很方便的共享同一个虚拟环境，如下图：</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20200315205633.png" alt="pycharm" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20200315205633.png" alt="pycharm"></p>
 <p>继续初始化django项目并使用git管理项目</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(.venv) ➜  todolist-web-py django-admin startproject todo
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(.venv) ➜  todolist-web-py django-admin startproject todo
 (.venv) ➜  todo django-admin startapp app
 
 (.venv) ➜  todolist-web-py git init
 Initialized empty Git repository in /Users/xxx/tmp/studio/todolist-web-py/.git/
-(.venv) ➜  todolist-web-py git:(master) ✗ touch .gitignore</pre></td></tr></table>
+(.venv) ➜  todolist-web-py git:(master) ✗ touch .gitignore
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>虚拟环境和pycharm的配置均不推荐使用版本管理， 所以gitignore文件中忽略venv和idea的配置文件</p>
+</div><p>虚拟环境和pycharm的配置均不推荐使用版本管理， 所以gitignore文件中忽略venv和idea的配置文件</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">.idea
-.venv</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">.idea
+.venv
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>最后git管理的项目文件如下：</p>
+</div><p>最后git管理的项目文件如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -365,9 +348,9 @@ Initialized empty Git repository in /Users/xxx/tmp/studio/todolist-web-py/.git/
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(.venv) ➜  todolist-web-py git:(master) ✗ git status
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(.venv) ➜  todolist-web-py git:(master) ✗ git status
 On branch master
 
 No commits yet
@@ -375,17 +358,17 @@ No commits yet
 Untracked files:
   (use &#34;git add &lt;file&gt;...&#34; to include in what will be committed)
 
-    .gitignore
-    requirements.txt
-    todo/
+	.gitignore
+	requirements.txt
+	todo/
 
-nothing added to commit but untracked files present (use &#34;git add&#34; to track)</pre></td></tr></table>
+nothing added to commit but untracked files present (use &#34;git add&#34; to track)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>单一的项目使用venv管理虚拟环境是非常便捷的，不过事情往往没有这么简单。我们的todo-list项目有新的需求要使用celery进行任务调度，一个任务处理excel文件，一个任务进行网页爬虫处理。这2个任务以微服务的方式独立于todo-list的web服务。不同的任务使用不同的包，最终会docker方式运行，所以每个任务项目使用独立的虚拟环境，同时整个项目公用一个git仓库。最后形成的项目结构大概如下:</p>
+</div><p>单一的项目使用venv管理虚拟环境是非常便捷的，不过事情往往没有这么简单。我们的todo-list项目有新的需求要使用celery进行任务调度，一个任务处理excel文件，一个任务进行网页爬虫处理。这2个任务以微服务的方式独立于todo-list的web服务。不同的任务使用不同的包，最终会docker方式运行，所以每个任务项目使用独立的虚拟环境，同时整个项目公用一个git仓库。最后形成的项目结构大概如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -401,9 +384,9 @@ nothing added to commit but untracked files present (use &#34;git add&#34; to tr
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">.
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">.
 ├── .git
 ├── .gitignore
 ├── jobs
@@ -418,17 +401,15 @@ nothing added to commit but untracked files present (use &#34;git add&#34; to tr
     ├── app
     ├── manage.py
     ├── requirements.txt
-    └── todo</pre></td></tr></table>
+    └── todo
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这时候就会发现venv的弊端之一，如果将虚拟环境创建到代码文件下和git使用有些不方便。</p>
-
-<h3 id="使用pipenv管理虚拟环境">使用pipenv管理虚拟环境</h3>
-
+</div><p>这时候就会发现venv的弊端之一，如果将虚拟环境创建到代码文件下和git使用有些不方便。</p>
+<h3 id="pipenv">使用pipenv管理虚拟环境</h3>
 <p>pipenv可以比较好的解决venv的两个问题，其具体安装和使用过程同样请参考第一篇，这里只是贴出其命令帮助中的示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -458,9 +439,9 @@ nothing added to commit but untracked files present (use &#34;git add&#34; to tr
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  spider pipenv --help
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  spider pipenv --help
 
 ...
 
@@ -489,13 +470,13 @@ Usage Examples:
    Use a lower-level pip command:
    $ pipenv run pip freeze
 
-...</pre></td></tr></table>
+...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>同样查看web服务的依赖情况，可以清晰的看到Django依赖导入了那些包，requests依赖导入了那些包，还是很清晰的。</p>
+</div><p>同样查看web服务的依赖情况，可以清晰的看到Django依赖导入了那些包，requests依赖导入了那些包，还是很清晰的。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -505,9 +486,9 @@ Usage Examples:
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  spider pipenv graph
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  spider pipenv graph
 Django==3.0.4
   - asgiref [required: ~=3.2, installed: 3.2.5]
   - pytz [required: Any, installed: 2019.3]
@@ -516,13 +497,13 @@ requests==2.23.0
   - certifi [required: &gt;=2017.4.17, installed: 2019.11.28]
   - chardet [required: &gt;=3.0.2,&lt;4, installed: 3.0.4]
   - idna [required: &gt;=2.5,&lt;3, installed: 2.9]
-  - urllib3 [required: &gt;=1.21.1,&lt;1.26,!=1.25.1,!=1.25.0, installed: 1.25.8]</pre></td></tr></table>
+  - urllib3 [required: &gt;=1.21.1,&lt;1.26,!=1.25.1,!=1.25.0, installed: 1.25.8]
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>相对venv的虚拟环境，项目目录下只存在<code>Pipfile</code>和<code>Pipfile.lock</code>两个文本文件，完全可以用git管理，如下：</p>
+</div><p>相对venv的虚拟环境，项目目录下只存在<code>Pipfile</code>和<code>Pipfile.lock</code>两个文本文件，完全可以用git管理，如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -542,9 +523,9 @@ requests==2.23.0
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  studio2 tree -L 3
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  studio2 tree -L 3
 .
 ├── jobs
 │   ├── excel_dispose
@@ -563,94 +544,93 @@ requests==2.23.0
         ├── asgi.py
         ├── settings.py
         ├── urls.py
-        └── wsgi.py</pre></td></tr></table>
+        └── wsgi.py
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>比较悲剧的是，如果旧的项目导入requirements.txt中的依赖包就非常慢，几分钟，十来分钟也是常有的事，如下：</p>
+</div><p>比较悲剧的是，如果旧的项目导入requirements.txt中的依赖包就非常慢，几分钟，十来分钟也是常有的事，如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">➜  spider pipenv install -r requirements.txt
-Requirements file provided! Importing into Pipfile…
-Pipfile.lock not found, creating…
-Locking [dev-packages] dependencies…
-Locking [packages] dependencies…
-⠙ Locking........</pre></td></tr></table>
-</div>
-</div>
-<p>即使修改了Pipfile中的源到国内源也提速不了多少，据说主要是因为计算生成pipfile.loc文件, 会对每个安装包计算签名，如下:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&#34;urllib3&#34;: {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  spider pipenv install -r requirements.txt
+Requirements file provided! Importing into Pipfile…
+Pipfile.lock not found, creating…
+Locking [dev-packages] dependencies…
+Locking [packages] dependencies…
+⠙ Locking........
+
+</code></pre></td></tr></table>
+</div>
+</div><p>即使修改了Pipfile中的源到国内源也提速不了多少，据说主要是因为计算生成pipfile.loc文件, 会对每个安装包计算签名，如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&#34;urllib3&#34;: {
             &#34;hashes&#34;: [
                 &#34;sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc&#34;,
                 &#34;sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc&#34;
             ],
             &#34;version&#34;: &#34;==1.25.8&#34;
-        }</pre></td></tr></table>
+        }
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>可能还有一些开源项目管理方面的问题，我们只能够期望早点改善吧。</p>
-
-<h3 id="使用poetry管理虚拟环境">使用poetry管理虚拟环境</h3>
-
+</div><p>可能还有一些开源项目管理方面的问题，我们只能够期望早点改善吧。</p>
+<h3 id="poetry">使用poetry管理虚拟环境</h3>
 <p>在试用pipenv的过程中，又发现了一款管理工具<code>poetry</code></p>
-
 <p>官方推荐使用下面命令行安装：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>mac</code>安装完成还需要将默认的路径<code>~/.poetry/bin/poetry</code>添加到系统path</p>
+</div><p><code>mac</code>安装完成还需要将默认的路径<code>~/.poetry/bin/poetry</code>添加到系统path</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  poetry poetry --help
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  poetry poetry --help
 zsh: command not found: poetry
 
 ➜  poetry ~/.poetry/bin/poetry --help
-Poetry version 1.0.5</pre></td></tr></table>
+Poetry version 1.0.5
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>poetry init</code> 初始化环境，可以交互式的创建过程，需要注意的是python的版本，我本机默认环境是2.7，这里需要切换成3.7版本。</p>
+</div><p>使用 <code>poetry init</code> 初始化环境，可以交互式的创建过程，需要注意的是python的版本，我本机默认环境是2.7，这里需要切换成3.7版本。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Compatible Python versions [^2.7]:  ^3.7</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Compatible Python versions [^2.7]:  ^3.7
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>初始化环境后，会形成<code>pyproject.toml</code>内容大概如下:</p>
+</div><p>初始化环境后，会形成<code>pyproject.toml</code>内容大概如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -664,9 +644,9 @@ Poetry version 1.0.5</pre></td></tr></table>
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[tool.poetry]
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[tool.poetry]
 name = &#34;poetry&#34;
 version = &#34;0.1.0&#34;
 description = &#34;&#34;
@@ -679,53 +659,52 @@ python = ^&#34;3.7&#34;
 
 [build-system]
 requires = [&#34;poetry&gt;=0.12&#34;]
-build-backend = &#34;poetry.masonry.api&#34;</pre></td></tr></table>
+build-backend = &#34;poetry.masonry.api&#34;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>和pipenv的pipfile很类似了，然后安装环境：</p>
+</div><p>和pipenv的pipfile很类似了，然后安装环境：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  poetry poetry install
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  poetry poetry install
 Updating dependencies
 Resolving dependencies... (0.1s)
 
 Writing lock file
 
-No dependencies to install or update</pre></td></tr></table>
+No dependencies to install or update
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>进入环境：</p>
+</div><p>进入环境：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  poetry poetry shell
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  poetry poetry shell
 Spawning shell within /Users/yoo/Library/Caches/pypoetry/virtualenvs/poetry-79xnRUxm-py3.7
 Identity added: /Users/yoo/.ssh/id_rsa_yzx (/Users/yoo/.ssh/id_rsa_yzx)
 ➜  poetry . /Users/yoo/Library/Caches/pypoetry/virtualenvs/poetry-79xnRUxm-py3.7/bin/activate
-(poetry-79xnRUxm-py3.7) ➜  poetry</pre></td></tr></table>
+(poetry-79xnRUxm-py3.7) ➜  poetry
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到poetry创建的环境也是独立与项目的。</p>
-
+</div><p>可以看到poetry创建的环境也是独立与项目的。</p>
 <p>然后安装flask包，默认情况下也是有些缓慢:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -742,9 +721,9 @@ Identity added: /Users/yoo/.ssh/id_rsa_yzx (/Users/yoo/.ssh/id_rsa_yzx)
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> poetry poetry add flask
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> poetry poetry add flask
 Using version ^1.1.1 for flask
 
 Updating dependencies
@@ -760,55 +739,55 @@ Package operations: 6 installs, 0 updates, 0 removals
   - Installing itsdangerous (1.1.0)
   - Installing jinja2 (2.11.1)
   - Installing werkzeug (1.0.0)
-  - Installing flask (1.1.1)</pre></td></tr></table>
+  - Installing flask (1.1.1)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>查看环境里的包:</p>
+</div><p>查看环境里的包:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  poetry poetry show
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  poetry poetry show
 click        7.1.1  Composable command line interface toolkit
 flask        1.1.1  A simple framework for building complex web applications.
 itsdangerous 1.1.0  Various helpers to pass data to untrusted environments and back.
 jinja2       2.11.1 A very fast and expressive template engine.
 markupsafe   1.1.1  Safely add untrusted strings to HTML/XML markup.
-werkzeug     1.0.0  The comprehensive WSGI web application library.</pre></td></tr></table>
+werkzeug     1.0.0  The comprehensive WSGI web application library.
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>和pipenv一样可以树状查看依赖:</p>
+</div><p>和pipenv一样可以树状查看依赖:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  poetry poetry show --tree
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  poetry poetry show --tree
 flask 1.1.1 A simple framework for building complex web applications.
 ├── click &gt;=5.1
 ├── itsdangerous &gt;=0.24
 ├── jinja2 &gt;=2.10.1
 │   └── markupsafe &gt;=0.23
-└── werkzeug &gt;=0.15</pre></td></tr></table>
+└── werkzeug &gt;=0.15
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>但是发现一个关于使用习惯的小问题,虚拟环境中直接使用<code>pip</code>命令的包，使用<code>poetry show</code>命令无法查看:</p>
+</div><p>但是发现一个关于使用习惯的小问题,虚拟环境中直接使用<code>pip</code>命令的包，使用<code>poetry show</code>命令无法查看:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -838,9 +817,9 @@ flask 1.1.1 A simple framework for building complex web applications.
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 虚拟环境中查看安装包
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 虚拟环境中查看安装包
 (poetry-79xnRUxm-py3.7) ➜  poetry pip list
 Package      Version
 ------------ ----------
@@ -869,15 +848,14 @@ flask        1.1.1  A simple framework for building complex web applications.
 itsdangerous 1.1.0  Various helpers to pass data to untrusted environments and back.
 jinja2       2.11.1 A very fast and expressive template engine.
 markupsafe   1.1.1  Safely add untrusted strings to HTML/XML markup.
-werkzeug     1.0.0  The comprehensive WSGI web application library.</pre></td></tr></table>
+werkzeug     1.0.0  The comprehensive WSGI web application library.
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这样就需要注意使用习惯，避免pip直接安装包。pipenv则没有这个问题，相对来说个人更习惯pipenv一些。</p>
-
+</div><p>这样就需要注意使用习惯，避免pip直接安装包。pipenv则没有这个问题，相对来说个人更习惯pipenv一些。</p>
 <p><code>poetry</code> 同时是一个打包工具，创建默认的foo项目后，可以很方便的使用<code>build</code>指令打包:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -887,9 +865,9 @@ werkzeug     1.0.0  The comprehensive WSGI web application library.</pre></td></
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  foo poetry build
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  foo poetry build
 The currently activated Python version 2.7.16 is not supported by the project (^3.7).
 Trying to find and use a compatible version.
 Using python3 (3.7.5)
@@ -898,13 +876,13 @@ Building foo (0.1.0)
  - Built foo-0.1.0.tar.gz
 
  - Building wheel
- - Built foo-0.1.0-py3-none-any.whl</pre></td></tr></table>
+ - Built foo-0.1.0-py3-none-any.whl
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>打包后项目目录如下:</p>
+</div><p>打包后项目目录如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -923,9 +901,9 @@ Building foo (0.1.0)
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">.
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">.
 ├── README.rst
 ├── dist
 │   ├── foo-0.1.0-py3-none-any.whl
@@ -943,17 +921,13 @@ Building foo (0.1.0)
     ├── __init__.py
     └── test_foo.py
 
-4 directories, 12 files</pre></td></tr></table>
+4 directories, 12 files
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>可以很方便的应用于不需要独立部署的代码库项目。</p>
-
-<hr />
-
-<h3 id="三种虚拟环境工具使用及建议">三种虚拟环境工具使用及建议</h3>
-
+</div><p>可以很方便的应用于不需要独立部署的代码库项目。</p>
+<hr>
+<h3 id="heading">三种虚拟环境工具使用及建议</h3>
 <p>简单总结如下:</p>
-
 <table>
 <thead>
 <tr>
@@ -964,7 +938,6 @@ Building foo (0.1.0)
 <th>推荐场景</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>venv</td>
@@ -973,7 +946,6 @@ Building foo (0.1.0)
 <td>习惯</td>
 <td>小型项目和服务器上部署</td>
 </tr>
-
 <tr>
 <td>pipenv</td>
 <td>外部路径</td>
@@ -981,7 +953,6 @@ Building foo (0.1.0)
 <td>习惯</td>
 <td>中大型项目开发环境</td>
 </tr>
-
 <tr>
 <td>poetry</td>
 <td>外部路径</td>
@@ -991,7 +962,6 @@ Building foo (0.1.0)
 </tr>
 </tbody>
 </table>
-
 <p>总体来说，三个工具都功能类似，操作习惯也比较相识，又有各自的应用场景，可以都使用起来，等待最强大的那个一统江湖。</p>
 
     </div>
@@ -1072,7 +1042,7 @@ Building foo (0.1.0)
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2020
+    2021
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

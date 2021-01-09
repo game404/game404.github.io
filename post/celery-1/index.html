@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/celery-1/" />
-<meta property="article:published_time" content="2019-09-28T23:43:53&#43;08:00"/>
-<meta property="article:modified_time" content="2019-09-28T23:43:53&#43;08:00"/>
-
+<meta property="article:published_time" content="2019-09-28T23:43:53+08:00" />
+<meta property="article:modified_time" content="2019-09-28T23:43:53+08:00" />
 <meta itemprop="name" content="Celery 指南 - 1">
 <meta itemprop="description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列">
-
-
 <meta itemprop="datePublished" content="2019-09-28T23:43:53&#43;08:00" />
 <meta itemprop="dateModified" content="2019-09-28T23:43:53&#43;08:00" />
-<meta itemprop="wordCount" content="982">
+<meta itemprop="wordCount" content="985">
 
 
 
-<meta itemprop="keywords" content="指南," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 指南 - 1"/>
 <meta name="twitter:description" content="celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列"/>
 
@@ -141,57 +137,47 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#celery是什么">celery是什么</a></li>
-<li><a href="#安装-celery">安装 celery</a></li>
-<li><a href="#使用-celery-任务">使用 celery 任务</a>
-<ul>
-<li><a href="#1-启动redis容器">1. 启动redis容器</a></li>
-<li><a href="#2-编写-celery-项目">2. 编写 celery 项目</a></li>
-<li><a href="#3-启动-celery-worker">3. 启动 celery worker</a></li>
-<li><a href="#4-启动任务">4. 启动任务</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#celery">celery是什么</a></li>
+    <li><a href="#-celery">安装 celery</a></li>
+    <li><a href="#-celery-">使用 celery 任务</a>
+      <ul>
+        <li><a href="#1-redis">1. 启动redis容器</a></li>
+        <li><a href="#2--celery-">2. 编写 celery 项目</a></li>
+        <li><a href="#3--celery-worker">3. 启动 celery worker</a></li>
+        <li><a href="#4-">4. 启动任务</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="celery是什么">celery是什么</h2>
-
+      <h2 id="celery">celery是什么</h2>
 <p>Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列发送一条消息，然后中间人（Broker）将消息传递给一个职程（Worker），最后由职程（Worker）进行执行中间人（Broker）分配的任务。</p>
-
 <p>Celery 可以有多个职程（Worker）和中间人（Broker），用来提高Celery的高可用性以及横向扩展能力。</p>
-
 <p>Celery 是用Python编写的，但是协议可以通过任何语言进行实现。</p>
-
 <blockquote>
 <p>转载自官方文档<a href="https://www.celerycn.io/ru-men/celery-jian-jie">https://www.celerycn.io/ru-men/celery-jian-jie</a></p>
 </blockquote>
-
-<h2 id="安装-celery">安装 celery</h2>
-
+<h2 id="-celery">安装 celery</h2>
 <p>celery支持多种backend，我们选择redis。安装命令如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python3 -m venv env
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 -m venv env
 source env/bin/activate
-pip install -U &#34;celery[redis]&#34;</pre></td></tr></table>
+pip install -U &#34;celery[redis]&#34;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>完成后，项目的包如下:</p>
+</div><p>完成后，项目的包如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -201,9 +187,9 @@ pip install -U &#34;celery[redis]&#34;</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">amqp==2.5.1
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">amqp==2.5.1
 billiard==3.6.1.0
 celery==4.3.0
 importlib-metadata==0.23
@@ -212,68 +198,65 @@ more-itertools==7.2.0
 pytz==2019.2
 redis==3.3.8
 vine==1.3.0
-zipp==0.6.0</pre></td></tr></table>
+zipp==0.6.0
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用<code>&quot;celery[redis]&quot;</code>会同时安装celery和redis</p>
-
-<h2 id="使用-celery-任务">使用 celery 任务</h2>
-
-<h3 id="1-启动redis容器">1. 启动redis容器</h3>
+</div><p>使用<code>&quot;celery[redis]&quot;</code>会同时安装celery和redis</p>
+<h2 id="-celery-">使用 celery 任务</h2>
+<h3 id="1-redis">1. 启动redis容器</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run -it -p 6379:6379 redis:5.0.4-alpine</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker run -it -p 6379:6379 redis:5.0.4-alpine
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="2-编写-celery-项目">2. 编写 celery 项目</h3>
-
+</div><h3 id="2--celery-">2. 编写 celery 项目</h3>
 <p>项目目录结构如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">├── project0
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">├── project0
 │   ├── __init__.py
 │   ├── app.py
 │   ├── env
 │   ├── settings.py
-│   └── tasks.py</pre></td></tr></table>
+│   └── tasks.py
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>app.py</code> 中声明 celery</p>
+</div><p><code>app.py</code> 中声明 celery</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># -*- coding:utf-8 -*-
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># -*- coding:utf-8 -*-
 from celery import Celery
 
 app = Celery(&#39;demo&#39;)
 app.config_from_object(&#39;settings&#39;)
 if __name__ == &#39;__main__&#39;:
-    app.start()</pre></td></tr></table>
+    app.start()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>settings.py</code> 配置backend等:</p>
+</div><p>使用 <code>settings.py</code> 配置backend等:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -284,9 +267,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">BROKER_URL = &#39;redis://localhost:6379/0&#39;
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">BROKER_URL = &#39;redis://localhost:6379/0&#39;
 CELERY_RESULT_BACKEND = &#39;redis://localhost:6379/1&#39;
 CELERY_ACCEPT_CONTENT = [&#39;json&#39;]
 CELERY_TASK_SERIALIZER = &#39;json&#39;
@@ -296,32 +279,34 @@ CELERY_TIMEZONE = &#39;Asia/Shanghai&#39;   # 时区配置
 
 CELERY_IMPORTS = (
      &#39;tasks&#39;,
-)</pre></td></tr></table>
+)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>tasks.py</code> 中定义hello任务:</p>
+</div><p><code>tasks.py</code> 中定义hello任务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span><span class="lnt">7
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from app import app
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from app import app
 
 @app.task
 def hello(word):
     print(&#34;hello:&#34;, time.ctime(), word)
-    return &#34;hello,{}&#34;.format(word)</pre></td></tr></table>
+    return &#34;hello,{}&#34;.format(word)
+
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="3-启动-celery-worker">3. 启动 celery worker</h3>
+</div><h3 id="3--celery-worker">3. 启动 celery worker</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -346,9 +331,10 @@ def hello(word):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span><span class="lnt">26
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(env) ➜  project0 celery -A app worker -l info
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(env) ➜  project0 celery -A app worker -l info
 
 
 celery@YoodeMac-mini.local v4.3.0 (rhubarb)
@@ -372,55 +358,56 @@ Darwin-18.6.0-x86_64-i386-64bit 2019-09-24 16:20:55
 [2019-09-24 16:20:56,134: INFO/MainProcess] Connected to redis://localhost:6379/0
 [2019-09-24 16:20:56,159: INFO/MainProcess] mingle: searching for neighbors
 [2019-09-24 16:20:57,199: INFO/MainProcess] mingle: all alone
-[2019-09-24 16:20:57,236: INFO/MainProcess] celery@YoodeMac-mini.local ready.</pre></td></tr></table>
-</div>
-</div>
-<p>可见tasks.hello已经注册到任务列表[tasks]中。</p>
+[2019-09-24 16:20:57,236: INFO/MainProcess] celery@YoodeMac-mini.local ready.
 
-<h3 id="4-启动任务">4. 启动任务</h3>
-
+</code></pre></td></tr></table>
+</div>
+</div><p>可见tasks.hello已经注册到任务列表[tasks]中。</p>
+<h3 id="4-">4. 启动任务</h3>
 <p>worker启动后，可以直接在新终端测试任务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(env) ➜  project0 python
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(env) ➜  project0 python
 Python 3.7.1 (v3.7.1:260ec2c36a, Oct 20 2018, 03:13:28)
 [Clang 6.0 (clang-600.0.57)] on darwin
 Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
 &gt;&gt;&gt; import tasks
 &gt;&gt;&gt;
-&gt;&gt;&gt; t = tasks.hello.delay(&#34;world&#34;)</pre></td></tr></table>
+&gt;&gt;&gt; t = tasks.hello.delay(&#34;world&#34;)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>同时在worker中可以看到任务执行的情况:</p>
+</div><p>同时在worker中可以看到任务执行的情况:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span><span class="lnt">6
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">...
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
 [2019-09-24 16:24:05,726: WARNING/ForkPoolWorker-8] hello:
 [2019-09-24 16:24:05,727: WARNING/ForkPoolWorker-8] Tue Sep 24 16:24:05 2019
 [2019-09-24 16:24:05,728: WARNING/ForkPoolWorker-8] world
-...</pre></td></tr></table>
+...
+
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>在终端中，可以看到task执行的状态和结果:</p>
+</div><p>在终端中，可以看到task执行的状态和结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -434,9 +421,9 @@ Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34;
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; t
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; t
 &lt;AsyncResult: d8f80147-c2c8-419e-ac9b-e317e7533cf1&gt;
 &gt;&gt;&gt; t.get()
 &#39;hello,world&#39;
@@ -449,10 +436,10 @@ Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34;
 &gt;&gt;&gt; t.successful()
 True
 &gt;&gt;&gt; t.state
-&#39;SUCCESS&#39;</pre></td></tr></table>
+&#39;SUCCESS&#39;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>通过上述实验，可见celery是分布式的生产者-消费者模型。worker进程负责消费(执行任务)，生产进程负责生产(启动任务)，redis负责消息传递和结果保存。</p>
+</div><p>通过上述实验，可见celery是分布式的生产者-消费者模型。worker进程负责消费(执行任务)，生产进程负责生产(启动任务)，redis负责消息传递和结果保存。</p>
 
     </div>
 
@@ -536,7 +523,7 @@ True
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2020
+    2021
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

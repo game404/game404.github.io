@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/docker2istio-istio/" />
-<meta property="article:published_time" content="2019-06-13T22:34:06&#43;08:00"/>
-<meta property="article:modified_time" content="2019-06-13T22:34:06&#43;08:00"/>
-
+<meta property="article:published_time" content="2019-06-13T22:34:06+08:00" />
+<meta property="article:modified_time" content="2019-06-13T22:34:06+08:00" />
 <meta itemprop="name" content="从docker到istio之四 - istio管理应用">
 <meta itemprop="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包">
-
-
 <meta itemprop="datePublished" content="2019-06-13T22:34:06&#43;08:00" />
 <meta itemprop="dateModified" content="2019-06-13T22:34:06&#43;08:00" />
-<meta itemprop="wordCount" content="2796">
+<meta itemprop="wordCount" content="2795">
 
 
 
-<meta itemprop="keywords" content="系列," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="系列," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="从docker到istio之四 - istio管理应用"/>
 <meta name="twitter:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包"/>
 
@@ -141,69 +137,53 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#前言">前言</a></li>
-<li><a href="#istio">istio</a>
-<ul>
-<li><a href="#安装istio">安装istio</a></li>
-<li><a href="#部署应用">部署应用</a>
-<ul>
-<li><a href="#调整pods符合istio规范">调整pods符合istio规范</a></li>
-<li><a href="#启动istio的sidecar自动注入">启动istio的sidecar自动注入</a></li>
-<li><a href="#启动服务">启动服务</a></li>
-<li><a href="#部署istio的gateway">部署istio的gateway</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#金丝雀发布">金丝雀发布</a></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#heading">前言</a></li>
+    <li><a href="#istio">istio</a>
+      <ul>
+        <li><a href="#istio-1">安装istio</a></li>
+        <li><a href="#heading-1">部署应用</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading-3">金丝雀发布</a></li>
+    <li><a href="#heading-4">总结</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="前言">前言</h2>
-
+      <h2 id="heading">前言</h2>
 <p>容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包括下面四篇文章。</p>
-
 <ul>
 <li><a href="https://game404.github.io/post/docker2istio-docker/">从docker到istio之一 - 使用Docker将应用容器化</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-compose/">从docker到istio之二 - 使用compose部署应用</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-kubernetes/">从docker到istio之三 - kubernetes编排应用</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-istio/">从docker到istio之四 - istio管理应用</a></li>
 </ul>
-
 <p>这是第四篇，istio管理应用。</p>
-
 <h2 id="istio">istio</h2>
-
 <blockquote>
 <p>服务网格（Service Mesh）这个术语通常用于描述构成这些应用程序的微服务网络以及应用之间的交互。随着规模和复杂性的增长，服务网格越来越难以理解和管理。它的需求包括服务发现、负载均衡、故障恢复、指标收集和监控以及通常更加复杂的运维需求，例如 A/B 测试、金丝雀发布、限流、访问控制和端到端认证等。</p>
-
+</blockquote>
+<blockquote>
 <p>Istio 提供了一个完整的解决方案，通过为整个服务网格提供行为洞察和操作控制来满足微服务应用程序的多样化需求。</p>
 </blockquote>
-
-<h3 id="安装istio">安装istio</h3>
-
-<p><code>istio1.1</code>支持kubernetes1.11,1.12,1.13,Docker for mac的stable版本太低，需要切换Docker for mac 到 *edge*版本，kubernetes会升级到1.13。使用 <code>kubectl version</code> 确认kubernetes版本:</p>
+<h3 id="istio-1">安装istio</h3>
+<p><code>istio1.1</code>支持kubernetes1.11,1.12,1.13,Docker for mac的stable版本太低，需要切换Docker for mac 到 <em>edge</em>版本，kubernetes会升级到1.13。使用 <code>kubectl version</code> 确认kubernetes版本:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;13&#34;, GitVersion:&#34;v1.13.0&#34;, GitCommit:&#34;ddf47ac13c1a9483ea035a79cd7c10005ff21a6d&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2018-12-03T21:04:45Z&#34;, GoVersion:&#34;go1.11.2&#34;, Compiler:&#34;gc&#34;, Platform:&#34;darwin/amd64&#34;}
-Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;13&#34;, GitVersion:&#34;v1.13.0&#34;, GitCommit:&#34;ddf47ac13c1a9483ea035a79cd7c10005ff21a6d&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2018-12-03T20:56:12Z&#34;, GoVersion:&#34;go1.11.2&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;13&#34;, GitVersion:&#34;v1.13.0&#34;, GitCommit:&#34;ddf47ac13c1a9483ea035a79cd7c10005ff21a6d&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2018-12-03T21:04:45Z&#34;, GoVersion:&#34;go1.11.2&#34;, Compiler:&#34;gc&#34;, Platform:&#34;darwin/amd64&#34;}
+Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;13&#34;, GitVersion:&#34;v1.13.0&#34;, GitCommit:&#34;ddf47ac13c1a9483ea035a79cd7c10005ff21a6d&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2018-12-03T20:56:12Z&#34;, GoVersion:&#34;go1.11.2&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>按照<a href="https://istio.io/zh/docs/setup/kubernetes/install/kubernetes/">安装指南</a>安装istio到k8s。 <code>kubectl get svc -n istio-system</code> 查看isto服务(svc是service的速记别名)</p>
+</div><p>按照<a href="https://istio.io/zh/docs/setup/kubernetes/install/kubernetes/">安装指南</a>安装istio到k8s。 <code>kubectl get svc -n istio-system</code> 查看isto服务(svc是service的速记别名)</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -220,9 +200,9 @@ Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;13&#34;, GitVersion:&
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                                                                                      AGE
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                                                                                      AGE
 grafana                  ClusterIP      10.96.238.84     &lt;none&gt;        3000/TCP                                                                                                                                     19s
 istio-citadel            ClusterIP      10.110.233.235   &lt;none&gt;        8060/TCP,15014/TCP                                                                                                                           19s
 istio-egressgateway      ClusterIP      10.107.81.184    &lt;none&gt;        80/TCP,443/TCP,15443/TCP                                                                                                                     20s
@@ -238,13 +218,13 @@ jaeger-query             ClusterIP      10.104.246.180   &lt;none&gt;        166
 kiali                    ClusterIP      10.100.34.9      &lt;none&gt;        20001/TCP                                                                                                                                    19s
 prometheus               ClusterIP      10.103.238.247   &lt;none&gt;        9090/TCP                                                                                                                                     19s
 tracing                  ClusterIP      10.103.49.38     &lt;none&gt;        80/TCP                                                                                                                                       18s
-zipkin                   ClusterIP      10.105.126.70    &lt;none&gt;        9411/TCP</pre></td></tr></table>
+zipkin                   ClusterIP      10.105.126.70    &lt;none&gt;        9411/TCP
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>查看isto的pod是否全部正常启动:</p>
+</div><p>查看isto的pod是否全部正常启动:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -261,9 +241,9 @@ zipkin                   ClusterIP      10.105.126.70    &lt;none&gt;        941
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  kubectl get pods -n istio-system
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  kubectl get pods -n istio-system
 NAME                                      READY   STATUS      RESTARTS   AGE
 grafana-749c78bcc5-jczt2                  1/1     Running     1          20m
 istio-citadel-899dfb67c-r6cmx             1/1     Running     0          20m
@@ -279,19 +259,16 @@ istio-sidecar-injector-998dd6cbb-fbdgw    1/1     Running     0          20m
 istio-telemetry-7d9d866c65-2pngr          2/2     Running     0          16s
 istio-tracing-595796cf54-mp6tp            1/1     Running     1          20m
 kiali-5df77dc9b6-jq26m                    1/1     Running     0          20m
-prometheus-7f87866f5f-p2568               1/1     Running     0          20m</pre></td></tr></table>
+prometheus-7f87866f5f-p2568               1/1     Running     0          20m
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="部署应用">部署应用</h3>
-
-<h4 id="调整pods符合istio规范">调整pods符合istio规范</h4>
-
+</div><h3 id="heading-1">部署应用</h3>
+<h4 id="podsistio">调整pods符合istio规范</h4>
 <p>部署引用前，需要按照<a href="https://istio.io/zh/docs/setup/kubernetes/additional-setup/requirements/">Istio对Pod和服务的要求</a>，进行微调。</p>
-
 <p>微调后的<code>istio\flaskapp.yaml</code>如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -319,9 +296,9 @@ prometheus-7f87866f5f-p2568               1/1     Running     0          20m</pr
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: v1
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: v1
 kind: Service
 metadata:
   name: flaskapp
@@ -348,13 +325,13 @@ spec:
       - image: flaskapp:0.0.2
         name: flaskapp
         ports:
-        - containerPort: 5000</pre></td></tr></table>
+        - containerPort: 5000
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>微调后的<code>istio\redis.yaml</code>如下:</p>
+</div><p>微调后的<code>istio\redis.yaml</code>如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -382,9 +359,9 @@ spec:
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: v1
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: v1
 kind: Service
 metadata:
   name: redis
@@ -411,47 +388,44 @@ spec:
       - image: redis:4-alpine3.8
         name: redisdb
         ports:
-        - containerPort: 6379</pre></td></tr></table>
+        - containerPort: 6379
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>因为istio附带ingress，所以我们取消了前置的nginx负载，直接使用ingress。</p>
-
-<h4 id="启动istio的sidecar自动注入">启动istio的sidecar自动注入</h4>
-
+</div><p>因为istio附带ingress，所以我们取消了前置的nginx负载，直接使用ingress。</p>
+<h4 id="istiosidecar">启动istio的sidecar自动注入</h4>
 <p>istio通过在pod中输入sidecar，用来管理流量，设置default名称空间下默认注入:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl label namespace default istio-injection=enabled
-namespace/default labeled</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl label namespace default istio-injection=enabled
+namespace/default labeled
+</code></pre></td></tr></table>
 </div>
-</div>
-<h4 id="启动服务">启动服务</h4>
-
+</div><h4 id="heading-2">启动服务</h4>
 <p>启动服务方式和k8s没有区别</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl apply -f k8s/redis.yaml -f k8s/flaskapp.yaml
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl apply -f k8s/redis.yaml -f k8s/flaskapp.yaml
 service/redis created
 deployment.extensions/redis created
 service/flaskapp created
-deployment.extensions/flaskapp created</pre></td></tr></table>
+deployment.extensions/flaskapp created
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用<code>kubectl describe pod/flaskapp-757cd47df4-zkzv2</code> 确认istio正常管理app:</p>
+</div><p>使用<code>kubectl describe pod/flaskapp-757cd47df4-zkzv2</code> 确认istio正常管理app:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -526,9 +500,10 @@ deployment.extensions/flaskapp created</pre></td></tr></table>
 </span><span class="lnt">73
 </span><span class="lnt">74
 </span><span class="lnt">75
-</span></pre></td>
+</span><span class="lnt">76
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Name:               flaskapp-757cd47df4-zkzv2
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Name:               flaskapp-757cd47df4-zkzv2
 Namespace:          default
 Priority:           0
 PriorityClassName:  &lt;none&gt;
@@ -602,51 +577,50 @@ Containers:
       /etc/istio/proxy from istio-envoy (rw)
       /var/run/secrets/kubernetes.io/serviceaccount from default-token-ndv6q (ro)
 
-...</pre></td></tr></table>
-</div>
-</div>
-<blockquote>
-<p><strong><em>!!!注意</em></strong> 这里的pod，会被自动注入名为<strong>istio-init</strong>的initContainer和名为**istio-proxy的container。具有这2个container，标志pod接受istio流量管理。</p>
-</blockquote>
+...
 
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><em><strong>!!!注意</strong></em> 这里的pod，会被自动注入名为<strong>istio-init</strong>的initContainer和名为**istio-proxy的container。具有这2个container，标志pod接受istio流量管理。</p>
+</blockquote>
 <p>确认服务正常启动</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl get svc
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl get svc
 NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 flaskapp     ClusterIP   10.107.67.44     &lt;none&gt;        5000/TCP       4m31s
 kubernetes   ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP        36m
-redis        ClusterIP   10.100.210.72    &lt;none&gt;        6379/TCP       4m31s</pre></td></tr></table>
+redis        ClusterIP   10.100.210.72    &lt;none&gt;        6379/TCP       4m31s
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>确认pod正常启动</p>
+</div><p>确认pod正常启动</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl get pods
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl get pods
 NAME                        READY   STATUS    RESTARTS   AGE
 flaskapp-77ddb9698c-xb2gm   1/1     Running   0          4m2s
-redis-c5dd6fcfc-8tqwm       1/1     Running   0          4m2s</pre></td></tr></table>
+redis-c5dd6fcfc-8tqwm       1/1     Running   0          4m2s
+</code></pre></td></tr></table>
 </div>
-</div>
-<h4 id="部署istio的gateway">部署istio的gateway</h4>
-
+</div><h4 id="istiogateway">部署istio的gateway</h4>
 <p>因为取消了前置的nginx负载，需要设置gateway，集群外部才能够访问服务。<code>istio\gateway.yaml</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -679,9 +653,9 @@ redis-c5dd6fcfc-8tqwm       1/1     Running   0          4m2s</pre></td></tr></t
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: networking.istio.io/v1alpha3
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: flaskapp-gateway
@@ -713,43 +687,41 @@ spec:
     - destination:
         host: flaskapp
         port:
-          number: 5000</pre></td></tr></table>
+          number: 5000
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>kubectl apply -f istio/gateway.yaml</code>提交后，查看gameway的端口:</p>
+</div><p><code>kubectl apply -f istio/gateway.yaml</code>提交后，查看gameway的端口:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl get svc istio-ingressgateway -n istio-system
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl get svc istio-ingressgateway -n istio-system
 
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                                                                                      AGE
-istio-ingressgateway   LoadBalancer   10.99.64.197   localhost     15020:31681/TCP,80:31380/TCP,443:31390/TCP,31400:31400/TCP,15029:32145/TCP,15030:31376/TCP,15031:30092/TCP,15032:31491/TCP,15443:32689/TCP   179m</pre></td></tr></table>
+istio-ingressgateway   LoadBalancer   10.99.64.197   localhost     15020:31681/TCP,80:31380/TCP,443:31390/TCP,31400:31400/TCP,15029:32145/TCP,15030:31376/TCP,15031:30092/TCP,15032:31491/TCP,15443:32689/TCP   179m
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的服务类型为<strong>LoadBalancer</strong>，可以直接使用80端口访问服务:</p>
+</div><p>这里的服务类型为<strong>LoadBalancer</strong>，可以直接使用80端口访问服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio curl http://localhost
-Hello World by 10.1.0.40 from 10.1.0.30 ! 该页面已被访问 1 次。</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio curl http://localhost
+Hello World by 10.1.0.40 from 10.1.0.30 ! 该页面已被访问 1 次。
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="金丝雀发布">金丝雀发布</h2>
-
+</div><h2 id="heading-3">金丝雀发布</h2>
 <p>istio的流量管理提供了非常便捷的金丝雀发布功能。</p>
-
 <p>首先，我们调整<code>app/flaskapp.py</code>,将域名获取调整成为主机名称:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -786,9 +758,9 @@ Hello World by 10.1.0.40 from 10.1.0.30 ! 该页面已被访问 1 次。</pre></
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">#-*- coding:utf-8 -*-
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#-*- coding:utf-8 -*-
 import socket
 from flask import Flask
 from redis import Redis
@@ -824,15 +796,14 @@ def hello():
 
 
 if __name__ == &#34;__main__&#34;:
-    app.run(host=&#34;0.0.0.0&#34;, debug=True)</pre></td></tr></table>
+    app.run(host=&#34;0.0.0.0&#34;, debug=True)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>docker build -f app/Dockerfile -t flaskapp:0.0.3 app</code> 编译新的镜像。</p>
-
+</div><p>使用 <code>docker build -f app/Dockerfile -t flaskapp:0.0.3 app</code> 编译新的镜像。</p>
 <p>制作新的deployment，使其使用新的镜像:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -849,9 +820,9 @@ if __name__ == &#34;__main__&#34;:
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: extensions/v1beta1 
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: extensions/v1beta1 
 kind: Deployment
 metadata:
   name: flaskapp-v2
@@ -867,34 +838,34 @@ spec:
       - image: flaskapp:0.0.3
         name: flaskapp
         ports:
-        - containerPort: 5000</pre></td></tr></table>
+        - containerPort: 5000
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>创建并确认新的部署生效:</p>
+</div><p>创建并确认新的部署生效:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio kubectl apply -f istio/flaskappv2.yaml
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio kubectl apply -f istio/flaskappv2.yaml
 deployment.extensions/flaskapp-v2 created
 ➜  docker2istio kubectl get deployment
 NAME          READY   UP-TO-DATE   AVAILABLE   AGE
 flaskapp      3/3     3            3           72m
 flaskapp-v2   1/1     1            1           7s
-redis         1/1     1            1           129m</pre></td></tr></table>
+redis         1/1     1            1           129m
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>调整VirtualService，控制流量分发策略:</p>
+</div><p>调整VirtualService，控制流量分发策略:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -921,9 +892,9 @@ redis         1/1     1            1           129m</pre></td></tr></table>
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: networking.istio.io/v1alpha3
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: flaskapp
@@ -949,17 +920,15 @@ spec:
     - destination:
         host: flaskapp
         subset: v2
-      weight: 20</pre></td></tr></table>
+      weight: 20
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这里重点是指定规则，按照8:2，将flaskapp的访问分配到deployment v1 和 deployment v2 上。</p>
-
+</div><p>这里重点是指定规则，按照8:2，将flaskapp的访问分配到deployment v1 和 deployment v2 上。</p>
 <p><code>kubectl apply -f istio/gateway2.yaml</code> 应用新的流量分配策略:</p>
-
 <p>访问观察服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -975,9 +944,9 @@ spec:
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio curl http://localhost
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  docker2istio curl http://localhost
 Hello World by 10.1.0.45 from 127.0.0.1 ! 该页面已被访问 7 次。
 ➜  docker2istio curl http://localhost
 Hello World by 10.1.0.45 from 127.0.0.1 ! 该页面已被访问 8 次。
@@ -992,13 +961,11 @@ Hello World by 10.1.0.45 from 127.0.0.1 ! 该页面已被访问 12 次。
 ➜  docker2istio curl http://localhost
 Hello World by 10.1.0.45 from 127.0.0.1 ! 该页面已被访问 13 次。
 ➜  docker2istio curl http://localhost
-Hello World by flaskapp-v2-ff9f8cfdb-vh788 from 127.0.0.1 ! 该页面已被访问 14 次。</pre></td></tr></table>
+Hello World by flaskapp-v2-ff9f8cfdb-vh788 from 127.0.0.1 ! 该页面已被访问 14 次。
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到，访问被按比例分配到v1和v2两个版本上。</p>
-
-<h2 id="总结">总结</h2>
-
+</div><p>可以看到，访问被按比例分配到v1和v2两个版本上。</p>
+<h2 id="heading-4">总结</h2>
 <p>从上面实践过程空可见，istio完善了k8s提供的编排功能，在纵向扩容的基础上可以实现横向扩展。</p>
 
     </div>
@@ -1083,7 +1050,7 @@ Hello World by flaskapp-v2-ff9f8cfdb-vh788 from 127.0.0.1 ! 该页面已被访�
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2020
+    2021
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>
