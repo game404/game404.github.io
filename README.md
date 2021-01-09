@@ -1,2 +1,3 @@
 # game404.github.io
-blog
+
+[game404.github.io](https://game404.github.io/)
