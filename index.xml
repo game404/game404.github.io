@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 21 Mar 2020 23:10:57 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 09 Jan 2021 21:37:12 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»及掘金。 肖恩：码农，40+，全栈，游戏从业者。 关注以下内容: Python Go Microservice Docker Kubernetes 棋牌游戏 Warcraft III &amp;amp;&amp;amp; Dota</description>
+    </item>
+    
+    <item>
+      <title>Redis-py 源码阅读</title>
+      <link>https://game404.github.io/post/python/redis-py/</link>
+      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/redis-py/</guid>
+      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
     </item>
     
     <item>
