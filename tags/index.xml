@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 09 Jan 2021 21:37:12 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 17 Jan 2021 08:31:48 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>http</title>
+      <link>https://game404.github.io/tags/http/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/http/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>源码</title>
+      <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>redis</title>
@@ -18,15 +36,6 @@
       <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
       
       <guid>https://game404.github.io/tags/redis/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>源码</title>
-      <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
-      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
-      
-      <guid>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</guid>
       <description></description>
     </item>
     

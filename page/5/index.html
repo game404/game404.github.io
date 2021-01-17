@@ -116,93 +116,9 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/kubernetes-open-falcon-deploy/">在kubernetes集群中部署open-falcon</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/docker-timezone/">Docker镜像时区设置</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2019-04-08 </span>
-      <div class="post-category">
-          <a href="/categories/kubernetes/"> kubernetes </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      公司最近监控系统从zabbix切换到open-falcon,需要将open-falcon部署到私有的kubernetes集群上。open-f
-    </div>
-    <div class="read-more">
-      <a href="/post/kubernetes-open-falcon-deploy/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python-env-2019/">Python虚拟环境指南2019版</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-04-06 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      这是一篇旧文，编写于2017年，用于公司内部交流。整理更新后于2019年04月06日重发，内容有效期乐观估计半年，阅读请注意保质期。 为什么用
-    </div>
-    <div class="read-more">
-      <a href="/post/python-env-2019/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/kubernetes-1.14-upgrade-guide/">kubernetes 1.14 升级指南</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-03-28 </span>
-      <div class="post-category">
-          <a href="/categories/kubernetes/"> kubernetes </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      一点题外话：kubernetes官方3月25号发布1.14，本文28号完成。1.14升级安装中文指南，目前全网大概最新吧，支持请赏个赞。 升级
-    </div>
-    <div class="read-more">
-      <a href="/post/kubernetes-1.14-upgrade-guide/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/kubernetes-1.13-guide/">kubernetes 1.13 安装指南</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-03-26 </span>
-      <div class="post-category">
-          <a href="/categories/kubernetes/"> kubernetes </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      kubernetes官方提供了中文文档，网上也有不少中文教程，可是实际的安装过程中，还是遇到了不少的坑。主要有： kubernetes的版本迭
-    </div>
-    <div class="read-more">
-      <a href="/post/kubernetes-1.13-guide/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/docker-log/">Docker容器日志分析</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2019-03-24 </span>
+      <span class="post-time"> 2019-03-17 </span>
       <div class="post-category">
           <a href="/categories/docker/"> Docker </a>
           </div>
@@ -211,10 +127,10 @@
   
   <div class="post-content">
     <div class="post-summary">
-      Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访
+      alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到
     </div>
     <div class="read-more">
-      <a href="/post/docker-log/" class="read-more-link">阅读更多</a>
+      <a href="/post/docker-timezone/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
@@ -222,14 +138,11 @@
     </section>
   
   <nav class="pagination">
-    <a class="prev" href="/page/3/">
+    <a class="prev" href="/page/4/">
         <i class="iconfont icon-left"></i>
         <span class="prev-text">上一页</span>
       </a>
-    <a class="next" href="/page/5/">
-        <span class="next-text">下一页</span>
-        <i class="iconfont icon-right"></i>
-      </a>
+    
   </nav>
         </div>
         
