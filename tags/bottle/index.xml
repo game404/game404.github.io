@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>源码 on 游戏不存在</title>
-    <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
-    <description>Recent content in 源码 on 游戏不存在</description>
+    <title>bottle on 游戏不存在</title>
+    <link>https://game404.github.io/tags/bottle/</link>
+    <description>Recent content in bottle on 游戏不存在</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
     <lastBuildDate>Thu, 21 Jan 2021 22:46:56 +0800</lastBuildDate>
     
-	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://game404.github.io/tags/bottle/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,15 +19,6 @@
       
       <guid>https://game404.github.io/post/python/bottle/</guid>
       <description>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限</description>
-    </item>
-    
-    <item>
-      <title>Redis-py 源码阅读</title>
-      <link>https://game404.github.io/post/python/redis-py/</link>
-      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
-      
-      <guid>https://game404.github.io/post/python/redis-py/</guid>
-      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
     </item>
     
   </channel>
