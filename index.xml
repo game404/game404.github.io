@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>python http 源码阅读</title>
+      <link>https://game404.github.io/post/python/http/</link>
+      <pubDate>Thu, 28 Jan 2021 22:13:45 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/http/</guid>
+      <description>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p</description>
+    </item>
+    
+    <item>
       <title>Bottle 源码阅读</title>
       <link>https://game404.github.io/post/python/bottle/</link>
       <pubDate>Thu, 21 Jan 2021 22:46:56 +0800</pubDate>
