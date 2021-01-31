@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>http on 游戏不存在</title>
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/post/python/http/</guid>
       <description>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p</description>
+    </item>
+    
+    <item>
+      <title>requests 源码阅读</title>
+      <link>https://game404.github.io/post/python/requests/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests/</guid>
+      <description>requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我</description>
     </item>
     
   </channel>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on 游戏不存在</title>
@@ -28,6 +28,15 @@
       
       <guid>https://game404.github.io/post/python/bottle/</guid>
       <description>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限</description>
+    </item>
+    
+    <item>
+      <title>requests 源码阅读</title>
+      <link>https://game404.github.io/post/python/requests/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests/</guid>
+      <description>requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我</description>
     </item>
     
     <item>

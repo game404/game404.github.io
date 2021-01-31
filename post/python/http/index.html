@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/http/" />
-<meta property="article:published_time" content="2021-01-28T22:13:45&#43;08:00"/>
-<meta property="article:modified_time" content="2021-01-28T22:13:45&#43;08:00"/>
-
+<meta property="article:published_time" content="2021-01-28T22:13:45+08:00" />
+<meta property="article:modified_time" content="2021-01-28T22:13:45+08:00" />
 <meta itemprop="name" content="python http 源码阅读">
 <meta itemprop="description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p">
-
-
 <meta itemprop="datePublished" content="2021-01-28T22:13:45&#43;08:00" />
 <meta itemprop="dateModified" content="2021-01-28T22:13:45&#43;08:00" />
 <meta itemprop="wordCount" content="6280">
 
 
 
-<meta itemprop="keywords" content="http,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="http,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="python http 源码阅读"/>
 <meta name="twitter:description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p"/>
 
@@ -141,41 +137,39 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#1-http-server-相关代码结构">1. http-server 相关代码结构</a></li>
-<li><a href="#2-socket">2. socket</a>
-<ul>
-<li><a href="#2-1-socket示例">2.1 socket示例</a></li>
-</ul></li>
-<li><a href="#3-selector">3. selector</a>
-<ul>
-<li><a href="#3-1-selector的实现">3.1 selector的实现</a></li>
-<li><a href="#3-2-selecotr示例">3.2 selecotr示例</a></li>
-</ul></li>
-<li><a href="#4-socketserver">4. socketserver</a>
-<ul>
-<li><a href="#4-1-tcpserver">4.1 TCPServer</a></li>
-<li><a href="#4-2-threadingmixin">4.2 ThreadingMixIn</a></li>
-<li><a href="#4-3-requesthandler">4.3 RequestHandler</a></li>
-</ul></li>
-<li><a href="#5-http-server">5. http-server</a>
-<ul>
-<li><a href="#5-1-httprequesthandler">5.1 HTTPRequestHandler</a></li>
-</ul></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接:</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#1-http-server-">1. http-server 相关代码结构</a></li>
+    <li><a href="#2-socket">2. socket</a>
+      <ul>
+        <li><a href="#21-socket">2.1 socket示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-selector">3. selector</a>
+      <ul>
+        <li><a href="#31-selector">3.1 selector的实现</a></li>
+        <li><a href="#32-selecotr">3.2 selecotr示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-socketserver">4. socketserver</a>
+      <ul>
+        <li><a href="#41-tcpserver">4.1 TCPServer</a></li>
+        <li><a href="#42-threadingmixin">4.2 ThreadingMixIn</a></li>
+        <li><a href="#43-requesthandler">4.3 RequestHandler</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-http-server">5. http-server</a>
+      <ul>
+        <li><a href="#51-httprequesthandler">5.1 HTTPRequestHandler</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading">小技巧</a></li>
+    <li><a href="#heading-1">参考链接:</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看python-http的源码，了解python构建http服务，响应http请求，把这一部分基础补充上。本文会分下面几个部分:</p>
-
+      <p>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看python-http的源码，了解python构建http服务，响应http请求，把这一部分基础补充上。本文会分下面几个部分:</p>
 <ul>
 <li>http相关代码结构</li>
 <li>socket</li>
@@ -183,11 +177,8 @@
 <li>socketserver</li>
 <li>http-server</li>
 </ul>
-
-<h2 id="1-http-server-相关代码结构">1. http-server 相关代码结构</h2>
-
+<h2 id="1-http-server-">1. http-server 相关代码结构</h2>
 <p>本次代码阅读使用的python <strong>3.6.5</strong> 以上版本，有python环境即可（winddows和mac等系统在select部分会有差异），涉及的代码有:</p>
-
 <table>
 <thead>
 <tr>
@@ -195,46 +186,38 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>socket.py</td>
 <td>socket的API</td>
 </tr>
-
 <tr>
 <td>select.py</td>
 <td>select.py是stub文件，提供多路复用的异步IO的底层实现</td>
 </tr>
-
 <tr>
 <td>selectors.py</td>
 <td>对select的高层实现，推荐使用</td>
 </tr>
-
 <tr>
 <td>socketserver.py</td>
 <td>tcpserver/udpserver等默认实现</td>
 </tr>
-
 <tr>
 <td>http/server.py</td>
 <td>一个简单的http服务实现</td>
 </tr>
-
 <tr>
 <td>http/client.py</td>
 <td>简单的http客户端</td>
 </tr>
 </tbody>
 </table>
-
 <h2 id="2-socket">2. socket</h2>
-
 <p>socket部分的基础知识，推荐直接查看参考链接1，介绍的非常详细。本文还是按照源码阅读的主题来进行解读，先是socket对象的创建:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -251,9 +234,9 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class socket(_socket.socket):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class socket(_socket.socket):
 
     &#34;&#34;&#34;A subclass of _socket.socket adding the makefile() method.&#34;&#34;&#34;
 
@@ -269,46 +252,42 @@
 
     def __exit__(self, *args):
         if not self._closed:
-            self.close()</pre></td></tr></table>
+            self.close()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>从socket类可以看到:</p>
-
+</div><p>从socket类可以看到:</p>
 <ul>
 <li>__slots__ 可以优化对象</li>
 <li>__enter__ 和 __exit__ 可以让socket对象当上下文使用</li>
 <li>family和type是两个非常重要的参数，决定了socket的资源类型。family常见有：AF_INET IPV4的协议，AF_INET6 IPV6协议；type常见有TCP协议的SOCK_STREAM和UPD协议的SOCK_DGRAM可用。</li>
 </ul>
-
 <p>socket的api比较多，可以从socket.pyi或者_socket.py看到，我们重点关注下图中TCP Socket Flow涉及到的api。</p>
-
-<p><img src="https://files.realpython.com/media/sockets-tcp-flow.1da426797e37.jpg" alt="TCP Socket Flow" /></p>
-
+<p><img src="https://files.realpython.com/media/sockets-tcp-flow.1da426797e37.jpg" alt="TCP Socket Flow"></p>
 <p>其它的api都由底层实现，除了accept。acecept函数是运行在服务端，接受一个新的进来新生成一个socket对象，用来代表这个新的连接。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def accept(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def accept(self):
     fd, addr = self._accept  # 获取到本地的文件描述符和远程连接的地址
     type = self.type &amp; ~globals().get(&#34;SOCK_NONBLOCK&#34;, 0)
     sock = socket(self.family, type, self.proto, fileno=fd)  # 封装新的socket并返回
     if getdefaulttimeout() is None and self.gettimeout():
         sock.setblocking(True)
-    return sock, addr</pre></td></tr></table>
+    return sock, addr
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>socket代码中还提供了SocketIO类，示例如何包装socket进行读写操作:</p>
+</div><p>socket代码中还提供了SocketIO类，示例如何包装socket进行读写操作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -325,9 +304,9 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SocketIO(io.RawIOBase):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SocketIO(io.RawIOBase):
     def __init__(self, sock, mode):
         if mode not in (&#34;r&#34;, &#34;w&#34;, &#34;rw&#34;, &#34;rb&#34;, &#34;wb&#34;, &#34;rwb&#34;):  # socket也是文件，有读写等模式
             raise ValueError(&#34;invalid mode: %r&#34; % mode)
@@ -343,15 +322,14 @@
         return self._sock.recv_into(b)
             
     def write(self, b): # 写入数据到socket
-        return self._sock.send(b)</pre></td></tr></table>
+        return self._sock.send(b)
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="2-1-socket示例">2.1 socket示例</h3>
-
+</div><h3 id="21-socket">2.1 socket示例</h3>
 <p>这是2组示例，分别演示了使用socket实现tcp和udp协议收发数据。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -370,9 +348,9 @@
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-server
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># tcp-server
 
 import socket
 
@@ -390,13 +368,13 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as s:
             if not data:
                 break
             print(&#34;recv data&#34;, data, len(data))
-            conn.sendall(data)</pre></td></tr></table>
+            conn.sendall(data)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp-server的socket有bind，listen和accept三个过程，使用recv接收数据，使用sendall发送数据。tcp-client需要connect到服务端。</p>
+</div><p>tcp-server的socket有bind，listen和accept三个过程，使用recv接收数据，使用sendall发送数据。tcp-client需要connect到服务端。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -408,9 +386,9 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as s:
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-client
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># tcp-client
 
 import socket
 
@@ -421,32 +399,32 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
     sock.connect((HOST, PORT))
     sock.sendall(b&#39;Hello, world&#39;)
     data = sock.recv(1024)
-    print(&#39;Received&#39;, repr(data))</pre></td></tr></table>
+    print(&#39;Received&#39;, repr(data))
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp示例的输出日志：</p>
+</div><p>tcp示例的输出日志：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-server
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># tcp-server
 Connected by (&#39;127.0.0.1&#39;, 64203)
 recv data b&#39;Hello, world&#39; 12
 
 # tcp-client
-Received b&#39;Hello, world&#39;</pre></td></tr></table>
+Received b&#39;Hello, world&#39;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>udp协议下server和client都简单一些，没有listen和accept的过程:</p>
+</div><p>udp协议下server和client都简单一些，没有listen和accept的过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -475,9 +453,9 @@ Received b&#39;Hello, world&#39;</pre></td></tr></table>
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># udp-sever
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># udp-sever
 
 import socket
 
@@ -505,32 +483,31 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as sock:
     sock.sendto(b&#39;Hello, world&#39;, (HOST, PORT))
     # Receive response
     data, server = sock.recvfrom(4096)
-    print(&#34;recv data&#34;, data, server)</pre></td></tr></table>
+    print(&#34;recv data&#34;, data, server)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>udp示例的日志:</p>
+</div><p>udp示例的日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># udp-server
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># udp-server
 recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 55429)
 
 # udp-client
-recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)</pre></td></tr></table>
+recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="3-selector">3. selector</h2>
-
+</div><h2 id="3-selector">3. selector</h2>
 <p>前面示例中，服务端只能够处理一个连接的读写，不满足同时服务多个连接的需求。同时多个客户端连接，要在客户端连接之间切换，这就需要select。下面内容来自官方的中文文档:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -544,9 +521,9 @@ recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)</pre></td></tr></
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">select.select(rlist, wlist, xlist[, timeout])
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">select.select(rlist, wlist, xlist[, timeout])
 这是一个明白直观的 Unix select() 系统调用接口。 前三个参数是由‘可等待对象’组成的序列：可以是代表文件描述符的整数，或是带有名为 fileno() 的返回这样的整数的无形参方法的对象:
 
 rlist：等待，直到可以开始读取
@@ -559,28 +536,26 @@ xlist：等待“异常情况”（请参阅当前系统的手册，以获取哪
 
 返回值是三个列表，包含已就绪对象，返回的三个列表是前三个参数的子集。当超时时间已到且没有文件描述符就绪时，返回三个空列表。
 
-可迭代对象中可接受的对象类型有 Python 文件对象 (例如 sys.stdin 以及 open() 或 os.popen() 所返回的对象)，由 socket.socket() 返回的套接字对象等。 你也可以自定义一个 wrapper 类，只要它具有适当的 fileno() 方法（该方法要确实返回一个文件描述符，而不能只是一个随机整数）。</pre></td></tr></table>
+可迭代对象中可接受的对象类型有 Python 文件对象 (例如 sys.stdin 以及 open() 或 os.popen() 所返回的对象)，由 socket.socket() 返回的套接字对象等。 你也可以自定义一个 wrapper 类，只要它具有适当的 fileno() 方法（该方法要确实返回一个文件描述符，而不能只是一个随机整数）。
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以简单理解为select是个事件中心，管理多个连接，接受系统网络调用，派发不同的读写事件通知应用程序。select具体的应用还是看selector中的高层次API。</p>
-
-<h3 id="3-1-selector的实现">3.1 selector的实现</h3>
-
+</div><p>我们可以简单理解为select是个事件中心，管理多个连接，接受系统网络调用，派发不同的读写事件通知应用程序。select具体的应用还是看selector中的高层次API。</p>
+<h3 id="31-selector">3.1 selector的实现</h3>
 <p>selector定义的读和写事件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">EVENT_READ = (1 &lt;&lt; 0)
-EVENT_WRITE = (1 &lt;&lt; 1)</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">EVENT_READ = (1 &lt;&lt; 0)
+EVENT_WRITE = (1 &lt;&lt; 1)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用可命名元祖定义SelectorKey：</p>
+</div><p>使用可命名元祖定义SelectorKey：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -594,9 +569,9 @@ EVENT_WRITE = (1 &lt;&lt; 1)</pre></td></tr></table>
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _fileobj_to_fd(fileobj):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _fileobj_to_fd(fileobj):
     if isinstance(fileobj, int):
         fd = fileobj
     else:
@@ -609,13 +584,13 @@ EVENT_WRITE = (1 &lt;&lt; 1)</pre></td></tr></table>
         raise ValueError(&#34;Invalid file descriptor: {}&#34;.format(fd))
     return fd
 
-SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;, &#39;events&#39;, &#39;data&#39;])</pre></td></tr></table>
+SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;, &#39;events&#39;, &#39;data&#39;])
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>BaseSelector</code>是元类，要求所有子类必须实现register,unregister和select方法:</p>
+</div><p><code>BaseSelector</code>是元类，要求所有子类必须实现register,unregister和select方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -628,9 +603,9 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseSelector(metaclass=ABCMeta):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseSelector(metaclass=ABCMeta):
     @abstractmethod
     def register(self, fileobj, events, data=None):
         raise NotImplementedError
@@ -642,13 +617,13 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
     @abstractmethod
     def select(self, timeout=None):
         raise NotImplementedError
-    ...</pre></td></tr></table>
+    ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>register和unregister的实现看起来也比较简单，就是使用字典管理对应的SelectorKey对象。</p>
+</div><p>register和unregister的实现看起来也比较简单，就是使用字典管理对应的SelectorKey对象。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -666,9 +641,9 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class _BaseSelectorImpl(BaseSelector):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _BaseSelectorImpl(BaseSelector):
     
     def __init__(self):
         # this maps file descriptors to keys
@@ -685,13 +660,13 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
     
     def unregister(self, fileobj):
         key = self._fd_to_key.pop(self._fileobj_lookup(fileobj))
-        return key</pre></td></tr></table>
+        return key
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>不同的操作系统有不同的select实现 ：</p>
+</div><p>不同的操作系统有不同的select实现 ：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -725,9 +700,9 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SelectSelector(_BaseSelectorImpl):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SelectSelector(_BaseSelectorImpl):
     &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
     
 if hasattr(select, &#39;poll&#39;):
@@ -760,13 +735,13 @@ elif &#39;DevpollSelector&#39; in globals():
 elif &#39;PollSelector&#39; in globals():
     DefaultSelector = PollSelector
 else:
-    DefaultSelector = SelectSelector</pre></td></tr></table>
+    DefaultSelector = SelectSelector
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>注释中给出了效率高低排序 epoll|kqueue|devpoll &gt; poll &gt; select 。我们学习一下最简单的SelectSelector，额外使用了2个集合管理所持有的fileobj：</p>
+</div><p>注释中给出了效率高低排序 epoll|kqueue|devpoll &gt; poll &gt; select 。我们学习一下最简单的SelectSelector，额外使用了2个集合管理所持有的fileobj：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -787,9 +762,9 @@ else:
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SelectSelector(_BaseSelectorImpl):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SelectSelector(_BaseSelectorImpl):
     &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
 
     def __init__(self):
@@ -809,13 +784,13 @@ else:
         key = super().unregister(fileobj)
         self._readers.discard(key.fd)
         self._writers.discard(key.fd)
-        return key</pre></td></tr></table>
+        return key
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>重点是select函数对_select的封装:</p>
+</div><p>重点是select函数对_select的封装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -837,9 +812,9 @@ else:
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    _select = select.select
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">    _select = select.select
     
     def select(self, timeout=None):
         timeout = None if timeout is None else max(timeout, 0)
@@ -860,17 +835,15 @@ else:
             key = self._fd_to_key[fd]
             if key:
                 ready.append((key, events &amp; key.events))
-        return ready  # 就绪的对象</pre></td></tr></table>
+        return ready  # 就绪的对象
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>至于更高效的epoll，pool的实现，只是内部实现有区别，可以以后再理解，一般情况下应用使用DefaultSelector的API，由系统自动选择最高效的方式。</p>
-
-<h3 id="3-2-selecotr示例">3.2 selecotr示例</h3>
-
+</div><p>至于更高效的epoll，pool的实现，只是内部实现有区别，可以以后再理解，一般情况下应用使用DefaultSelector的API，由系统自动选择最高效的方式。</p>
+<h3 id="32-selecotr">3.2 selecotr示例</h3>
 <p>使用selector实现的可以支持多个客户端链接的server:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -906,9 +879,9 @@ else:
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># multi-server
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># multi-server
 
 import socket
 import selectors
@@ -943,13 +916,13 @@ while True:  # 无限循环持续监听
     events = sel.select()
     for key, mask in events:
         callback = key.data
-        callback(key.fileobj, mask)</pre></td></tr></table>
+        callback(key.fileobj, mask)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>客户端和之前的tcp-client类似，只是为了方便手动操作多开，增加了休眠时间:</p>
+</div><p>客户端和之前的tcp-client类似，只是为了方便手动操作多开，增加了休眠时间:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -964,9 +937,9 @@ while True:  # 无限循环持续监听
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># multi-client
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># multi-client
 
 import socket
 import time
@@ -980,13 +953,13 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
         sock.sendall(b&#39;Hello, world&#39;)
         data = sock.recv(1024)
         print(&#39;Received&#39;, repr(data))
-        time.sleep(1)</pre></td></tr></table>
+        time.sleep(1)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>开启服务端后，可以开多个客户端，观察服务端的日志:</p>
+</div><p>开启服务端后，可以开多个客户端，观察服务端的日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -997,9 +970,9 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">accepted &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt; from (&#39;127.0.0.1&#39;, 63288)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">accepted &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt; from (&#39;127.0.0.1&#39;, 63288)
 echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
 echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
 accepted &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt; from (&#39;127.0.0.1&#39;, 63295)
@@ -1009,17 +982,15 @@ echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.
 echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
 closing &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
 echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
-closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;</pre></td></tr></table>
+closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>日志清晰的展示2个客户端接入，收发数据和关闭离开的过程。</p>
-
+</div><p>日志清晰的展示2个客户端接入，收发数据和关闭离开的过程。</p>
 <h2 id="4-socketserver">4. socketserver</h2>
-
 <p>socketserver注释非常的详尽，是理解socketserver代码的最好帮助。比如下面这段，直观的介绍了socketserver的结构，我们重点关注TCPServer的实现。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1032,9 +1003,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">        +------------+
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">        +------------+
         | BaseServer |
         +------------+
               |
@@ -1046,15 +1017,14 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
               v
         +-----------+        +--------------------+
         | UDPServer |-------&gt;| UnixDatagramServer |
-        +-----------+        +--------------------+</pre></td></tr></table>
+        +-----------+        +--------------------+
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-1-tcpserver">4.1 TCPServer</h3>
-
+</div><h3 id="41-tcpserver">4.1 TCPServer</h3>
 <p>BaseServer定义了一个基础的socket服务模型, 接收服务参数和客户端类后初始化对象，使用serve_forever持续的监听连接，约定对请求的处理流程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1077,9 +1047,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseServer:
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseServer:
     def __init__(self, server_address, RequestHandlerClass):
         self.server_address = server_address
         self.RequestHandlerClass = RequestHandlerClass
@@ -1101,13 +1071,13 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
             return
         
         self.RequestHandlerClass(request, client_address, self)  # 分层由客户端请求类实现具体需求
-        self.close_request(request)  # 子类实现</pre></td></tr></table>
+        self.close_request(request)  # 子类实现
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>TCPServer就是按TCP协议实现bind，listen和accept：</p>
+</div><p>TCPServer就是按TCP协议实现bind，listen和accept：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1137,9 +1107,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TCPServer(BaseServer):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TCPServer(BaseServer):
     
     address_family = socket.AF_INET
 
@@ -1168,15 +1138,14 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
         self.socket.listen(self.request_queue_size)
     
     def get_request(self):
-        return self.socket.accept()</pre></td></tr></table>
+        return self.socket.accept()
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-2-threadingmixin">4.2 ThreadingMixIn</h3>
-
+</div><h3 id="42-threadingmixin">4.2 ThreadingMixIn</h3>
 <p>ThreadingMixIn也很重要，展示了使用多线程方式提供服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1193,9 +1162,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class ThreadingMixIn:
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ThreadingMixIn:
     &#34;&#34;&#34;Mix-in class to handle each request in a new thread.&#34;&#34;&#34;
 
     def process_request_thread(self, request, client_address):
@@ -1211,15 +1180,14 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
         t = threading.Thread(target = self.process_request_thread,
                              args = (request, client_address))  # 使用新线程处理请求
         t.daemon = self.daemon_threads
-        t.start()</pre></td></tr></table>
+        t.start()
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-3-requesthandler">4.3 RequestHandler</h3>
-
+</div><h3 id="43-requesthandler">4.3 RequestHandler</h3>
 <p>请求逻辑由RequestHandler处理，基础类是BaseRequestHandler，定义了请求处理的主要流程 setup -&gt; handler -&gt; finish :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1229,9 +1197,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseRequestHandler:
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseRequestHandler:
     def __init__(self, request, client_address, server):
         self.request = request
         self.client_address = client_address
@@ -1240,13 +1208,13 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
         try:
             self.handle()  # 子类实现
         finally:
-            self.finish()  # 子类实现</pre></td></tr></table>
+            self.finish()  # 子类实现
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp方式的处理StreamRequestHandler， 主要就是对connection(socket)进行了包装:</p>
+</div><p>tcp方式的处理StreamRequestHandler， 主要就是对connection(socket)进行了包装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1272,9 +1240,9 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class StreamRequestHandler(BaseRequestHandler):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class StreamRequestHandler(BaseRequestHandler):
     rbufsize = -1
     wbufsize = 0 
     
@@ -1299,28 +1267,26 @@ class _SocketWriter(BufferedIOBase):
     def write(self, b):  # 写入数据
         self._sock.sendall(b)
         with memoryview(b) as view:
-            return view.nbytes</pre></td></tr></table>
+            return view.nbytes
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>最重要的handler却留白了，等待应用程序的实现。</p>
-
+</div><p>最重要的handler却留白了，等待应用程序的实现。</p>
 <h2 id="5-http-server">5. http-server</h2>
-
 <p>经过socket， selector和tcpserver三关，总算进入了我们的主题 <code>http-server</code>, 可以使用下面方式启动一个简单的http服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python3 -m http.server
-Serving HTTP on :: port 8000 (http://[::]:8000/) ...</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 -m http.server
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>我把启动过程梳理成下面代码:</p>
+</div><p>我把启动过程梳理成下面代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1330,9 +1296,9 @@ Serving HTTP on :: port 8000 (http://[::]:8000/) ...</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">HandlerClass = SimpleHTTPRequestHandler  # 定义RequestHandler类
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">HandlerClass = SimpleHTTPRequestHandler  # 定义RequestHandler类
 HandlerClass.protocol_version = &#34;HTTP/1.0&#34;  # http协议版本
 with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
     host, port = httpd.socket.getsockname()[:2]
@@ -1341,13 +1307,13 @@ with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
         f&#34;Serving HTTP on {host} port {port} &#34;
         f&#34;(http://{url_host}:{port}/) ...&#34;
     )
-    httpd.serve_forever()  # 启动服务</pre></td></tr></table>
+    httpd.serve_forever()  # 启动服务
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>得益于之前良好的封装ThreadingHTTPServer的实现非常简单，不用再介绍:</p>
+</div><p>得益于之前良好的封装ThreadingHTTPServer的实现非常简单，不用再介绍:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1359,9 +1325,9 @@ with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class HTTPServer(socketserver.TCPServer):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class HTTPServer(socketserver.TCPServer):
 
     def server_bind(self):
         &#34;&#34;&#34;Override server_bind to store the server name.&#34;&#34;&#34;
@@ -1372,15 +1338,14 @@ with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
 
 class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
     daemon_threads = True  # 守护进程方式
-    </pre></td></tr></table>
+    
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="5-1-httprequesthandler">5.1 HTTPRequestHandler</h3>
-
+</div><h3 id="51-httprequesthandler">5.1 HTTPRequestHandler</h3>
 <p>从HTTPServer可以知道http服务的实现主要在SimpleHTTPRequestHandler中。首先看其父类BaseHTTPRequestHandler：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1389,9 +1354,9 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):  # 继承自StreamRequestHandler，这不奇怪http服务是tcp服务的子集，对应的请求实现也应该是基于stream的。
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):  # 继承自StreamRequestHandler，这不奇怪http服务是tcp服务的子集，对应的请求实现也应该是基于stream的。
     
     def handle(self):
         &#34;&#34;&#34;Handle multiple requests if necessary.&#34;&#34;&#34;
@@ -1399,34 +1364,34 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 
         self.handle_one_request()  # 处理一个请求
         while not self.close_connection:  # 用于keep-alive等场景
-            self.handle_one_request()</pre></td></tr></table>
+            self.handle_one_request()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>BaseHTTPRequestHandler重点在实现StreamRequestHandler留白的handler方法(从名称上看就体现了http服务的特点，每个请求都是一次性的)。</p>
+</div><p>BaseHTTPRequestHandler重点在实现StreamRequestHandler留白的handler方法(从名称上看就体现了http服务的特点，每个请求都是一次性的)。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def handle_one_request(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def handle_one_request(self):
     self.raw_requestline = self.rfile.readline(65537)  # 处理http协议头
     self.parse_request()  # 处理http头
     mname = &#39;do_&#39; + self.command
     method = getattr(self, mname)
     method()  # 处理http协议方法
-    self.wfile.flush()  # 响应请求 </pre></td></tr></table>
+    self.wfile.flush()  # 响应请求 
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>在继续阅读代码之前，可以先简单了解一下http协议，使用curl访问一下我们的http服务：</p>
+</div><p>在继续阅读代码之前，可以先简单了解一下http协议，使用curl访问一下我们的http服务：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1458,9 +1423,9 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">curl -v http://127.0.0.1:8000
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -v http://127.0.0.1:8000
 *   Trying 127.0.0.1...
 * TCP_NODELAY set
 * Connected to 127.0.0.1 (127.0.0.1) port 8000 (#0)
@@ -1491,17 +1456,15 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 &lt;hr&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-* Closing connection 0</pre></td></tr></table>
+* Closing connection 0
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>日志中<code>&gt;</code>开头的部分是请求，<code>&lt;</code>开头的部分是响应，关于http协议的详解建议查看参考连接2。http请求的图示：</p>
-
-<p><img src="https://mdn.mozillademos.org/files/13687/HTTP_Request.png" alt="HTTP_Request" /></p>
-
+</div><p>日志中<code>&gt;</code>开头的部分是请求，<code>&lt;</code>开头的部分是响应，关于http协议的详解建议查看参考连接2。http请求的图示：</p>
+<p><img src="https://mdn.mozillademos.org/files/13687/HTTP_Request.png" alt="HTTP_Request"></p>
 <p>结合上图，我们可以知道我们的请求首行是 <code>GET / HTTP/1.1</code>, 下面还有一些header信息。回到代码parse_request的实现</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1529,9 +1492,9 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def parse_request(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def parse_request(self):
     self.raw_requestline = self.rfile.readline(65537)
     
     # 协议校验
@@ -1558,13 +1521,13 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
     self.command, self.path = command, path
     
     # 解析http头
-    self.headers = http.client.parse_headers(self.rfile, _class=self.MessageClass)</pre></td></tr></table>
+    self.headers = http.client.parse_headers(self.rfile, _class=self.MessageClass)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>根据代码可以反推http协议的首行要求：使用空格分割的三元组，分别对应http方法，路径和http协议版本，其中http协议版本又需要使用HTTP关键字前缀和协议版本组成。继续解析剩下的http请求头:</p>
+</div><p>根据代码可以反推http协议的首行要求：使用空格分割的三元组，分别对应http方法，路径和http协议版本，其中http协议版本又需要使用HTTP关键字前缀和协议版本组成。继续解析剩下的http请求头:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1579,9 +1542,9 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># http/client.py
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># http/client.py
 
 def parse_headers(fp, _class=HTTPMessage):
     headers = []
@@ -1595,13 +1558,13 @@ def parse_headers(fp, _class=HTTPMessage):
         if line in (b&#39;\r\n&#39;, b&#39;\n&#39;, b&#39;&#39;):  # 遇到空行完成读取
             break
     hstring = b&#39;&#39;.join(headers).decode(&#39;iso-8859-1&#39;)
-    return email.parser.Parser(_class=_class).parsestr(hstring)  # 解析封装头</pre></td></tr></table>
+    return email.parser.Parser(_class=_class).parsestr(hstring)  # 解析封装头
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>http方法的实现逻辑在子类SimpleHTTPRequestHandler中：</p>
+</div><p>http方法的实现逻辑在子类SimpleHTTPRequestHandler中：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1618,9 +1581,9 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    def do_GET(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">    def do_GET(self):
         &#34;&#34;&#34;Serve a GET request.&#34;&#34;&#34;
         f = self.send_head()
         if f:
@@ -1636,13 +1599,13 @@ def parse_headers(fp, _class=HTTPMessage):
         if os.path.isdir(path):
             ...
             return self.list_directory(path)
-        ...</pre></td></tr></table>
+        ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>展示目录的输出:</p>
+</div><p>展示目录的输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1681,9 +1644,9 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">37
 </span><span class="lnt">38
 </span><span class="lnt">39
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    def list_directory(self, path):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">    def list_directory(self, path):
         list = os.listdir(path)
         displaypath = urllib.parse.unquote(self.path,
                                                errors=&#39;surrogatepass&#39;)
@@ -1721,13 +1684,13 @@ def parse_headers(fp, _class=HTTPMessage):
         self.send_header(&#34;Content-type&#34;, &#34;text/html; charset=%s&#34; % enc)
         self.send_header(&#34;Content-Length&#34;, str(len(encoded)))
         self.end_headers()
-        return f</pre></td></tr></table>
+        return f
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到list_directory进行了文件目录的操作，转换成html的文本后输出。同时设置http头及响应的处理:</p>
+</div><p>可以看到list_directory进行了文件目录的操作，转换成html的文本后输出。同时设置http头及响应的处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1757,9 +1720,9 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def send_response(self, code, message=None):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def send_response(self, code, message=None):
     self.send_response_only(code, message)
     self.send_header(&#39;Server&#39;, self.version_string())
     self.send_header(&#39;Date&#39;, self.date_time_string())
@@ -1788,13 +1751,13 @@ def end_headers(self):
 def flush_headers(self):
     if hasattr(self, &#39;_headers_buffer&#39;):
         self.wfile.write(b&#34;&#34;.join(self._headers_buffer))  # 写入head信息
-        self._headers_buffer = []</pre></td></tr></table>
+        self._headers_buffer = []
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>http状态的生成如下:</p>
+</div><p>http状态的生成如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1810,9 +1773,9 @@ def flush_headers(self):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">responses = {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">responses = {
         v: (v.phrase, v.description)
         for v in HTTPStatus.__members__.values()
     }  # 列表推导式
@@ -1827,17 +1790,15 @@ class HTTPStatus(IntEnum):
         obj.description = description
         return obj
     
-    OK = 200, &#39;OK&#39;, &#39;Request fulfilled, document follows&#39;</pre></td></tr></table>
+    OK = 200, &#39;OK&#39;, &#39;Request fulfilled, document follows&#39;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>http-server的主要流程已经梳理完成，还有很多实现的细节可以留到具体问题时候再进行研究。</p>
-
-<h2 id="小技巧">小技巧</h2>
-
+</div><p>http-server的主要流程已经梳理完成，还有很多实现的细节可以留到具体问题时候再进行研究。</p>
+<h2 id="heading">小技巧</h2>
 <p>使用Mixin模式，可以很好的组织实现类，下面22组合形成了6个实现类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1855,9 +1816,9 @@ class HTTPStatus(IntEnum):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">if hasattr(os, &#34;fork&#34;):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">if hasattr(os, &#34;fork&#34;):
     class ForkingUDPServer(ForkingMixIn, UDPServer): pass
     class ForkingTCPServer(ForkingMixIn, TCPServer): pass
 
@@ -1874,13 +1835,13 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
 
     class ThreadingUnixStreamServer(ThreadingMixIn, UnixStreamServer): pass
 
-    class ThreadingUnixDatagramServer(ThreadingMixIn, UnixDatagramServer): pass</pre></td></tr></table>
+    class ThreadingUnixDatagramServer(ThreadingMixIn, UnixDatagramServer): pass
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用元类来强制子类的创建过程:</p>
+</div><p>使用元类来强制子类的创建过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1892,9 +1853,9 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseSelector(metaclass=ABCMeta): # 元类
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseSelector(metaclass=ABCMeta): # 元类
     @abstractmethod
     def register(self, fileobj, events, data=None):
         raise NotImplementedError
@@ -1905,11 +1866,10 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
     
     @abstractmethod
     def select(self, timeout=None):
-        raise NotImplementedError</pre></td></tr></table>
+        raise NotImplementedError
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接:</h2>
-
+</div><h2 id="heading-1">参考链接:</h2>
 <ol>
 <li><a href="https://realpython.com/python-sockets/">https://realpython.com/python-sockets/</a></li>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview</a></li>
