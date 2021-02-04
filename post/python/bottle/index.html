@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/bottle/" />
-<meta property="article:published_time" content="2021-01-21T22:46:56+08:00" />
-<meta property="article:modified_time" content="2021-01-21T22:46:56+08:00" />
+<meta property="article:published_time" content="2021-01-21T22:46:56&#43;08:00"/>
+<meta property="article:modified_time" content="2021-01-21T22:46:56&#43;08:00"/>
+
 <meta itemprop="name" content="Bottle 源码阅读">
 <meta itemprop="description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限">
+
+
 <meta itemprop="datePublished" content="2021-01-21T22:46:56&#43;08:00" />
 <meta itemprop="dateModified" content="2021-01-21T22:46:56&#43;08:00" />
-<meta itemprop="wordCount" content="5187">
+<meta itemprop="wordCount" content="5195">
 
 
 
-<meta itemprop="keywords" content="bottle,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="bottle,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Bottle 源码阅读"/>
 <meta name="twitter:description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限"/>
 
@@ -137,25 +141,31 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">项目结构</a></li>
-    <li><a href="#api">api设计</a></li>
-    <li><a href="#run-server">run-server</a></li>
-    <li><a href="#routing">Routing</a></li>
-    <li><a href="#bottle">Bottle</a></li>
-    <li><a href="#request--response">request && response</a></li>
-    <li><a href="#plugin">plugin</a></li>
-    <li><a href="#hook">hook</a></li>
-    <li><a href="#template">Template</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">小结</a></li>
-    <li><a href="#heading-3">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#项目结构">项目结构</a></li>
+<li><a href="#api设计">api设计</a></li>
+<li><a href="#run-server">run-server</a></li>
+<li><a href="#routing">Routing</a></li>
+<li><a href="#bottle">Bottle</a></li>
+<li><a href="#request-response">request &amp;&amp; response</a></li>
+<li><a href="#plugin">plugin</a></li>
+<li><a href="#hook">hook</a></li>
+<li><a href="#template">Template</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限制了项目的代码量不会爆炸，同时又仅依赖python标准库，是个不错的学习项目，我们一起来阅读一下吧。整篇文章分下面几个部分:</p>
+      
+
+<p>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限制了项目的代码量不会爆炸，同时又仅依赖python标准库，是个不错的学习项目，我们一起来阅读一下吧。整篇文章分下面几个部分:</p>
+
 <ul>
 <li>项目结构</li>
 <li>api设计</li>
@@ -169,8 +179,11 @@
 <li>小技巧</li>
 <li>小结</li>
 </ul>
-<h2 id="heading">项目结构</h2>
+
+<h2 id="项目结构">项目结构</h2>
+
 <p>本次阅读代码版本是 <code>0.11.1</code>, 代码获取方法请看之前的文章[requests 源码阅读], 就不再赘述。大概浏览bottle的3000行代码后，我们可以知道它分下面几个功能部分:</p>
+
 <table>
 <thead>
 <tr>
@@ -178,73 +191,82 @@
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>Routing</td>
 <td>路由部分，包括每个路由规则Route和路由规则的字典Router</td>
 </tr>
+
 <tr>
 <td>Application</td>
 <td>wsgi规范约定框架应用程序，由Bottle实现</td>
 </tr>
+
 <tr>
 <td>Request&amp;&amp;Response</td>
 <td>http和wsgi的请求，响应实现相关</td>
 </tr>
+
 <tr>
 <td>Plugins</td>
 <td>插件，bottle的json，模板，middleware都是使用插件机制实现；包括额外的plugins目录中sqlite3和werkzeug插件</td>
 </tr>
+
 <tr>
 <td>Util&amp;&amp;Helper</td>
 <td>工具和帮助类</td>
 </tr>
+
 <tr>
 <td>Server Adapter</td>
 <td>各种wsgi服务的适配器，默认使用的是WSGIRefServer</td>
 </tr>
+
 <tr>
 <td>Template Adapter</td>
 <td>各种模板引擎的适配器，默认使用自己实现的SimpleTemplate</td>
 </tr>
+
 <tr>
 <td>Control</td>
 <td>全局常量及api等</td>
 </tr>
 </tbody>
 </table>
-<h2 id="api">api设计</h2>
+
+<h2 id="api设计">api设计</h2>
+
 <p>首先还是从示例开始观察bottle的api，从使用入手逐步往里跟踪探索。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from bottle import route, run, template
+<pre class="chroma">from bottle import route, run, template
 
 @route(&#39;/hello/&lt;name&gt;&#39;)
 def index(name):
     return template(&#39;&lt;b&gt;Hello {{name}}&lt;/b&gt;!&#39;, name=name)
 
-run(host=&#39;localhost&#39;, port=8080)
-</code></pre></td></tr></table>
+run(host=&#39;localhost&#39;, port=8080)</pre></td></tr></table>
 </div>
-</div><p>示例展示了下面几个内容:</p>
-<ul>
-<li>使用route装饰器定义一个路由规则，包装一个响应函数</li>
-<li>使用template生成一个模板</li>
-<li>使用run函数启动服务</li>
-</ul>
+</div>
+<p>示例展示了下面几个内容:
+* 使用route装饰器定义一个路由规则，包装一个响应函数
+* 使用template生成一个模板
+* 使用run函数启动服务</p>
+
 <p>查看代码可以知道，除了route装饰器API，还有下面的各种API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -254,9 +276,9 @@ run(host=&#39;localhost&#39;, port=8080)
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">get       = make_default_app_wrapper(&#39;get&#39;)
+<pre class="chroma">get       = make_default_app_wrapper(&#39;get&#39;)
 post      = make_default_app_wrapper(&#39;post&#39;)
 put       = make_default_app_wrapper(&#39;put&#39;)
 delete    = make_default_app_wrapper(&#39;delete&#39;)
@@ -265,34 +287,34 @@ mount     = make_default_app_wrapper(&#39;mount&#39;)
 hook      = make_default_app_wrapper(&#39;hook&#39;)
 install   = make_default_app_wrapper(&#39;install&#39;)
 uninstall = make_default_app_wrapper(&#39;uninstall&#39;)
-url       = make_default_app_wrapper(&#39;get_url&#39;)
-</code></pre></td></tr></table>
+url       = make_default_app_wrapper(&#39;get_url&#39;)</pre></td></tr></table>
 </div>
-</div><p>可以使用上面的API定义路由:</p>
+</div>
+<p>可以使用上面的API定义路由:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@get(&#39;/login&#39;)  # or @route(&#39;/login&#39;)
+<pre class="chroma">@get(&#39;/login&#39;)  # or @route(&#39;/login&#39;)
 def login():
     pass
     
 @post(&#39;/login&#39;) # or @route(&#39;/login&#39;, method=&#39;POST&#39;)
 def do_login():
-    pass
-</code></pre></td></tr></table>
+    pass</pre></td></tr></table>
 </div>
-</div><p>装饰器的具体实现:</p>
+</div>
+<p>装饰器的具体实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -304,9 +326,9 @@ def do_login():
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def make_default_app_wrapper(name):
+<pre class="chroma">def make_default_app_wrapper(name):
     &#39;&#39;&#39; Return a callable that relays calls to the current default app. &#39;&#39;&#39;
     @functools.wraps(getattr(Bottle, name))
     def wrapper(*a, **ka):
@@ -317,19 +339,18 @@ def do_login():
 class Bottle(object)
     def route(self, path=None, method=&#39;GET&#39;, callback=None, name=None,
               apply=None, skip=None, **config):
-        pass
-</code></pre></td></tr></table>
+        pass</pre></td></tr></table>
 </div>
-</div><p>现在我们大概学习了3种API的封装方法：</p>
-<ul>
-<li>redis-py中使用命令模式封装api</li>
-<li>requests中使用session.request的api</li>
-<li>bottle使用装饰器封装路由api</li>
-</ul>
+</div>
+<p>现在我们大概学习了3种API的封装方法：
+* redis-py中使用命令模式封装api
+* requests中使用session.request的api
+* bottle使用装饰器封装路由api</p>
+
 <p>对于模版渲染，也提供<code>view</code>, <code>simpletal_view</code> 等api:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -349,9 +370,9 @@ class Bottle(object)
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def template(*args, **kwargs):
+<pre class="chroma">def template(*args, **kwargs):
     pass
 
 def view(tpl_name, **defaults):
@@ -370,33 +391,34 @@ def view(tpl_name, **defaults):
 mako_view = functools.partial(view, template_adapter=MakoTemplate)
 cheetah_view = functools.partial(view, template_adapter=CheetahTemplate)
 jinja2_view = functools.partial(view, template_adapter=Jinja2Template)
-simpletal_view = functools.partial(view, template_adapter=SimpleTALTemplate)
-</code></pre></td></tr></table>
+simpletal_view = functools.partial(view, template_adapter=SimpleTALTemplate)</pre></td></tr></table>
 </div>
-</div><p>下面2种view的实现方法是等价的:</p>
+</div>
+<p>下面2种view的实现方法是等价的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def hello(name=&#39;World&#39;):
+<pre class="chroma">def hello(name=&#39;World&#39;):
     return template(&#39;hello_template&#39;, name=name)
     
 @view(&#39;hello_template&#39;)
 def hello(name=&#39;World&#39;):
-    return dict(name=name)
-</code></pre></td></tr></table>
+    return dict(name=name)</pre></td></tr></table>
 </div>
-</div><h2 id="run-server">run-server</h2>
+</div>
+<h2 id="run-server">run-server</h2>
+
 <p>run 函数定义了服务启动的模式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -407,9 +429,9 @@ def hello(name=&#39;World&#39;):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run(app=None, server=&#39;wsgiref&#39;, host=&#39;127.0.0.1&#39;, port=8080,
+<pre class="chroma">def run(app=None, server=&#39;wsgiref&#39;, host=&#39;127.0.0.1&#39;, port=8080,
         interval=1, reloader=False, quiet=False, plugins=None,
         debug=False, **kargs):
     app = Bottle()  # 创建一个APP对象
@@ -419,32 +441,32 @@ def hello(name=&#39;World&#39;):
     if isinstance(server, basestring):
         server = load(server)  # 根据名称动态加载服务
     server = server(host=host, port=port, **kargs)  # 创建服务
-    server.run(app)  # 运行服务
-</code></pre></td></tr></table>
+    server.run(app)  # 运行服务</pre></td></tr></table>
 </div>
-</div><p>默认的 <strong>wsgirefserver</strong> 主要使用系统模块 <strong>wsgiref</strong> ，我们以后再介绍这个模块。</p>
+</div>
+<p>默认的 <strong>wsgirefserver</strong> 主要使用系统模块 <strong>wsgiref</strong> ，我们以后再介绍这个模块。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRefServer(ServerAdapter):
+<pre class="chroma">class WSGIRefServer(ServerAdapter):
     def run(self, handler): # pragma: no cover
         from wsgiref.simple_server import make_server, WSGIRequestHandler
         ....
         srv = make_server(self.host, self.port, handler, **self.options)
-        srv.serve_forever()
-</code></pre></td></tr></table>
+        srv.serve_forever()</pre></td></tr></table>
 </div>
-</div><p>run函数中可以动态的使用loadClassFromName方式加载服务：</p>
+</div>
+<p>run函数中可以动态的使用loadClassFromName方式加载服务：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -462,9 +484,9 @@ def hello(name=&#39;World&#39;):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def load(target, **namespace):
+<pre class="chroma">def load(target, **namespace):
     &#34;&#34;&#34; Import a module or fetch an object from a module.
 
         * ``package.module`` returns `module` as a module object.
@@ -481,25 +503,26 @@ def hello(name=&#39;World&#39;):
     if target.isalnum(): return getattr(sys.modules[module], target)
     package_name = module.split(&#39;.&#39;)[0]
     namespace[package_name] = sys.modules[package_name]
-    return eval(&#39;%s.%s&#39; % (module, target), namespace)
-</code></pre></td></tr></table>
+    return eval(&#39;%s.%s&#39; % (module, target), namespace)</pre></td></tr></table>
 </div>
-</div><p>更简洁的加载模块的方式，可以用下面代码:</p>
+</div>
+<p>更简洁的加载模块的方式，可以用下面代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from importlib import import_module
-module = import_module(&#34;module_name_str&#34;)
-</code></pre></td></tr></table>
+<pre class="chroma">from importlib import import_module
+module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </div>
-</div><h2 id="routing">Routing</h2>
+</div>
+<h2 id="routing">Routing</h2>
+
 <p>在查看Routing之前，需要先了解一下Bottle中路由的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -523,9 +546,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Bottle(object):
+<pre class="chroma">class Bottle(object):
     def __init__(self, catchall=True, autojson=True):
         ...
         self.routes = [] # List of installed :class:`Route` instances.
@@ -548,14 +571,15 @@ module = import_module(&#34;module_name_str&#34;)
                                   plugins=plugins, skiplist=skiplist, **config)
                     self.add_route(route)
             return callback
-        return decorator(callback) if callback else decorator
-</code></pre></td></tr></table>
+        return decorator(callback) if callback else decorator</pre></td></tr></table>
 </div>
-</div><p>bottle中每个路由规则都会创建一个Route对象，主要包括了path，method和callback三个部分。所有的路由又使用一个routes数组和一个Router字典集中管理。Router字典用于加速路由的查找，比如一个http请求，使用routes数组查找路由的算法复杂度是O(n)/O(log(n))，使用字典router查找可以是O(1)。</p>
+</div>
+<p>bottle中每个路由规则都会创建一个Route对象，主要包括了path，method和callback三个部分。所有的路由又使用一个routes数组和一个Router字典集中管理。Router字典用于加速路由的查找，比如一个http请求，使用routes数组查找路由的算法复杂度是O(n)/O(log(n))，使用字典router查找可以是O(1)。</p>
+
 <p><code>Route</code>实现比较简单，主要就是对callback的包装，特别点的地方是使用plugin包装callback， 这和django的middleware很类似。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -581,9 +605,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Route(object):
+<pre class="chroma">class Route(object):
     
     def __init__(self, app, rule, method, callback, name=None,
                  plugins=None, skiplist=None, **config):
@@ -608,13 +632,13 @@ module = import_module(&#34;module_name_str&#34;)
                 # 使用plugin包装
                 callback = plugin.apply(callback, context)
             ...
-        return callback
-</code></pre></td></tr></table>
+        return callback</pre></td></tr></table>
 </div>
-</div><p><code>Router</code>的实现会复杂一些，主要包括创建，添加路由规则和查找路由规则三个部分:</p>
+</div>
+<p><code>Router</code>的实现会复杂一些，主要包括创建，添加路由规则和查找路由规则三个部分:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -632,9 +656,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Router(object):
+<pre class="chroma">class Router(object):
     ...
     def __init__(self, strict=False):
         self.rules    = {} # A {rule: Rule} mapping
@@ -651,15 +675,17 @@ module = import_module(&#34;module_name_str&#34;)
     
     def match(self, environ):
         ...
-    
-</code></pre></td></tr></table>
+    </pre></td></tr></table>
 </div>
-</div><p>Router的查找实现是http服务的核心，关系到服务的效率，需要精读。本期文章我们暂不进行介绍，只需要了解Router的功能是接受路由添加，根据请求查找路由即可。</p>
+</div>
+<p>Router的查找实现是http服务的核心，关系到服务的效率，需要精读。本期文章我们暂不进行介绍，只需要了解Router的功能是接受路由添加，根据请求查找路由即可。</p>
+
 <h2 id="bottle">Bottle</h2>
+
 <p><code>Bottle</code> 的核心并不复杂，主要代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -681,9 +707,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Bottle(object):
+<pre class="chroma">class Bottle(object):
     def __init__(self, catchall=True, autojson=True):
         ...
         # Core plugins
@@ -704,19 +730,18 @@ module = import_module(&#34;module_name_str&#34;)
     
     def __call__(self, environ, start_response):
         &#39;&#39;&#39; Each instance of :class:&#39;Bottle&#39; is a WSGI application. &#39;&#39;&#39;
-        return self.wsgi(environ, start_response)
-</code></pre></td></tr></table>
+        return self.wsgi(environ, start_response)</pre></td></tr></table>
 </div>
-</div><p>Bottle是wsgi规范的application，接受wsgi-server的call。这块涉及wsgi的实现，以后我们在flask和django中也会看到，后续我们再行了解，现在只需要记住实现的语法:</p>
-<ul>
-<li>请求的环境environ，也可以理解为context</li>
-<li>创建http响应头的方法回调用方法</li>
-<li>返回二进制流</li>
-</ul>
+</div>
+<p>Bottle是wsgi规范的application，接受wsgi-server的call。这块涉及wsgi的实现，以后我们在flask和django中也会看到，后续我们再行了解，现在只需要记住实现的语法:
+* 请求的环境environ，也可以理解为context
+* 创建http响应头的方法回调用方法
+* 返回二进制流</p>
+
 <p>URL的响应函数_handle处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -727,9 +752,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _handle(self, environ):
+<pre class="chroma">def _handle(self, environ):
     ...
     environ[&#39;bottle.app&#39;] = self
     request.bind(environ)  # 创建绑定到线程的request对象
@@ -739,13 +764,13 @@ module = import_module(&#34;module_name_str&#34;)
     environ[&#39;bottle.route&#39;] = route
     environ[&#39;route.url_args&#39;] = args
     return route.call(**args)  # 执行route
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>业务返回的数据还需要使用_cast序列化为二进制数据:</p>
+</div>
+<p>业务返回的数据还需要使用_cast序列化为二进制数据:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -761,9 +786,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _cast(self, out, peek=None):
+<pre class="chroma">def _cast(self, out, peek=None):
     ...
     # Join lists of byte or unicode strings. Mixed lists are NOT supported
         # 转换为二进制数据
@@ -778,14 +803,15 @@ module = import_module(&#34;module_name_str&#34;)
             if &#39;Content-Length&#39; not in response:
                 response[&#39;Content-Length&#39;] = len(out)  # 处理http头的的Content-Length
             return [out]
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><h2 id="request--response">request &amp;&amp; response</h2>
+</div>
+<h2 id="request-response">request &amp;&amp; response</h2>
+
 <p>request和response的处理，是把一些数据绑定到了线程变量上，这样可以支持多线程并发。比如 <strong>request</strong> 代码主要有:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -814,10 +840,9 @@ module = import_module(&#34;module_name_str&#34;)
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">#: Thread-local storage for :class:`LocalRequest` and :class:`LocalResponse`
+<pre class="chroma">#: Thread-local storage for :class:`LocalRequest` and :class:`LocalResponse`
 #: attributes.
 _lctx = threading.local()
 
@@ -845,14 +870,13 @@ class LocalRequest(BaseRequest):
 #: A thread-safe instance of :class:`LocalRequest`. If accessed from within a
 #: request callback, this instance always refers to the *current* request
 #: (even on a multithreaded server).
-request = LocalRequest()
-
-</code></pre></td></tr></table>
+request = LocalRequest()</pre></td></tr></table>
 </div>
-</div><p>上面的代码，如果不了解wsgiref的代码，比较难理顺， 我们暂时跳过。可以看看对象属性和线程绑定的封装方法，先看下面的代码：</p>
+</div>
+<p>上面的代码，如果不了解wsgiref的代码，比较难理顺， 我们暂时跳过。可以看看对象属性和线程绑定的封装方法，先看下面的代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -875,9 +899,9 @@ request = LocalRequest()
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class P:
+<pre class="chroma">class P:
 
    def __init__(self,x):
        self.__set_x(x)
@@ -899,34 +923,36 @@ p1 = P(1001)
 p1.x  # 1000
 
 p1.x = -12
-p1.x  # 0
-</code></pre></td></tr></table>
+p1.x  # 0</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>示例来自参考链接的 Properties vs. Getters and Setters</p>
 </blockquote>
+
 <p>理解property后，再看environ的实现就比较容易了：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">_lctx = threading.local()
+<pre class="chroma">_lctx = threading.local()
 def fset(self, value): setattr(_lctx, name, value)  # 设置到线程上
 def fget(self): return getattr(_lctx, name)  # 从线程上获取
 ...
-environ = local_property(&#39;request_environ&#39;)   
-</code></pre></td></tr></table>
+environ = local_property(&#39;request_environ&#39;)   </pre></td></tr></table>
 </div>
-</div><h2 id="plugin">plugin</h2>
+</div>
+<h2 id="plugin">plugin</h2>
+
 <p>bottle的插件并未定义接口，这里也体现了python的鸭子模型：当看到一只鸟走起来像鸭子，游泳起来也像鸭子，叫起来也像鸭子，那么这只鸟就可以被称为鸭子。插件只需要具有<code>setup</code>,<code>apply</code>和<code>close</code>等方法，就可以被bottle使用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -936,9 +962,9 @@ environ = local_property(&#39;request_environ&#39;)
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def install(self, plugin):
+<pre class="chroma">def install(self, plugin):
     &#39;&#39;&#39; Add a plugin to the list of plugins and prepare it for being
         applied to all routes of this application. A plugin may be a simple
         decorator or an object that implements the :class:`Plugin` API.
@@ -947,13 +973,13 @@ environ = local_property(&#39;request_environ&#39;)
     if hasattr(plugin, &#39;apply&#39;):  # 使用apply函数装饰路由的callback
 
 def uninstall(self, plugin):
-    if hasattr(plugin, &#39;close&#39;): plugin.close()
-</code></pre></td></tr></table>
+    if hasattr(plugin, &#39;close&#39;): plugin.close()</pre></td></tr></table>
 </div>
-</div><p>下面是一个将response返回值序列化为JSON的插件:</p>
+</div>
+<p>下面是一个将response返回值序列化为JSON的插件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -971,9 +997,9 @@ def uninstall(self, plugin):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class JSONPlugin(object):
+<pre class="chroma">class JSONPlugin(object):
     name = &#39;json&#39;
 
     def __init__(self, json_dumps=json_dumps):
@@ -990,14 +1016,15 @@ def uninstall(self, plugin):
                 response.content_type = &#39;application/json&#39;
                 return json_response
             return rv
-        return wrapper
-</code></pre></td></tr></table>
+        return wrapper</pre></td></tr></table>
 </div>
-</div><p>可以看到apply实际上是一个装饰器，对callback结果进行判断，如果返回的是一个字典，则序列化为json，并设置对应的http头。</p>
+</div>
+<p>可以看到apply实际上是一个装饰器，对callback结果进行判断，如果返回的是一个字典，则序列化为json，并设置对应的http头。</p>
+
 <p>我们再看看插件模块中的SQLitePlugin:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1029,9 +1056,9 @@ def uninstall(self, plugin):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SQLitePlugin(object):
+<pre class="chroma">class SQLitePlugin(object):
     
     name = &#39;sqlite&#39;
     api  = 2
@@ -1062,17 +1089,18 @@ def uninstall(self, plugin):
             return rv
 
         # Replace the route callback with the wrapped one.
-        return wrapper
-</code></pre></td></tr></table>
+        return wrapper</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>查找callback的参数中是否有db关键字参数，如果有db，则注入一个sqlite的连接</li>
 <li>业务完成后，自动进行db的事务操作和连接关闭</li>
 </ul>
+
 <p>下面是一个使用sqlite持久数据的示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1082,9 +1110,9 @@ def uninstall(self, plugin):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from bottle import route, install, template
+<pre class="chroma">from bottle import route, install, template
 from bottle_sqlite import SQLitePlugin
 
 install(SQLitePlugin(dbfile=&#39;/tmp/test.db&#39;))
@@ -1093,15 +1121,17 @@ install(SQLitePlugin(dbfile=&#39;/tmp/test.db&#39;))
 def show(db, post_id):
     c = db.execute(&#39;SELECT title, content FROM posts WHERE id = ?&#39;, (post_id,))
     row = c.fetchone()
-    return template(&#39;show_post&#39;, title=row[&#39;title&#39;], text=row[&#39;content&#39;])
-</code></pre></td></tr></table>
+    return template(&#39;show_post&#39;, title=row[&#39;title&#39;], text=row[&#39;content&#39;])</pre></td></tr></table>
 </div>
-</div><p>参考这个机制，我们可以给bottle添加mysql插件，redis插件等。</p>
+</div>
+<p>参考这个机制，我们可以给bottle添加mysql插件，redis插件等。</p>
+
 <h2 id="hook">hook</h2>
+
 <p>HooksPlugin是bottle的默认插件, 可以对请求和响应进行一些额外的处理：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1130,9 +1160,9 @@ def show(db, post_id):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class HooksPlugin(object):
+<pre class="chroma">class HooksPlugin(object):
     
     _names = &#39;before_request&#39;, &#39;after_request&#39;, &#39;app_reset&#39;
 
@@ -1160,13 +1190,13 @@ def show(db, post_id):
             rv = callback(*a, **ka)
             self.trigger(&#39;after_request&#39;, reversed=True)  # 额外处理响应
             return rv
-        return wrapper
-</code></pre></td></tr></table>
+        return wrapper</pre></td></tr></table>
 </div>
-</div><p>hook的使用示例:</p>
+</div>
+<p>hook的使用示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1179,9 +1209,9 @@ def show(db, post_id):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from bottle import hook, response, route
+<pre class="chroma">from bottle import hook, response, route
 
 @hook(&#39;after_request&#39;)
 def enable_cors():
@@ -1193,15 +1223,17 @@ def say_foo():
 
 @route(&#39;/bar&#39;)
 def say_bar():
-    return {&#39;type&#39;: &#39;friendly&#39;, &#39;content&#39;: &#39;Hi!&#39;}
-</code></pre></td></tr></table>
+    return {&#39;type&#39;: &#39;friendly&#39;, &#39;content&#39;: &#39;Hi!&#39;}</pre></td></tr></table>
 </div>
-</div><p>可以看到要对request&amp;&amp;response进行额外处理，即可以自已定义插件，也可以直接使用hook插件的before_request和after_request钩子。</p>
+</div>
+<p>可以看到要对request&amp;&amp;response进行额外处理，即可以自已定义插件，也可以直接使用hook插件的before_request和after_request钩子。</p>
+
 <h2 id="template">Template</h2>
+
 <p>TemplatePlugin也是bottle默认插件, 用来实现模版功能。主要代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1227,9 +1259,9 @@ def say_bar():
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TemplatePlugin(object):
+<pre class="chroma">class TemplatePlugin(object):
     ...
 
     def apply(self, callback, route):
@@ -1254,36 +1286,40 @@ def view(tpl_name, **defaults):
 def template(*args, **kwargs):
     adapter = kwargs.pop(&#39;template_adapter&#39;, SimpleTemplate)
     return TEMPLATES[tplid].render(kwargs)
-    
-</code></pre></td></tr></table>
+    </pre></td></tr></table>
 </div>
-</div><p>模版的实现是传统web服务的重要点。传统web服务一般前后端一体，由类似jsp等语法渲染html；新型web服务多前后端分离，后端只需输出json数据。这里模版的具体实现，我们也先跳过，以后再研究。</p>
-<h2 id="heading-1">小技巧</h2>
+</div>
+<p>模版的实现是传统web服务的重要点。传统web服务一般前后端一体，由类似jsp等语法渲染html；新型web服务多前后端分离，后端只需输出json数据。这里模版的具体实现，我们也先跳过，以后再研究。</p>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>从bottle代码中，我们还可以看到一些有用的小技巧。</p>
+
 <p>使用 <strong>__slots__</strong> 优化对象属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseRequest(object):
+<pre class="chroma">class BaseRequest(object):
    ...
     __slots__ = (&#39;environ&#39;)
     
     def __init__(self, environ=None):
-        self.environ = {} if environ is None else environ
-</code></pre></td></tr></table>
+        self.environ = {} if environ is None else environ</pre></td></tr></table>
 </div>
-</div><p>关于 __slots__ 的使用，这里 <a href="https://stackoverflow.com/questions/472000/usage-of-slots">stackoverflow</a> 有非常详细的介绍。</p>
+</div>
+<p>关于 __slots__ 的使用，这里 <a href="https://stackoverflow.com/questions/472000/usage-of-slots">stackoverflow</a> 有非常详细的介绍。</p>
+
 <p>使用 <strong>cached_property</strong> 装饰器缓存复杂属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1312,9 +1348,9 @@ def template(*args, **kwargs):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class cached_property(object):
+<pre class="chroma">class cached_property(object):
     &#39;&#39;&#39; A property that is only computed once per instance and then replaces
         itself with an ordinary attribute. Deleting the attribute resets the
         property. &#39;&#39;&#39;
@@ -1342,13 +1378,13 @@ class Route(object):
             callback = plugin.apply(callback, context)
         return callback
     
-# route.call(**args)
-</code></pre></td></tr></table>
+# route.call(**args)</pre></td></tr></table>
 </div>
-</div><p>使用 <strong>lazy_attribute</strong> 装饰器延迟属性计算:</p>
+</div>
+<p>使用 <strong>lazy_attribute</strong> 装饰器延迟属性计算:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1372,9 +1408,9 @@ class Route(object):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class lazy_attribute(object):
+<pre class="chroma">class lazy_attribute(object):
     &#39;&#39;&#39; A property that caches itself to the class object. &#39;&#39;&#39;
     def __init__(self, func):
         functools.update_wrapper(self, func, updated=[])
@@ -1397,13 +1433,13 @@ class SimpleTemplate(BaseTemplate)
              |&#39;{3}(?:[^\\]|\\.|\n)+?&#39;{3}  # Triple-quoted strings (&#39;)
              |&#34;{3}(?:[^\\]|\\.|\n)+?&#34;{3}  # Triple-quoted strings (&#34;)
              |\#.*                        # Comments
-            )&#39;&#39;&#39;, re.VERBOSE)
-</code></pre></td></tr></table>
+            )&#39;&#39;&#39;, re.VERBOSE)</pre></td></tr></table>
 </div>
-</div><p>使用 <strong>DictProperty</strong> 装饰器控制属性只读:</p>
+</div>
+<p>使用 <strong>DictProperty</strong> 装饰器控制属性只读:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1431,9 +1467,9 @@ class SimpleTemplate(BaseTemplate)
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DictProperty(object):
+<pre class="chroma">class DictProperty(object):
     &#39;&#39;&#39; Property that maps to a key in a local dict-like attribute. &#39;&#39;&#39;
     def __init__(self, attr, key=None, read_only=False):
         self.attr, self.key, self.read_only = attr, key, read_only
@@ -1460,26 +1496,31 @@ class BaseRequest(object):
     def headers(self):
         &#39;&#39;&#39; A :class:`WSGIHeaderDict` that provides case-insensitive access to
             HTTP request headers. &#39;&#39;&#39;
-        return WSGIHeaderDict(self.environ)
-</code></pre></td></tr></table>
+        return WSGIHeaderDict(self.environ)</pre></td></tr></table>
 </div>
-</div><p>以上三种装饰器的需求，在日常研发中都很常见，我们可以把它加入自己的工具类。</p>
-<h2 id="heading-2">小结</h2>
+</div>
+<p>以上三种装饰器的需求，在日常研发中都很常见，我们可以把它加入自己的工具类。</p>
+
+<h2 id="小结">小结</h2>
+
 <p>最后我们来简单小结一下bottle的源码，也就是python的wsgi-application大概是如何实现的：</p>
+
 <ul>
 <li>可以注入业务自定义的路由规则及路由管理</li>
 <li>适配wsgi的规范启动Application，接受并响应http请求</li>
 <li>每个http请求，根据路由规则查找对应的callback，进行业务处理</li>
 <li>可以使用插件机制扩展需求
+
 <ul>
 <li>请求拦截和响应拦截</li>
 <li>数据库操作</li>
 <li>模版操作</li>
 <li>&hellip;</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h2 id="heading-3">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="http://bottlepy.org/docs/dev/">http://bottlepy.org/docs/dev/</a></li>
 <li><a href="https://wsgi.readthedocs.io/en/latest/index.html">https://wsgi.readthedocs.io/en/latest/index.html</a></li>

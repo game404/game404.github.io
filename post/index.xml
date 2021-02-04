@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on 游戏不存在</title>
@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 28 Jan 2021 22:13:45 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 04 Feb 2021 22:13:53 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python wsgiref 源码阅读</title>
+      <link>https://game404.github.io/post/python/wsgiref/</link>
+      <pubDate>Thu, 04 Feb 2021 22:13:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/wsgiref/</guid>
+      <description>python web开发中http请求的处理流程通常是: web-browser &amp;lt;-&amp;gt; web-server &amp;lt;-&amp;gt; wsgi &amp;lt;-&amp;gt; web-application， 我们学习过基于bottle实现的web-applic</description>
+    </item>
     
     <item>
       <title>python http 源码阅读</title>
