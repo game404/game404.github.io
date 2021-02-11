@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>python argparse 源码阅读</title>
+      <link>https://game404.github.io/post/python/argparse/</link>
+      <pubDate>Thu, 11 Feb 2021 21:36:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/argparse/</guid>
+      <description>http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12</description>
+    </item>
+    
+    <item>
       <title>python wsgiref 源码阅读</title>
       <link>https://game404.github.io/post/python/wsgiref/</link>
       <pubDate>Thu, 04 Feb 2021 22:13:53 +0800</pubDate>
