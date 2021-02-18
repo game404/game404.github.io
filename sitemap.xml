@@ -10,6 +10,13 @@
   </url>
   
   <url>
+    <loc>https://game404.github.io/post/python/tinydb/</loc>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://game404.github.io/post/python/argparse/</loc>
     <lastmod>2021-02-11T21:36:27+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -199,7 +206,7 @@
   
   <url>
     <loc>https://game404.github.io/post/</loc>
-    <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -220,6 +227,13 @@
   <url>
     <loc>https://game404.github.io/tags/cli/</loc>
     <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/database/</loc>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -275,7 +289,7 @@
   
   <url>
     <loc>https://game404.github.io/categories/python/</loc>
-    <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -317,7 +331,7 @@
   
   <url>
     <loc>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</loc>
-    <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>

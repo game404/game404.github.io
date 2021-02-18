@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 11 Feb 2021 21:36:27 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Feb 2021 22:14:27 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python tinydb 源码阅读</title>
+      <link>https://game404.github.io/post/python/tinydb/</link>
+      <pubDate>Wed, 17 Feb 2021 22:14:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/tinydb/</guid>
+      <description>TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL</description>
+    </item>
     
     <item>
       <title>python argparse 源码阅读</title>
