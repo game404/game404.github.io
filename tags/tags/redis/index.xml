@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>redis on 游戏不存在</title>
+    <link>https://game404.github.io/tags/redis/</link>
+    <description>Recent content in redis on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sat, 09 Jan 2021 21:37:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/redis/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Redis-py 源码阅读</title>
+      <link>https://game404.github.io/post/python/redis-py/</link>
+      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/redis-py/</guid>
+      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
+    </item>
+    
+  </channel>
+</rss>

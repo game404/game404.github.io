@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Python虚拟环境指南2020版 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python-env-2020/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Python虚拟环境指南2020版" />
+<meta property="og:description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python-env-2020/" />
+<meta property="article:published_time" content="2020-03-21T23:10:57&#43;08:00"/>
+<meta property="article:modified_time" content="2020-03-21T23:10:57&#43;08:00"/>
+
+<meta itemprop="name" content="Python虚拟环境指南2020版">
+<meta itemprop="description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟">
+
+
+<meta itemprop="datePublished" content="2020-03-21T23:10:57&#43;08:00" />
+<meta itemprop="dateModified" content="2020-03-21T23:10:57&#43;08:00" />
+<meta itemprop="wordCount" content="3478">
+
+
+
+<meta itemprop="keywords" content="指南," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python虚拟环境指南2020版"/>
+<meta name="twitter:description" content="这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Python虚拟环境指南2020版</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-03-21 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#使用venv管理虚拟环境">使用venv管理虚拟环境</a></li>
+<li><a href="#使用pipenv管理虚拟环境">使用pipenv管理虚拟环境</a></li>
+<li><a href="#使用poetry管理虚拟环境">使用poetry管理虚拟环境</a></li>
+<li><a href="#三种虚拟环境工具使用及建议">三种虚拟环境工具使用及建议</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p>这是python虚拟环境指南的第二篇，第一篇请见  <a href="https://juejin.im/post/5ca7aec4e51d45354d704951">Python虚拟环境指南2019版
+</a>。</p>
+
+<p>合理的python虚拟环境让让开发更有序和高效。关于虚拟环境的意义，pip的使用方法可以参考第一篇。本文主要结合python3介绍如何配置虚拟环境,满足项目管理需求，包括下面四个部分:</p>
+
+<ul>
+<li>使用<code>venv</code>管理虚拟环境</li>
+<li>使用<code>pipenv</code>管理虚拟环境</li>
+<li>使用<code>poetry</code>管理虚拟环境</li>
+<li>三种虚拟环境工具使用及建议</li>
+</ul>
+
+<hr />
+
+<h3 id="使用venv管理虚拟环境">使用venv管理虚拟环境</h3>
+
+<p>python3 默认包含了 <code>venv</code> 模块，可以认为venv目前是python3推荐的虚拟环境管理工具。其使用命令大概如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  todolist-web-py python3 -m venv --help
+usage: venv [-h] [--system-site-packages] [--symlinks | --copies] [--clear]
+            [--upgrade] [--without-pip] [--prompt PROMPT]
+            ENV_DIR [ENV_DIR ...]
+
+Creates virtual Python environments in one or more target directories.
+
+positional arguments:
+  ENV_DIR               A directory to create the environment in.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --system-site-packages
+                        Give the virtual environment access to the system
+                        site-packages dir.
+  --symlinks            Try to use symlinks rather than copies, when symlinks
+                        are not the default for the platform.
+  --copies              Try to use copies rather than symlinks, even when
+                        symlinks are the default for the platform.
+  --clear               Delete the contents of the environment directory if it
+                        already exists, before environment creation.
+  --upgrade             Upgrade the environment directory to use this version
+                        of Python, assuming Python has been upgraded in-place.
+  --without-pip         Skips installing or upgrading pip in the virtual
+                        environment (pip is bootstrapped by default)
+  --prompt PROMPT       Provides an alternative prompt prefix for this
+                        environment.
+
+Once an environment has been created, you may wish to activate it, e.g. by
+sourcing an activate script in its bin directory.</pre></td></tr></table>
+</div>
+</div>
+<p>首先创建一个虚拟环境，<code>.venv</code> 是我推荐的虚拟环境路径，虚拟环境创建在工作区也方便pycharm等工具配合使用。当然可以使用第一篇文章中的wrapper方案，将虚拟环境集中管理。不过这种方案有个弊端，时间久了难以记住当前虚拟环境的命名, 从而导致虚拟环境丢失，所以我不再推荐使用。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  todolist-web-py python3 -m venv .venv</pre></td></tr></table>
+</div>
+</div>
+<p>然后进入和退出虚拟环境</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  todolist-web-py source .venv/bin/activate
+(.venv) ➜  todolist-web-py deactivated
+(.venv) ➜  todolist-web-py deactivate
+➜  todolist-web-py</pre></td></tr></table>
+</div>
+</div>
+<p>windows略有不同，请参见第一篇。</p>
+
+<p>我们要创建一个基于django的todo-list项目，进入环境后，可以安装django包和requests包。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">(.venv) ➜  todolist-web-py pip install django
+(.venv) ➜  todolist-web-py pip install requests</pre></td></tr></table>
+</div>
+</div>
+<p>并生成requirements文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">(.venv) ➜  todolist-web-py pip freeze &gt; requirements.txt</pre></td></tr></table>
+</div>
+</div>
+<p>最后requirements显示项目安装了下面一些包:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">asgiref==3.2.5
+certifi==2019.11.28
+chardet==3.0.4
+Django==3.0.4
+idna==2.9
+pytz==2019.3
+requests==2.23.0
+sqlparse==0.3.1
+urllib3==1.25.8</pre></td></tr></table>
+</div>
+</div>
+<p>这样暴露出venv包依赖管理的弊端， todolist-web-py的requirements.txt中的包是平铺的，我们只是安装了django和requests两个包，然后各自依赖后形成9个包的列表，并且不清楚每个包是谁导入的，这样大型项目安装比较多包后就很混乱。</p>
+
+<p>使用pycharm打开我们创建的 <code>todolist-web-py</code> 项目, 默认就会加载项目下的虚拟环境，cmd和ide可以很方便的共享同一个虚拟环境，如下图：</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20200315205633.png" alt="pycharm" /></p>
+
+<p>继续初始化django项目并使用git管理项目</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">(.venv) ➜  todolist-web-py django-admin startproject todo
+(.venv) ➜  todo django-admin startapp app
+
+(.venv) ➜  todolist-web-py git init
+Initialized empty Git repository in /Users/xxx/tmp/studio/todolist-web-py/.git/
+(.venv) ➜  todolist-web-py git:(master) ✗ touch .gitignore</pre></td></tr></table>
+</div>
+</div>
+<p>虚拟环境和pycharm的配置均不推荐使用版本管理， 所以gitignore文件中忽略venv和idea的配置文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">.idea
+.venv</pre></td></tr></table>
+</div>
+</div>
+<p>最后git管理的项目文件如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">(.venv) ➜  todolist-web-py git:(master) ✗ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use &#34;git add &lt;file&gt;...&#34; to include in what will be committed)
+
+    .gitignore
+    requirements.txt
+    todo/
+
+nothing added to commit but untracked files present (use &#34;git add&#34; to track)</pre></td></tr></table>
+</div>
+</div>
+<p>单一的项目使用venv管理虚拟环境是非常便捷的，不过事情往往没有这么简单。我们的todo-list项目有新的需求要使用celery进行任务调度，一个任务处理excel文件，一个任务进行网页爬虫处理。这2个任务以微服务的方式独立于todo-list的web服务。不同的任务使用不同的包，最终会docker方式运行，所以每个任务项目使用独立的虚拟环境，同时整个项目公用一个git仓库。最后形成的项目结构大概如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">.
+├── .git
+├── .gitignore
+├── jobs
+│   ├── excel_dispose
+│   │   └── .venv
+│   │   └── requirements.txt
+│   └── spider
+│       └── .venv
+│   │   └── requirements.txt
+└── todolist-web-py
+    ├── .venv
+    ├── app
+    ├── manage.py
+    ├── requirements.txt
+    └── todo</pre></td></tr></table>
+</div>
+</div>
+<p>这时候就会发现venv的弊端之一，如果将虚拟环境创建到代码文件下和git使用有些不方便。</p>
+
+<h3 id="使用pipenv管理虚拟环境">使用pipenv管理虚拟环境</h3>
+
+<p>pipenv可以比较好的解决venv的两个问题，其具体安装和使用过程同样请参考第一篇，这里只是贴出其命令帮助中的示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  spider pipenv --help
+
+...
+
+Usage Examples:
+   Create a new project using Python 3.7, specifically:
+   $ pipenv --python 3.7
+
+   Remove project virtualenv (inferred from current directory):
+   $ pipenv --rm
+
+   Install all dependencies for a project (including dev):
+   $ pipenv install --dev
+
+   Create a lockfile containing pre-releases:
+   $ pipenv lock --pre
+
+   Show a graph of your installed dependencies:
+   $ pipenv graph
+
+   Check your installed dependencies for security vulnerabilities:
+   $ pipenv check
+
+   Install a local setup.py into your virtual environment/Pipfile:
+   $ pipenv install -e .
+
+   Use a lower-level pip command:
+   $ pipenv run pip freeze
+
+...</pre></td></tr></table>
+</div>
+</div>
+<p>同样查看web服务的依赖情况，可以清晰的看到Django依赖导入了那些包，requests依赖导入了那些包，还是很清晰的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  spider pipenv graph
+Django==3.0.4
+  - asgiref [required: ~=3.2, installed: 3.2.5]
+  - pytz [required: Any, installed: 2019.3]
+  - sqlparse [required: &gt;=0.2.2, installed: 0.3.1]
+requests==2.23.0
+  - certifi [required: &gt;=2017.4.17, installed: 2019.11.28]
+  - chardet [required: &gt;=3.0.2,&lt;4, installed: 3.0.4]
+  - idna [required: &gt;=2.5,&lt;3, installed: 2.9]
+  - urllib3 [required: &gt;=1.21.1,&lt;1.26,!=1.25.1,!=1.25.0, installed: 1.25.8]</pre></td></tr></table>
+</div>
+</div>
+<p>相对venv的虚拟环境，项目目录下只存在<code>Pipfile</code>和<code>Pipfile.lock</code>两个文本文件，完全可以用git管理，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  studio2 tree -L 3
+.
+├── jobs
+│   ├── excel_dispose
+│   │   └── Pipfile
+│   └── spider
+│       ├── Pipfile
+│       ├── Pipfile.lock
+│       └── requirements.txt
+└── todolist-web-py
+    ├── Pipfile
+    ├── Pipfile.lock
+    ├── app
+    ├── manage.py
+    └── todo
+        ├── __init__.py
+        ├── asgi.py
+        ├── settings.py
+        ├── urls.py
+        └── wsgi.py</pre></td></tr></table>
+</div>
+</div>
+<p>比较悲剧的是，如果旧的项目导入requirements.txt中的依赖包就非常慢，几分钟，十来分钟也是常有的事，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  spider pipenv install -r requirements.txt
+Requirements file provided! Importing into Pipfile…
+Pipfile.lock not found, creating…
+Locking [dev-packages] dependencies…
+Locking [packages] dependencies…
+⠙ Locking........</pre></td></tr></table>
+</div>
+</div>
+<p>即使修改了Pipfile中的源到国内源也提速不了多少，据说主要是因为计算生成pipfile.loc文件, 会对每个安装包计算签名，如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">&#34;urllib3&#34;: {
+            &#34;hashes&#34;: [
+                &#34;sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc&#34;,
+                &#34;sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc&#34;
+            ],
+            &#34;version&#34;: &#34;==1.25.8&#34;
+        }</pre></td></tr></table>
+</div>
+</div>
+<p>可能还有一些开源项目管理方面的问题，我们只能够期望早点改善吧。</p>
+
+<h3 id="使用poetry管理虚拟环境">使用poetry管理虚拟环境</h3>
+
+<p>在试用pipenv的过程中，又发现了一款管理工具<code>poetry</code></p>
+
+<p>官方推荐使用下面命令行安装：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python</pre></td></tr></table>
+</div>
+</div>
+<p><code>mac</code>安装完成还需要将默认的路径<code>~/.poetry/bin/poetry</code>添加到系统path</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  poetry poetry --help
+zsh: command not found: poetry
+
+➜  poetry ~/.poetry/bin/poetry --help
+Poetry version 1.0.5</pre></td></tr></table>
+</div>
+</div>
+<p>使用 <code>poetry init</code> 初始化环境，可以交互式的创建过程，需要注意的是python的版本，我本机默认环境是2.7，这里需要切换成3.7版本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">Compatible Python versions [^2.7]:  ^3.7</pre></td></tr></table>
+</div>
+</div>
+<p>初始化环境后，会形成<code>pyproject.toml</code>内容大概如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">[tool.poetry]
+name = &#34;poetry&#34;
+version = &#34;0.1.0&#34;
+description = &#34;&#34;
+authors = [&#34;None&#34;]
+
+[tool.poetry.dependencies]
+python = ^&#34;3.7&#34;
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = [&#34;poetry&gt;=0.12&#34;]
+build-backend = &#34;poetry.masonry.api&#34;</pre></td></tr></table>
+</div>
+</div>
+<p>和pipenv的pipfile很类似了，然后安装环境：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  poetry poetry install
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Writing lock file
+
+No dependencies to install or update</pre></td></tr></table>
+</div>
+</div>
+<p>进入环境：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  poetry poetry shell
+Spawning shell within /Users/yoo/Library/Caches/pypoetry/virtualenvs/poetry-79xnRUxm-py3.7
+Identity added: /Users/yoo/.ssh/id_rsa_yzx (/Users/yoo/.ssh/id_rsa_yzx)
+➜  poetry . /Users/yoo/Library/Caches/pypoetry/virtualenvs/poetry-79xnRUxm-py3.7/bin/activate
+(poetry-79xnRUxm-py3.7) ➜  poetry</pre></td></tr></table>
+</div>
+</div>
+<p>可以看到poetry创建的环境也是独立与项目的。</p>
+
+<p>然后安装flask包，默认情况下也是有些缓慢:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"> poetry poetry add flask
+Using version ^1.1.1 for flask
+
+Updating dependencies
+Resolving dependencies... (13.9s)
+
+Writing lock file
+
+
+Package operations: 6 installs, 0 updates, 0 removals
+
+  - Installing markupsafe (1.1.1)
+  - Installing click (7.1.1)
+  - Installing itsdangerous (1.1.0)
+  - Installing jinja2 (2.11.1)
+  - Installing werkzeug (1.0.0)
+  - Installing flask (1.1.1)</pre></td></tr></table>
+</div>
+</div>
+<p>查看环境里的包:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  poetry poetry show
+click        7.1.1  Composable command line interface toolkit
+flask        1.1.1  A simple framework for building complex web applications.
+itsdangerous 1.1.0  Various helpers to pass data to untrusted environments and back.
+jinja2       2.11.1 A very fast and expressive template engine.
+markupsafe   1.1.1  Safely add untrusted strings to HTML/XML markup.
+werkzeug     1.0.0  The comprehensive WSGI web application library.</pre></td></tr></table>
+</div>
+</div>
+<p>和pipenv一样可以树状查看依赖:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  poetry poetry show --tree
+flask 1.1.1 A simple framework for building complex web applications.
+├── click &gt;=5.1
+├── itsdangerous &gt;=0.24
+├── jinja2 &gt;=2.10.1
+│   └── markupsafe &gt;=0.23
+└── werkzeug &gt;=0.15</pre></td></tr></table>
+</div>
+</div>
+<p>但是发现一个关于使用习惯的小问题,虚拟环境中直接使用<code>pip</code>命令的包，使用<code>poetry show</code>命令无法查看:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"># 虚拟环境中查看安装包
+(poetry-79xnRUxm-py3.7) ➜  poetry pip list
+Package      Version
+------------ ----------
+asgiref      3.2.5
+certifi      2019.11.28
+chardet      3.0.4
+click        7.1.1
+Django       3.0.4
+Flask        1.1.1
+idna         2.9
+itsdangerous 1.1.0
+Jinja2       2.11.1
+MarkupSafe   1.1.1
+pip          20.0.2
+pytz         2019.3
+requests     2.23.0
+setuptools   41.2.0
+sqlparse     0.3.1
+urllib3      1.25.8
+Werkzeug     1.0.0
+(poetry-79xnRUxm-py3.7) ➜  poetry exit
+# 推出虚拟环境后查看安装包
+➜  poetry poetry show
+click        7.1.1  Composable command line interface toolkit
+flask        1.1.1  A simple framework for building complex web applications.
+itsdangerous 1.1.0  Various helpers to pass data to untrusted environments and back.
+jinja2       2.11.1 A very fast and expressive template engine.
+markupsafe   1.1.1  Safely add untrusted strings to HTML/XML markup.
+werkzeug     1.0.0  The comprehensive WSGI web application library.</pre></td></tr></table>
+</div>
+</div>
+<p>这样就需要注意使用习惯，避免pip直接安装包。pipenv则没有这个问题，相对来说个人更习惯pipenv一些。</p>
+
+<p><code>poetry</code> 同时是一个打包工具，创建默认的foo项目后，可以很方便的使用<code>build</code>指令打包:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  foo poetry build
+The currently activated Python version 2.7.16 is not supported by the project (^3.7).
+Trying to find and use a compatible version.
+Using python3 (3.7.5)
+Building foo (0.1.0)
+ - Building sdist
+ - Built foo-0.1.0.tar.gz
+
+ - Building wheel
+ - Built foo-0.1.0-py3-none-any.whl</pre></td></tr></table>
+</div>
+</div>
+<p>打包后项目目录如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">.
+├── README.rst
+├── dist
+│   ├── foo-0.1.0-py3-none-any.whl
+│   └── foo-0.1.0.tar.gz
+├── foo
+│   └── __init__.py
+├── foo.egg-info
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   ├── dependency_links.txt
+│   └── top_level.txt
+├── poetry.lock
+├── pyproject.toml
+└── tests
+    ├── __init__.py
+    └── test_foo.py
+
+4 directories, 12 files</pre></td></tr></table>
+</div>
+</div>
+<p>可以很方便的应用于不需要独立部署的代码库项目。</p>
+
+<hr />
+
+<h3 id="三种虚拟环境工具使用及建议">三种虚拟环境工具使用及建议</h3>
+
+<p>简单总结如下:</p>
+
+<table>
+<thead>
+<tr>
+<th>工具名称</th>
+<th>路径</th>
+<th>依赖管理</th>
+<th>使用习惯</th>
+<th>推荐场景</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>venv</td>
+<td>项目路径</td>
+<td>平铺</td>
+<td>习惯</td>
+<td>小型项目和服务器上部署</td>
+</tr>
+
+<tr>
+<td>pipenv</td>
+<td>外部路径</td>
+<td>树状</td>
+<td>习惯</td>
+<td>中大型项目开发环境</td>
+</tr>
+
+<tr>
+<td>poetry</td>
+<td>外部路径</td>
+<td>树状</td>
+<td>适应</td>
+<td>中大型项目开发环境，有发包需求</td>
+</tr>
+</tbody>
+</table>
+
+<p>总体来说，三个工具都功能类似，操作习惯也比较相识，又有各自的应用场景，可以都使用起来，等待最强大的那个一统江湖。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2020-03-21
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E6%8C%87%E5%8D%97/">指南</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/redis-py/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Redis-py 源码阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/django-rbac-permission-design/">
+            <span class="next-text nav-default">Django Rbac 权限设计</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2020-03-21 23:10:57 \x2b0800 CST',
+        title: 'Python虚拟环境指南2020版',
+        link: decodeURI(location.href),
+        desc: '这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

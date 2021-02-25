@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>源码&#34; on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
+    <description>Recent content in 源码&#34; on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Wed, 24 Feb 2021 20:01:29 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Gunicorn 源码阅读</title>
+      <link>https://game404.github.io/post/python/gunicorn/</link>
+      <pubDate>Wed, 24 Feb 2021 20:01:29 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/gunicorn/</guid>
+      <description>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正</description>
+    </item>
+    
+    <item>
+      <title>python tinydb 源码阅读</title>
+      <link>https://game404.github.io/post/python/tinydb/</link>
+      <pubDate>Wed, 17 Feb 2021 22:14:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/tinydb/</guid>
+      <description>TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL</description>
+    </item>
+    
+    <item>
+      <title>python argparse 源码阅读</title>
+      <link>https://game404.github.io/post/python/argparse/</link>
+      <pubDate>Thu, 11 Feb 2021 21:36:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/argparse/</guid>
+      <description>http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12</description>
+    </item>
+    
+    <item>
+      <title>python wsgiref 源码阅读</title>
+      <link>https://game404.github.io/post/python/wsgiref/</link>
+      <pubDate>Thu, 04 Feb 2021 22:13:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/wsgiref/</guid>
+      <description>python web开发中http请求的处理流程通常是: web-browser &amp;lt;-&amp;gt; web-server &amp;lt;-&amp;gt; wsgi &amp;lt;-&amp;gt; web-application， 我们学习过基于bottle实现的web-applic</description>
+    </item>
+    
+    <item>
+      <title>python http 源码阅读</title>
+      <link>https://game404.github.io/post/python/http/</link>
+      <pubDate>Thu, 28 Jan 2021 22:13:45 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/http/</guid>
+      <description>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p</description>
+    </item>
+    
+    <item>
+      <title>Bottle 源码阅读</title>
+      <link>https://game404.github.io/post/python/bottle/</link>
+      <pubDate>Thu, 21 Jan 2021 22:46:56 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/bottle/</guid>
+      <description>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限</description>
+    </item>
+    
+    <item>
+      <title>requests 源码阅读</title>
+      <link>https://game404.github.io/post/python/requests/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests/</guid>
+      <description>requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我</description>
+    </item>
+    
+    <item>
+      <title>Redis-py 源码阅读</title>
+      <link>https://game404.github.io/post/python/redis-py/</link>
+      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/redis-py/</guid>
+      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>database on 游戏不存在</title>
+    <link>https://game404.github.io/tags/database/</link>
+    <description>Recent content in database on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Wed, 17 Feb 2021 22:14:27 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>python tinydb 源码阅读</title>
+      <link>https://game404.github.io/post/python/tinydb/</link>
+      <pubDate>Wed, 17 Feb 2021 22:14:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/tinydb/</guid>
+      <description>TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL</description>
+    </item>
+    
+  </channel>
+</rss>
