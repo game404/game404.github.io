@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/blackhole/" />
-<meta property="article:published_time" content="2019-04-15T00:26:09&#43;08:00"/>
-<meta property="article:modified_time" content="2019-04-15T00:26:09&#43;08:00"/>
-
+<meta property="article:published_time" content="2019-04-15T00:26:09+08:00" />
+<meta property="article:modified_time" content="2019-04-15T00:26:09+08:00" />
 <meta itemprop="name" content="Python 生成微信头图">
 <meta itemprop="description" content="前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被">
-
-
 <meta itemprop="datePublished" content="2019-04-15T00:26:09&#43;08:00" />
 <meta itemprop="dateModified" content="2019-04-15T00:26:09&#43;08:00" />
-<meta itemprop="wordCount" content="1500">
+<meta itemprop="wordCount" content="1501">
 
 
 
-<meta itemprop="keywords" content="指南," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Python 生成微信头图"/>
 <meta name="twitter:description" content="前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被"/>
 
@@ -141,29 +137,22 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#使用-pillow-处理图片">使用 Pillow 处理图片</a></li>
-<li><a href="#使用-click-封装cli">使用 click 封装cli</a></li>
-<li><a href="#应用docker镜像制作">应用docker镜像制作</a></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#-pillow-">使用 Pillow 处理图片</a></li>
+    <li><a href="#-click-cli">使用 click 封装cli</a></li>
+    <li><a href="#docker">应用docker镜像制作</a></li>
+    <li><a href="#heading">总结</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被告图片侵权，赔偿还不少。虽然我一直注意，但是有些图片根本不知道有没有版权啊。自己的小号，被告了可赔偿啊不起。” 我本来想告诉她，你想多了，就你那破号，但是这样怕是没法做朋友了。机智的我转而告诉她 “太简单了，我帮你做个图片小程序吧，自动生成图片，一劳永逸”。肖立马说 “好啊，好啊，到时候赚钱了分你！” 于是就有了黑洞微信头图生成器。</p>
-
-<h2 id="使用-pillow-处理图片">使用 Pillow 处理图片</h2>
-
+      <p>前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被告图片侵权，赔偿还不少。虽然我一直注意，但是有些图片根本不知道有没有版权啊。自己的小号，被告了可赔偿啊不起。” 我本来想告诉她，你想多了，就你那破号，但是这样怕是没法做朋友了。机智的我转而告诉她 “太简单了，我帮你做个图片小程序吧，自动生成图片，一劳永逸”。肖立马说 “好啊，好啊，到时候赚钱了分你！” 于是就有了黑洞微信头图生成器。</p>
+<h2 id="-pillow-">使用 Pillow 处理图片</h2>
 <p>Pillow 是python的图片处理库，可以用来处理图片。核心代码大概如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -179,9 +168,9 @@
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from PIL import Image, ImageDraw, ImageFont
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from PIL import Image, ImageDraw, ImageFont
 
 ...
 
@@ -196,21 +185,17 @@ w, h = font.getsize(word)
 # 文字垂直和水平居中
 draw.text(((WIDTH - w) / 2, (HEIGHT - h) / 2), word, fill=font_color, font=font)
 # 生成图片文件
-image.save(&#34;output/{}_{}.png&#34;.format(filename, idx, &#34;png&#34;))</pre></td></tr></table>
+image.save(&#34;output/{}_{}.png&#34;.format(filename, idx, &#34;png&#34;))
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>核心功能都是使用 <strong>Pillow</strong> 提供的api，生成一个rgb图片，然后往上贴文本，步骤和Photoshop创建图片类似。创建的图片效果有:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Python_0.png" alt="Python" /></p>
-
+</div><p>核心功能都是使用 <strong>Pillow</strong> 提供的api，生成一个rgb图片，然后往上贴文本，步骤和Photoshop创建图片类似。创建的图片效果有:</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Python_0.png" alt="Python"></p>
 <p>英文会生成10种，中文生成4种。更多效果图，请见<a href="https://github.com/game404/blackhole">github/game404</a></p>
-
-<h2 id="使用-click-封装cli">使用 click 封装cli</h2>
-
+<h2 id="-click-cli">使用 click 封装cli</h2>
 <p>python的命令行工具有 <code>docopt</code>, <code>fire</code> 和 <code>click</code>。 比较了一下，觉得 <code>click</code> 更适合本项目。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -236,9 +221,9 @@ image.save(&#34;output/{}_{}.png&#34;.format(filename, idx, &#34;png&#34;))</pre
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@click.command(context_settings=CONTEXT_SETTINGS)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">@click.command(context_settings=CONTEXT_SETTINGS)
 @click.option(&#34;--word&#34;, prompt=&#34;the word&#34;,
               help=&#34;图片文字&#34;)
 @click.option(&#34;--bcolor&#34;, default=&#34;white&#34;, help=&#34;图片背景色，默认白色，支持颜色值[&#39;red&#39;, &#39;cyan&#39;, &#39;green&#39;, ...]及rgb hex值#ffffff&#34;)
@@ -263,13 +248,13 @@ def generator(word, bcolor, fcolor, fpath):
 
         ...
 
-    &#34;&#34;&#34;</pre></td></tr></table>
+    &#34;&#34;&#34;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>运行效果如下:</p>
+</div><p>运行效果如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -295,9 +280,10 @@ def generator(word, bcolor, fcolor, fpath):
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span><span class="lnt">27
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">(pywork-Y7-meC5z) C:\pywork\blackhole&gt;python blackhole.py --help
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(pywork-Y7-meC5z) C:\pywork\blackhole&gt;python blackhole.py --help
 Usage: blackhole.py [OPTIONS] 
 
   黑洞图片生成器，协助生成微信公众号头图。自由不侵权，game404 出品。
@@ -322,17 +308,16 @@ Options:
   --fcolor TEXT  文字颜色，默认docker蓝，支持颜色值[&#39;red&#39;, &#39;cyan&#39;, &#39;green&#39;, ...]及rgb
                  hex值#ffffff
   --fpath TEXT   字体文件路径，默认空，使用预制字体。也许相对路径更合适。
-  -h, --help     Show this message and exit.</pre></td></tr></table>
-</div>
-</div>
-<p>做完程序，我正在想怎么发给肖，封装成pypi package呢，还是exe呢。 这时候旁边的肖恩顿，突然插了一句。“直接编成docker镜像吧，多方便啊，还跨平台”。原来他都知道啊，希望分帐的消息他不知道。</p>
+  -h, --help     Show this message and exit.
 
-<h2 id="应用docker镜像制作">应用docker镜像制作</h2>
-
+</code></pre></td></tr></table>
+</div>
+</div><p>做完程序，我正在想怎么发给肖，封装成pypi package呢，还是exe呢。 这时候旁边的肖恩顿，突然插了一句。“直接编成docker镜像吧，多方便啊，还跨平台”。原来他都知道啊，希望分帐的消息他不知道。</p>
+<h2 id="docker">应用docker镜像制作</h2>
 <p><code>Dockerfile</code> 如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -363,9 +348,9 @@ Options:
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">FROM python:3.7-alpine3.9
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">FROM python:3.7-alpine3.9
 LABEL maintainer=&#34;shawn &lt;studyoo@foxmail.com&gt;&#34;
 
 WORKDIR /app
@@ -395,28 +380,23 @@ timeout = 120 \
 
 COPY . /app
 
-ENTRYPOINT [&#34;python&#34;,&#34;blackhole.py&#34;]</pre></td></tr></table>
+ENTRYPOINT [&#34;python&#34;,&#34;blackhole.py&#34;]
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>pillow涉及的dev包比较多，属于比较难装的package。</p>
-
+</div><p>pillow涉及的dev包比较多，属于比较难装的package。</p>
 <p>封装完成后，提交到docker hub，肖直接可以使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run -it -v $PWD/output:/app/output --rm game404/blackhole --word docker</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker run -it -v $PWD/output:/app/output --rm game404/blackhole --word docker
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>和python方式运行类似，区别在于只用输入<code>--word docker</code>参数</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Docker_1_pixel.png" alt="docker" /></p>
-
-<h2 id="总结">总结</h2>
-
+</div><p>和python方式运行类似，区别在于只用输入<code>--word docker</code>参数</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Docker_1_pixel.png" alt="docker"></p>
+<h2 id="heading">总结</h2>
 <p>简单总结一下：</p>
-
 <ol>
 <li>使用pillow制作图片文件。</li>
 <li>使用click封装代码命令行工具。</li>
