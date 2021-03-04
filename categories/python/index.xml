@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Wed, 24 Feb 2021 20:01:29 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 04 Mar 2021 23:22:39 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python logging 源码阅读</title>
+      <link>https://game404.github.io/post/python/logging/</link>
+      <pubDate>Thu, 04 Mar 2021 23:22:39 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/logging/</guid>
+      <description>python logging 源码阅读 python logging 模块实现了灵活的日志系统。整个模块仅仅3个类，不到5000行代码的样子，学习它可以加深对程序日志的了解，本文分下面几个部分:</description>
+    </item>
     
     <item>
       <title>Gunicorn 源码阅读</title>
