@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 04 Mar 2021 23:22:39 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 11 Mar 2021 23:43:34 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python 模版引擎 Mako 源码阅读</title>
+      <link>https://game404.github.io/post/python/mako/</link>
+      <pubDate>Thu, 11 Mar 2021 23:43:34 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/mako/</guid>
+      <description>Mako 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码</description>
+    </item>
     
     <item>
       <title>python logging 源码阅读</title>
