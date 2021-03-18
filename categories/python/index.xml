@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on 游戏不存在</title>
@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 11 Mar 2021 23:43:34 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 18 Mar 2021 22:34:49 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>一文打尽python-web开发的signal机制</title>
+      <link>https://game404.github.io/post/python/blinker/</link>
+      <pubDate>Thu, 18 Mar 2021 22:34:49 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/blinker/</guid>
+      <description>signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很</description>
+    </item>
     
     <item>
       <title>python 模版引擎 Mako 源码阅读</title>

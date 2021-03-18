@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>源码 on 游戏不存在</title>
@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 11 Mar 2021 23:43:34 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 18 Mar 2021 22:34:49 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>一文打尽python-web开发的signal机制</title>
+      <link>https://game404.github.io/post/python/blinker/</link>
+      <pubDate>Thu, 18 Mar 2021 22:34:49 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/blinker/</guid>
+      <description>signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很</description>
+    </item>
     
     <item>
       <title>python 模版引擎 Mako 源码阅读</title>
@@ -28,15 +37,6 @@
       
       <guid>https://game404.github.io/post/python/logging/</guid>
       <description>python logging 源码阅读 python logging 模块实现了灵活的日志系统。整个模块仅仅3个类，不到5000行代码的样子，学习它可以加深对程序日志的了解，本文分下面几个部分:</description>
-    </item>
-    
-    <item>
-      <title>Gunicorn 源码阅读</title>
-      <link>https://game404.github.io/post/python/gunicorn/</link>
-      <pubDate>Wed, 24 Feb 2021 20:01:29 +0800</pubDate>
-      
-      <guid>https://game404.github.io/post/python/gunicorn/</guid>
-      <description>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正</description>
     </item>
     
     <item>
