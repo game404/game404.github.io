@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>python wsgiref 源码阅读 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="python web开发中http请求的处理流程通常是: web-browser &amp;lt;-&amp;gt; web-server &amp;lt;-&amp;gt; wsgi &amp;lt;-&amp;gt; web-application， 我们学习过基于bottle实现的web-applic" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/wsgiref/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="python wsgiref 源码阅读" />
+<meta property="og:description" content="python web开发中http请求的处理流程通常是: web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application， 我们学习过基于bottle实现的web-applic" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/wsgiref/" />
+<meta property="article:published_time" content="2021-02-04T22:13:53&#43;08:00"/>
+<meta property="article:modified_time" content="2021-02-04T22:13:53&#43;08:00"/>
+
+<meta itemprop="name" content="python wsgiref 源码阅读">
+<meta itemprop="description" content="python web开发中http请求的处理流程通常是: web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application， 我们学习过基于bottle实现的web-applic">
+
+
+<meta itemprop="datePublished" content="2021-02-04T22:13:53&#43;08:00" />
+<meta itemprop="dateModified" content="2021-02-04T22:13:53&#43;08:00" />
+<meta itemprop="wordCount" content="3857">
+
+
+
+<meta itemprop="keywords" content="wsgi,源码," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="python wsgiref 源码阅读"/>
+<meta name="twitter:description" content="python web开发中http请求的处理流程通常是: web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application， 我们学习过基于bottle实现的web-applic"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">python wsgiref 源码阅读</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-02-04 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#wsgi-相关概念">wsgi 相关概念</a>
+<ul>
+<li><a href="#cgi">CGI</a></li>
+<li><a href="#wsgi">WSGI</a></li>
+<li><a href="#asgi">ASGI</a></li>
+</ul></li>
+<li><a href="#cgi-示例">cgi 示例</a>
+<ul>
+<li><a href="#cgi脚本">cgi脚本</a></li>
+<li><a href="#cgi服务实现">cgi服务实现</a></li>
+</ul></li>
+<li><a href="#wsgiref">wsgiref</a>
+<ul>
+<li><a href="#wsgi-小结">wsgi 小结</a></li>
+</ul></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p>python web开发中http请求的处理流程通常是: web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application， 我们学习过基于bottle实现的web-application，也学习了http.server。再完成python3源码中自带的wsgiref的库，就可以拼接最后一个环节wsgi。本文会分下面几个部分:</p>
+
+<ul>
+<li>wsgi相关概念</li>
+<li>cgi示例</li>
+<li>wsgiref源码</li>
+<li>wsgi小结</li>
+<li>小技巧</li>
+</ul>
+
+<h2 id="wsgi-相关概念">wsgi 相关概念</h2>
+
+<h3 id="cgi">CGI</h3>
+
+<p>CGI（<strong>Common Gateway Interface</strong>）通用网关接口。1993年由美国NCSA（National Center for Supercomputing Applications）发明。它具有简单易用、语言无关的特点。虽然今天已经少有人直接使用CGI进行编程，但它仍被主流的Web服务器，如Apache、IIS、Nginx等广泛支持。</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Common-Gateway-Interface.png" alt="cgi" /></p>
+
+<p>CGI提供了一种接口规范，可以让应用程序, 一般是各种脚本语言，比如perl， php， python等来扩展web服务，让服务动态起来。</p>
+
+<h3 id="wsgi">WSGI</h3>
+
+<p>WSGI（<strong>Web Server Gateway Interface</strong>）web服务网关接口。是web服务和web应用程序之间的接口规范，在PEP3333中提出。</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/lsbaws_part2_wsgi_interop.png" alt="wsgi" /></p>
+
+<p>wsgi让应用程序和web服务之间解耦，应用程序只需要遵守规范，就可以在各种不同的web服务部署运行。比如上图中，基于flask/django实现的应用程序可以使用gunicorn部署，也可以使用nginx+uwsgi部署。</p>
+
+<h3 id="asgi">ASGI</h3>
+
+<p>ASGI（<strong>Asynchronous Server Gateway Interface</strong>） 异步服务器网关接口。ASGI继承自wsgi，旨在在具有异步功能的Python Web服务器，框架和应用程序之间提供标准接口。ASGI具有WSGI向后兼容性实现以及多个服务器和应用程序框架。</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/asgi-intro-full.png" alt="asgi" /></p>
+
+<p>wsgi中使用请求响应模型，每个请求可以同步获得一个响应。在ASGI中，请求的响应变成异步实现，一般用于websocket协议。(asgi的内容，涉及异步实现，本文就不多介绍)</p>
+
+<h2 id="cgi-示例">cgi 示例</h2>
+
+<p>单纯的概念理解比较难。下面我们配合示例一起来学习，先从CGI开始。</p>
+
+<p><code>http</code> 模块提供了一个简单的文件目录服务:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">python3 -m http.server
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...</pre></td></tr></table>
+</div>
+</div>
+<p>这个服务只有静态的展示功能，我们可以利用cgi扩展一个动态功能。</p>
+
+<h3 id="cgi脚本">cgi脚本</h3>
+
+<p>创建<code>cgi-bin</code>目录，这是CGI中约定的目录名称。然后编写 <code>hello.py</code>， 代码如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">#!/usr/bin/env python
+
+import time
+import sqlite3
+import os
+
+DB_FILE = &#34;guests.db&#34;
+
+def init_db():
+	pass  # 详情请见附件
+
+def update_total(ts):
+	pass  # 详情请见附件
+
+print(&#39;&lt;html&gt;&#39;)
+print(&#39;&lt;head&gt;&#39;)
+print(&#39;&lt;meta charset=&#34;utf-8&#34;&gt;&#39;)
+print(&#39;&lt;title&gt;Hello Word！&lt;/title&gt;&#39;)
+print(&#39;&lt;/head&gt;&#39;)
+print(&#39;&lt;body&gt;&#39;)
+print(&#39;&lt;h2&gt;Hello Python!&lt;/h2&gt;&#39;)
+if not os.path.exists(DB_FILE):
+	init_db()
+total = update_total(time.time())
+print(f&#39;total guest: {total}!&#39;)	
+print(&#39;&lt;/body&gt;&#39;)
+print(&#39;&lt;/html&gt;&#39;)</pre></td></tr></table>
+</div>
+</div>
+<p>为了代码简洁，省略了db操作部分的具体实现。还需要给脚本可执行权限:</p>
+
+<blockquote>
+<p><a href="https://github.com/game404/yuanmahui">源码</a>在这里</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">chmod 755 hello.py</pre></td></tr></table>
+</div>
+</div>
+<p>可以先测试脚本:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">./hello.py
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&#34;utf-8&#34;&gt;
+&lt;title&gt;Hello Word！&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Hello Python!&lt;/h2&gt;
+total guest: 4!
+&lt;/body&gt;
+&lt;/html&gt;</pre></td></tr></table>
+</div>
+</div>
+<p>启动http.server中的cgi服务:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">python -m http.server --cgi</pre></td></tr></table>
+</div>
+</div>
+<p>注意后面的 <code>--cgi</code> 参数，让服务使用cgi-handler。启动后使用 <strong>curl</strong> 访问：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">curl -v http://127.0.0.1:8000/cgi-bin/hello.py
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 8000 (#0)
+&gt; GET /cgi-bin/hello.py HTTP/1.1
+&gt; Host: 127.0.0.1:8000
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt;
+* HTTP 1.0, assume close after body
+&lt; HTTP/1.0 200 Script output follows
+&lt; Server: SimpleHTTP/0.6 Python/3.8.5
+&lt; Date: Sun, 31 Jan 2021 13:09:29 GMT
+&lt; &lt;html&gt;
+&lt; &lt;head&gt;
+&lt; &lt;meta charset=&#34;utf-8&#34;&gt;
+&lt; &lt;title&gt;Hello Word！&lt;/title&gt;
+&lt; &lt;/head&gt;
+&lt; &lt;body&gt;
+&lt; &lt;h2&gt;Hello Python!&lt;/h2&gt;
+&lt; total guest: 5!  # 访客数
+&lt; &lt;/body&gt;
+&lt; &lt;/html&gt;
+* Closing connection 0</pre></td></tr></table>
+</div>
+</div>
+<p>可以看到 <strong>hello.py</strong> 正确执行，访客数+1。因为数据存储在db中，重启服务仍然有效。</p>
+
+<h3 id="cgi服务实现">cgi服务实现</h3>
+
+<p>cgi的实现，主要就是下面的代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"># http.server
+
+class CGIHTTPRequestHandler(SimpleHTTPRequestHandler):
+
+    def run_cgi(self):
+        import subprocess
+        cmdline = [scriptfile]
+        if self.is_python(scriptfile):
+            interp = sys.executable
+            cmdline = [interp, &#39;-u&#39;] + cmdline
+        if &#39;=&#39; not in query:
+            cmdline.append(query)
+
+        try:
+            nbytes = int(length)
+        except (TypeError, ValueError):
+            nbytes = 0
+        p = subprocess.Popen(cmdline,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             env = env
+                             )
+        if self.command.lower() == &#34;post&#34; and nbytes &gt; 0:
+            data = self.rfile.read(nbytes)
+        # throw away additional data [see bug #427345]
+        while select.select([self.rfile._sock], [], [], 0)[0]:
+            if not self.rfile._sock.recv(1):
+                break
+        stdout, stderr = p.communicate(data)
+        self.wfile.write(stdout)
+        p.stderr.close()
+        p.stdout.close()
+        status = p.returncode</pre></td></tr></table>
+</div>
+</div>
+<p>可见cgi的实现就是:
+* 使用subprocess.Popen新开了一个进程去执行脚本
+* 重定向脚本的输出到当前socket的wfile，也就是http请求的返回上</p>
+
+<blockquote>
+<p>代码也验证了为什么需要授予 <strong>hello.py</strong> 的可执行权限。</p>
+</blockquote>
+
+<p>从例子可以了解到http.server专注于提供http服务，app.py专注于业务功能，两者通过cgi进行衔接。</p>
+
+<h2 id="wsgiref">wsgiref</h2>
+
+<p>wsgiref是python自带的wsgi的实现参考(reference), 主要代码结构:</p>
+
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>handlers.py</td>
+<td>wsgi实现</td>
+</tr>
+
+<tr>
+<td>headers.py</td>
+<td>管理http-header</td>
+</tr>
+
+<tr>
+<td>simple_server.py</td>
+<td>支持wsgi的http服务</td>
+</tr>
+
+<tr>
+<td>util.py&amp;&amp;validator.py</td>
+<td>工具和验证器</td>
+</tr>
+</tbody>
+</table>
+
+<p><code>WSGIServer</code>的代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class WSGIServer(HTTPServer):
+
+    &#34;&#34;&#34;BaseHTTPServer that implements the Python WSGI protocol&#34;&#34;&#34;
+
+    application = None
+
+    def server_bind(self):
+        &#34;&#34;&#34;Override server_bind to store the server name.&#34;&#34;&#34;
+        HTTPServer.server_bind(self)
+        self.setup_environ()
+
+    def setup_environ(self):  # 初始化环境变量
+        # Set up base environment
+        env = self.base_environ = {}
+        env[&#39;SERVER_NAME&#39;] = self.server_name
+        env[&#39;GATEWAY_INTERFACE&#39;] = &#39;CGI/1.1&#39;
+        env[&#39;SERVER_PORT&#39;] = str(self.server_port)
+        env[&#39;REMOTE_HOST&#39;]=&#39;&#39;
+        env[&#39;CONTENT_LENGTH&#39;]=&#39;&#39;
+        env[&#39;SCRIPT_NAME&#39;] = &#39;&#39;
+
+    def get_app(self):
+        return self.application
+
+    def set_app(self,application):  # 注入application的class，注意是class
+        self.application = application</pre></td></tr></table>
+</div>
+</div>
+<p>WSGIServer并不复杂，继承自http-server，接受application注入，就把web-server和we-application衔接起来。衔接后的动作，则是老规矩，交给HTTPRequestHandler去实现。同时wsgi服务多了一个准备env的动作，约定了一些wsgi的环境变量。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class WSGIRequestHandler(BaseHTTPRequestHandler):
+
+    server_version = &#34;WSGIServer/&#34; + __version__
+
+    def get_environ(self):
+        pass
+
+    def handle(self):
+        &#34;&#34;&#34;Handle a single HTTP request&#34;&#34;&#34;
+
+        self.raw_requestline = self.rfile.readline(65537)
+        if len(self.raw_requestline) &gt; 65536:
+            ...
+            self.send_error(414)
+            return
+
+        if not self.parse_request(): # An error code has been sent, just exit
+            return
+
+        handler = ServerHandler(
+            self.rfile, self.wfile, self.get_stderr(), self.get_environ(),
+            multithread=False,
+        )  # 创建新的业务handler
+        handler.request_handler = self      
+        handler.run(self.server.get_app())  # 创建application对象</pre></td></tr></table>
+</div>
+</div>
+<p>WSGIRequestHandler覆盖了handler，处理完成http协议(parse_request)后, 又做了四个动作:
+* 创建environ
+* 创建ServerHandler对象
+* 创建app对象
+* 运行app</p>
+
+<p>environ处理主要是把http请求的header信息附带在wsgi-server的环境变量上:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def get_environ(self):
+    env = self.server.base_environ.copy()  # wsgi-server的环境变量
+    env[&#39;SERVER_PROTOCOL&#39;] = self.request_version
+    env[&#39;SERVER_SOFTWARE&#39;] = self.server_version
+    env[&#39;REQUEST_METHOD&#39;] = self.command
+    
+    ...
+    
+    host = self.address_string()
+    if host != self.client_address[0]:
+        env[&#39;REMOTE_HOST&#39;] = host
+    env[&#39;REMOTE_ADDR&#39;] = self.client_address[0]
+
+    if self.headers.get(&#39;content-type&#39;) is None:
+        env[&#39;CONTENT_TYPE&#39;] = self.headers.get_content_type()
+    else:
+        env[&#39;CONTENT_TYPE&#39;] = self.headers[&#39;content-type&#39;]
+
+    length = self.headers.get(&#39;content-length&#39;)
+    if length:
+        env[&#39;CONTENT_LENGTH&#39;] = length
+
+    for k, v in self.headers.items():
+        k=k.replace(&#39;-&#39;,&#39;_&#39;).upper(); v=v.strip()
+        if k in env:
+            continue                    # skip content length, type,etc.
+        if &#39;HTTP_&#39;+k in env:
+            env[&#39;HTTP_&#39;+k] += &#39;,&#39;+v     # comma-separate multiple headers
+        else:
+            env[&#39;HTTP_&#39;+k] = v
+    return env</pre></td></tr></table>
+</div>
+</div>
+<p>ServerHandler对象的创建，接受输入/输出/错误，以及环境变量信息：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class ServerHandler(BaseHandler):
+
+    def __init__(self,stdin,stdout,stderr,environ,
+        multithread=True, multiprocess=False
+    ):
+        self.stdin = stdin
+        self.stdout = stdout
+        self.stderr = stderr
+        self.base_env = environ
+        self.wsgi_multithread = multithread
+        self.wsgi_multiprocess = multiprocess
+    ...</pre></td></tr></table>
+</div>
+</div>
+<p>重点在ServerHandler的run函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class BaseHandler:
+    def run(self, application):
+    &#34;&#34;&#34;Invoke the application&#34;&#34;&#34;
+    # Note to self: don&#39;t move the close()!  Asynchronous servers shouldn&#39;t
+    # call close() from finish_response(), so if you close() anywhere but
+    # the double-error branch here, you&#39;ll break asynchronous servers by
+    # prematurely closing.  Async servers must return from &#39;run()&#39; without
+    # closing if there might still be output to iterate over.
+        ...
+        self.setup_environ()
+        self.result = application(self.environ, self.start_response)
+        self.finish_response()
+        ...</pre></td></tr></table>
+</div>
+</div>
+<p>关键的3个步骤:
+1. setup_environ 继续构建环境变量
+2. 接受application处理http请求的返回
+3. 完成http响应</p>
+
+<p>setup_environ对env进行了进一步的包装，附带了请求的in/error，这样让使用env就可以对http请求进行读写。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def setup_environ(self):
+    &#34;&#34;&#34;Set up the environment for one request&#34;&#34;&#34;
+
+    env = self.environ = self.os_environ.copy()
+    self.add_cgi_vars()  # 子类实现 self.environ.update(self.base_env)
+
+    env[&#39;wsgi.input&#39;]        = self.get_stdin()  # 注意没有stdout
+    env[&#39;wsgi.errors&#39;]       = self.get_stderr()
+    env[&#39;wsgi.version&#39;]      = self.wsgi_version
+    env[&#39;wsgi.run_once&#39;]     = self.wsgi_run_once
+    env[&#39;wsgi.url_scheme&#39;]   = self.get_scheme()
+    env[&#39;wsgi.multithread&#39;]  = self.wsgi_multithread
+    env[&#39;wsgi.multiprocess&#39;] = self.wsgi_multiprocess
+
+    if self.wsgi_file_wrapper is not None:
+        env[&#39;wsgi.file_wrapper&#39;] = self.wsgi_file_wrapper
+
+    if self.origin_server and self.server_software:
+        env.setdefault(&#39;SERVER_SOFTWARE&#39;,self.server_software)</pre></td></tr></table>
+</div>
+</div>
+<p>env的处理过程，可以理解成3步：1）附加server的运行信息 2）附加请求的http头(协议信息) 3）附加请求的流信息。env，可以换个说法就是http请求的所有上下文环境。</p>
+
+<p>application还接收一个回调函数start_response，主要是按照http协议的规范，生成响应状态和response_header:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def start_response(self, status, headers,exc_info=None):
+    &#34;&#34;&#34;&#39;start_response()&#39; callable as specified by PEP 3333&#34;&#34;&#34;
+
+    self.status = status
+    self.headers = self.headers_class(headers)
+    status = self._convert_string_type(status, &#34;Status&#34;)
+    assert len(status)&gt;=4,&#34;Status must be at least 4 characters&#34;
+    assert status[:3].isdigit(), &#34;Status message must begin w/3-digit code&#34;
+    assert status[3]==&#34; &#34;, &#34;Status message must have a space after code&#34;
+
+    return self.write</pre></td></tr></table>
+</div>
+</div>
+<p>application对请求的处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def demo_app(environ,start_response):
+    from io import StringIO
+    stdout = StringIO()
+    print(&#34;Hello world!&#34;, file=stdout)
+    print(file=stdout)
+    # http请求及环境
+    h = sorted(environ.items())
+    for k,v in h:
+        print(k,&#39;=&#39;,repr(v), file=stdout)
+    # 回调写入http_status, response_headers
+    start_response(&#34;200 OK&#34;, [(&#39;Content-Type&#39;,&#39;text/plain; charset=utf-8&#39;)])
+    # 返回处理结果response_body
+    return [stdout.getvalue().encode(&#34;utf-8&#34;)]</pre></td></tr></table>
+</div>
+</div>
+<p>响应仍然由ServerHandler写入:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def finish_response(self):
+    if not self.result_is_file() or not self.sendfile():
+        for data in self.result:
+            self.write(data)
+        self.finish_content()</pre></td></tr></table>
+</div>
+</div>
+<p>可以使用下面命令测试这个流程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">python -m wsgiref.simple_server
+Serving HTTP on 0.0.0.0 port 8000 ...
+127.0.0.1 - - [31/Jan/2021 21:43:05] &#34;GET /xyz?abc HTTP/1.1&#34; 200 3338</pre></td></tr></table>
+</div>
+</div>
+<h3 id="wsgi-小结">wsgi 小结</h3>
+
+<p>简单小结wsgi的实现。在http请求的处理流程web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application中，体现了分层的思想，每层做不同的事情:
+* web-server处理http/tcp协议，线程/进程的调度等底层实现
+* wsgi承上启下，接受http请求，调用applicaiton处理请求，完成响应
+* application处理上层业务逻辑</p>
+
+<h2 id="小技巧">小技巧</h2>
+
+<p>在wsgiref代码中一样有各种小的技巧, 学习后可以让我们的代码更pythonic。</p>
+
+<p>环境变量都这样设置:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def setup_environ(self):
+    # Set up base environment
+    env = self.base_environ = {}
+    env[&#39;SERVER_NAME&#39;] = self.server_name
+    env[&#39;GATEWAY_INTERFACE&#39;] = &#39;CGI/1.1&#39;
+    ...</pre></td></tr></table>
+</div>
+</div>
+<p>我之前大概都是这样写:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def setup_environ(self):
+    self.base_environ = {}
+    self.base_environ[&#39;SERVER_NAME&#39;] = self.server_name
+    self.base_environ[&#39;GATEWAY_INTERFACE&#39;] = &#39;CGI/1.1&#39;</pre></td></tr></table>
+</div>
+</div>
+<p>对比后，可以发现前面的写法更简洁一些。</p>
+
+<p>比如流的持续写入:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def _write(self,data):
+    result = self.stdout.write(data)
+    if result is None or result == len(data):
+        return
+    from warnings import warn
+    warn(&#34;SimpleHandler.stdout.write() should not do partial writes&#34;,
+        DeprecationWarning)
+    while True:
+        data = data[result:]  # 持续的写入，直到完成
+        if not data:
+            break
+        result = self.stdout.write(data)</pre></td></tr></table>
+</div>
+</div>
+<p>比如header的处理，实际上是把数组当作字典使用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class Headers:
+    &#34;&#34;&#34;Manage a collection of HTTP response headers&#34;&#34;&#34;
+
+    def __init__(self, headers=None):
+        headers = headers if headers is not None else []
+        self._headers = headers  # 内部存储使用数组
+    
+    def __setitem__(self, name, val):
+        &#34;&#34;&#34;Set the value of a header.&#34;&#34;&#34;
+        del self[name]
+        self._headers.append(
+            (self._convert_string_type(name), self._convert_string_type(val)))
+
+    ....
+
+    def __getitem__(self,name):
+        &#34;&#34;&#34;Get the first header value for &#39;name&#39;
+
+        Return None if the header is missing instead of raising an exception.
+
+        Note that if the header appeared multiple times, the first exactly which
+        occurrence gets returned is undefined.  Use getall() to get all
+        the values matching a header field name.
+        &#34;&#34;&#34;
+        return self.get(name)
+
+    def get(self,name,default=None):
+        &#34;&#34;&#34;Get the first header value for &#39;name&#39;, or return &#39;default&#39;&#34;&#34;&#34;
+        name = self._convert_string_type(name.lower())
+        for k,v in self._headers:
+            if k.lower()==name:
+                return v
+        return default</pre></td></tr></table>
+</div>
+</div>
+<p>这样对 <code>Content-Type: application/javascript; charset=utf-8</code> 这样的值，可以使用下面方式使用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">if self.headers.get(&#39;content-type&#39;) is None:
+    env[&#39;CONTENT_TYPE&#39;] = self.headers.get_content_type()
+else:
+    env[&#39;CONTENT_TYPE&#39;] = self.headers[&#39;content-type&#39;]</pre></td></tr></table>
+</div>
+</div>
+<p>为什么用数组，而不是用字典呢？我猜测是因为header的特性是数据多为读操作。</p>
+
+<h2 id="参考链接">参考链接</h2>
+
+<ul>
+<li><a href="https://wsgi.readthedocs.io/en/latest/index.html">https://wsgi.readthedocs.io/en/latest/index.html</a></li>
+<li><a href="https://ruslanspivak.com/lsbaws-part2/">https://ruslanspivak.com/lsbaws-part2/</a></li>
+<li><a href="https://asgi.readthedocs.io/en/latest/">https://asgi.readthedocs.io/en/latest/</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-02-04
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/wsgi/">wsgi</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/argparse/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">python argparse 源码阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/python/http/">
+            <span class="next-text nav-default">python http 源码阅读</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-02-04 22:13:53 \x2b0800 CST',
+        title: 'python wsgiref 源码阅读',
+        link: decodeURI(location.href),
+        desc: 'python web开发中http请求的处理流程通常是: web-browser \x26lt;-\x26gt; web-server \x26lt;-\x26gt; wsgi \x26lt;-\x26gt; web-application， 我们学习过基于bottle实现的web-applic',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

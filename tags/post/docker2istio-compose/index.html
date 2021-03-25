@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>从docker到istio之二 - 使用compose部署应用 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/docker2istio-compose/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="从docker到istio之二 - 使用compose部署应用" />
+<meta property="og:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/docker2istio-compose/" />
+<meta property="article:published_time" content="2019-05-22T22:39:33&#43;08:00"/>
+<meta property="article:modified_time" content="2019-05-22T22:39:33&#43;08:00"/>
+
+<meta itemprop="name" content="从docker到istio之二 - 使用compose部署应用">
+<meta itemprop="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包">
+
+
+<meta itemprop="datePublished" content="2019-05-22T22:39:33&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-22T22:39:33&#43;08:00" />
+<meta itemprop="wordCount" content="2082">
+
+
+
+<meta itemprop="keywords" content="系列," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="从docker到istio之二 - 使用compose部署应用"/>
+<meta name="twitter:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">从docker到istio之二 - 使用compose部署应用</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-22 </span>
+        <div class="post-category">
+            <a href="/categories/docker/"> Docker </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#前言">前言</a></li>
+<li><a href="#compose">compose</a></li>
+<li><a href="#部署应用及测试">部署应用及测试</a>
+<ul>
+<li><a href="#编写应用部署文件">编写应用部署文件</a></li>
+<li><a href="#启动应用">启动应用</a></li>
+<li><a href="#访问应用">访问应用</a></li>
+<li><a href="#应用扩容">应用扩容</a></li>
+<li><a href="#清理应用">清理应用</a></li>
+</ul></li>
+<li><a href="#总结">总结</a></li>
+<li><a href="#推荐">推荐</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h2 id="前言">前言</h2>
+
+<p>容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包括下面四篇文章。</p>
+
+<ul>
+<li><a href="https://game404.github.io/post/docker2istio-docker/">从docker到istio之一 - 使用Docker将应用容器化</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-compose/">从docker到istio之二 - 使用compose部署应用</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-kubernetes/">从docker到istio之三 - kubernetes编排应用</a></li>
+<li><a href="https://game404.github.io/post/docker2istio-istio/">从docker到istio之四 - istio管理应用</a></li>
+</ul>
+
+<p>这是第二篇，使用compose部署应用，同样演示都在<strong>docker2istio</strong>目录。</p>
+
+<h2 id="compose">compose</h2>
+
+<p>Compose是一个用于定义和运行多容器Docker应用程序的工具，采用<strong>python</strong>编写。</p>
+
+<h2 id="部署应用及测试">部署应用及测试</h2>
+
+<h3 id="编写应用部署文件">编写应用部署文件</h3>
+
+<p>compose部署应用，采用编写<strong>docker-compose.yml</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">version: &#39;3&#39;
+services:
+
+  redis:
+    image: redis:4-alpine3.8
+    restart: always
+  
+  flaskapp:
+    depends_on:
+      - redis
+    build: ./app
+    image: flaskapp:0.0.2
+    links:
+      - redis
+
+  nginx:
+    image: nginx:1.15.8-alpine
+    depends_on:
+      - flaskapp
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    restart: always
+    ports:
+      - &#34;80:80&#34;
+    environment:
+      - NGINX_PORT=80
+    links:
+      - flaskapp</pre></td></tr></table>
+</div>
+</div>
+<p>这里描述了下面几件事情:</p>
+
+<ol>
+<li>依次启动<strong>redis</strong> 、 <strong>flaskapp</strong> 、 <strong>nginx</strong> 三个服务。服务顺序由<code>depends_on</code> 决定。</li>
+<li>使用<code>build</code>命令，自动编译 <code>flaskapp:0.0.2</code>。</li>
+<li>使用<code>links</code>命令，描述服务间依赖。</li>
+<li>使用<code>ports</code>导出端口，使用<code>volumes</code>挂载数据卷。</li>
+</ol>
+
+<p>这一过程，把第一篇中启动容器的过程，语义化，流程更清晰。</p>
+
+<h3 id="启动应用">启动应用</h3>
+
+<p>启动应用，使用<code>docker-compose up</code> 命令:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">Creating network &#34;docker2istio_default&#34; with the default driver
+Building flaskapp
+Step 1/5 : FROM python:3.6-alpine
+ ---&gt; 1d981af1e3b4
+Step 2/5 : WORKDIR /code
+ ---&gt; Using cache
+ ---&gt; 7f2b07b16752
+Step 3/5 : RUN pip install redis flask
+ ---&gt; Using cache
+ ---&gt; 79e39b6c2e93
+Step 4/5 : ADD . /code
+ ---&gt; 4266029c0709
+Step 5/5 : CMD [&#34;python&#34;, &#34;flaskapp.py&#34;]
+ ---&gt; Running in 56e799a2fb61
+Removing intermediate container 56e799a2fb61
+ ---&gt; 1a61773c4c07
+
+Successfully built 1a61773c4c07
+Successfully tagged flaskapp:0.0.2
+WARNING: Image for service flaskapp was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Creating docker2istio_redis_1 ... done
+Creating docker2istio_flaskapp_1 ... done
+Creating docker2istio_nginx_1    ... done
+Attaching to docker2istio_redis_1, docker2istio_flaskapp_1, docker2istio_nginx_1
+flaskapp_1  |  * Serving Flask app &#34;flaskapp&#34; (lazy loading)
+flaskapp_1  |  * Environment: production
+flaskapp_1  |    WARNING: Do not use the development server in a production environment.
+flaskapp_1  |    Use a production WSGI server instead.
+flaskapp_1  |  * Debug mode: on
+redis_1     | 1:C 09 Apr 12:06:15.892 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis_1     | 1:C 09 Apr 12:06:15.893 # Redis version=4.0.12, bits=64, commit=00000000, modified=0, pid=1, just started
+redis_1     | 1:C 09 Apr 12:06:15.893 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+flaskapp_1  |  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+flaskapp_1  |  * Restarting with stat
+flaskapp_1  |  * Debugger is active!
+redis_1     | 1:M 09 Apr 12:06:15.894 * Running mode=standalone, port=6379.
+redis_1     | 1:M 09 Apr 12:06:15.894 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+redis_1     | 1:M 09 Apr 12:06:15.894 # Server initialized
+flaskapp_1  |  * Debugger PIN: 323-612-506
+redis_1     | 1:M 09 Apr 12:06:15.894 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &#39;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&#39; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.
+redis_1     | 1:M 09 Apr 12:06:15.894 * Ready to accept connections</pre></td></tr></table>
+</div>
+</div>
+<p>启动日志中，展示了创建网络，编译镜像，启动容器这几个过程</p>
+
+<h3 id="访问应用">访问应用</h3>
+
+<p>使用 <code>docker-compose ps</code> 检查服务状况:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">         Name                        Command               State         Ports
+-------------------------------------------------------------------------------------
+docker2istio_flaskapp_1   python flaskapp.py               Up
+docker2istio_nginx_1      nginx -g daemon off;             Up      0.0.0.0:80-&gt;80/tcp
+docker2istio_redis_1      docker-entrypoint.sh redis ...   Up      6379/tcp</pre></td></tr></table>
+</div>
+</div>
+<p>当然，compose也是使用docker，也可以 <code>docker ps</code> ：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                NAMES
+c96fd468c415        nginx:1.15.8-alpine   &#34;nginx -g &#39;daemon of…&#34;   3 minutes ago       Up 3 minutes        0.0.0.0:80-&gt;80/tcp   docker2istio_nginx_1
+b61d1d0ca201        flaskapp:0.0.2        &#34;python flaskapp.py&#34;     3 minutes ago       Up 3 minutes                             docker2istio_flaskapp_1
+73a2359655d2        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   3 minutes ago       Up 3 minutes        6379/tcp             docker2istio_redis_1</pre></td></tr></table>
+</div>
+</div>
+<p>对比可见 <code>docker-compose ps</code> ，更偏应用层。</p>
+
+<p>然后访问服务:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  ~ curl http://127.0.0.1
+Hello World by 172.19.0.3 from 172.19.0.1 ! 该页面已被访问 1 次。</pre></td></tr></table>
+</div>
+</div>
+<h3 id="应用扩容">应用扩容</h3>
+
+<p>使用 <code>docker-compose up --scale flaskapp=2</code> 对 <strong>flaskapp</strong>进行扩容。</p>
+
+<p>查看扩容的结果:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  docker2istio docker-compose ps
+         Name                        Command               State         Ports
+-------------------------------------------------------------------------------------
+docker2istio_flaskapp_1   python flaskapp.py               Up
+docker2istio_flaskapp_2   python flaskapp.py               Up
+docker2istio_nginx_1      nginx -g daemon off;             Up      0.0.0.0:80-&gt;80/tcp
+docker2istio_redis_1      docker-entrypoint.sh redis ...   Up      6379/tcp</pre></td></tr></table>
+</div>
+</div>
+<p>刷新访问应用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">➜  docker2istio curl http://127.0.0.1
+Hello World by 172.20.0.4 from 172.20.0.1 ! 该页面已被访问 101 次。
+➜  docker2istio curl http://127.0.0.1
+Hello World by 172.20.0.3 from 172.20.0.1 ! 该页面已被访问 102 次。</pre></td></tr></table>
+</div>
+</div>
+<p>同时观察服务日志输出:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">nginx_1     | 172.22.0.1 - - [10/Apr/2019:01:38:02 +0000] &#34;GET / HTTP/1.0&#34; 200 76 &#34;-&#34; &#34;ApacheBench/2.3&#34; &#34;-&#34;
+flaskapp_1  | [2019-04-10 01:38:02,140] DEBUG in flaskapp: Hello out 172.22.0.3 172.22.0.1 65:
+flaskapp_1  | 172.22.0.5 - - [10/Apr/2019 01:38:02] &#34;GET / HTTP/1.0&#34; 200 -
+flaskapp_1  | [2019-04-10 01:38:02,141] DEBUG in flaskapp: Hello out 172.22.0.3 172.22.0.1 63:
+flaskapp_2  | [2019-04-10 01:38:02,145] DEBUG in flaskapp: hello in
+flaskapp_1  | 172.22.0.5 - - [10/Apr/2019 01:38:02] &#34;GET / HTTP/1.0&#34; 200 -
+nginx_1     | 172.22.0.1 - - [10/Apr/2019:01:38:02 +0000] &#34;GET / HTTP/1.0&#34; 200 76 &#34;-&#34; &#34;ApacheBench/2.3&#34; &#34;-&#34;
+flaskapp_1  | [2019-04-10 01:38:02,150] DEBUG in flaskapp: hello in
+flaskapp_2  | [2019-04-10 01:38:02,151] DEBUG in flaskapp: hello in
+nginx_1     | 172.22.0.1 - - [10/Apr/2019:01:38:02 +0000] &#34;GET / HTTP/1.0&#34; 200 76 &#34;-&#34; &#34;ApacheBench/2.3&#34; &#34;-&#34;
+flaskapp_2  | [2019-04-10 01:38:02,153] DEBUG in flaskapp: Hello out 172.22.0.4 172.22.0.1 67:
+flaskapp_2  | 172.22.0.5 - - [10/Apr/2019 01:38:02] &#34;GET / HTTP/1.0&#34; 200 -
+nginx_1     | 172.22.0.1 - - [10/Apr/2019:01:38:02 +0000] &#34;GET / HTTP/1.0&#34; 200 76 &#34;-&#34; &#34;ApacheBench/2.3&#34; &#34;-&#34;
+flaskapp_2  | [2019-04-10 01:38:02,156] DEBUG in flaskapp: Hello out 172.22.0.4 172.22.0.1 69:
+flaskapp_1  | [2019-04-10 01:38:02,156] DEBUG in flaskapp: hello in
+flaskapp_2  | 172.22.0.5 - - [10/Apr/2019 01:38:02] &#34;GET / HTTP/1.0&#34; 200 -
+flaskapp_1  | [2019-04-10 01:38:02,159] DEBUG in flaskapp: hello in
+flaskapp_2  | [2019-04-10 01:38:02,161] DEBUG in flaskapp: hello in
+nginx_1     | 172.22.0.1 - - [10/Apr/2019:01:38:02 +0000] &#34;GET / HTTP/1.0&#34; 200 76 &#34;-&#34; &#34;ApacheBench/2.3&#34; &#34;-&#34;
+flaskapp_1  | [2019-04-10 01:38:02,160] DEBUG in flaskapp: Hello out 172.22.0.3 172.22.0.1 70:</pre></td></tr></table>
+</div>
+</div>
+<p>对比纯docker的方式，扩容变简单了。</p>
+
+<p>需要注意的是：扩容过程中要重启<strong>nginx</strong>服务，否则虽然容器扩充成多个，但是服务流量并不会分配到新容器。不过容器启动和创建非常迅速，可以先<code>docker-compose down</code>再行扩容启动。</p>
+
+<blockquote>
+<p><a href="https://docs.docker.com/compose/reference/scale/">docker-compose scale</a> Note: This command is deprecated. Use the up command with the &ndash;scale flag instead. Beware that using up with &ndash;scale flag has some subtle differences with the scale command as it incorporates the behaviour of up command.</p>
+</blockquote>
+
+<h3 id="清理应用">清理应用</h3>
+
+<p>使用 <code>docker-compose down</code> 一键清理应用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">Removing docker2istio_nginx_1    ... done
+Removing docker2istio_flaskapp_2 ... done
+Removing docker2istio_flaskapp_1 ... done
+Removing docker2istio_redis_1    ... done
+Removing network docker2istio_default</pre></td></tr></table>
+</div>
+</div>
+<h2 id="总结">总结</h2>
+
+<p>compose 已经实现了容器扩容自动挡:</p>
+
+<ol>
+<li>更直观的控制容器启动顺序及依赖。</li>
+<li>使用便捷，扩容方便。</li>
+</ol>
+
+<p>不过compose的自动挡，充其量只是一个摩托版，作为小型/测试应用的部署方案还是不错。如果是大型/正式应用，还有以下缺点:</p>
+
+<ol>
+<li>扩容不能够无缝,需要重启服务。</li>
+<li>单纯的compose不支持多机互联。</li>
+</ol>
+
+<p>要实现多机部署扩容，就需要使用到 <code>kubernetes</code>的容器编排方案了。从部署到编排，单字面理解，看起来能够维护的容器量都增长了。相比 <strong>docker</strong> 家的<code>swarm+machine</code>方案， <code>kubernetes</code> 已经是容器编排领域的事实标准，更值得学习了解。</p>
+
+<h2 id="推荐">推荐</h2>
+
+<ol>
+<li><p><a href="https://github.com/goharbor/harbor">harbor</a> harbor应用包括多个服务，推荐部署方式就是compose。</p></li>
+
+<li><p><a href="https://github.com/alicfeng/gogs-drone-docker">gogs-drone-docker</a> 。演示了如何快速使用docker compose 搭建一个ci系统。</p></li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-05-22
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E7%B3%BB%E5%88%97/">系列</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/docker2istio-kubernetes/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">从docker到istio之三 - kubernetes集群编排</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/docker2istio-docker/">
+            <span class="next-text nav-default">从docker到istio之一 - 使用Docker将应用容器化</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2019-05-22 22:39:33 \x2b0800 CST',
+        title: '从docker到istio之二 - 使用compose部署应用',
+        link: decodeURI(location.href),
+        desc: '前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

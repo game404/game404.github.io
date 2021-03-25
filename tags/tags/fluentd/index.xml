@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fluentd on 游戏不存在</title>
+    <link>https://game404.github.io/tags/fluentd/</link>
+    <description>Recent content in fluentd on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sat, 13 Apr 2019 05:23:47 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/fluentd/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>fluentd收集kubernetes 集群日志分析</title>
+      <link>https://game404.github.io/post/k8s-fluentd-logging/</link>
+      <pubDate>Sat, 13 Apr 2019 05:23:47 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/k8s-fluentd-logging/</guid>
+      <description>EFK (Elasticsearch + Fluentd + Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下f</description>
+    </item>
+    
+  </channel>
+</rss>

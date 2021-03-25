@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>python tinydb 源码阅读 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/tinydb/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="python tinydb 源码阅读" />
+<meta property="og:description" content="TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/tinydb/" />
+<meta property="article:published_time" content="2021-02-17T22:14:27&#43;08:00"/>
+<meta property="article:modified_time" content="2021-02-17T22:14:27&#43;08:00"/>
+
+<meta itemprop="name" content="python tinydb 源码阅读">
+<meta itemprop="description" content="TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL">
+
+
+<meta itemprop="datePublished" content="2021-02-17T22:14:27&#43;08:00" />
+<meta itemprop="dateModified" content="2021-02-17T22:14:27&#43;08:00" />
+<meta itemprop="wordCount" content="4094">
+
+
+
+<meta itemprop="keywords" content="database,源码," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="python tinydb 源码阅读"/>
+<meta name="twitter:description" content="TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">python tinydb 源码阅读</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-02-17 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#tinydb-项目结构简介">TinyDB 项目结构简介</a></li>
+<li><a href="#tinydb-api-设计">TinyDB API 设计</a></li>
+<li><a href="#storage-实现">storage 实现</a></li>
+<li><a href="#document-table-实现">document &amp;&amp; table 实现</a></li>
+<li><a href="#query-实现">query 实现</a></li>
+<li><a href="#database-实现">database 实现</a></li>
+<li><a href="#cache-实现">cache 实现</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p>TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL数据库的实现，本文包括下面几部分:</p>
+
+<ul>
+<li>TinyDB 项目结构简介</li>
+<li>TinyDB API设计</li>
+<li>storage 实现</li>
+<li>document &amp;&amp; table 实现</li>
+<li>query 实现</li>
+<li>database 实现</li>
+<li>cache 实现</li>
+<li>小结</li>
+<li>小技巧</li>
+</ul>
+
+<h2 id="tinydb-项目结构简介">TinyDB 项目结构简介</h2>
+
+<p>本次阅读采用的版本号是 <code>4.0.0</code>， 项目结构如下:</p>
+
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>database</td>
+<td>database的实现</td>
+</tr>
+
+<tr>
+<td>middlewares</td>
+<td>中间件实现，包括cache</td>
+</tr>
+
+<tr>
+<td>operations</td>
+<td>对database的一些操作方法</td>
+</tr>
+
+<tr>
+<td>queries</td>
+<td>查询功能实现</td>
+</tr>
+
+<tr>
+<td>storages</td>
+<td>存储功能实现</td>
+</tr>
+
+<tr>
+<td>table</td>
+<td>文档;表/集合功能实现</td>
+</tr>
+
+<tr>
+<td>utils</td>
+<td>工具类</td>
+</tr>
+
+<tr>
+<td>version</td>
+<td>版本号</td>
+</tr>
+</tbody>
+</table>
+
+<p>项目的类图：</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/tinydb_classes.png" alt="tinydb类图" /></p>
+
+<p>从类图可以看到，代码主要集中在database，table和query三个部分。</p>
+
+<h2 id="tinydb-api-设计">TinyDB API 设计</h2>
+
+<p>TinyDB的使用示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">from tinydb import TinyDB
+from tinydb import Query
+from tinydb import JSONStorage
+from tinydb.middlewares import CachingMiddleware
+db = TinyDB(&#39;cache_db.json&#39;, storage=CachingMiddleware(JSONStorage))
+db.purge_tables()  # 重置数据
+db.insert({&#39;int&#39;: 1, &#39;char&#39;: &#39;a&#39;})  # 插入数据
+db.insert({&#39;int&#39;: 2, &#39;char&#39;: &#39;b&#39;})
+table = db.table(&#39;user&#39;)
+table.insert({&#39;name&#39;: &#34;shawn&#34;, &#34;age&#34;: 18})
+table.insert({&#39;name&#39;: &#34;shelton&#34;, &#34;age&#34;: 28})
+print(table.all())  # [{&#39;name&#39;: &#39;shawn&#39;, &#39;age&#39;: 18}, {&#39;name&#39;: &#39;shelton&#39;, &#39;age&#39;: 28}]
+User = Query()
+table.update({&#39;name&#39;: &#39;shawn&#39;, &#39;age&#39;: 19}, User.name == &#39;shawn&#39;)  # 修改数据
+print(table.search(User.name == &#39;shawn&#39;))  # [{&#39;name&#39;: &#39;shawn&#39;, &#39;age&#39;: 19}]
+table.remove(User.name == &#39;shawn&#39;)  # 删除数据
+db.close()</pre></td></tr></table>
+</div>
+</div>
+<p>上面的示例演示了数据库的CRUD等基础功能，可见tinydb的api非常简洁直观:</p>
+
+<ul>
+<li>TinyDB创建了database</li>
+<li>使用db.table(&lsquo;user&rsquo;)创建了新表user(默认是_default表)</li>
+<li>使用talbe.insert插入数据</li>
+<li>使用Query对象创建查询condition</li>
+<li>使用table.search进行查询</li>
+<li>使用table.update和table.remove进行更改和删除</li>
+</ul>
+
+<p>从下面的数据文件<code>cache_db.json</code>，可以看到每个文档都有一个int型id，标识doc的唯一性。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">{
+    &#34;_default&#34;: {
+        &#34;9&#34;: {
+            &#34;int&#34;: 1,
+            &#34;char&#34;: &#34;a&#34;
+        },
+        &#34;10&#34;: {
+            &#34;int&#34;: 2,
+            &#34;char&#34;: &#34;b&#34;
+        }
+    },
+    &#34;user&#34;: {
+        &#34;2&#34;: {
+            &#34;name&#34;: &#34;shelton&#34;,
+            &#34;age&#34;: 28
+        }
+    }
+}</pre></td></tr></table>
+</div>
+</div>
+<h2 id="storage-实现">storage 实现</h2>
+
+<p>storages 包括下面3个类:</p>
+
+<ul>
+<li>storage 存储抽象类, 定义了read，write两个抽象方法和一个close空方法。
+
+<ul>
+<li>MemoryStorage 基于内存的存储实现</li>
+<li>JSONStorage 基于JSON序列化的文件存储实现</li>
+</ul></li>
+</ul>
+
+<p>先看简单的 <strong>MemoryStorage</strong> 实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class MemoryStorage(Storage):
+
+    def __init__(self):
+        super().__init__()
+        self.memory = None
+
+    def read(self) -&gt; Optional[Dict[str, Dict[str, Any]]]:
+        return self.memory
+
+    def write(self, data: Dict[str, Dict[str, Any]]):
+        self.memory = data</pre></td></tr></table>
+</div>
+</div>
+<p>storage的实现就是每次更换数据全量，这里的data是整个database的数据。</p>
+
+<p>再看默认的 <strong>JSONStorage</strong> 实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class JSONStorage(Storage):
+    &#34;&#34;&#34;
+    Store the data in a JSON file.
+    &#34;&#34;&#34;
+
+    def __init__(self, path: str, create_dirs=False, encoding=None, **kwargs):
+        super().__init__()
+        touch(path, create_dirs=create_dirs)  # 创建文件及目录
+        self.kwargs = kwargs
+        self._handle = open(path, &#39;r+&#39;, encoding=encoding)  # 文件读写
+
+    def close(self) -&gt; None:
+        self._handle.close()  # 文件存储，需要合法的关闭
+
+    def read(self) -&gt; Optional[Dict[str, Dict[str, Any]]]:
+        self._handle.seek(0, os.SEEK_END)
+        size = self._handle.tell()  # 判断文档内容大小
+
+        if not size:
+            return None
+        else:
+            self._handle.seek(0)
+            return json.load(self._handle)  # 加载数据
+
+    def write(self, data: Dict[str, Dict[str, Any]]):
+        self._handle.seek(0)
+        serialized = json.dumps(data, **self.kwargs)  # json序列化
+
+        self._handle.write(serialized)
+        self._handle.flush()
+        os.fsync(self._handle.fileno())  # 强制写入磁盘，保存数据
+
+        self._handle.truncate()  # 截断原始数据</pre></td></tr></table>
+</div>
+</div>
+<p><strong>JSONStorage</strong> 主要就是文件的操作，然后进行json数据序列化和反序列化。官方的参考文档中还有扩展的 <strong>YAMLStorage</strong> ，大家可以通过参考链接自行去查看。</p>
+
+<h2 id="document-table-实现">document &amp;&amp; table 实现</h2>
+
+<p>document是普通字典+doc_id属性，非常简单</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class Document(dict):
+
+    def __init__(self, value: Mapping, doc_id: int):
+        super().__init__(value)
+        self.doc_id = doc_id</pre></td></tr></table>
+</div>
+</div>
+<p>Table的实现代码较多，先看构造方法:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class Table:
+    
+    document_class = Document  # 存储数据类，可以被扩展
+    document_id_class = int  # 数据主键，默认int，可以被扩展
+    query_cache_class = LRUCache  # 查询缓存
+    default_query_cache_capacity = 10  # 查询缓存容量
+
+    def __init__(
+        self,
+        storage: Storage,
+        name: str,
+        cache_size: int = default_query_cache_capacity
+    ):
+        self._storage = storage  # 存储的引用
+        self._name = name  # 表名
+        self._query_cache = self.query_cache_class(capacity=cache_size) \
+            # type: LRUCache[Query, List[Document]]
+        self._next_id = None  # 主键记录</pre></td></tr></table>
+</div>
+</div>
+<p>Table主要包括读和写两部分，我们先看写的代表 <strong>search</strong> 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def search(self, cond: Query) -&gt; List[Document]:
+    if cond in self._query_cache:  # 优先从查询缓存获取
+        docs = self._query_cache.get(cond)
+        if docs is not None:
+            return docs[:]
+
+    docs = [doc for doc in self if cond(doc)]  # 使用Query判断数据是否符合条件
+
+    self._query_cache[cond] = docs[:]  # 缓存下次使用
+
+    return docs
+    </pre></td></tr></table>
+</div>
+</div>
+<p><strong>table</strong> 对象可以迭代，是因为实现了  <code>iter</code>  方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def __iter__(self) -&gt; Iterator[Document]:
+        &#34;&#34;&#34;
+        Iterate over all documents stored in the table.
+
+        :returns: an iterator over all documents.
+        &#34;&#34;&#34;
+
+        # Iterate all documents and their IDs
+        for doc_id, doc in self._read_table().items():  # 读取所有数据
+            # Convert documents to the document class
+            yield self.document_class(doc, doc_id)  # 包装Document对象</pre></td></tr></table>
+</div>
+</div>
+<p>重点之一在 <strong>read_table</strong> 方法实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def _read_table(self) -&gt; Dict[int, Mapping]:
+    tables = self._storage.read()  # 从storage读取数据
+    ...
+    table = tables[self.name]  # 获取当前表
+    ...
+    return {
+        self.document_id_class(doc_id): doc
+        for doc_id, doc in table.items()
+    }  # 生成全部数据</pre></td></tr></table>
+</div>
+</div>
+<p>查询中还有一个重点在于查询条件的处理，这是由Query实现的，稍后再介绍。继续查看插入数据方法 <strong>insert</strong> 的实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def insert(self, document: Mapping) -&gt; int:
+
+    ...
+    doc_id = self._get_next_id()  # 获取自增ID
+
+    def updater(table: dict):  
+        ...
+        table[doc_id] = dict(document)  # 插入数据
+        
+    self._update_table(updater)  # 抽象的更新表方法
+
+    return doc_id
+    </pre></td></tr></table>
+</div>
+</div>
+<p>主键自增的 <strong>get_next_id</strong> 方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def _get_next_id(self):
+    if self._next_id is not None:  # 第一条记录
+        next_id = self._next_id
+        self._next_id = next_id + 1
+        return next_id  # 快速返回
+
+    table = self._read_table()  # 从存储中读取数据
+    if not table:  # 空表
+        next_id = 1
+        self._next_id = next_id + 1
+        return next_id
+
+    # 查找已有数据的最大主键
+    max_id = max(self.document_id_class(i) for i in table.keys())
+    self._next_id = max_id + 1 # 主键自增
+    return self._next_id</pre></td></tr></table>
+</div>
+</div>
+<p>更新数据最重要的 <strong>update_table</strong> :</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def _update_table(self, updater: Callable[[Dict[int, Mapping]], None]):
+    tables = self._storage.read()  # 载入已有database数据
+
+    if tables is None:
+        # The database is empty
+        tables = {}
+    try:
+        raw_table = tables[self.name] # 读取table数据
+    except KeyError:
+        # The table does not exist yet, so it is empty
+        raw_table = {}
+      # 转换document对象
+    table = {
+        self.document_id_class(doc_id): doc
+        for doc_id, doc in raw_table.items()
+    }
+    updater(table) # 更新数据
+    tables[self.name] = {
+        str(doc_id): doc
+        for doc_id, doc in table.items()
+    }  # 封装document
+
+    self._storage.write(tables)  # 写入数据
+
+    self.clear_cache()  # 数据变动，清空查询缓存</pre></td></tr></table>
+</div>
+</div>
+<p>可以看到更新数据模版主要步骤是：</p>
+
+<ul>
+<li>读取数据(database&amp;&amp;table)</li>
+<li>封装document对象</li>
+<li>更新数据</li>
+<li>写入数据</li>
+<li>清理缓存</li>
+</ul>
+
+<h2 id="query-实现">query 实现</h2>
+
+<p>query是可以进行布尔运算和算术运算的conditon，由QueryInstance父类和Query子类两级实现。QueryInstance定义了布尔运算的规则，Query定义了算术运算的规则。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class QueryInstance:
+
+    def __init__(self, test: Callable[[Mapping], bool], hashval: Tuple):
+        self._test = test  # 计算函数
+        self._hash = hashval  # hash值
+
+    def __call__(self, value: Mapping) -&gt; bool:  # 执行获取布尔值
+        return self._test(value)
+
+    def __hash__(self):
+        return hash(self._hash)
+
+    def __repr__(self):
+        return &#39;QueryImpl{}&#39;.format(self._hash)
+
+    def __eq__(self, other: object):
+        if isinstance(other, QueryInstance): # 类型和hash相同
+            return self._hash == other._hash
+        return False</pre></td></tr></table>
+</div>
+</div>
+<p>QueryInstance使用hash值确定对象的唯一性，布尔运算 <code>and</code>, <code>or</code> 和 <code>not</code>  也都是基于对象的hash判断。<strong>frozenset</strong> 是给对象计算hash值的关键函数，在utils中提供。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def __and__(self, other: &#39;QueryInstance&#39;) -&gt; &#39;QueryInstance&#39;:
+    return QueryInstance(lambda value: self(value) and other(value),
+                         (&#39;and&#39;, frozenset([self._hash, other._hash])))
+
+def __or__(self, other: &#39;QueryInstance&#39;) -&gt; &#39;QueryInstance&#39;:
+    return QueryInstance(lambda value: self(value) or other(value),
+                         (&#39;or&#39;, frozenset([self._hash, other._hash])))
+
+def __invert__(self) -&gt; &#39;QueryInstance&#39;:
+    return QueryInstance(lambda value: not self(value),
+                         (&#39;not&#39;, self._hash))</pre></td></tr></table>
+</div>
+</div>
+<p>Query子类中定义了算术运算的函数，包括：</p>
+
+<ul>
+<li>eq 相等</li>
+<li>ne 不等</li>
+<li>lt 小于</li>
+<li>le 小于等于</li>
+<li>gt 大于</li>
+<li>ge 大于等于</li>
+</ul>
+
+<p>算术运算和布尔运算不同，是基于Query对象的条件进行判断：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def _generate_test(
+            self,
+            test: Callable[[Any], bool],
+            hashval: Tuple,
+    ) -&gt; QueryInstance:
+
+        def runner(value):
+            try:
+                # Resolve the path
+                for part in self._path:
+                    value = value[part]  # 字典取值
+            except (KeyError, TypeError):
+                return False
+            else:
+                return test(value)
+
+        return QueryInstance(
+            lambda value: runner(value),
+            hashval
+        )
+
+    def __eq__(self, rhs: Any):
+        &#34;&#34;&#34;
+        Test a dict value for equality.
+
+        &gt;&gt;&gt; Query().f1 == 42
+
+        :param rhs: The value to compare against
+        &#34;&#34;&#34;
+        return self._generate_test(
+            lambda value: value == rhs,  # 判断逻辑，使用匿名函数
+            (&#39;==&#39;, self._path, freeze(rhs))
+        )</pre></td></tr></table>
+</div>
+</div>
+<p>query对象的条件是这样设置的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma"># Query().f1 == 42
+
+def __getattr__(self, item: str):
+        # Generate a new query object with the new query path
+        # We use type(self) to get the class of the current query in case
+        # someone uses a subclass of ``Query``
+        query = type(self)()  # 新生成query对象
+
+        # Now we add the accessed item to the query path ...
+        query._path = self._path + (item,)
+
+        # ... and update the query hash
+        query._hash = (&#39;path&#39;, query._path)
+
+        return query</pre></td></tr></table>
+</div>
+</div>
+<p>query还提供了一些api： <strong>exists</strong>, <strong>matches</strong>, <strong>search</strong>, <strong>test</strong>, <strong>any</strong>, <strong>all</strong> 和 <strong>one_of</strong> 进行集合判断。</p>
+
+<h2 id="database-实现">database 实现</h2>
+
+<p>database只是维护表的集合和存储，整体实现很简单:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class TinyDB:
+    table_class = Table
+    default_table_name = &#39;_default&#39;
+    default_storage_class = JSONStorage  # 默认存储实现，可以扩展
+
+    def __init__(self, *args, **kwargs):
+        storage = kwargs.pop(&#39;storage&#39;, self.default_storage_class)
+        self._storage = storage(*args, **kwargs)  # 准备存储实现
+        self._opened = True
+        self._tables = {}   # 支持多表
+    
+    def __getattr__(self, name):
+        return getattr(self.table(self.default_table_name), name)
+    
+    # db.insert({&#39;int&#39;: 1, &#39;char&#39;: &#39;a&#39;}) # insert语法通过getattr透传到default-table</pre></td></tr></table>
+</div>
+</div>
+<h2 id="cache-实现">cache 实现</h2>
+
+<p>cache是数据库的重要实现，tinydb提供了2种cache。一种是table的query-cache, 比如之前的search查询:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def search(self, cond: Query) -&gt; List[Document]:
+    if cond in self._query_cache:
+        docs = self._query_cache.get(cond)
+        if docs is not None:
+            return docs[:]
+    ...</pre></td></tr></table>
+</div>
+</div>
+<p>查询缓存使用LRU实现，LRU全称Least Recently Used：最近最少使用淘汰算法。同类的还有，LFU全称Least Frequently Used），最不经常使用淘汰算法。LFU是淘汰一段时间内，使用次数最少的数据；LRU是淘汰最长时间没有被使用的数据，更多说明请见参考链接。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class LRUCache(abc.MutableMapping, Generic[K, V]):
+    def __init__(self, capacity=None):
+        self.capacity = capacity  # 缓存容量
+        self.cache = OrderedDict()  # 有序字典
+    
+    def get(self, key: K, default: D = None) -&gt; Optional[Union[V, D]]:
+        value = self.cache.get(key)  # 从换成获取
+        if value is not None:
+            del self.cache[key]
+            self.cache[key] = value  # 更新缓存顺序
+            return value
+        return default
+
+    def set(self, key: K, value: V):
+        if self.cache.get(key):
+            del self.cache[key]  
+            self.cache[key] = value # 更新缓存顺序及值
+        else:
+            self.cache[key] = value
+            if self.capacity is not None and self.length &gt; self.capacity:
+                self.cache.popitem(last=False)  # 淘汰最古老的数据</pre></td></tr></table>
+</div>
+</div>
+<p>虽然LRUCache的实现比较简单，容量无法字典增长，数据每次淘汰一条比较低效，但是也体现了缓存实现的主要特点:</p>
+
+<ol>
+<li>设置容量上限，防止无限增长</li>
+<li>有序存储数据，每次获取或者修改都要更新一下数据的排序</li>
+<li>达到容量上限后进行数据淘汰</li>
+</ol>
+
+<p>另外一种cache是，数据写入的cache。默认的storage中，每次有数据更新都要写入磁盘，这样效率较低，cachemiddleware中对数据进行缓存，变成N次数据变动后一次写入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class CachingMiddleware(Middleware):
+    WRITE_CACHE_SIZE = 1000  # 变动上限
+
+    def __init__(self, storage_cls):
+        super().__init__(storage_cls)
+        self.cache = None
+        self._cache_modified_count = 0  # 变动计数
+    
+    def read(self):
+        if self.cache is None:
+            self.cache = self.storage.read()  # 初始化
+        return self.cache
+
+    def write(self, data):
+        self.cache = data  # 缓存数据
+        self._cache_modified_count += 1  # 计数增长
+        # 判读是否需要写入磁盘
+        if self._cache_modified_count &gt;= self.WRITE_CACHE_SIZE:
+            self.flush()
+    
+    def close(self): # 安全关闭
+        self.flush() 
+        self.storage.close()</pre></td></tr></table>
+</div>
+</div>
+<h2 id="小结">小结</h2>
+
+<p>我们可以简单小结一下文档型数据库的实现:</p>
+
+<ul>
+<li>storage 数据存储实现</li>
+<li>database &amp;&amp; table 数据库和表的实现</li>
+<li>query 查询规则的实现</li>
+<li>cache 优化和提高数据库的查询和存储效率</li>
+</ul>
+
+<h2 id="小技巧">小技巧</h2>
+
+<p>python 抽象类在 <code>ABC</code> 模块中提供，使用 <strong>abstractmethod</strong> 配合 <strong>NotImplementedError</strong> 异常定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class Storage(ABC):
+
+    @abstractmethod
+    def read(self) -&gt; Optional[Dict[str, Dict[str, Any]]]:
+        raise NotImplementedError(&#39;To be overridden!&#39;)
+
+    @abstractmethod
+    def write(self, data: Dict[str, Dict[str, Any]]) -&gt; None:
+        raise NotImplementedError(&#39;To be overridden!&#39;)
+
+    def close(self) -&gt; None:
+        pass</pre></td></tr></table>
+</div>
+</div>
+<p>python3 支持数据类型的 <strong>annotation</strong> ，比如read方法约定了返回值是一个字典嵌套字典的参数或者None，所以是 Optional类型；write方法的数据也是字典嵌套，没有返回值。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">from typing import Dict, Any, Optional
+
+@abstractmethod
+def read(self) -&gt; Optional[Dict[str, Dict[str, Any]]]:
+    pass
+    
+@abstractmethod
+def write(self, data: Dict[str, Dict[str, Any]]) -&gt; None:
+    pass</pre></td></tr></table>
+</div>
+</div>
+<p>类型注释还支持自引用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def __and__(self, other: &#39;QueryInstance&#39;) -&gt; &#39;QueryInstance&#39;:  # 自引用的类型注释，当前QueryInstance类还未创建
+    return QueryInstance(lambda value: self(value) and other(value),
+                         (&#39;and&#39;, frozenset([self._hash, other._hash])))</pre></td></tr></table>
+</div>
+</div>
+<p>自定义对象的hash</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">class FrozenDict(dict):
+
+    def __hash__(self):
+        # 转换为元祖，利用元祖不可变的特性计算hash值
+        return hash(tuple(sorted(self.items())))
+
+    def _immutable(self, *args, **kws):
+        raise TypeError(&#39;object is immutable&#39;)
+
+    # Disable write access to the dict
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    clear = _immutable
+    setdefault = _immutable
+    popitem = _immutable
+
+    def update(self, e=None, **f):
+        raise TypeError(&#39;object is immutable&#39;)
+
+    def pop(self, k, d=None):
+        raise TypeError(&#39;object is immutable&#39;)
+
+def freeze(obj):
+    &#34;&#34;&#34;
+    使用递归方式一个对象转换成可以hash的对象
+    &#34;&#34;&#34;
+    if isinstance(obj, dict):
+        # Transform dicts into ``FrozenDict``s
+        return FrozenDict((k, freeze(v)) for k, v in obj.items())
+    elif isinstance(obj, list):
+        # Transform lists into tuples
+        return tuple(freeze(el) for el in obj)
+    elif isinstance(obj, set):
+        # Transform sets into ``frozenset``s
+        return frozenset(obj)
+    else:
+        # Don&#39;t handle all other objects
+        return obj</pre></td></tr></table>
+</div>
+</div>
+<p>tinydb项目使用 <strong>poetry</strong> 进行虚拟环境管理，关于poetry的使用请看<a href="https://game404.github.io/post/python-env-2020/">Python虚拟环境指南2020版</a> ；使用  <strong>pytest</strong> 进行测试用例管理。</p>
+
+<h2 id="参考链接">参考链接</h2>
+
+<ul>
+<li>TinyDb Doc <a href="https://tinydb.readthedocs.io/en/latest/">https://tinydb.readthedocs.io/en/latest/</a></li>
+<li>difference between LRU and LFU <a href="https://stackoverflow.com/questions/17759560/what-is-the-difference-between-lru-and-lfu">https://stackoverflow.com/questions/17759560/what-is-the-difference-between-lru-and-lfu</a></li>
+<li>io-处理流的核心工具 <a href="https://docs.python.org/zh-cn/3/library/io.html">https://docs.python.org/zh-cn/3/library/io.html</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-02-17
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/database/">database</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/gunicorn/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Gunicorn 源码阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/python/argparse/">
+            <span class="next-text nav-default">python argparse 源码阅读</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-02-17 22:14:27 \x2b0800 CST',
+        title: 'python tinydb 源码阅读',
+        link: decodeURI(location.href),
+        desc: 'TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
