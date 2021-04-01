@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on 游戏不存在</title>
@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 18 Mar 2021 22:34:49 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 01 Apr 2021 22:12:37 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>一步一步实现web服务器</title>
+      <link>https://game404.github.io/post/python/web-serv/</link>
+      <pubDate>Thu, 01 Apr 2021 22:12:37 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/web-serv/</guid>
+      <description>本次代码阅读的项目来自 500lines 的子项目 web-server。 500 Lines or Less不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立</description>
+    </item>
+    
+    <item>
+      <title>不一样的docker操作</title>
+      <link>https://game404.github.io/post/python/docker-py/</link>
+      <pubDate>Thu, 25 Mar 2021 23:27:04 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/docker-py/</guid>
+      <description>docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do</description>
+    </item>
     
     <item>
       <title>一文打尽python-web开发的signal机制</title>

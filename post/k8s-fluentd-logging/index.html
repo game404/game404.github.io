@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="EFK (Elasticsearch &#43; Fluentd &#43; Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下f" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/k8s-fluentd-logging/" />
-<meta property="article:published_time" content="2019-04-13T05:23:47&#43;08:00"/>
-<meta property="article:modified_time" content="2019-04-13T05:23:47&#43;08:00"/>
-
+<meta property="article:published_time" content="2019-04-13T05:23:47+08:00" />
+<meta property="article:modified_time" content="2019-04-13T05:23:47+08:00" />
 <meta itemprop="name" content="fluentd收集kubernetes 集群日志分析">
 <meta itemprop="description" content="EFK (Elasticsearch &#43; Fluentd &#43; Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下f">
-
-
 <meta itemprop="datePublished" content="2019-04-13T05:23:47&#43;08:00" />
 <meta itemprop="dateModified" content="2019-04-13T05:23:47&#43;08:00" />
-<meta itemprop="wordCount" content="1309">
+<meta itemprop="wordCount" content="1335">
 
 
 
-<meta itemprop="keywords" content="系列,fluentd,logging," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="系列,fluentd,logging," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="fluentd收集kubernetes 集群日志分析"/>
 <meta name="twitter:description" content="EFK (Elasticsearch &#43; Fluentd &#43; Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下f"/>
 
@@ -141,135 +137,83 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#部署efk">部署EFK</a></li>
-<li><a href="#fluentd-功能分析">fluentd 功能分析</a></li>
-<li><a href="#附录">附录</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#efk">部署EFK</a></li>
+    <li><a href="#fluentd-">fluentd 功能分析</a></li>
+    <li><a href="#heading">附录</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>EFK (Elasticsearch + Fluentd + Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下fluentd从 <strong>CNCF</strong> 毕业。开始之前，希望你已经读过<a href="https://game404.github.io/post/docker-log/">Docker 容器日志分析</a>, 本文是其延生的第二篇。</p>
-
+      <p>EFK (Elasticsearch + Fluentd + Kibana) 是kubernetes官方推荐的日志收集方案，我们一起了解一下fluentd是如何收集kubernetes集群日志的，庆祝一下fluentd从 <strong>CNCF</strong> 毕业。开始之前，希望你已经读过<a href="https://game404.github.io/post/docker-log/">Docker 容器日志分析</a>, 本文是其延生的第二篇。</p>
 <blockquote>
 <p><strong>注意</strong> 需要和ELK(Elasticsearch + Logstash +  Kibana) 以及EFK(Elasticsearch + Filebeat +  Kibana)区分，后一个EFK<strong>一般</strong>是原生部署。</p>
-
+</blockquote>
+<blockquote>
 <p><a href="https://www.cncf.io/">CNCF</a> , 全称Cloud Native Computing Foundation（云原生计算基金会），kubernetes也是其旗下，或者说大多数容器云项目都是其旗下。</p>
 </blockquote>
-
-<h2 id="部署efk">部署EFK</h2>
-
+<h2 id="efk">部署EFK</h2>
 <p>k8s中部署efk，所用的yaml文件在 <a href="https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch">https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch</a> ，你可以使用文章附录提供的脚本进行下载。</p>
-
 <p>下载完成后执行 <code>cd fluentd-elasticsearch &amp;&amp; kubectl apply -f .</code> 命令进行部署。</p>
-
 <p>检查elasticsearch和kibana service:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ kubectl get svc -n kube-system
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ kubectl get svc -n kube-system
 NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 elasticsearch-logging   NodePort    10.97.248.209    &lt;none&gt;        9200:32126/TCP   23d
-kibana-logging          ClusterIP   10.103.126.183   &lt;none&gt;        5601/TCP         23d</pre></td></tr></table>
+kibana-logging          ClusterIP   10.103.126.183   &lt;none&gt;        5601/TCP         23d
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>检查fluentd DaemonSet:</p>
+</div><p>检查fluentd DaemonSet:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ kubectl get ds -n kube-system
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ kubectl get ds -n kube-system
 NAME                    DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                   AGE
-fluentd-es-v2.4.0       2         2         2       2            2           &lt;none&gt;                          23d</pre></td></tr></table>
+fluentd-es-v2.4.0       2         2         2       2            2           &lt;none&gt;                          23d
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这里我们知道了fluentd是以daemonset方式运行的，es和kibana是service方式。</p>
-
+</div><p>这里我们知道了fluentd是以daemonset方式运行的，es和kibana是service方式。</p>
 <blockquote>
 <p><strong>注意</strong> elasticsearch 默认部署文件是没有持久化的，如果需要持久化，需要调整其PVC设置。</p>
 </blockquote>
-
-<h2 id="fluentd-功能分析">fluentd 功能分析</h2>
-
+<h2 id="fluentd-">fluentd 功能分析</h2>
 <ol>
-<li><p>查看fluentd的类型，没什么好说的</p>
+<li>
+<p>查看fluentd的类型，没什么好说的</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: apps/v1
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd-es-v2.2.1
-  namespace: kube-system</pre></td></tr></table>
+  namespace: kube-system
+</code></pre></td></tr></table>
 </div>
 </div></li>
-
-<li><p>查看fluentd日志收集</p>
-
-<p>```
-containers:</p>
-
-<ul>
-<li>name: fluentd-es
-image: k8s.gcr.io/fluentd-elasticsearch:v2.2.0
-<br /></li>
-</ul>
-
-<p>&hellip;</p>
-
-<p>volumeMounts:
-- name: varlog
-  mountPath: /var/log
-- name: varlibdockercontainers
-  mountPath: /var/lib/docker/containers
-  readOnly: true
-- name: config-volume
-  mountPath: /etc/fluent/config.d</p>
-
-<p>&hellip;</p>
-
-<p>volumes:
-- name: varlog
-hostPath:
-  path: /var/log
-- name: varlibdockercontainers
-hostPath:
-  path: /var/lib/docker/containers
-- name: config-volume
-configMap:
-  name: fluentd-es-config-v0.1.6
-```</p>
-
-<p>这里可以清晰的看到，fluentd以daemonset方式运作，然后把系统的 <code>/var/lib/docker/containers</code> 挂载，这个目录我们在<a href="https://game404.github.io/post/docker-log/">Docker 容器日志分析</a>中介绍过，这是docker容器日志存放路径, 这样fluentd就完成了对容器默认日志的读取。</p>
-
-<p>fluentd的配置文件是以configmap形式加载，继续往下看看。</p></li>
-
-<li><p>收集容器日志配置</p>
-
-<p>收集容器日志主要在 <strong>containers.input.conf</strong>，如下:</p>
+<li>
+<p>查看fluentd日志收集</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -289,9 +233,75 @@ configMap:
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&lt;source&gt;
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">containers:
+- name: fluentd-es
+image: k8s.gcr.io/fluentd-elasticsearch:v2.2.0
+   
+...
+   
+volumeMounts:
+- name: varlog
+  mountPath: /var/log
+- name: varlibdockercontainers
+  mountPath: /var/lib/docker/containers
+  readOnly: true
+- name: config-volume
+  mountPath: /etc/fluent/config.d
+   
+...
+   
+volumes:
+- name: varlog
+hostPath:
+  path: /var/log
+- name: varlibdockercontainers
+hostPath:
+  path: /var/lib/docker/containers
+- name: config-volume
+configMap:
+  name: fluentd-es-config-v0.1.6
+</code></pre></td></tr></table>
+</div>
+</div><p>这里可以清晰的看到，fluentd以daemonset方式运作，然后把系统的 <code>/var/lib/docker/containers</code> 挂载，这个目录我们在<a href="https://game404.github.io/post/docker-log/">Docker 容器日志分析</a>中介绍过，这是docker容器日志存放路径, 这样fluentd就完成了对容器默认日志的读取。</p>
+<p>fluentd的配置文件是以configmap形式加载，继续往下看看。</p>
+</li>
+<li>
+<p>收集容器日志配置</p>
+<p>收集容器日志主要在 <strong>containers.input.conf</strong>，如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;source&gt;
   @id fluentd-containers.log
   @type tail
   path /var/log/containers/*.log
@@ -310,13 +320,13 @@ configMap:
       time_format %Y-%m-%dT%H:%M:%S.%N%:z
     &lt;/pattern&gt;
   &lt;/parse&gt;
-&lt;/source&gt;</pre></td></tr></table>
+&lt;/source&gt;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>细心的你会发现挂载的容器目录是 <code>/var/lib/docker/containers</code> ，日志应该都在这里，但是配置的监听的目录却是 <code>/var/log/containers</code> 。官方贴心的给出了注释，主要内容如下:</p>
+</div><p>细心的你会发现挂载的容器目录是 <code>/var/lib/docker/containers</code> ，日志应该都在这里，但是配置的监听的目录却是 <code>/var/log/containers</code> 。官方贴心的给出了注释，主要内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -345,9 +355,9 @@ configMap:
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> # Example
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> # Example
     # =======
     # ...
     #
@@ -375,14 +385,15 @@ configMap:
     # running this instance of Fluentd and we end up collecting the file:
     #
     #   /var/log/containers/synthetic-logger-0.25lps-pod_default_synth-lgr-997599971ee6366d4a5920d25b79286ad45ff37a74494f262e3bc98d909d0a7b.log
-    #</pre></td></tr></table>
+    #
+</code></pre></td></tr></table>
 </div>
 </div></li>
-
-<li><p>日志上传到elasticsearch</p>
+<li>
+<p>日志上传到elasticsearch</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -406,9 +417,9 @@ configMap:
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">output.conf: |-
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">output.conf: |-
     &lt;match **&gt;
       @id elasticsearch
       @type elasticsearch
@@ -431,40 +442,43 @@ configMap:
         queue_limit_length 8
         overflow_action block
       &lt;/buffer&gt;
-    &lt;/match&gt;</pre></td></tr></table>
+    &lt;/match&gt;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这里注意一下其中的<strong>host</strong>和<strong>port</strong>，均是elasticsearch service中定义的，如果修改过需要保持一致。fluentd也支持日志数据上传到外部的elasticsearch，也就是前文的elk/efk原生。</p></li>
+</div><p>这里注意一下其中的<strong>host</strong>和<strong>port</strong>，均是elasticsearch service中定义的，如果修改过需要保持一致。fluentd也支持日志数据上传到外部的elasticsearch，也就是前文的elk/efk原生。</p>
+</li>
 </ol>
-
-<h2 id="附录">附录</h2>
-
+<h2 id="heading">附录</h2>
 <ol>
 <li>架构图</li>
 </ol>
-
-<p><img src="https://d33wubrfki0l68.cloudfront.net/2585cf9757d316b9030cf36d6a4e6b8ea7eedf5a/1509f/images/docs/user-guide/logging/logging-with-node-agent.png" alt="logging-with-node-agent" /></p>
-
-<ol>
-<li><p>下载脚本文件 <strong>download.sh</strong></p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/2585cf9757d316b9030cf36d6a4e6b8ea7eedf5a/1509f/images/docs/user-guide/logging/logging-with-node-agent.png" alt="logging-with-node-agent"></p>
+<ol start="2">
+<li>
+<p>下载脚本文件 <strong>download.sh</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">for file in es-service es-statefulset fluentd-es-configmap fluentd-es-ds kibana-deployment kibana-service; do curl -o $file.yaml https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fluentd-elasticsearch/$file.yaml; done</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">for file in es-service es-statefulset fluentd-es-configmap fluentd-es-ds kibana-deployment kibana-service; do curl -o $file.yaml https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fluentd-elasticsearch/$file.yaml; done
+</code></pre></td></tr></table>
 </div>
 </div></li>
-
-<li><p>参考链接:</p>
-
+<li>
+<p>参考链接:</p>
 <ul>
-<li><p><a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">https://kubernetes.io/docs/concepts/cluster-administration/logging/</a></p></li>
-
-<li><p><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/">https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/</a></p></li>
-
-<li><p><a href="https://juejin.im/post/5caff4275188256da954d257">恭喜 Fluentd 从 CNCF 毕业</a></p></li>
-</ul></li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/cluster-administration/logging/">https://kubernetes.io/docs/concepts/cluster-administration/logging/</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/">https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/</a></p>
+</li>
+<li>
+<p><a href="https://juejin.im/post/5caff4275188256da954d257">恭喜 Fluentd 从 CNCF 毕业</a></p>
+</li>
+</ul>
+</li>
 </ol>
 
     </div>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="Mako 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/mako/" />
-<meta property="article:published_time" content="2021-03-11T23:43:34&#43;08:00"/>
-<meta property="article:modified_time" content="2021-03-11T23:43:34&#43;08:00"/>
-
+<meta property="article:published_time" content="2021-03-11T23:43:34+08:00" />
+<meta property="article:modified_time" content="2021-03-11T23:43:34+08:00" />
 <meta itemprop="name" content="python 模版引擎 Mako 源码阅读">
 <meta itemprop="description" content="Mako 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码">
-
-
 <meta itemprop="datePublished" content="2021-03-11T23:43:34&#43;08:00" />
 <meta itemprop="dateModified" content="2021-03-11T23:43:34&#43;08:00" />
-<meta itemprop="wordCount" content="4644">
+<meta itemprop="wordCount" content="4618">
 
 
 
-<meta itemprop="keywords" content="模版引擎,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="模版引擎,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="python 模版引擎 Mako 源码阅读"/>
 <meta name="twitter:description" content="Mako 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码"/>
 
@@ -141,39 +137,34 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#基础知识">基础知识</a>
-<ul>
-<li><a href="#抽象语法树-ast">抽象语法树 AST</a></li>
-<li><a href="#动态编译-compile">动态编译 compile</a></li>
-</ul></li>
-<li><a href="#mako-项目结构">mako 项目结构</a></li>
-<li><a href="#template-api">Template API</a></li>
-<li><a href="#模版解析">模版解析</a></li>
-<li><a href="#模版编译">模版编译</a></li>
-<li><a href="#模版渲染">模版渲染</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#heading">基础知识</a>
+      <ul>
+        <li><a href="#-ast">抽象语法树 AST</a></li>
+        <li><a href="#-compile">动态编译 compile</a></li>
+      </ul>
+    </li>
+    <li><a href="#mako-">mako 项目结构</a></li>
+    <li><a href="#template-api">Template API</a></li>
+    <li><a href="#heading-1">模版解析</a></li>
+    <li><a href="#heading-2">模版编译</a></li>
+    <li><a href="#heading-3">模版渲染</a></li>
+    <li><a href="#heading-4">小结</a></li>
+    <li><a href="#heading-5">小技巧</a></li>
+    <li><a href="#heading-6">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p><code>Mako</code> 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码，使用python解释器执行。mako用于外网热门网站 reddit.com ，同时也是Pylons和Pyramid Web框架默认模板语言。学习mako，可以帮助我们加深对python编译和执行的理解。本文包括下面几个部分:</p>
-
+      <p><code>Mako</code> 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码，使用python解释器执行。mako用于外网热门网站 reddit.com ，同时也是Pylons和Pyramid Web框架默认模板语言。学习mako，可以帮助我们加深对python编译和执行的理解。本文包括下面几个部分:</p>
 <ul>
 <li>基础知识
-
 <ul>
 <li>抽象语法树 AST</li>
 <li>动态编译 compile</li>
-</ul></li>
+</ul>
+</li>
 <li>mako 项目结构</li>
 <li>Template API 介绍</li>
 <li>模版解析</li>
@@ -182,40 +173,35 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-
-<h2 id="基础知识">基础知识</h2>
-
+<h2 id="heading">基础知识</h2>
 <p><code>mako</code> 模版引擎使用了一些编译原理相关的知识：语法解析，代码生成和编译执行等，了解这些基础知识才可以更好的读懂 <code>mako</code> 代码。</p>
-
-<h3 id="抽象语法树-ast">抽象语法树 AST</h3>
-
+<h3 id="-ast">抽象语法树 AST</h3>
 <blockquote>
 <p>在计算机科学中，抽象语法树（Abstract Syntax Tree，AST），或简称语法树（Syntax tree），是源代码语法结构的一种抽象表示。它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构。之所以说语法是“抽象”的，是因为这里的语法并不会表示出真实语法中出现的每个细节。</p>
 </blockquote>
-
 <p>python标准库中 <code>ast</code> 模块可以帮助生成AST:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import ast
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import ast
 
 expr = &#34;&#34;&#34;x,y =1,2\nprint(x+y)&#34;&#34;&#34;
 ast_tree = ast.parse(expr)
 print(type(ast_tree))
-print(ast.dump(ast_tree))  # python 3.9 可以很好的格式化输出ast</pre></td></tr></table>
+print(ast.dump(ast_tree))  # python 3.9 可以很好的格式化输出ast
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>生成的AST结构如下:</p>
+</div><p>生成的AST结构如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -227,35 +213,32 @@ print(ast.dump(ast_tree))  # python 3.9 可以很好的格式化输出ast</pre><
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Module(
-    body=[
-        Assign(
-            targets=[Tuple(elts=[Name(id=&#39;x&#39;, ctx=Store()), Name(id=&#39;y&#39;, ctx=Store())], ctx=Store())], 
-            value=Tuple(elts=[Constant(value=1, kind=None), Constant(value=2, kind=None)], ctx=Load()), 
-            type_comment=None), 
-        Expr(
-            value=Call(func=Name(id=&#39;print&#39;, ctx=Load()), args=[BinOp(left=Name(id=&#39;x&#39;, ctx=Load()), op=Add(), right=Name(id=&#39;y&#39;, ctx=Load()))], keywords=[])
-        )
-    ], 
-    type_ignores=[]
-)</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Module(
+	body=[
+		Assign(
+			targets=[Tuple(elts=[Name(id=&#39;x&#39;, ctx=Store()), Name(id=&#39;y&#39;, ctx=Store())], ctx=Store())], 
+			value=Tuple(elts=[Constant(value=1, kind=None), Constant(value=2, kind=None)], ctx=Load()), 
+			type_comment=None), 
+		Expr(
+			value=Call(func=Name(id=&#39;print&#39;, ctx=Load()), args=[BinOp(left=Name(id=&#39;x&#39;, ctx=Load()), op=Add(), right=Name(id=&#39;y&#39;, ctx=Load()))], keywords=[])
+		)
+	], 
+	type_ignores=[]
+)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用参考链接中的可视化工具，这颗AST大概长这样：
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210310211400.png" alt="py-ast" /></p>
-
+</div><p>使用参考链接中的可视化工具，这颗AST大概长这样：
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210310211400.png" alt="py-ast"></p>
 <blockquote>
 <p>ast和python版本有关，图中内容是python2版本，所以和日志中的内容略有不同</p>
 </blockquote>
-
-<h3 id="动态编译-compile">动态编译 compile</h3>
-
+<h3 id="-compile">动态编译 compile</h3>
 <p>python支持对文本进行动态编译执行，请看下面示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -264,9 +247,9 @@ print(ast.dump(ast_tree))  # python 3.9 可以很好的格式化输出ast</pre><
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import types
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import types
 source = &#34;&#34;&#34;def add(x,y):\n    return x+y&#34;&#34;&#34;  # 函数定义的表达式
 mod = types.ModuleType(&#34;test&#34;)  # 动态创建模块
 print(mod, type(mod))
@@ -274,33 +257,31 @@ code = compile(source, &#34;test&#34;, &#34;exec&#34;)  # 编译表达式
 print(code, type(code))
 exec(code, mod.__dict__, mod.__dict__)  # 动态执行代码
 result = mod.add(1, 2)  # 调用动态生成的add函数
-print(result, type(result))</pre></td></tr></table>
+print(result, type(result))
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>执行日志:</p>
+</div><p>执行日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&lt;module &#39;test&#39;&gt; &lt;class &#39;module&#39;&gt;
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;module &#39;test&#39;&gt; &lt;class &#39;module&#39;&gt;
 &lt;code object &lt;module&gt; at 0x7ff3b02649d0, file &#34;test&#34;, line 1&gt; &lt;class &#39;code&#39;&gt;
-3 &lt;class &#39;int&#39;&gt;</pre></td></tr></table>
+3 &lt;class &#39;int&#39;&gt;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>结合日志可以知道, 动态编译执行主要是下面3步:
-* 使用 <strong>types.ModuleType</strong> 创建模块
-* 使用 <strong>compile</strong> 编译表达式链接到模块
-* 使用 <strong>exec</strong> 执行编译后的byte-code</p>
-
+</div><p>结合日志可以知道, 动态编译执行主要是下面3步:</p>
+<ul>
+<li>使用 <strong>types.ModuleType</strong> 创建模块</li>
+<li>使用 <strong>compile</strong> 编译表达式链接到模块</li>
+<li>使用 <strong>exec</strong> 执行编译后的byte-code</li>
+</ul>
 <p>理解上面代码后，就可以知道模版引擎的工作就是将模版的代码解析转换成python文本，再动态的编译执行。</p>
-
-<h2 id="mako-项目结构">mako 项目结构</h2>
-
+<h2 id="mako-">mako 项目结构</h2>
 <p>本文选择的mako源码版本是 <code>1.1.0</code>，不算ext扩展包，接近7000行代码，代码量比较大，相对也复杂一些，会有一点点挑战。源码目录如下:</p>
-
 <table>
 <thead>
 <tr>
@@ -308,116 +289,97 @@ print(result, type(result))</pre></td></tr></table>
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>_ast_util.py</td>
 <td>ast工具类</td>
 </tr>
-
 <tr>
 <td>ast.py</td>
 <td>ast类</td>
 </tr>
-
 <tr>
 <td>cache.py</td>
 <td>缓存实现</td>
 </tr>
-
 <tr>
 <td>cmd.py</td>
 <td>命令行实现</td>
 </tr>
-
 <tr>
 <td>codegen.py</td>
 <td>python代码生成</td>
 </tr>
-
 <tr>
 <td>compat.py</td>
 <td>python2和python3的适配类</td>
 </tr>
-
 <tr>
 <td>exceptions.py</td>
 <td>异常</td>
 </tr>
-
 <tr>
 <td>filters.py</td>
 <td>过滤器</td>
 </tr>
-
 <tr>
 <td>lexer.py</td>
 <td>词法分析</td>
 </tr>
-
 <tr>
 <td>lookup.py</td>
 <td>模版文件查找</td>
 </tr>
-
 <tr>
 <td>parsetree.py</td>
 <td>解析代码节点</td>
 </tr>
-
 <tr>
 <td>pygen.py</td>
 <td>python代码格式生成</td>
 </tr>
-
 <tr>
 <td>pyparser.py</td>
 <td>解析器</td>
 </tr>
-
 <tr>
 <td>runtime.py</td>
 <td>模版运行时</td>
 </tr>
-
 <tr>
 <td>template.py</td>
 <td>模版API</td>
 </tr>
-
 <tr>
 <td>util.py</td>
 <td>工具类</td>
 </tr>
-
 <tr>
 <td>ext</td>
 <td>扩展包</td>
 </tr>
 </tbody>
 </table>
-
 <h2 id="template-api">Template API</h2>
-
 <p>按照惯例，从API示例作为入口进入项目:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">mytemplate = Template(&#34;hello, ${name}!&#34;)  # 1. 创建模版对象
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mytemplate = Template(&#34;hello, ${name}!&#34;)  # 1. 创建模版对象
 print(mytemplate._code)
 result=mytemplate.render(name=&#34;shawn&#34;)  # 2. 渲染模版对象
-print(result)</pre></td></tr></table>
+print(result)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p><code>Template</code>的构造函数不算复杂，摘剪示例相关代码如下:</p>
+</div><p><code>Template</code>的构造函数不算复杂，摘剪示例相关代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -437,9 +399,9 @@ print(result)</pre></td></tr></table>
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Template(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Template(object):
     lexer_cls = Lexer  # 词法分析类
     def __init__(
         self,
@@ -458,13 +420,13 @@ print(result)</pre></td></tr></table>
         self._code = code
         self._source = text
     self.module = module
-    self.callable_ = self.module.render_body  # 注意 render_body 函数</pre></td></tr></table>
+    self.callable_ = self.module.render_body  # 注意 render_body 函数
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>模版文本编译主要过程是这样的:</p>
+</div><p>模版文本编译主要过程是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -495,9 +457,9 @@ print(result)</pre></td></tr></table>
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _compile(template, text, filename, generate_magic_comment):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _compile(template, text, filename, generate_magic_comment):
     lexer = template.lexer_cls(
         text,
         filename,
@@ -527,46 +489,44 @@ def _compile_text(template, text, filename):
     module = types.ModuleType(cid)
     code = compile(source, cid, &#34;exec&#34;)  # 编译byte-code
     exec(code, module.__dict__, module.__dict__)  # 执行后，动态创建函数链接到module
-    return (source, module)</pre></td></tr></table>
+    return (source, module)
+</code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol>
 <li>使用词法解析器将模版解析成node</li>
 <li>使用代码生成器将node转换成python的源码</li>
 <li>使用compile将源码编译成byte-code</li>
 <li>使用exec执行byte-code</li>
 </ol>
-
-<h2 id="模版解析">模版解析</h2>
-
+<h2 id="heading-1">模版解析</h2>
 <p>词法分析可以这样使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from mako.lexer import Lexer
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from mako.lexer import Lexer
 lexer = Lexer(&#34;hello, ${name}!&#34;)
 node = lexer.parse()
-print(lexer.template)</pre></td></tr></table>
+print(lexer.template)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>日志显示模版解析后得到2个 <strong>Text</strong> 节点和1个 <strong>Expression</strong> 节点，每个节点包括节点类型，名称及在模版文件中的行列位置:</p>
+</div><p>日志显示模版解析后得到2个 <strong>Text</strong> 节点和1个 <strong>Expression</strong> 节点，每个节点包括节点类型，名称及在模版文件中的行列位置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">TemplateNode({}, [Text(&#39;hello, &#39;, (1, 1)), Expression(&#39;name&#39;, [], (1, 8)), Text(&#39;!&#39;, (1, 15))])</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">TemplateNode({}, [Text(&#39;hello, &#39;, (1, 1)), Expression(&#39;name&#39;, [], (1, 8)), Text(&#39;!&#39;, (1, 15))])
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Lexer构造函数:</p>
+</div><p>Lexer构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -588,9 +548,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Lexer(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Lexer(object):
     def __init__(
         self,
         text,
@@ -611,13 +571,13 @@ print(lexer.template)</pre></td></tr></table>
         self.ternary_stack = []
         self.disable_unicode = disable_unicode
         self.encoding = input_encoding
-        ...</pre></td></tr></table>
+        ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>对模版文本进行解析:</p>
+</div><p>对模版文本进行解析:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -642,9 +602,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def parse(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def parse(self):
     
     self.textlength = len(self.text)
 
@@ -668,13 +628,13 @@ print(lexer.template)</pre></td></tr></table>
         if self.match_text():  # 匹配文本
             continue
             
-    return self.template</pre></td></tr></table>
+    return self.template
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>配合下面的模版文件更容易理解parse过程:</p>
+</div><p>配合下面的模版文件更容易理解parse过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -691,9 +651,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&lt;%inherit file=&#34;base.html&#34;/&gt;
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;%inherit file=&#34;base.html&#34;/&gt;
 &lt;%
     rows = [[v for v in range(0,10)] for row in range(0,10)]
 %&gt;
@@ -709,13 +669,13 @@ print(lexer.template)</pre></td></tr></table>
         &lt;td&gt;${name}&lt;/td&gt;
     % endfor
     &lt;/tr&gt;
-&lt;/%def&gt;</pre></td></tr></table>
+&lt;/%def&gt;
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>第一个示例中得到2个Txt和1个expression，其中解析文本函数全文:</p>
+</div><p>第一个示例中得到2个Txt和1个expression，其中解析文本函数全文:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -743,9 +703,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def match_text(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match_text(self):
     match = self.match(
         r&#34;&#34;&#34;
             (.*?)         # anything, followed by:
@@ -772,13 +732,13 @@ print(lexer.template)</pre></td></tr></table>
             self.append_node(parsetree.Text, text)  #  生成Text节点
         return True
     else:
-        return False</pre></td></tr></table>
+        return False
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>match是通用的解析函数，主要是正则查找目标对象，并且进行游标移位操作:</p>
+</div><p>match是通用的解析函数，主要是正则查找目标对象，并且进行游标移位操作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -790,9 +750,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def match(self, regexp, flags=None):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match(self, regexp, flags=None):
     mp = self.match_position
 
     match = reg.match(self.text, self.match_position) # 解析
@@ -803,13 +763,13 @@ print(lexer.template)</pre></td></tr></table>
         else:
             self.match_position = end
         ...
-    return match</pre></td></tr></table>
+    return match
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>解析表达式全文:</p>
+</div><p>解析表达式全文:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -829,9 +789,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def match_expression(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match_expression(self):
     match = self.match(r&#34;\${&#34;)
     if match:
         line, pos = self.matched_lineno, self.matched_charpos
@@ -850,13 +810,13 @@ print(lexer.template)</pre></td></tr></table>
         ) # 生成Expression节点
         return True
     else:
-        return False</pre></td></tr></table>
+        return False
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>添加节点函数，比较复杂，主要逻辑是生成各种Node对象：</p>
+</div><p>添加节点函数，比较复杂，主要逻辑是生成各种Node对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -872,9 +832,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def append_node(self, nodecls, *args, **kwargs):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def append_node(self, nodecls, *args, **kwargs):
     kwargs.setdefault(&#34;source&#34;, self.text)
     kwargs.setdefault(&#34;lineno&#34;, self.matched_lineno)
     kwargs.setdefault(&#34;pos&#34;, self.matched_charpos)
@@ -889,13 +849,13 @@ print(lexer.template)</pre></td></tr></table>
     if isinstance(node, parsetree.Tag): # tag
         ...
     elif isinstance(node, parsetree.ControlLine): 
-        ...</pre></td></tr></table>
+        ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Node节点根类:</p>
+</div><p>Node节点根类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -923,9 +883,9 @@ print(lexer.template)</pre></td></tr></table>
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Node(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Node(object):
 
     def __init__(self, source, lineno, pos, filename):
         self.source = source  # 源码
@@ -952,70 +912,74 @@ class TemplateNode(Node):
 
     def get_children(self):
         return self.nodes
-    ...</pre></td></tr></table>
+    ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>节点类型清单:
-* ControlLine
-* Text
-* Code
-* Comment
-* Expression
-* Tag
-    - IncludeTag
-    - NamespaceTag
-    - TextTag
-    - DefTag
-    - BlockTag
-    - CallTag
-    - CallNamespaceTag
-    - InheritTag
-    - PageTag</p>
-
+</div><p>节点类型清单:</p>
+<ul>
+<li>ControlLine</li>
+<li>Text</li>
+<li>Code</li>
+<li>Comment</li>
+<li>Expression</li>
+<li>Tag
+<ul>
+<li>IncludeTag</li>
+<li>NamespaceTag</li>
+<li>TextTag</li>
+<li>DefTag</li>
+<li>BlockTag</li>
+<li>CallTag</li>
+<li>CallNamespaceTag</li>
+<li>InheritTag</li>
+<li>PageTag</li>
+</ul>
+</li>
+</ul>
 <p>我们选择文本节点和表达式节点进行学习。文本节点非常简单，仅存储文本内容:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Text(Node):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Text(Node):
 
     def __init__(self, content, **kwargs):
         super(Text, self).__init__(**kwargs)
         self.content = content
-    ...</pre></td></tr></table>
+    ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>表达式节点相对复杂一些:</p>
+</div><p>表达式节点相对复杂一些:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Expression(Node):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Expression(Node):
 
     def __init__(self, text, escapes, **kwargs):
         super(Expression, self).__init__(**kwargs)
         self.text = text  # 文本
         ...
-        self.code = ast.PythonCode(text, **self.exception_kwargs)  # 代码片段</pre></td></tr></table>
+        self.code = ast.PythonCode(text, **self.exception_kwargs)  # 代码片段
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>python代码片段:</p>
+</div><p>python代码片段:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1033,9 +997,9 @@ class TemplateNode(Node):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class PythonCode(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class PythonCode(object):
 
     def __init__(self, code, **exception_kwargs):
         self.code = code
@@ -1052,13 +1016,13 @@ class TemplateNode(Node):
             expr = pyparser.parse(code.lstrip(), &#34;exec&#34;, **exception_kwargs)
 
         f = pyparser.FindIdentifiers(self, **exception_kwargs)
-        f.visit(expr)  # 递归解析ast</pre></td></tr></table>
+        f.visit(expr)  # 递归解析ast
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>每个代码片段都会解析成python的ast:</p>
+</div><p>每个代码片段都会解析成python的ast:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1067,9 +1031,9 @@ class TemplateNode(Node):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># pyparser
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># pyparser
 
 def parse(code, mode=&#34;exec&#34;, **exception_kwargs):
     return _ast_util.parse(code, &#34;&lt;unknown&gt;&#34;, mode)
@@ -1077,32 +1041,32 @@ def parse(code, mode=&#34;exec&#34;, **exception_kwargs):
 # _ast_util
 def parse(expr, filename=&#34;&lt;unknown&gt;&#34;, mode=&#34;exec&#34;):
     &#34;&#34;&#34;Parse an expression into an AST node.&#34;&#34;&#34;
-    return compile(expr, filename, mode, PyCF_ONLY_AST)</pre></td></tr></table>
+    return compile(expr, filename, mode, PyCF_ONLY_AST)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>再看一下示例2:</p>
+</div><p>再看一下示例2:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import ast
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import ast
 expr = &#34;&#34;&#34;hello, &#34;&#34;&#34;  # 文本节点
 ast_tree = ast.parse(expr)
 print(ast.dump(ast_tree))
 # 输出
-Module(body=[Expr(value=Tuple(elts=[Name(id=&#39;hello&#39;, ctx=Load())], ctx=Load()))], type_ignores=[])</pre></td></tr></table>
+Module(body=[Expr(value=Tuple(elts=[Name(id=&#39;hello&#39;, ctx=Load())], ctx=Load()))], type_ignores=[])
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>识别标志:</p>
+</div><p>识别标志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1153,9 +1117,9 @@ Module(body=[Expr(value=Tuple(elts=[Name(id=&#39;hello&#39;, ctx=Load())], ctx=L
 </span><span class="lnt">49
 </span><span class="lnt">50
 </span><span class="lnt">51
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># pyparser
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># pyparser
 class FindIdentifiers(_ast_util.NodeVisitor):
     
     def __init__(self, listener, **exception_kwargs):
@@ -1205,32 +1169,30 @@ class NodeVisitor(object):
                     if isinstance(item, AST):
                         self.visit(item)
             elif isinstance(value, AST):
-                self.visit(value)</pre></td></tr></table>
+                self.visit(value)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>模版解析成node节点，每个node节点包含python标准的的ast对象。</p>
-
-<h2 id="模版编译">模版编译</h2>
-
+</div><p>模版解析成node节点，每个node节点包含python标准的的ast对象。</p>
+<h2 id="heading-2">模版编译</h2>
 <p>前面lexer处理模版文件得到node，node再被转换成python代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from mako import codegen
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from mako import codegen
 
 source = codegen.compile(node, &#34;a&#34;, default_filters=[])
-print(source)</pre></td></tr></table>
+print(source)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>日志如下:</p>
+</div><p>日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1263,9 +1225,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> 1  from mako import runtime, filters, cache
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> 1  from mako import runtime, filters, cache
  2  UNDEFINED = runtime.UNDEFINED
  3  STOP_RENDERING = runtime.STOP_RENDERING
  4  __M_dict_builtin = dict
@@ -1297,20 +1259,21 @@ print(source)</pre></td></tr></table>
 30  __M_BEGIN_METADATA
 31  {&#34;filename&#34;: null, &#34;uri&#34;: &#34;a&#34;, &#34;source_encoding&#34;: null, &#34;line_map&#34;: {&#34;15&#34;: 0, &#34;21&#34;: 1, &#34;22&#34;: 1, &#34;23&#34;: 1, &#34;29&#34;: 23}}
 32  __M_END_METADATA
-33  &#34;&#34;&#34;                                                               </pre></td></tr></table>
+33  &#34;&#34;&#34;                                                               
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>source是一段python代码：
-* 定义依赖 from mako import &hellip;
-* 定义常量 UNDEFINED 和 STOP_RENDERING
-* 定义一些私有的变量 _template_filename 等
-* 定义了一个关键的 <strong>render_body</strong> 函数，函数名称和我们在Template中看到 <code>self.callable_ = self.module.render_body</code> 一致
-* 定义了一段注释</p>
-
+</div><p>source是一段python代码：</p>
+<ul>
+<li>定义依赖 from mako import &hellip;</li>
+<li>定义常量 UNDEFINED 和 STOP_RENDERING</li>
+<li>定义一些私有的变量 _template_filename 等</li>
+<li>定义了一个关键的 <strong>render_body</strong> 函数，函数名称和我们在Template中看到 <code>self.callable_ = self.module.render_body</code> 一致</li>
+<li>定义了一段注释</li>
+</ul>
 <p>模版的编译过程是这样的：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1327,9 +1290,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def compile(
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def compile(
     node,
     uri,
     ...
@@ -1345,13 +1308,13 @@ print(source)</pre></td></tr></table>
         ),
         node,
     )
-    return buf.getvalue()  # 获取buffer的值:</pre></td></tr></table>
+    return buf.getvalue()  # 获取buffer的值:
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>buffer实现比较简单</p>
+</div><p>buffer实现比较简单</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1362,9 +1325,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class FastEncodingBuffer(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class FastEncodingBuffer(object):
 
     def __init__(self, encoding=None, errors=&#34;strict&#34;, as_unicode=False):
         self.data = collections.deque()  # 使用双端队列模拟输出流
@@ -1374,13 +1337,13 @@ print(source)</pre></td></tr></table>
 
     def getvalue(self):
         ...
-        return self.delim.join(self.data)</pre></td></tr></table>
+        return self.delim.join(self.data)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>重点就是_GenerateRenderMethod函数</p>
+</div><p>重点就是_GenerateRenderMethod函数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1396,9 +1359,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class _GenerateRenderMethod(object):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _GenerateRenderMethod(object):
 
     &#34;&#34;&#34;A template visitor object which generates the
        full module source for a template.
@@ -1413,13 +1376,13 @@ print(source)</pre></td></tr></table>
         # 生成render函数
         self.write_render_callable(
             pagetag or node, name, args, buffered, filtered, cached
-        )</pre></td></tr></table>
+        )
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>write_render_callable的实现:</p>
+</div><p>write_render_callable的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1440,9 +1403,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def write_render_callable(
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def write_render_callable(
     self, node, name, args, buffered, filtered, cached
 ):
 
@@ -1462,17 +1425,16 @@ print(source)</pre></td></tr></table>
 
     self.write_def_finish(self.node, buffered, filtered, cached)
     self.printer.writeline(None)
-    self.printer.write_blanks(2)</pre></td></tr></table>
+    self.printer.write_blanks(2)
+</code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>这里配合前面生成的python源码看，就容易理解</p>
 </blockquote>
-
 <p>将node转换成python源码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1496,9 +1458,9 @@ print(source)</pre></td></tr></table>
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># parsetree
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># parsetree
 def accept_visitor(self, visitor):
     def traverse(node):
         for n in node.get_children():
@@ -1521,26 +1483,25 @@ class SourceGenerator(NodeVisitor):
         self.signature(node.args)
         self.write(&#34;):&#34;)
         self.body(node.body)
-    ...</pre></td></tr></table>
+    ...
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="模版渲染">模版渲染</h2>
-
+</div><h2 id="heading-3">模版渲染</h2>
 <p>使用这样的伪代码，就可以执行之前生成的 <strong>render—body</strong> 函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">context = {&#34;name&#34;:&#34;shawn&#34;}
-self.callable_(context)</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">context = {&#34;name&#34;:&#34;shawn&#34;}
+self.callable_(context)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>render正是做这样的工作，只是过程更复杂一些:</p>
+</div><p>render正是做这样的工作，只是过程更复杂一些:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1561,9 +1522,9 @@ self.callable_(context)</pre></td></tr></table>
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def render(self, *args, **data):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def render(self, *args, **data):
     return runtime._render(self, self.callable_, args, data)
         
 def _render(template, callable_, args, data, as_unicode=False):
@@ -1583,13 +1544,13 @@ def _render(template, callable_, args, data, as_unicode=False):
         **_kwargs_for_callable(callable_, data)
     )  # 执行渲染
     
-    return context._pop_buffer().getvalue()  # 获取渲染结果</pre></td></tr></table>
+    return context._pop_buffer().getvalue()  # 获取渲染结果
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>FastEncodingBuffer在前面代码生成的时候已经介绍，我们只需要了解runtime.Context类和_render_context方法。runtime.Context涉及的代码:</p>
+</div><p>FastEncodingBuffer在前面代码生成的时候已经介绍，我们只需要了解runtime.Context类和_render_context方法。runtime.Context涉及的代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1609,9 +1570,9 @@ def _render(template, callable_, args, data, as_unicode=False):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># runtime.py
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># runtime.py
 
 class Context(object):
 
@@ -1630,39 +1591,37 @@ class Context(object):
         return self._buffer_stack[-1].write # 获取输出流
     
     def _pop_buffer(self):
-        return self._buffer_stack.pop()</pre></td></tr></table>
+        return self._buffer_stack.pop()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>_render_context的主要逻辑和我们推断的伪代码一样，就是执行callable_函数:</p>
+</div><p>_render_context的主要逻辑和我们推断的伪代码一样，就是执行callable_函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _render_context(tmpl, callable_, context, *args, **kwargs):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _render_context(tmpl, callable_, context, *args, **kwargs):
     ...
-    callable_(context, *args, **kwargs)</pre></td></tr></table>
+    callable_(context, *args, **kwargs)
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="小结">小结</h2>
-
-<p><code>mako</code> 模版功能较多，我们只是学习了最简单的变量格式输出: <code>&quot;hello, ${name}!&quot;.format(name=&quot;shawn&quot;)</code> 过程。更复杂的条件分支，函数，循环等都没有深入研究。通过这个简单的示例，我们已经知道mako模版的核心逻辑流程:
-1. 使用lexer对模版解析生成node节点
-2. 将node节点转换成python源码并编译执行得到渲染函数
-3. 调用渲染函数完成模版渲染</p>
-
+</div><h2 id="heading-4">小结</h2>
+<p><code>mako</code> 模版功能较多，我们只是学习了最简单的变量格式输出: <code>&quot;hello, ${name}!&quot;.format(name=&quot;shawn&quot;)</code> 过程。更复杂的条件分支，函数，循环等都没有深入研究。通过这个简单的示例，我们已经知道mako模版的核心逻辑流程:</p>
+<ol>
+<li>使用lexer对模版解析生成node节点</li>
+<li>将node节点转换成python源码并编译执行得到渲染函数</li>
+<li>调用渲染函数完成模版渲染</li>
+</ol>
 <blockquote>
 <p>由于时间紧张，能力有限，mako更深入的解析并未完成，希望下次会深入更多细节实现。</p>
 </blockquote>
-
-<h2 id="小技巧">小技巧</h2>
-
+<h2 id="heading-5">小技巧</h2>
 <p>使用 <code>StringIO</code> 可以重定向print的输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1675,9 +1634,9 @@ class Context(object):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import io
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import io
 
 output = io.StringIO()
 output.write(&#39;First line.\n&#39;)
@@ -1689,13 +1648,13 @@ contents = output.getvalue()
 
 # Close object and discard memory buffer --
 # .getvalue() will now raise an exception.
-output.close()</pre></td></tr></table>
+output.close()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>inspect</code> 可以反射函数的参数信息:</p>
+</div><p>使用 <code>inspect</code> 可以反射函数的参数信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1732,9 +1691,9 @@ output.close()</pre></td></tr></table>
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import inspect
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import inspect
 
 def inspect_getargspec(func):
 
@@ -1770,11 +1729,10 @@ def _kwargs_for_include(callable_, data, **kwargs):
     for arg in namedargs:
         if arg != &#34;context&#34; and arg in data and arg not in kwargs:
             kwargs[arg] = data[arg]
-    return kwargs</pre></td></tr></table>
+    return kwargs
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="heading-6">参考链接</h2>
 <ul>
 <li><a href="https://docs.python.org/zh-cn/3/library/ast.html">https://docs.python.org/zh-cn/3/library/ast.html</a></li>
 <li><a href="https://vpyast.appspot.com/">https://vpyast.appspot.com/</a></li>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,21 +43,17 @@
 <meta property="og:description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/gunicorn/" />
-<meta property="article:published_time" content="2021-02-24T20:01:29&#43;08:00"/>
-<meta property="article:modified_time" content="2021-02-24T20:01:29&#43;08:00"/>
-
+<meta property="article:published_time" content="2021-02-24T20:01:29+08:00" />
+<meta property="article:modified_time" content="2021-02-24T20:01:29+08:00" />
 <meta itemprop="name" content="Gunicorn 源码阅读">
 <meta itemprop="description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正">
-
-
 <meta itemprop="datePublished" content="2021-02-24T20:01:29&#43;08:00" />
 <meta itemprop="dateModified" content="2021-02-24T20:01:29&#43;08:00" />
 <meta itemprop="wordCount" content="3474">
 
 
 
-<meta itemprop="keywords" content="源码&#34;,gunicorn," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="源码&#34;,gunicorn," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Gunicorn 源码阅读"/>
 <meta name="twitter:description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正"/>
 
@@ -141,27 +137,21 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#gunicorn-项目结构简介">gunicorn 项目结构简介</a></li>
-<li><a href="#gunicorn-使用">gunicorn 使用</a></li>
-<li><a href="#gunicorn-application-实现">gunicorn-application 实现</a></li>
-<li><a href="#arbiter实现">arbiter实现</a></li>
-<li><a href="#sync-worker实现">sync-worker实现</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#gunicorn-">gunicorn 项目结构简介</a></li>
+    <li><a href="#gunicorn--1">gunicorn 使用</a></li>
+    <li><a href="#gunicorn-application-">gunicorn-application 实现</a></li>
+    <li><a href="#arbiter">arbiter实现</a></li>
+    <li><a href="#sync-worker">sync-worker实现</a></li>
+    <li><a href="#heading">小结</a></li>
+    <li><a href="#heading-1">小技巧</a></li>
+    <li><a href="#heading-2">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 <strong>WSGI</strong>  HTTP Server。学习gunicorn后，我们可以把之前的 <strong>Bottle</strong> 程序正式部署起来。老规矩，本文分下面几个部分:</p>
-
+      <p>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 <strong>WSGI</strong>  HTTP Server。学习gunicorn后，我们可以把之前的 <strong>Bottle</strong> 程序正式部署起来。老规矩，本文分下面几个部分:</p>
 <ul>
 <li>gunicorn 项目结构简介</li>
 <li>gunicorn 使用</li>
@@ -171,11 +161,8 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-
-<h2 id="gunicorn-项目结构简介">gunicorn 项目结构简介</h2>
-
+<h2 id="gunicorn-">gunicorn 项目结构简介</h2>
 <p>gunicorn 源码选择的版本是 <code>20.0.0</code>，主要的文件及包如下:</p>
-
 <table>
 <thead>
 <tr>
@@ -183,46 +170,36 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>app包</td>
 <td>guincorn  的 Application （不是wsgi定义的applicaton）</td>
 </tr>
-
 <tr>
 <td>http包</td>
 <td>gunicorn 对 http协议的一些处理</td>
 </tr>
-
 <tr>
 <td>workers包</td>
 <td>gunicorn 的工作类实现 ，包括同步sync实现，线程池版本实现gthread，以及异步版本实现 geventlet，gevent等</td>
 </tr>
-
 <tr>
 <td>arbiter.py</td>
 <td>guicorn  的master实现</td>
 </tr>
 </tbody>
 </table>
-
 <p>根据gunicorn的设计特点：</p>
-
 <blockquote>
 <p>Gunicorn is based on the pre-fork worker model. This means that there is a central master process that manages a set of worker processes. The master never knows anything about individual clients. All requests and responses are handled completely by worker processes.</p>
-
 <p>gunicorn使用pre-fork 工作模型，也就是master提前fork出预定数量的work，管理worker集合。所有的request和response都由worker进程处理。</p>
 </blockquote>
-
 <p>我们重点放在：gunicorn的服务实现，master-worker如何实现和协作上。</p>
-
-<h2 id="gunicorn-使用">gunicorn 使用</h2>
-
+<h2 id="gunicorn--1">gunicorn 使用</h2>
 <p>编写测试app，可以看到这是一个符合wsgi规范的application：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -231,9 +208,9 @@
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># myapp.py
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># myapp.py
 
 def app(environ, start_response):  # env 和 http 状态及头设定回调
     data = b&#34;Hello, World!\n&#34;
@@ -241,13 +218,13 @@ def app(environ, start_response):  # env 和 http 状态及头设定回调
             (&#34;Content-Type&#34;, &#34;text/plain&#34;),
             (&#34;Content-Length&#34;, str(len(data)))
     ])
-    return iter([data])  # 返回数据</pre></td></tr></table>
+    return iter([data])  # 返回数据
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用4个work节点，日志级别debug的方式启动服务，加载 myapp:app</p>
+</div><p>使用4个work节点，日志级别debug的方式启动服务，加载 myapp:app</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -259,9 +236,9 @@ def app(environ, start_response):  # env 和 http 状态及头设定回调
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># gunicorn -w 4 --log-level debug  myapp:app
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># gunicorn -w 4 --log-level debug  myapp:app
 [2021-02-23 17:58:57 +0800] [50258] [DEBUG] Current configuration:  # 准备配置
 ...
 [2021-02-23 18:01:12 +0800] [50462] [INFO] Starting gunicorn 20.0.0  # 启动gunicorn
@@ -272,78 +249,78 @@ def app(environ, start_response):  # env 和 http 状态及头设定回调
 [2021-02-23 18:01:12 +0800] [50465] [INFO] Booting worker with pid: 50465
 [2021-02-23 18:01:12 +0800] [50466] [INFO] Booting worker with pid: 50466
 [2021-02-23 18:01:12 +0800] [50467] [INFO] Booting worker with pid: 50467
-[2021-02-23 18:01:12 +0800] [50462] [DEBUG] 4 workers</pre></td></tr></table>
+[2021-02-23 18:01:12 +0800] [50462] [DEBUG] 4 workers
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>curl</code> 测试服务</p>
+</div><p>使用 <code>curl</code> 测试服务</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># curl http://127.0.0.1:8000
-Hello, World!</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># curl http://127.0.0.1:8000
+Hello, World!
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>同时gunicorn中可以看到 <strong>worker=50465</strong> 处理了这个http请求</p>
+</div><p>同时gunicorn中可以看到 <strong>worker=50465</strong> 处理了这个http请求</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[2021-02-24 16:09:39 +0800] [50465] [DEBUG] GET /</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-02-24 16:09:39 +0800] [50465] [DEBUG] GET /
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>运行时候，还可以通过发送信号，手动扩充work节点数</p>
+</div><p>运行时候，还可以通过发送信号，手动扩充work节点数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kill -TTIN 50462</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># kill -TTIN 50462
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>观察服务日志，会发现 <strong>master=50462</strong> 进程处理了 <code>ttin</code> 信号，并且扩展worker节点数到5</p>
+</div><p>观察服务日志，会发现 <strong>master=50462</strong> 进程处理了 <code>ttin</code> 信号，并且扩展worker节点数到5</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">...
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
 [2021-02-24 18:02:56 +0800] [50462] [INFO] Handling signal: ttin
 [2021-02-24 18:02:56 +0800] [75918] [INFO] Booting worker with pid: 75918
-[2021-02-24 18:02:56 +0800] [50462] [DEBUG] 5 workers</pre></td></tr></table>
+[2021-02-24 18:02:56 +0800] [50462] [DEBUG] 5 workers
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>Ctrl+C</code>  关闭服务，可以看到也是 <strong>master=50462</strong> 进程处理了 <code>int</code> 信号，并且在关闭worker节点后关闭自己</p>
+</div><p>使用 <code>Ctrl+C</code>  关闭服务，可以看到也是 <strong>master=50462</strong> 进程处理了 <code>int</code> 信号，并且在关闭worker节点后关闭自己</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">^C[2021-02-25 15:06:54 +0800] [50462] [INFO] Handling signal: int
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">^C[2021-02-25 15:06:54 +0800] [50462] [INFO] Handling signal: int
 [2021-02-25 15:06:54 +0800] [50464] [INFO] Worker exiting (pid: 50464)
 [2021-02-25 15:06:54 +0800] [50465] [INFO] Worker exiting (pid: 50465)
 [2021-02-25 15:06:54 +0800] [50466] [INFO] Worker exiting (pid: 50466)
 [2021-02-25 15:06:54 +0800] [50467] [INFO] Worker exiting (pid: 50467)
 [2021-02-25 15:06:54 +0800] [75918] [INFO] Worker exiting (pid: 75918)
-[2021-02-25 15:06:54 +0800] [50462] [INFO] Shutting down: Master</pre></td></tr></table>
+[2021-02-25 15:06:54 +0800] [50462] [INFO] Shutting down: Master
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>如果对gunicon的参数不了解，可以使用下面命令查看帮助</p>
+</div><p>如果对gunicon的参数不了解，可以使用下面命令查看帮助</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -351,22 +328,22 @@ Hello, World!</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># gunicorn -h
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># gunicorn -h
 usage: gunicorn [OPTIONS] [APP_MODULE]
 
 optional arguments:
   -h, --help            show this help message and exit
   ...
   -w INT, --workers INT
-                        The number of worker processes for handling requests. [1]</pre></td></tr></table>
+                        The number of worker processes for handling requests. [1]
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>帮助使用我们熟悉的 <strong>argparse</strong> 实现。</p>
+</div><p>帮助使用我们熟悉的 <strong>argparse</strong> 实现。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -420,11 +397,11 @@ optional arguments:
 </span><span class="lnt">52
 </span><span class="lnt">53
 </span><span class="lnt">54
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Setting(object):
-            
-    def add_option(self, parser):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Setting(object):
+			
+	def add_option(self, parser):
         args = tuple(self.cli)
 
         help_txt = &#34;%s [%s]&#34; % (self.short, self.default)
@@ -475,26 +452,26 @@ def parser(self):
     for k in keys:
         self.settings[k].add_option(parser)
 
-    return parser</pre></td></tr></table>
+    return parser
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="gunicorn-application-实现">gunicorn-application 实现</h2>
-
+</div><h2 id="gunicorn-application-">gunicorn-application 实现</h2>
 <p>gunicorn的application主要是下面三个类实现。需要注意的是这里的application可以理解为web-server的application；bottle/flask/django等实现的是web-framework的applicaiton。前者动态加载后者，前者处理http服务，后者处理单次的http请求。</p>
-
 <ul>
 <li>BaseApplication
-
 <ul>
-<li>Application</li>
+<li>Application
+<ul>
 <li>WSGIApplication</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
+</li>
+</ul>
 <p>3个Application梳理后，大概的代码模版如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -526,29 +503,29 @@ def parser(self):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class WSGIApplication(Application)
-    
-    def __init__(self, usage=None, prog=None):
-        self.do_load_config()  # 加载配置
-            
-    def do_load_config():
-        ...
-        cfg = self.init(parser, args, args.args)  # 初始化配置
-        ...
-    
-    def init(...):
-        ...
-        self.app_uri = args[0]  # 获取wsgi-application参数
-    
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIApplication(Application)
+	
+	def __init__(self, usage=None, prog=None):
+		self.do_load_config()  # 加载配置
+			
+	def do_load_config():
+		...
+		cfg = self.init(parser, args, args.args)  # 初始化配置
+		...
+	
+	def init(...):
+	    ...
+	    self.app_uri = args[0]  # 获取wsgi-application参数
+	
   def load(...):
-        util.import_app(self.app_uri)  # 动态加载wsgi-application
-        ...
-    
-    def run(...):
-        self.load()
-        Arbiter(self).run()  # 启动master，也就是Arbiter
+  		util.import_app(self.app_uri)  # 动态加载wsgi-application
+  		...
+	
+	def run(...):
+		self.load()
+		Arbiter(self).run()  # 启动master，也就是Arbiter
 
 def run():  # 运行服务
     &#34;&#34;&#34;\
@@ -559,17 +536,15 @@ def run():  # 运行服务
     WSGIApplication(&#34;%(prog)s [OPTIONS] [APP_MODULE]&#34;).run()
 
 if __name__ == &#39;__main__&#39;:
-    run()</pre></td></tr></table>
+    run()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>application部分的实现，相对比较简单，就不再赘述。</p>
-
-<h2 id="arbiter实现">arbiter实现</h2>
-
+</div><p>application部分的实现，相对比较简单，就不再赘述。</p>
+<h2 id="arbiter">arbiter实现</h2>
 <p>Arbiter 仲裁者，事实上的master进程核心，整理后代码模版如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -606,22 +581,22 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Arbiter(object):
-    def __init__(self, app):
-        self.worker_class = self.cfg.worker_class  # worker类
-        self.num_workers = self.cfg.worker  # worker数量
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Arbiter(object):
+	def __init__(self, app):
+		self.worker_class = self.cfg.worker_class  # worker类
+		self.num_workers = self.cfg.worker  # worker数量
         ...
     
     def start():
-        self.init_signals()  # 初始化信号监听
-        ...
-        sock.create_socket(...) # 创建socket服务
+		self.init_signals()  # 初始化信号监听
+		...
+		sock.create_socket(...) # 创建socket服务
     
     def run(self):  
-        self.start()
-        try:
+		self.start()
+		try:
             self.manage_workers() # 启动节点
 
             while True: #  无限循环
@@ -636,7 +611,7 @@ if __name__ == &#39;__main__&#39;:
                 if sig not in self.SIG_NAMES:
                     self.log.info(&#34;Ignoring unknown signal: %s&#34;, sig)
                     continue
-                                # 处理信号
+    							# 处理信号
                 signame = self.SIG_NAMES.get(sig)
                 handler = getattr(self, &#34;handle_%s&#34; % signame, None)
                 ...
@@ -644,27 +619,27 @@ if __name__ == &#39;__main__&#39;:
                 self.wakeup()  # 唤醒
         except (StopIteration, KeyboardInterrupt):
            ...
-            </pre></td></tr></table>
+    		
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>在了解Arbiter工作前先了解一下信号,  <strong>linux</strong> 系统可以使用下面命令查看信号清单</p>
+</div><p>在了解Arbiter工作前先了解一下信号,  <strong>linux</strong> 系统可以使用下面命令查看信号清单</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kill -l
- 1) SIGHUP   2) SIGINT   3) SIGQUIT  4) SIGILL   5) SIGTRAP
- 6) SIGABRT  7) SIGBUS   8) SIGFPE   9) SIGKILL 10) SIGUSR1
- 11) SIGSEGV    12) SIGUSR2 13) SIGPIPE 14) SIGALRM 15) SIGTERM
-...</pre></td></tr></table>
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># kill -l
+ 1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
+ 6) SIGABRT	 7) SIGBUS	 8) SIGFPE	 9) SIGKILL	10) SIGUSR1
+ 11) SIGSEGV	12) SIGUSR2	13) SIGPIPE	14) SIGALRM	15) SIGTERM
+...
+</code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>1 (SIGHUP): terminate a connection, or reload the configuration for daemons</li>
 <li>2 (SIGINT): interrupt the session from the dialogue station</li>
 <li>3 (SIGQUIT): terminate the session from the dialogue station</li>
@@ -681,11 +656,10 @@ if __name__ == &#39;__main__&#39;:
 <li>14 (SIGALRM): the timer terminated (alarm)</li>
 <li>15 (SIGTERM): terminate the process in a soft way</li>
 </ul>
-
 <p>信号是操作系统提供的事件，可以用来进行跨进程的通信。Arbiter.init_signals 做的工作如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -700,9 +674,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
                for x in &#34;HUP QUIT INT TERM TTIN TTOU USR1 USR2 WINCH&#34;.split()]
                
 def init_signals(self):
@@ -714,36 +688,36 @@ def init_signals(self):
     signal.signal(signal.SIGCHLD, self.handle_chld)  # 添加信号监听器
 
 def signal(self, sig, frame):
-    if len(self.SIG_QUEUE) &lt; 5:
-            self.SIG_QUEUE.append(sig)
-            self.wakeup()</pre></td></tr></table>
+	if len(self.SIG_QUEUE) &lt; 5:
+			self.SIG_QUEUE.append(sig)
+			self.wakeup()
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>之前演示的扩容信号 <code>TTIN</code> 是这样处理的 :</p>
+</div><p>之前演示的扩容信号 <code>TTIN</code> 是这样处理的 :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def handle_ttin(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def handle_ttin(self):
     &#34;&#34;&#34;\
     SIGTTIN handling.
     Increases the number of workers by one.
     &#34;&#34;&#34;
     self.num_workers += 1  # 扩容 
-    self.manage_workers()  # 管理worker </pre></td></tr></table>
+    self.manage_workers()  # 管理worker 
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>Arbiter的sleep和warkeup是这样实现的:</p>
+</div><p>Arbiter的sleep和warkeup是这样实现的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -768,12 +742,12 @@ def signal(self, sig, frame):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">self.PIPE = pair = os.pipe()  # 创建管道
-    
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">self.PIPE = pair = os.pipe()  # 创建管道
+	
 def sleep(self):
-    &#34;&#34;&#34;\
+	&#34;&#34;&#34;\
     Sleep until PIPE is readable or we timeout.
     A readable PIPE means a signal occurred.
     &#34;&#34;&#34;
@@ -794,13 +768,13 @@ def wakeup(self):
         os.write(self.PIPE[1], b&#39;.&#39;)  # 管道写入
     except IOError as e:
         ...
-    </pre></td></tr></table>
+    
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>需要说明的是Arbiter通过 <code>sock.create_sockets</code> 创建了socket，并绑定端口和监听，然后在fork-worker的时候，将socket传递给了子进程。</p>
+</div><p>需要说明的是Arbiter通过 <code>sock.create_sockets</code> 创建了socket，并绑定端口和监听，然后在fork-worker的时候，将socket传递给了子进程。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -809,23 +783,23 @@ def wakeup(self):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">worker = self.worker_class(self.worker_age, self.pid, self.LISTENERS,
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">worker = self.worker_class(self.worker_age, self.pid, self.LISTENERS,
                                    self.app, self.timeout / 2.0,
                                    self.cfg, self.log)
 self.cfg.pre_fork(self, worker)
 pid = os.fork()
 if pid != 0:
-        worker.pid = pid  # 记录worker的pid
+		worker.pid = pid  # 记录worker的pid
     self.WORKERS[pid] = worker # 添加到worker集合
-    return pid</pre></td></tr></table>
+    return pid
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>销毁worker是使用信号:</p>
+</div><p>销毁worker是使用信号:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -833,35 +807,32 @@ if pid != 0:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def kill_workers(self, sig):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def kill_workers(self, sig):
     &#34;&#34;&#34;\
     Kill all workers with the signal `sig`
     :attr sig: `signal.SIG*` value
     &#34;&#34;&#34;
     worker_pids = list(self.WORKERS.keys())
     for pid in worker_pids:
-        os.kill(pid, sig)</pre></td></tr></table>
+        os.kill(pid, sig)
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="sync-worker实现">sync-worker实现</h2>
-
+</div><h2 id="sync-worker">sync-worker实现</h2>
 <p>接下来，我们看看worker，主要是sync-worker的实现。worker的关系主要如下:</p>
-
 <ul>
 <li>Worker 处理信号
-
 <ul>
 <li>SyncWorker 同步处理http请求</li>
 <li>ThreadWorker 使用线程处理http请求</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>接之前Arbiter中fork-worker的代码，创建完成的work进入 <strong>init_process</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -869,22 +840,22 @@ if pid != 0:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># Process Child
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Process Child
 worker.pid = os.getpid()
 try:
     util._setproctitle(&#34;worker [%s]&#34; % self.proc_name)
     self.log.info(&#34;Booting worker with pid: %s&#34;, worker.pid)
     self.cfg.post_fork(self, worker)
     worker.init_process()
-    sys.exit(0)</pre></td></tr></table>
+    sys.exit(0)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>work的init_process模版如下:</p>
+</div><p>work的init_process模版如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -902,9 +873,9 @@ try:
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def init_process(self):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def init_process(self):
     &#34;&#34;&#34;\
     If you override this method in a subclass, the last statement
     in the function should be to call this method with
@@ -914,20 +885,20 @@ try:
     self.PIPE = os.pipe()  # 创建管道
     ...
     self.wait_fds = self.sockets + [self.PIPE[0]]  # 监听管道和socket
-            ...
+			...
     self.init_signals()  # 初始化信号监听
-            ...
+			...
     self.load_wsgi()  # 加载wsgi的应用
     ...
     # Enter main run loop
     self.booted = True
-    self.run()  # 工作循环</pre></td></tr></table>
+    self.run()  # 工作循环
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>work一样的进行信号监听:</p>
+</div><p>work一样的进行信号监听:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -941,14 +912,14 @@ try:
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
             for x in &#34;ABRT HUP QUIT INT TERM USR1 USR2 WINCH CHLD&#34;.split()]
 def init_signals(self):
     # reset signaling
     for s in self.SIGNALS:
-            signal.signal(s, signal.SIG_DFL)
+    		signal.signal(s, signal.SIG_DFL)
     # init new signaling
     signal.signal(signal.SIGQUIT, self.handle_quit)
     signal.signal(signal.SIGTERM, self.handle_exit)
@@ -956,13 +927,13 @@ def init_signals(self):
     ...
 
     if hasattr(signal, &#39;set_wakeup_fd&#39;):
-            signal.set_wakeup_fd(self.PIPE[1])  # 等待select唤醒</pre></td></tr></table>
+    		signal.set_wakeup_fd(self.PIPE[1])  # 等待select唤醒
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>work最重要的run循环:</p>
+</div><p>work最重要的run循环:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -984,12 +955,12 @@ def init_signals(self):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> def run(self, timeout):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> def run(self, timeout):
     listener = self.sockets[0]
     while self.alive:
-                    ...
+					...
         # Accept a connection. If we get an error telling us
         # that no connection is waiting we fall down to the
         # select which is where we&#39;ll wait for a bit for new
@@ -1007,30 +978,30 @@ def init_signals(self):
         try:
             self.wait(timeout)  # 休眠等待 
         except StopWaiting:
-            return</pre></td></tr></table>
+            return
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>处理客户端连接，这一部分和之前介绍http比较类似，也不再赘述。</p>
+</div><p>处理客户端连接，这一部分和之前介绍http比较类似，也不再赘述。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def accept(self, listener):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def accept(self, listener):
     client, addr = listener.accept()
     client.setblocking(1)
     util.close_on_exec(client)
-    self.handle(listener, client, addr)</pre></td></tr></table>
+    self.handle(listener, client, addr)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>work处理完成请求后进入等待</p>
+</div><p>work处理完成请求后进入等待</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1047,9 +1018,9 @@ def init_signals(self):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def wait(self, timeout):
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def wait(self, timeout):
     try:
         ret = select.select(self.wait_fds, [], [], timeout)
         if ret[0]:
@@ -1065,21 +1036,17 @@ def init_signals(self):
                 return self.sockets
             else:
                 raise StopWaiting
-        raise</pre></td></tr></table>
+        raise
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="小结">小结</h2>
-
+</div><h2 id="heading">小结</h2>
 <p>可以用下面一张图展示gunicorn的工作流程，作为我们的小结论</p>
-
-<p><img src="https://miro.medium.com/max/3763/1*rYdZRYct2FKHiGxlJIvORg.png" alt="Request flow of Django with Gunicorn and Nginx as a reverse proxy." /></p>
-
-<h2 id="小技巧">小技巧</h2>
-
+<p><img src="https://miro.medium.com/max/3763/1*rYdZRYct2FKHiGxlJIvORg.png" alt="Request flow of Django with Gunicorn and Nginx as a reverse proxy."></p>
+<h2 id="heading-1">小技巧</h2>
 <p>可以使用thread，实现一个定时器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1104,9 +1071,9 @@ def init_signals(self):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># reloader.py
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># reloader.py
 
 class Reloader(threading.Thread):
     def __init__(self, extra_files=None, interval=1, callback=None):
@@ -1130,32 +1097,31 @@ class Reloader(threading.Thread):
                 elif mtime &gt; old_time:
                     if self._callback:
                         self._callback(filename)
-            time.sleep(self._interval)</pre></td></tr></table>
+            time.sleep(self._interval)
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>在使用 <code>gunicorn myapp:app</code>  命令的时候， <strong>myapp:app</strong> 没有静态的 <strong>import</strong> ，而是这样动态加载的:</p>
+</div><p>在使用 <code>gunicorn myapp:app</code>  命令的时候， <strong>myapp:app</strong> 没有静态的 <strong>import</strong> ，而是这样动态加载的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># util.py
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># util.py
 
 klass = components.pop(-1)
 
 mod = importlib.import_module(&#39;.&#39;.join(components))
 
-return getattr(mod, klass)</pre></td></tr></table>
+return getattr(mod, klass)
+</code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="heading-2">参考链接</h2>
 <ul>
 <li>Gunicorn Design <a href="https://docs.gunicorn.org/en/stable/design.html">https://docs.gunicorn.org/en/stable/design.html</a></li>
 <li>阅读gunicorn 代码文档 <a href="https://gunicorn.readthedocs.io/en/latest/index.html">https://gunicorn.readthedocs.io/en/latest/index.html</a></li>
