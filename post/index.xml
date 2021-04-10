@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 08 Apr 2021 23:23:38 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 11 Apr 2021 07:28:50 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python虚拟环境指南2021版本</title>
+      <link>https://game404.github.io/post/python-env-2021/</link>
+      <pubDate>Sun, 11 Apr 2021 07:28:50 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2021/</guid>
+      <description>又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是: Python虚拟环境指南2020版 P</description>
+    </item>
     
     <item>
       <title>Requests源码v0.2阅读</title>
