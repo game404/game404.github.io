@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker on 游戏不存在</title>
+    <link>https://game404.github.io/tags/docker/</link>
+    <description>Recent content in docker on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Thu, 25 Mar 2021 23:27:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>不一样的docker操作</title>
+      <link>https://game404.github.io/post/python/docker-py/</link>
+      <pubDate>Thu, 25 Mar 2021 23:27:04 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/docker-py/</guid>
+      <description>docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do</description>
+    </item>
+    
+  </channel>
+</rss>

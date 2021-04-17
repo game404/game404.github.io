@@ -1,0 +1,431 @@
+<?xml-stylesheet type="text/xsl" href="https://game404.github.io/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://game404.github.io/about/</loc>
+    <lastmod>2017-08-28T21:41:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/python/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python-env-2021/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/%E6%8C%87%E5%8D%97/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/</loc>
+    <lastmod>2021-04-11T07:28:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/requests-v0.2/</loc>
+    <lastmod>2021-04-08T23:23:38+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/web-serv/</loc>
+    <lastmod>2021-04-01T22:12:37+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/docker/</loc>
+    <lastmod>2021-03-25T23:27:04+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/docker/</loc>
+    <lastmod>2021-03-25T23:27:04+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/docker-py/</loc>
+    <lastmod>2021-03-25T23:27:04+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</loc>
+    <lastmod>2021-03-25T23:27:04+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/signal/</loc>
+    <lastmod>2021-03-18T22:34:49+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/blinker/</loc>
+    <lastmod>2021-03-18T22:34:49+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/mako/</loc>
+    <lastmod>2021-03-11T23:43:34+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/%E6%A8%A1%E7%89%88%E5%BC%95%E6%93%8E/</loc>
+    <lastmod>2021-03-11T23:43:34+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/logging/</loc>
+    <lastmod>2021-03-04T23:22:39+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/logging/</loc>
+    <lastmod>2021-03-04T23:22:39+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/gunicorn/</loc>
+    <lastmod>2021-02-24T20:01:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/gunicorn/</loc>
+    <lastmod>2021-02-24T20:01:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/database/</loc>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/tinydb/</loc>
+    <lastmod>2021-02-17T22:14:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/cli/</loc>
+    <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/argparse/</loc>
+    <lastmod>2021-02-11T21:36:27+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/wsgiref/</loc>
+    <lastmod>2021-02-04T22:13:53+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/wsgi/</loc>
+    <lastmod>2021-02-04T22:13:53+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/http/</loc>
+    <lastmod>2021-01-28T22:13:45+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/http/</loc>
+    <lastmod>2021-01-28T22:13:45+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/bottle/</loc>
+    <lastmod>2021-01-21T22:46:56+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/bottle/</loc>
+    <lastmod>2021-01-21T22:46:56+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/requests/</loc>
+    <lastmod>2021-01-17T08:31:48+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/redis/</loc>
+    <lastmod>2021-01-09T21:37:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/redis-py/</loc>
+    <lastmod>2021-01-09T21:37:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python-env-2020/</loc>
+    <lastmod>2020-03-21T23:10:57+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/design/</loc>
+    <lastmod>2019-12-08T23:34:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/django/</loc>
+    <lastmod>2019-12-08T23:34:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/django-rbac-permission-design/</loc>
+    <lastmod>2019-12-08T23:34:12+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/celery-1/</loc>
+    <lastmod>2019-09-28T23:43:53+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python021/</loc>
+    <lastmod>2019-09-14T22:16:48+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2019-09-14T22:16:48+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/jupyter-simple/</loc>
+    <lastmod>2019-07-29T00:14:49+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/kubernetes/</loc>
+    <lastmod>2019-06-13T22:34:06+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker2istio-istio/</loc>
+    <lastmod>2019-06-13T22:34:06+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/%E7%B3%BB%E5%88%97/</loc>
+    <lastmod>2019-06-13T22:34:06+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker2istio-kubernetes/</loc>
+    <lastmod>2019-05-22T22:39:33+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker2istio-compose/</loc>
+    <lastmod>2019-05-22T22:39:33+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker2istio-docker/</loc>
+    <lastmod>2019-05-17T22:39:33+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker-syslog/</loc>
+    <lastmod>2019-05-01T23:47:16+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/go/</loc>
+    <lastmod>2019-04-22T00:29:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/go-cli-command/</loc>
+    <lastmod>2019-04-22T00:29:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/blackhole/</loc>
+    <lastmod>2019-04-15T00:26:09+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/fluentd/</loc>
+    <lastmod>2019-04-13T05:23:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/k8s-fluentd-logging/</loc>
+    <lastmod>2019-04-13T05:23:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/kubernetes-open-falcon-deploy/</loc>
+    <lastmod>2019-04-08T23:46:25+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python-env-2019/</loc>
+    <lastmod>2019-04-06T03:29:53+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/kubernetes-1.14-upgrade-guide/</loc>
+    <lastmod>2019-03-28T23:28:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/kubernetes-1.13-guide/</loc>
+    <lastmod>2019-03-26T23:27:54+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker-log/</loc>
+    <lastmod>2019-03-24T18:41:26+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/docker-timezone/</loc>
+    <lastmod>2019-03-17T18:25:24+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>

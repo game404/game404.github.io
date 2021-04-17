@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>requests 源码阅读 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/requests/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="requests 源码阅读" />
+<meta property="og:description" content="requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/requests/" />
+<meta property="article:published_time" content="2021-01-17T08:31:48+08:00" />
+<meta property="article:modified_time" content="2021-01-17T08:31:48+08:00" />
+<meta itemprop="name" content="requests 源码阅读">
+<meta itemprop="description" content="requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我">
+<meta itemprop="datePublished" content="2021-01-17T08:31:48&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-17T08:31:48&#43;08:00" />
+<meta itemprop="wordCount" content="3818">
+
+
+
+<meta itemprop="keywords" content="http,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="requests 源码阅读"/>
+<meta name="twitter:description" content="requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">requests 源码阅读</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-01-17 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#heading">项目结构</a></li>
+    <li><a href="#api-">api 模块</a></li>
+    <li><a href="#sessions">sessions</a></li>
+    <li><a href="#models">models</a></li>
+    <li><a href="#adapters-">adapters 模块</a></li>
+    <li><a href="#heading-1">小技巧</a>
+      <ul>
+        <li><a href="#json">json缩进输出</a></li>
+        <li><a href="#structures">structures</a></li>
+        <li><a href="#status-codes">status_codes</a></li>
+        <li><a href="#hook">hook</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading-2">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我个人觉得还是官方的地道：
+<code>Requests is an elegant and simple HTTP library for Python, built for human beings.</code> 夸张到是人类就会使用requests :)。我们一起阅读一下其源码，学习它是如何实现的。整篇文档分下面几个部分:</p>
+<ul>
+<li>项目结构</li>
+<li>api 模块</li>
+<li>sessions 模块</li>
+<li>models 模块</li>
+<li>adapters 模块</li>
+<li>小技巧</li>
+</ul>
+<h2 id="heading">项目结构</h2>
+<p>本次阅读代码版本是 <code>2.24.0</code>, 从github上clone项目后，使用log命令查看历史信息，找到tag=2.24.0的标签，切换版本:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">git checkout 0797c61fd541f92f66e409dbf9515ca287af28d2
+</code></pre></td></tr></table>
+</div>
+</div><p>可以使用下面的方法简单判断一下代码量，这样阅读完成后会更有成就感。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  requests git:(0797c61f) ✗ find requests -name &#34;*.py&#34; |xargs cat|grep -v ^$|wc -l  # 4000
+</code></pre></td></tr></table>
+</div>
+</div><p>大概浏览一下项目结构和代码，我们可以知道每个模块的功能：
+名称|描述
+&mdash;|&mdash;
+adapters.py|负责http连接的处理，主要适配自urllib3库
+api|api接口
+auth|http认证
+certs|https证书处理
+compat|python版本适配包
+cookies|cookie处理
+help|帮助
+hook|钩子系统
+models|数据模型
+packages|兼容包相关
+sessions|session处理
+status_codes|http状态码
+structures|数据结构
+utils|工具</p>
+<p>4000多行代码，10多个模块，要全部梳理工作量不小，难度也大。本篇文章我们还是只关注主线，对于支线和细枝末节可以 <strong>不求甚解</strong> 。</p>
+<h2 id="api-">api 模块</h2>
+<p>首先还是从requests的使用示例出发：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; r = requests.get(&#39;https://api.github.com/user&#39;, auth=(&#39;user&#39;, &#39;pass&#39;))
+&gt;&gt;&gt; r.status_code
+200
+&gt;&gt;&gt; r.headers[&#39;content-type&#39;]
+&#39;application/json; charset=utf8&#39;
+&gt;&gt;&gt; r.encoding
+&#39;utf-8&#39;
+&gt;&gt;&gt; r.text
+&#39;{&#34;type&#34;:&#34;User&#34;...&#39;
+&gt;&gt;&gt; r.json()
+{&#39;private_gists&#39;: 419, &#39;total_private_repos&#39;: 77, ...}
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的使用方法由api提供:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># api.py
+
+def request(method, url, **kwargs)
+    with sessions.Session() as session:
+        return session.request(method=method, url=url, **kwargs)
+
+def get(url, params=None, **kwargs):
+    kwargs.setdefault(&#39;allow_redirects&#39;, True)
+    return request(&#39;get&#39;, url, params=params, **kwargs)
+    
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>这种get-request的api的封装方式，和我们之前读过的redis源码类似，可以让使用者更安全方便。request具体实现代码是从session上下文获取一个session，然后利用 <strong>session.request</strong> 发送请求。</p>
+<p>同时api中还包装了http的 <code>OPTIONS</code>, <code>HEAD</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code> 和<code>DELETE</code> 方法。</p>
+<h2 id="sessions">sessions</h2>
+<p><code>sessions.py</code> 对象的创建和上下文：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># sessions.py
+
+class Session(SessionRedirectMixin):
+    
+    def __init__(self):
+        self.headers = default_headers()
+        self.cookies = cookiejar_from_dict({})
+
+        # Default connection adapters.
+        self.adapters = OrderedDict()
+        ...
+        self.mount(&#39;https://&#39;, HTTPAdapter())
+    
+    def mount(self, prefix, adapter):
+        self.adapters[prefix] = adapter
+        
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        for v in self.adapters.values():
+            v.close()
+</code></pre></td></tr></table>
+</div>
+</div><p>session初始化时候，会创建默认的http-header，http-cookie信息，建立HTTPAdpater对象。<code>__enter__</code>和<code>__exit__</code>,是上下文装饰器函数，可以用来确保进行adapter的close。</p>
+<p>使用request方法发送请求:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def request(self, method, url,
+        params=None, data=None, headers=None, cookies=None, files=None,
+        auth=None, timeout=None, allow_redirects=True, proxies=None,
+        hooks=None, stream=None, verify=None, cert=None, json=None):
+    req = Request(
+        method=method.upper(),
+        url=url,
+        headers=headers,
+        files=files,
+        data=data or {},
+        json=json,
+        params=params or {},
+        auth=auth,
+        cookies=cookies,
+        hooks=hooks,
+    )
+    ...
+    prep = PreparedRequest()
+    prep.prepare(
+        method=request.method.upper(),
+        url=request.url,
+        files=request.files,
+        data=request.data,
+        json=request.json,
+        headers=merge_setting(request.headers, self.headers, dict_class=CaseInsensitiveDict),
+        params=merge_setting(request.params, self.params),
+        auth=merge_setting(auth, self.auth),
+        cookies=merged_cookies,
+        hooks=merge_hooks(request.hooks, self.hooks),
+    )
+    ...
+    adapter = self.get_adapter(url=request.url)
+    ...
+    resp = adapter.send(prep, **send_kwargs)
+    return resp
+</code></pre></td></tr></table>
+</div>
+</div><p>request函数的处理流程，主要分成四步：</p>
+<ol>
+<li>使用请求参数封装Request对象</li>
+<li>生成PreparedRequest对象，并对request对象进行预先处理</li>
+<li>获取对应的http/https协议适配器，并用其send方法发送请求</li>
+<li>将获取的Response对象返回</li>
+</ol>
+<h2 id="models">models</h2>
+<p>在进行请求过程中创建了Request，PreparedRequest对象，同时从adpater中返回了Response对象,这3个对象的具体实现都在 <code>models.py</code> 模块。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Request(RequestHooksMixin):
+    
+    def __init__(self,
+            method=None, url=None, headers=None, files=None, data=None,
+            params=None, auth=None, cookies=None, hooks=None, json=None):
+        
+        ...
+        self.hooks = default_hooks()
+        for (k, v) in list(hooks.items()):
+            self.register_hook(event=k, hook=v)
+
+        self.method = method
+        self.url = url
+        self.headers = headers
+        self.files = files
+        self.data = data
+        self.json = json
+        self.params = params
+        self.auth = auth
+        self.cookies = cookies
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>Request对象创建比较简单，就是做了一些属性的赋值，然后对外部注入的hook进行了一下校验，确保是可以执行的函数和函数集合。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_hook(self, event, hook):
+    &#34;&#34;&#34;Properly register a hook.&#34;&#34;&#34;
+
+    if event not in self.hooks:
+        raise ValueError(&#39;Unsupported event specified, with event name &#34;%s&#34;&#39; % (event))
+
+    if isinstance(hook, Callable):  ## hook 是一个函数
+        self.hooks[event].append(hook)
+    elif hasattr(hook, &#39;__iter__&#39;):  # hook 也可以是一个迭代器
+        self.hooks[event].extend(h for h in hook if isinstance(h, Callable))
+</code></pre></td></tr></table>
+</div>
+</div><p>PreparedRequest对象则对外部的参数进行更多的验证和准备:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
+    
+    ...
+    
+    def prepare(self,
+        method=None, url=None, headers=None, files=None, data=None,
+        params=None, auth=None, cookies=None, hooks=None, json=None):
+    &#34;&#34;&#34;Prepares the entire request with the given parameters.&#34;&#34;&#34;
+
+        self.prepare_method(method)
+        self.prepare_url(url, params)
+        self.prepare_headers(headers)
+        self.prepare_cookies(cookies)
+        self.prepare_body(data, files, json)
+        self.prepare_auth(auth, url)
+
+        ...
+        hooks = hooks or []
+        for event in hooks:
+            self.register_hook(event, hooks[event])
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到PreparedRequest对象经过了：</p>
+<ul>
+<li>准备http方法</li>
+<li>准备url</li>
+<li>准备header</li>
+<li>准备cookie</li>
+<li>准备http-body</li>
+<li>准备认证</li>
+<li>接受Request对象上带来的hook</li>
+</ul>
+<p>hook我们最后再进行详细介绍，这里以prepare_headers为例看看验证过程中都做了什么:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def prepare_headers(self, headers):
+    &#34;&#34;&#34;Prepares the given HTTP headers.&#34;&#34;&#34;
+
+    self.headers = CaseInsensitiveDict()  # 创建字典 
+    if headers:
+        for header in headers.items():
+            # Raise exception on invalid header value.
+            check_header_validity(header) # 验证信息
+            name, value = header
+            self.headers[to_native_string(name)] = value  # 赋值
+</code></pre></td></tr></table>
+</div>
+</div><p>Response对象，主要模拟文件操作，raw保留了二进制数据流，content属性是获得所有二进制数据，text属性将二进制数据编码成文本，json方法则是将文本序列化方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+CONTENT_CHUNK_SIZE = 10 * 1024 # 10k数据
+
+class Response(object):
+    
+    def __init__(self):
+        #: File-like object representation of response (for advanced usage).
+        #: Use of ``raw`` requires that ``stream=True`` be set on the request.
+        #: This requirement does not apply for use internally to Requests.
+        self.raw = None
+    
+    @property
+    def content(self):
+        &#34;&#34;&#34;Content of the response, in bytes.&#34;&#34;&#34;
+        ...
+        self._content = b&#39;&#39;.join(self.iter_content(CONTENT_CHUNK_SIZE)) or b&#39;&#39;
+        ...
+        return self._content
+    
+    @property
+    def text(self):
+        content = str(self.content, encoding, errors=&#39;replace&#39;)
+        return content
+    
+    def json(self, **kwargs):
+        ...
+        return complexjson.loads(self.text, **kwargs) 
+    
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>requests 优先使用simplejson进行json的序列化</p>
+</blockquote>
+<p><code>iter_content</code> 函数中使用一个生成器来迭代的从流中获取数据。至于流如何得到，稍后看adapter的实现。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def iter_content(self, chunk_size=1, decode_unicode=False):
+    def generate():
+            # Special case for urllib3.
+            if hasattr(self.raw, &#39;stream&#39;):
+                try:
+                    for chunk in self.raw.stream(chunk_size, decode_content=True):
+                        yield chunk
+    stream_chunks = generate()
+    return stream_chunks
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="adapters-">adapters 模块</h2>
+<p>具体的http请求如何发送的呢？主要就在HTTPAdapter中了:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class HTTPAdapter(BaseAdapter):
+    def __init__(self, pool_connections=DEFAULT_POOLSIZE,
+                 pool_maxsize=DEFAULT_POOLSIZE, max_retries=DEFAULT_RETRIES,
+                 pool_block=DEFAULT_POOLBLOCK):
+        ...
+        # 初始化连接池
+        self.poolmanager = PoolManager(num_pools=connections, maxsize=maxsize,
+                                       block=block, strict=True, **pool_kwargs)
+    
+    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+        conn = self.poolmanager.connection_from_url(url) # 获取连接
+        
+        url = self.request_url(request, proxies)
+        self.add_headers(request, stream=stream, timeout=timeout, verify=verify, cert=cert, proxies=proxies)
+        
+        # 发送请求
+        resp = conn.urlopen(
+                    method=request.method,
+                    url=url,
+                    body=request.body,
+                    headers=request.headers,
+                    redirect=False,
+                    assert_same_host=False,
+                    preload_content=False,
+                    decode_content=False,
+                    retries=self.max_retries,
+                    timeout=timeout
+                )
+        
+        return self.build_response(request, resp)
+    
+    def close(self):
+        self.poolmanager.clear()  # 连接池关闭
+</code></pre></td></tr></table>
+</div>
+</div><p>这里主要用了urllib3库提供的PoolManager和urlopen，本篇文章我们就不深入里面的实现了，重点看看如何生成Response对象:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def build_response(self, req, resp):
+    response = Response()
+    
+    # Fallback to None if there&#39;s no status_code, for whatever reason.
+    response.status_code = getattr(resp, &#39;status&#39;, None)
+
+    # Make headers case-insensitive.
+    response.headers = CaseInsensitiveDict(getattr(resp, &#39;headers&#39;, {}))
+
+    # Set encoding.
+    response.encoding = get_encoding_from_headers(response.headers)
+    response.raw = resp  # 二进制流
+    response.reason = response.raw.reason
+
+    if isinstance(req.url, bytes):
+        response.url = req.url.decode(&#39;utf-8&#39;)
+    else:
+        response.url = req.url
+
+    # Add new cookies from the server.
+    extract_cookies_to_jar(response.cookies, req, resp)
+
+    # Give the Response some context.
+    response.request = req
+    response.connection = self
+
+    return response
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>resp 是urllib3的HTTPResponse实现</li>
+<li>cookie是合并了Request和Response</li>
+<li>Response还引用了PreparedRequest对象，可以让response的使用更方便</li>
+</ul>
+<p>使用requests进行http请求的过程，主要集中在上面四个模块，现在对其核心过程都有了一定的了解。https则是再http基础上，做了更多的验证等工作。可以简单回顾一下请求执行流程：</p>
+<ol>
+<li>api中封装易用的API</li>
+<li>Session中进行流程的处理</li>
+<li>Request和PreparedRequest对请求进行预处理</li>
+<li>Response对响应进行封装，提供更易用的方法(json)和数据(ok)</li>
+</ol>
+<h2 id="heading-1">小技巧</h2>
+<p>requests库中还有一些代码，也让使用更简单，可以借鉴。</p>
+<h3 id="json">json缩进输出</h3>
+<p>json输出的时候定义indent参数可以进行缩进，sort_keys可以进行排序。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># help.py
+
+&#34;&#34;&#34;Pretty-print the bug information as JSON.&#34;&#34;&#34;
+print(json.dumps(info(), sort_keys=True, indent=2))
+</code></pre></td></tr></table>
+</div>
+</div><p>下面是示例和展示:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">a = {
+        &#34;name&#34;: &#34;game404&#34;,
+        &#34;age&#34;: 2
+    }
+print(json.dumps(a)) 
+print(json.dumps(a, sort_keys=True, indent=2))  # 定义indent参数
+# 输出
+{&#34;name&#34;: &#34;game404&#34;, &#34;age&#34;: 2}
+{
+  &#34;age&#34;: 2,
+  &#34;name&#34;: &#34;game404&#34;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="structures">structures</h3>
+<p>structures模块中定义了2个数据结构。普通的python字典不可以使用 <code>.</code> 取值, 如果需要使用 <code>.</code> 需要定义对象:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># structures.py
+
+a = {
+    &#34;name&#34;:&#34;game404&#34;
+}
+# print(a.name)  # AttributeError
+print(a[&#34;name&#34;])
+
+# 定义一个数据结构对象
+class Person(object):
+
+    def __init__(self, name):
+        self.name = name
+</code></pre></td></tr></table>
+</div>
+</div><p><code>LookupDict</code> 可以不用定义对象属性又使用<code>.</code> 取值，这在一些配置类上会很方便:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class LookupDict(dict):
+    &#34;&#34;&#34;Dictionary lookup object.&#34;&#34;&#34;
+
+    def __init__(self, name=None):
+        self.name = name
+        super(LookupDict, self).__init__()
+
+    def __repr__(self):
+        return &#39;&lt;lookup \&#39;%s\&#39;&gt;&#39; % (self.name)
+
+    def __getitem__(self, key):
+        # We allow fall-through here, so values default to None
+        # 可以使用. 取值的魔法函数
+        return self.__dict__.get(key, None)
+
+    def get(self, key, default=None):
+        return self.__dict__.get(key, default
+        
+a = LookupDict(name=&#34;game404&#34;)
+a[&#34;motto&#34;] = &#34;Life is short, you need Python&#34;
+a.age = 2
+print(a[&#34;motto&#34;], a.age, a[&#34;age&#34;])  # none, 2, 2
+</code></pre></td></tr></table>
+</div>
+</div><p><code>CaseInsensitiveDict</code> 定义了大小写不敏感的字典，用来处理http-header：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class CaseInsensitiveDict(MutableMapping):
+    
+    def __init__(self, data=None, **kwargs):
+        self._store = OrderedDict()  # 使用额外的_store存储数据
+        if data is None:
+            data = {}
+        self.update(data, **kwargs)
+
+    def __setitem__(self, key, value):
+        # Use the lowercased key for lookups, but store the actual
+        # key alongside the value.
+        self._store[key.lower()] = (key, value)  # 字典的key都转换为小写 
+    
+    def __delitem__(self, key):
+        del self._store[key.lower()]
+    
+cid = CaseInsensitiveDict()
+cid[&#39;Accept&#39;] = &#39;application/json&#39;
+print(cid[&#39;aCCEPT&#39;] == &#39;application/json&#39;)  # True
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到CaseInsensitiveDict对象的__dict__实际上使用_store包装了一层:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">print(cid.__dict__)  # {&#39;_store&#39;: OrderedDict([(&#39;accept&#39;, (&#39;Accept&#39;, &#39;application/json&#39;))])} 
+print(cid._store)  # OrderedDict([(&#39;accept&#39;, (&#39;Accept&#39;, &#39;application/json&#39;))])
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="status-codes">status_codes</h3>
+<p>status_codes中定义了http状态码的语义化名称，比如 <code>OK</code> 是 <code>200</code>的语义化表达，不懂http的人也可以看到ok状态。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">print(requests.codes[&#34;ok&#34;], requests.codes.OK, requests.codes.ok, requests.codes.OKAY)  #200 200 200 200
+print(requests.codes.CREATED)  # 201
+print(requests.codes.found)  # 302
+</code></pre></td></tr></table>
+</div>
+</div><p>其实现方法主要是:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># statuc_codes.py
+
+codes = LookupDict(name=&#39;status_codes&#39;)
+for code, titles in _codes.items():
+        for title in titles:
+            setattr(codes, title, code)  # 默认key 
+            if not title.startswith((&#39;\\&#39;, &#39;/&#39;)):
+                setattr(codes, title.upper(), code)  # 大写key
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="hook">hook</h3>
+<p><code>hooks</code> 提供了一个简单的钩子系统，可以对一个事件名称注册多个处理函数（前面的register_hook），然后在合适的时候触发就可以获取对数据进行处理， 数据处理过程类似linux的管道符号 <code>|</code> :</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># hooks.py
+
+HOOKS = [&#39;response&#39;]
+
+
+def default_hooks():  # 初始化默认的事件
+    return {event: [] for event in HOOKS}
+
+def dispatch_hook(key, hooks, hook_data, **kwargs):
+    &#34;&#34;&#34;Dispatches a hook dictionary on a given piece of data.&#34;&#34;&#34;
+    hooks = hooks or {}
+    hooks = hooks.get(key)
+    if hooks:
+        if hasattr(hooks, &#39;__call__&#39;):  # 判断是函数还是函数集合
+            hooks = [hooks]
+        for hook in hooks:
+            _hook_data = hook(hook_data, **kwargs)  # 注意hook会返回数据，由下一个函数继续处理
+            if _hook_data is not None:
+                hook_data = _hook_data
+    return hook_data
+
+</code></pre></td></tr></table>
+</div>
+</div><p>使用方法在:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Session(SessionRedirectMixin):
+
+    def send(self, request, **kwargs):
+        ...
+        r = adapter.send(request, **kwargs)
+        # Response manipulation hooks
+        r = dispatch_hook(&#39;response&#39;, hooks, r, **kwargs)
+    
+</code></pre></td></tr></table>
+</div>
+</div><p>session在获取到请求后，触发预先定义的钩子，对response进行进一步的处理。</p>
+<h2 id="heading-2">参考链接</h2>
+<ul>
+<li><a href="https://requests.readthedocs.io/zh_CN/latest/">https://requests.readthedocs.io/zh_CN/latest/</a></li>
+<li><a href="https://urllib3.readthedocs.io/en/latest/">https://urllib3.readthedocs.io/en/latest/</a></li>
+<li><a href="https://gist.github.com/kennethreitz42/973705">https://gist.github.com/kennethreitz42/973705</a></li>
+</ul>
+<p>最后，欢迎加下面的微信和我互动交流，一起进阶:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-01-17
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/http/">http</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/bottle/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Bottle 源码阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/python/redis-py/">
+            <span class="next-text nav-default">Redis-py 源码阅读</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-01-17 08:31:48 \x2b0800 CST',
+        title: 'requests 源码阅读',
+        link: decodeURI(location.href),
+        desc: 'requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

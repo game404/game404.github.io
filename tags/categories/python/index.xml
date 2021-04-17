@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on 游戏不存在</title>
+    <link>https://game404.github.io/categories/python/</link>
+    <description>Recent content in python on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sun, 11 Apr 2021 07:28:50 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Python虚拟环境指南2021版本</title>
+      <link>https://game404.github.io/post/python-env-2021/</link>
+      <pubDate>Sun, 11 Apr 2021 07:28:50 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2021/</guid>
+      <description>又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是: Python虚拟环境指南2020版 P</description>
+    </item>
+    
+    <item>
+      <title>Requests源码v0.2阅读</title>
+      <link>https://game404.github.io/post/python/requests-v0.2/</link>
+      <pubDate>Thu, 08 Apr 2021 23:23:38 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests-v0.2/</guid>
+      <description>前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对</description>
+    </item>
+    
+    <item>
+      <title>一步一步实现web服务器</title>
+      <link>https://game404.github.io/post/python/web-serv/</link>
+      <pubDate>Thu, 01 Apr 2021 22:12:37 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/web-serv/</guid>
+      <description>本次代码阅读的项目来自 500lines 的子项目 web-server。 500 Lines or Less不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立</description>
+    </item>
+    
+    <item>
+      <title>不一样的docker操作</title>
+      <link>https://game404.github.io/post/python/docker-py/</link>
+      <pubDate>Thu, 25 Mar 2021 23:27:04 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/docker-py/</guid>
+      <description>docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do</description>
+    </item>
+    
+    <item>
+      <title>一文打尽python-web开发的signal机制</title>
+      <link>https://game404.github.io/post/python/blinker/</link>
+      <pubDate>Thu, 18 Mar 2021 22:34:49 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/blinker/</guid>
+      <description>signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很</description>
+    </item>
+    
+    <item>
+      <title>python 模版引擎 Mako 源码阅读</title>
+      <link>https://game404.github.io/post/python/mako/</link>
+      <pubDate>Thu, 11 Mar 2021 23:43:34 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/mako/</guid>
+      <description>Mako 是用Python编写的模板引擎。从概念上讲，mako是一种嵌入式Python（即Python Server Page）语言，模版被编译成Python代码</description>
+    </item>
+    
+    <item>
+      <title>python logging 源码阅读</title>
+      <link>https://game404.github.io/post/python/logging/</link>
+      <pubDate>Thu, 04 Mar 2021 23:22:39 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/logging/</guid>
+      <description>python logging 源码阅读 python logging 模块实现了灵活的日志系统。整个模块仅仅3个类，不到5000行代码的样子，学习它可以加深对程序日志的了解，本文分下面几个部分:</description>
+    </item>
+    
+    <item>
+      <title>Gunicorn 源码阅读</title>
+      <link>https://game404.github.io/post/python/gunicorn/</link>
+      <pubDate>Wed, 24 Feb 2021 20:01:29 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/gunicorn/</guid>
+      <description>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正</description>
+    </item>
+    
+    <item>
+      <title>python tinydb 源码阅读</title>
+      <link>https://game404.github.io/post/python/tinydb/</link>
+      <pubDate>Wed, 17 Feb 2021 22:14:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/tinydb/</guid>
+      <description>TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL</description>
+    </item>
+    
+    <item>
+      <title>python argparse 源码阅读</title>
+      <link>https://game404.github.io/post/python/argparse/</link>
+      <pubDate>Thu, 11 Feb 2021 21:36:27 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/argparse/</guid>
+      <description>http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12</description>
+    </item>
+    
+    <item>
+      <title>python wsgiref 源码阅读</title>
+      <link>https://game404.github.io/post/python/wsgiref/</link>
+      <pubDate>Thu, 04 Feb 2021 22:13:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/wsgiref/</guid>
+      <description>python web开发中http请求的处理流程通常是: web-browser &amp;lt;-&amp;gt; web-server &amp;lt;-&amp;gt; wsgi &amp;lt;-&amp;gt; web-application， 我们学习过基于bottle实现的web-applic</description>
+    </item>
+    
+    <item>
+      <title>python http 源码阅读</title>
+      <link>https://game404.github.io/post/python/http/</link>
+      <pubDate>Thu, 28 Jan 2021 22:13:45 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/http/</guid>
+      <description>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p</description>
+    </item>
+    
+    <item>
+      <title>Bottle 源码阅读</title>
+      <link>https://game404.github.io/post/python/bottle/</link>
+      <pubDate>Thu, 21 Jan 2021 22:46:56 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/bottle/</guid>
+      <description>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限</description>
+    </item>
+    
+    <item>
+      <title>requests 源码阅读</title>
+      <link>https://game404.github.io/post/python/requests/</link>
+      <pubDate>Sun, 17 Jan 2021 08:31:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests/</guid>
+      <description>requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我</description>
+    </item>
+    
+    <item>
+      <title>Redis-py 源码阅读</title>
+      <link>https://game404.github.io/post/python/redis-py/</link>
+      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/redis-py/</guid>
+      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
+    </item>
+    
+    <item>
+      <title>Python虚拟环境指南2020版</title>
+      <link>https://game404.github.io/post/python-env-2020/</link>
+      <pubDate>Sat, 21 Mar 2020 23:10:57 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2020/</guid>
+      <description>这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟</description>
+    </item>
+    
+    <item>
+      <title>Django Rbac 权限设计</title>
+      <link>https://game404.github.io/post/django-rbac-permission-design/</link>
+      <pubDate>Sun, 08 Dec 2019 23:34:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/django-rbac-permission-design/</guid>
+      <description>Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &amp;ldquo;Alice&amp;rdquo;: { &amp;ldquo;read&amp;rdquo;:</description>
+    </item>
+    
+    <item>
+      <title>Celery 指南 - 1</title>
+      <link>https://game404.github.io/post/celery-1/</link>
+      <pubDate>Sat, 28 Sep 2019 23:43:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/celery-1/</guid>
+      <description>celery是什么 Celery 通过消息机制进行通信，通常使用中间人（Broker）作为客户端和职程（Worker）调节。启动一个任务，客户端向消息队列</description>
+    </item>
+    
+    <item>
+      <title>python从零到壹</title>
+      <link>https://game404.github.io/post/python021/</link>
+      <pubDate>Sat, 14 Sep 2019 22:16:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python021/</guid>
+      <description>python从零到壹 1. 基础要求 起点 前3差数学；后3差经验；天赋决定天花板；任何起点都可以开始python 江湖图谱 丐帮玩蛇，天下一绝； 学习最重</description>
+    </item>
+    
+    <item>
+      <title>Jupyter Notebook 使用入门</title>
+      <link>https://game404.github.io/post/jupyter-simple/</link>
+      <pubDate>Mon, 29 Jul 2019 00:14:49 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/jupyter-simple/</guid>
+      <description>Jupyter Notebook 使用入门 Jupyter Notebook官方介绍是基于网页的用于交互计算的应用程序。其可被应用于全过程计算：开发、文档编写、运行代码和展示结果。简单的</description>
+    </item>
+    
+    <item>
+      <title>Python 生成微信头图</title>
+      <link>https://game404.github.io/post/blackhole/</link>
+      <pubDate>Mon, 15 Apr 2019 00:26:09 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/blackhole/</guid>
+      <description>前两天我的朋友肖和我说 “完啦完啦，现在微信公众号没法弄了”。我就纳闷了，问她怎么回事。她告诉我 “黑洞图片事件你不知道，好多微信公众号号都有被</description>
+    </item>
+    
+    <item>
+      <title>Python虚拟环境指南2019版</title>
+      <link>https://game404.github.io/post/python-env-2019/</link>
+      <pubDate>Sat, 06 Apr 2019 03:29:53 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2019/</guid>
+      <description>这是一篇旧文，编写于2017年，用于公司内部交流。整理更新后于2019年04月06日重发，内容有效期乐观估计半年，阅读请注意保质期。 为什么用</description>
+    </item>
+    
+  </channel>
+</rss>

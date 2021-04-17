@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>不一样的docker操作 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/docker-py/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="不一样的docker操作" />
+<meta property="og:description" content="docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/docker-py/" />
+<meta property="article:published_time" content="2021-03-25T23:27:04+08:00" />
+<meta property="article:modified_time" content="2021-03-25T23:27:04+08:00" />
+<meta itemprop="name" content="不一样的docker操作">
+<meta itemprop="description" content="docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do">
+<meta itemprop="datePublished" content="2021-03-25T23:27:04&#43;08:00" />
+<meta itemprop="dateModified" content="2021-03-25T23:27:04&#43;08:00" />
+<meta itemprop="wordCount" content="5364">
+
+
+
+<meta itemprop="keywords" content="docker,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="不一样的docker操作"/>
+<meta name="twitter:description" content="docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的do"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">不一样的docker操作</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-03-25 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            <a href="/categories/docker/"> docker </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#docker-py">docker-py项目结构</a></li>
+    <li><a href="#docker-py-api">docker-py API示例</a></li>
+    <li><a href="#dockerclient">DockerClient的实现</a></li>
+    <li><a href="#docker-version">docker-version命令跟踪</a></li>
+    <li><a href="#unixhttpadapter">UnixHTTPAdapter的实现</a></li>
+    <li><a href="#docker-ps">docker-ps命令跟踪</a></li>
+    <li><a href="#docker-logs">docker-logs命令跟踪</a></li>
+    <li><a href="#docker-exec-">docker-exec 命令跟踪</a></li>
+    <li><a href="#curldocker-api">使用curl访问docker-api</a></li>
+    <li><a href="#heading">小结</a></li>
+    <li><a href="#heading-1">小技巧</a></li>
+    <li><a href="#heading-2">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http/socket协议连接本地的docker engine进行操作。对 <strong>docker</strong> 感兴趣，苦于工作中只用到 <strong>http</strong> 协议的同学，都建议阅读一下本文。话不多数，一起了解docker-py的实现，本文分下面几个部分:</p>
+<ul>
+<li>docker-py项目结构</li>
+<li>docker-py API示例</li>
+<li>DockerClient的实现</li>
+<li>docker-version命令跟踪</li>
+<li>UnixHTTPAdapter的实现</li>
+<li>docker-ps命令跟踪</li>
+<li>docker-logs命令跟踪</li>
+<li>docker-exec 命令跟踪</li>
+<li>小结</li>
+<li>小技巧</li>
+</ul>
+<h2 id="docker-py">docker-py项目结构</h2>
+<p>本次代码阅读，使用的版本是 <code>4.2.0</code>， 项目目录结构大概如下:</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>client.py</td>
+<td>docker客户端的API</td>
+</tr>
+<tr>
+<td>api</td>
+<td>api相关目录</td>
+</tr>
+<tr>
+<td>api/client.py</td>
+<td>api的主要实现</td>
+</tr>
+<tr>
+<td>api/container.py</td>
+<td>container相关的api和client-mixin</td>
+</tr>
+<tr>
+<td>api/daemon.py</td>
+<td>daemon相关的api和client-mixin</td>
+</tr>
+<tr>
+<td>models</td>
+<td>下为各种对象模型，主要是单体及集合</td>
+</tr>
+<tr>
+<td>models/resource.py</td>
+<td>模型基类</td>
+</tr>
+<tr>
+<td>models/containers.py</td>
+<td>Container和ContainerCollection模型</td>
+</tr>
+<tr>
+<td>transport</td>
+<td>为客户端和服务端的交互协议</td>
+</tr>
+<tr>
+<td>transport/unixconn.py</td>
+<td>mac下主要使用了unix-sock实现</td>
+</tr>
+</tbody>
+</table>
+<p>还有一些目录和类，因为不在这次介绍中，所以就没有罗列。</p>
+<h2 id="docker-py-api">docker-py API示例</h2>
+<p><code>docker-py</code> API上手非常简单:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import docker
+client = docker.from_env()
+
+result = client.version()
+print(result)
+# {&#39;Platform&#39;: {&#39;Name&#39;: &#39;Docker Engine - Community&#39;},...}
+
+client.containers.list()
+# [&lt;Container &#39;45e6d2de7c54&#39;&gt;, &lt;Container &#39;db18e4f20eaa&#39;&gt;, ...]
+
+client.images.pull(&#39;nginx:1.10-alpine&#39;)
+# &lt;Image: &#39;nginx:1.10-alpine&#39;&gt;
+
+client.images.list()
+[&lt;Image &#39;ubuntu&#39;&gt;, &lt;Image &#39;nginx:1.10-alpine&#39;&gt;, ...]
+</code></pre></td></tr></table>
+</div>
+</div><p>上面示例展示了:</p>
+<ul>
+<li>使用环境变量，创建client连接本地<code>docker-engine</code>服务</li>
+<li>获取版本号，等同 <code>docker version</code></li>
+<li>获取正在运行的容器列表，等同 <code>docker container list</code>(别名是 <code>docker ps</code>)</li>
+<li>拉取 <strong>nginx:1.10-alpin</strong> 镜像，等同 <code>docker image pull nginx:1.10-alpine</code>(别名是<code>docker pull nginx:1.10-alpine</code>)</li>
+<li>获取镜像列表, 等同 <code>docker image list</code></li>
+</ul>
+<p>我们可以看到，docker-py的操作和docker的标准命令基本一致。</p>
+<h2 id="dockerclient">DockerClient的实现</h2>
+<p>DockerClient的构造函数和工厂方法展示docker-client对象包装了APIClient对象：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># client.py
+
+class DockerClient(object):
+    def __init__(self, *args, **kwargs):
+        self.api = APIClient(*args, **kwargs)
+    
+    @classmethod
+    def from_env(cls, **kwargs):
+        timeout = kwargs.pop(&#39;timeout&#39;, DEFAULT_TIMEOUT_SECONDS)
+        max_pool_size = kwargs.pop(&#39;max_pool_size&#39;, DEFAULT_MAX_POOL_SIZE)
+        version = kwargs.pop(&#39;version&#39;, None)
+        use_ssh_client = kwargs.pop(&#39;use_ssh_client&#39;, False)
+        return cls(
+            timeout=timeout,
+            max_pool_size=max_pool_size,
+            version=version,
+            use_ssh_client=use_ssh_client,
+            **kwargs_from_env(**kwargs)
+        )
+</code></pre></td></tr></table>
+</div>
+</div><p>DockerClient的API分2中，一种是属性方法，比如常用的 <strong>containers</strong>，<strong>images</strong>，<strong>networks</strong> 和 <strong>volumes</strong> 等子命令，因为要将返回值包装成对应模型对象:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">@property
+def containers(self):
+    &#34;&#34;&#34;
+    An object for managing containers on the server. See the
+    :doc:`containers documentation &lt;containers&gt;` for full details.
+    &#34;&#34;&#34;
+    return ContainerCollection(client=self)
+
+@property
+def images(self):
+    return ImageCollection(client=self)
+
+@property
+def networks(self):
+    return NetworkCollection(client=self)
+
+@property
+def volumes(self):
+    return VolumeCollection(client=self)
+    
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>另一种是不需要模型包装，可以直接使用APIClient返回结果的 <strong>info</strong>, <strong>version</strong> 等方法:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Top-level methods
+def info(self, *args, **kwargs):
+        return self.api.info(*args, **kwargs)
+    info.__doc__ = APIClient.info.__doc__
+
+def version(self, *args, **kwargs):
+        return self.api.version(*args, **kwargs)
+    version.__doc__ = APIClient.version.__doc__
+    
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>DockerClient类工厂方法的全局引用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from_env = DockerClient.from_env
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="docker-version">docker-version命令跟踪</h2>
+<p>我们先从简单的 <code>docker version</code> 命令跟踪查看APIClient如何工作的。APIClient的构造函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># api/client.py
+
+import requests
+
+class APIClient(
+        requests.Session,
+        BuildApiMixin,
+        ConfigApiMixin,
+        ContainerApiMixin,
+        DaemonApiMixin,
+        ExecApiMixin,
+        ImageApiMixin,
+        NetworkApiMixin,
+        PluginApiMixin,
+        SecretApiMixin,
+        ServiceApiMixin,
+        SwarmApiMixin,
+        VolumeApiMixin):
+        
+    def __init__(self, base_url=None, version=None,
+             timeout=DEFAULT_TIMEOUT_SECONDS, tls=False,
+             user_agent=DEFAULT_USER_AGENT, num_pools=None,
+             credstore_env=None, use_ssh_client=False,
+             max_pool_size=DEFAULT_MAX_POOL_SIZE):
+        super(APIClient, self).__init__()
+        
+        base_url = utils.parse_host(
+            base_url, IS_WINDOWS_PLATFORM, tls=bool(tls)
+        )
+        
+        if base_url.startswith(&#39;http+unix://&#39;):
+            self._custom_adapter = UnixHTTPAdapter(
+                base_url, timeout, pool_connections=num_pools,
+                max_pool_size=max_pool_size
+            )
+            self.mount(&#39;http+docker://&#39;, self._custom_adapter)
+            self._unmount(&#39;http://&#39;, &#39;https://&#39;)
+            # host part of URL should be unused, but is resolved by requests
+            # module in proxy_bypass_macosx_sysconf()
+            self.base_url = &#39;http+docker://localhost&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>上面代码可见:</p>
+<ul>
+<li>APIClient继承自 <strong>requests.Session</strong></li>
+<li>APIClient使用Mixin方式组合了多个API，比如ContainerApiMixin提供container的api操作;NetWorkApiMixin提供network的api操作</li>
+<li>使用mount方法加载不同协议的适配器adapter，unix系的docker是unix-socket;windows则是npipe</li>
+</ul>
+<blockquote>
+<p>关于requests的使用，可以参看之前的博文 <a href="https://game404.github.io/post/python/requests/">requests 源码阅读</a></p>
+</blockquote>
+<p>默认的服务URL实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">DEFAULT_UNIX_SOCKET = &#34;http+unix:///var/run/docker.sock&#34;
+DEFAULT_NPIPE = &#39;npipe:////./pipe/docker_engine&#39;
+
+def parse_host(addr, is_win32=False, tls=False):
+    path = &#39;&#39;
+    port = None
+    host = None
+
+    # Sensible defaults
+    if not addr and is_win32:
+        return DEFAULT_NPIPE
+    if not addr or addr.strip() == &#39;unix://&#39;:
+        return DEFAULT_UNIX_SOCKET
+</code></pre></td></tr></table>
+</div>
+</div><p><code>version</code> 请求在 <strong>DaemonApiMixin</strong> 中实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DaemonApiMixin(object):
+
+
+    def version(self, api_version=True):
+        url = self._url(&#34;/version&#34;, versioned_api=api_version)
+        return self._result(self._get(url), json=True)
+</code></pre></td></tr></table>
+</div>
+</div><p>底层的请求和响应在主类APIClient中提供:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class APIClient
+    
+    def _url(self, pathfmt, *args, **kwargs):
+        ...
+        return &#39;{0}{1}&#39;.format(self.base_url, pathfmt.format(*args))
+
+    @update_headers
+    def _get(self, url, **kwargs):
+        return self.get(url, **self._set_request_timeout(kwargs))
+            
+    def _result(self, response, json=False, binary=False):
+        assert not (json and binary)
+        self._raise_for_status(response)
+    
+        if json:
+            return response.json()
+        if binary:
+            return response.content
+        return response.text
+</code></pre></td></tr></table>
+</div>
+</div><p>get和result，response都是requests提供。get发送请求，response.json将请求格式化成json后返回。</p>
+<h2 id="unixhttpadapter">UnixHTTPAdapter的实现</h2>
+<p><code>/var/run/docker.sock</code>是Docker守护程序侦听的UNIX套接字,其连接使用UnixHTTPAdapter处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># transport/unixconn.py
+
+import requests.adapters
+
+RecentlyUsedContainer = urllib3._collections.RecentlyUsedContainer
+
+class UnixHTTPAdapter(BaseHTTPAdapter):
+    def __init__(self, socket_url, timeout=60,
+                 pool_connections=constants.DEFAULT_NUM_POOLS,
+                 max_pool_size=constants.DEFAULT_MAX_POOL_SIZE):
+        socket_path = socket_url.replace(&#39;http+unix://&#39;, &#39;&#39;)
+        if not socket_path.startswith(&#39;/&#39;):
+            socket_path = &#39;/&#39; + socket_path
+        self.socket_path = socket_path
+        self.timeout = timeout
+        self.max_pool_size = max_pool_size
+        self.pools = RecentlyUsedContainer(
+            pool_connections, dispose_func=lambda p: p.close()
+        )
+        super(UnixHTTPAdapter, self).__init__()
+    
+    def get_connection(self, url, proxies=None):
+        with self.pools.lock:
+            pool = self.pools.get(url)
+            if pool:
+                return pool
+
+            pool = UnixHTTPConnectionPool(
+                url, self.socket_path, self.timeout,
+                maxsize=self.max_pool_size
+            )
+            self.pools[url] = pool
+
+        return pool
+</code></pre></td></tr></table>
+</div>
+</div><p>UnixHTTPAdapter主要使用urllib3提供的链接池管理UnixHTTPConnection连接:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class UnixHTTPConnection(httplib.HTTPConnection, object):
+
+    def __init__(self, base_url, unix_socket, timeout=60):
+        super(UnixHTTPConnection, self).__init__(
+            &#39;localhost&#39;, timeout=timeout
+        )
+        self.base_url = base_url
+        self.unix_socket = unix_socket
+        self.timeout = timeout
+        self.disable_buffering = False
+
+    def connect(self):
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.settimeout(self.timeout)
+        sock.connect(self.unix_socket)
+        self.sock = sock
+
+    def putheader(self, header, *values):
+        super(UnixHTTPConnection, self).putheader(header, *values)
+        if header == &#39;Connection&#39; and &#39;Upgrade&#39; in values:
+            self.disable_buffering = True
+
+    def response_class(self, sock, *args, **kwargs):
+        if self.disable_buffering:
+            kwargs[&#39;disable_buffering&#39;] = True
+
+        return UnixHTTPResponse(sock, *args, **kwargs)
+
+
+class UnixHTTPConnectionPool(urllib3.connectionpool.HTTPConnectionPool):
+    def __init__(self, base_url, socket_path, timeout=60, maxsize=10):
+        super(UnixHTTPConnectionPool, self).__init__(
+            &#39;localhost&#39;, timeout=timeout, maxsize=maxsize
+        )
+        self.base_url = base_url
+        self.socket_path = socket_path
+        self.timeout = timeout
+
+    def _new_conn(self):
+        return UnixHTTPConnection(
+            self.base_url, self.socket_path, self.timeout
+        )
+</code></pre></td></tr></table>
+</div>
+</div><p>connect展示了socket类型是 <code>socket.AF_UNIX</code>, 这一部分的实现都非常基础 。</p>
+<blockquote>
+<p>关于socket，可以参看之前的博文 <a href="https://game404.github.io/post/python/http/">python http 源码阅读</a></p>
+</blockquote>
+<h2 id="docker-ps">docker-ps命令跟踪</h2>
+<p>接着我们跟踪稍微复杂点的命令 <code>client.containers.list()</code>， 也就是 <code>docker ps</code>。前面介绍了，<strong>container</strong> 会组装结果为数据模型，下面是模型的父类:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Model(object):
+    &#34;&#34;&#34;
+    A base class for representing a single object on the server.
+    &#34;&#34;&#34;
+    id_attribute = &#39;Id&#39;
+
+    def __init__(self, attrs=None, client=None, collection=None):
+        self.client = client
+        # 集合
+        self.collection = collection
+
+        self.attrs = attrs
+</code></pre></td></tr></table>
+</div>
+</div><p>Model是单个模型抽象，Collection则是模型集合的抽象，使用集合的prepare_model构建各种对象:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Collection(object):
+    &#34;&#34;&#34;
+    A base class for representing all objects of a particular type on the
+    server.
+    &#34;&#34;&#34;
+
+    model = None
+
+    def __init__(self, client=None):
+        self.client = client
+    
+    ...
+    
+    def prepare_model(self, attrs):
+        &#34;&#34;&#34;
+        Create a model from a set of attributes.
+        &#34;&#34;&#34;
+        if isinstance(attrs, Model):
+            attrs.client = self.client
+            # 双向引用
+            attrs.collection = self
+            return attrs
+        elif isinstance(attrs, dict):
+            return self.model(attrs=attrs, client=self.client, collection=self)
+        else:
+            raise Exception(&#34;Can&#39;t create %s from %s&#34; %
+                            (self.model.__name__, attrs))
+</code></pre></td></tr></table>
+</div>
+</div><p>Container和ContainerCollection的实现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Container(Model):
+    pass
+    
+class ContainerCollection(Collection):
+    model = Container
+    
+    def get(self, container_id):
+        resp = self.client.api.inspect_container(container_id)
+        return self.prepare_model(resp)
+        
+    def list(self, all=False, before=None, filters=None, limit=-1, since=None,
+             sparse=False, ignore_removed=False):
+        resp = self.client.api.containers(all=all, before=before,
+                                          filters=filters, limit=limit,
+                                          since=since)
+        containers = []
+        for r in resp:
+            containers.append(self.get(r[&#39;Id&#39;]))
+        return containers
+</code></pre></td></tr></table>
+</div>
+</div><p>其中list函数主要有下面几个步骤</p>
+<ul>
+<li>使用api的containers接口得到resp，就是container-id列表</li>
+<li>逐个循环使用api的inspect_container请求container的详细信息</li>
+<li>将结果封装成Container对象</li>
+<li>返回容器Container对象列表</li>
+</ul>
+<p>api.containers和api.inspect_container在ContainerApiMixin中提供, 非常简单清晰:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ContainerApiMixin(object):
+
+    def containers(self, quiet=False, all=False, trunc=False, latest=False,
+                   since=None, before=None, limit=-1, size=False,
+                   filters=None):
+        params = {
+            &#39;limit&#39;: 1 if latest else limit,
+            &#39;all&#39;: 1 if all else 0,
+            &#39;size&#39;: 1 if size else 0,
+            &#39;trunc_cmd&#39;: 1 if trunc else 0,
+            &#39;since&#39;: since,
+            &#39;before&#39;: before
+        }
+        if filters:
+            params[&#39;filters&#39;] = utils.convert_filters(filters)
+        u = self._url(&#34;/containers/json&#34;)
+        res = self._result(self._get(u, params=params), True)
+
+        if quiet:
+            return [{&#39;Id&#39;: x[&#39;Id&#39;]} for x in res]
+        if trunc:
+            for x in res:
+                x[&#39;Id&#39;] = x[&#39;Id&#39;][:12]
+        return res
+    
+    @utils.check_resource(&#39;container&#39;)
+    def inspect_container(self, container):
+        return self._result(
+            self._get(self._url(&#34;/containers/{0}/json&#34;, container)), True
+        )
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="docker-logs">docker-logs命令跟踪</h2>
+<p>前面的命令都是request-response的模式，我们再看看不一样的，基于流的docker-logs命令。我们先启动一个容器:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker run -d bfirsh/reticulate-splines
+</code></pre></td></tr></table>
+</div>
+</div><p>查看容器列表</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># docker ps
+CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS          PORTS             NAMES
+61709b0ed4b8   bfirsh/reticulate-splines   &#34;/usr/local/bin/run.…&#34;   22 seconds ago   Up 21 seconds                     festive_pare
+</code></pre></td></tr></table>
+</div>
+</div><p>实时跟踪容器运行日志:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># docker logs -f 6170
+Reticulating spline 1...
+Reticulating spline 2...
+....
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到<strong>reticulate-splines</strong>容器就是不停的打印行数数据。可以用下面的代码实现 <code>docker logs</code> 相同的功能:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">logs = client.containers.get(&#39;61709b0ed4b8&#39;).logs(stream=True)
+	try:
+		while True:
+			line = next(logs).decode(&#34;utf-8&#34;)
+			print(line)
+	except StopIteration:
+		print(f&#39;log stream ended for {container_name}&#39;)   
+</code></pre></td></tr></table>
+</div>
+</div><p>代码执行结果和前面的类似:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python sample.py
+...
+Reticulating spline 14...
+
+Reticulating spline 15...
+...
+</code></pre></td></tr></table>
+</div>
+</div><p>logs的实现中返回一个CancellableStream，而不是一个result，利用这个stream，就可以持续的读取输出:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># models/Container
+
+def logs(self, **kwargs):
+    return self.client.api.logs(self.id, **kwargs)
+    
+# api/continer
+def logs(self, container, stdout=True, stderr=True, stream=False,
+             timestamps=False, tail=&#39;all&#39;, since=None, follow=None,
+             until=None):
+    ...
+    
+    url = self._url(&#34;/containers/{0}/logs&#34;, container)
+        res = self._get(url, params=params, stream=stream)
+        output = self._get_result(container, stream, res)
+
+        if stream:
+            return CancellableStream(output, res)
+        else:
+            return output
+</code></pre></td></tr></table>
+</div>
+</div><p>比较特别的是下面对于stream的处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># api/client
+
+def _multiplexed_response_stream_helper(self, response):
+    &#34;&#34;&#34;A generator of multiplexed data blocks coming from a response
+    stream.&#34;&#34;&#34;
+
+    # Disable timeout on the underlying socket to prevent
+    # Read timed out(s) for long running processes
+    socket = self._get_raw_response_socket(response)
+    self._disable_socket_timeout(socket)
+
+    while True:
+        header = response.raw.read(STREAM_HEADER_SIZE_BYTES)
+        if not header:
+            break
+        _, length = struct.unpack(&#39;&gt;BxxxL&#39;, header)
+        if not length:
+            continue
+        data = response.raw.read(length)
+        if not data:
+            break
+        yield data
+
+def _disable_socket_timeout(self, socket):
+    sockets = [socket, getattr(socket, &#39;_sock&#39;, None)]
+
+    for s in sockets:
+        if not hasattr(s, &#39;settimeout&#39;):
+            continue
+
+        timeout = -1
+
+        if hasattr(s, &#39;gettimeout&#39;):
+            timeout = s.gettimeout()
+
+        # Don&#39;t change the timeout if it is already disabled.
+        if timeout is None or timeout == 0.0:
+            continue
+
+        s.settimeout(None)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面代码展示了:</p>
+<ul>
+<li>流的读取方式是每次读取STREAM_HEADER_SIZE_BYTES长度的数据作为协议头</li>
+<li>协议头结构体格式解压后得到后面的数据包长度</li>
+<li>继续读取指定长度的数据包</li>
+<li>重复执行上面的数据读取过程</li>
+<li>流式读取的时候还需要关闭socket的超时机制，确保流一直保持，知道手动(ctl+c)关闭</li>
+</ul>
+<p>而 <strong>attach</strong> 则是采用了websocket的实现, 因为我们一般推荐使用exec命令，所以这里简单了解即可:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _attach_websocket(self, container, params=None):
+    url = self._url(&#34;/containers/{0}/attach/ws&#34;, container)
+    req = requests.Request(&#34;POST&#34;, url, params=self._attach_params(params))
+    full_url = req.prepare().url
+    full_url = full_url.replace(&#34;http://&#34;, &#34;ws://&#34;, 1)
+    full_url = full_url.replace(&#34;https://&#34;, &#34;wss://&#34;, 1)
+    return self._create_websocket_connection(full_url)
+
+def _create_websocket_connection(self, url):
+    return websocket.create_connection(url)
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="docker-exec-">docker-exec 命令跟踪</h2>
+<p>docker-exec是我们的重头戏，因为除了可以直接获取docker是输出外，还可以和docker进行交互。先简单回顾一下exec的使用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># docker exec -it 2075 ping www.weibo.cn
+PING www.weibo.cn (123.125.22.241): 56 data bytes
+64 bytes from 123.125.22.241: seq=0 ttl=37 time=6.797 ms
+64 bytes from 123.125.22.241: seq=1 ttl=37 time=39.279 ms
+64 bytes from 123.125.22.241: seq=2 ttl=37 time=29.635 ms
+64 bytes from 123.125.22.241: seq=3 ttl=37 time=27.737 ms
+</code></pre></td></tr></table>
+</div>
+</div><p>上面示例可以用下面代码完全模拟:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">result = client.containers.get(&#34;2075&#34;).exec_run(&#34;ping www.weibo.cn&#34;, tty=True, stream=True)
+try:
+	while True:
+		line = next(result[1]).decode(&#34;utf-8&#34;)
+		print(line)
+except StopIteration:
+	print(f&#39;exec stream ended for {container_name}&#39;)
+</code></pre></td></tr></table>
+</div>
+</div><p>使用tty伪装终端和容器进行交互，就是我们最常用的方式了:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># docker exec -it 2075 sh
+/ # ls -la
+total 64
+drwxr-xr-x    1 root     root          4096 Mar 24 13:16 .
+drwxr-xr-x    1 root     root          4096 Mar 24 13:16 ..
+-rwxr-xr-x    1 root     root             0 Mar 24 13:16 .dockerenv
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 bin
+drwxr-xr-x    5 root     root           340 Mar 24 13:16 dev
+drwxr-xr-x    1 root     root          4096 Mar 24 13:16 etc
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 home
+drwxr-xr-x    1 root     root          4096 Mar  3  2017 lib
+lrwxrwxrwx    1 root     root            12 Mar  3  2017 linuxrc -&gt; /bin/busybox
+drwxr-xr-x    5 root     root          4096 Mar  3  2017 media
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 mnt
+dr-xr-xr-x  156 root     root             0 Mar 24 13:16 proc
+drwx------    1 root     root          4096 Mar 25 08:17 root
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 run
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 sbin
+drwxr-xr-x    2 root     root          4096 Mar  3  2017 srv
+dr-xr-xr-x   13 root     root             0 Mar 24 13:16 sys
+drwxrwxrwt    1 root     root          4096 Mar  3  2017 tmp
+drwxr-xr-x    1 root     root          4096 Mar  3  2017 usr
+drwxr-xr-x    1 root     root          4096 Mar  3  2017 var
+/ # exit
+</code></pre></td></tr></table>
+</div>
+</div><p>同样这个过程也可以使用docker-py实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">_, socket = client.containers.get(&#34;2075&#34;).exec_run(&#34;sh&#34;, stdin=True, socket=True)
+print(socket)
+socket._sock.sendall(b&#34;ls -la\n&#34;)
+try:
+	unknown_byte=socket._sock.recv(docker.constants.STREAM_HEADER_SIZE_BYTES)
+	print(unknown_byte)
+
+	buffer_size = 4096 # 4 KiB
+	data = b&#39;&#39;
+	while True:
+		part = socket._sock.recv(buffer_size)
+		data += part
+		if len(part) &lt; buffer_size:
+			# either 0 or end of data
+			break
+	print(data.decode(&#34;utf8&#34;))
+
+except Exception: 
+	pass
+socket._sock.send(b&#34;exit\n&#34;)
+</code></pre></td></tr></table>
+</div>
+</div><p>示例演示的过程是:</p>
+<ul>
+<li>获取一个已经存在的容器<strong>2075</strong></li>
+<li>对容器执行exec命令，注意需要开启stdin和socket</li>
+<li>向容器发送 <code>ls -lah</code> 展示目录列表</li>
+<li>读区socket上的结果。(这里我们偷懒，没有解析头，直接硬取，这样不够健壮)</li>
+<li>继续发送 <code>exit</code> 退出容器</li>
+</ul>
+<p>程序的输出和上面使用命令方式完全一致，就不在张贴了。进入核心的exec_run函数的实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># model/containers
+
+def exec_run(self, cmd, stdout=True, stderr=True, stdin=False, tty=False,
+                 privileged=False, user=&#39;&#39;, detach=False, stream=False,
+                 socket=False, environment=None, workdir=None, demux=False):
+    resp = self.client.api.exec_create(
+            self.id, cmd, stdout=stdout, stderr=stderr, stdin=stdin, tty=tty,
+            privileged=privileged, user=user, environment=environment,
+            workdir=workdir,
+        )
+    exec_output = self.client.api.exec_start(
+        resp[&#39;Id&#39;], detach=detach, tty=tty, stream=stream, socket=socket,
+        demux=demux
+    )
+    if socket or stream:
+        return ExecResult(None, exec_output)
+</code></pre></td></tr></table>
+</div>
+</div><p>主要使用API的exec_create和exec_start两个函数, 先看第一个exec_create函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># api/exec_api
+
+def exec_create(self, container, cmd, stdout=True, stderr=True,
+                    stdin=False, tty=False, privileged=False, user=&#39;&#39;,
+                    environment=None, workdir=None, detach_keys=None):
+
+    if isinstance(cmd, six.string_types):
+        cmd = utils.split_command(cmd)
+
+    if isinstance(environment, dict):
+        environment = utils.utils.format_environment(environment)
+
+    data = {
+        &#39;Container&#39;: container,
+        &#39;User&#39;: user,
+        &#39;Privileged&#39;: privileged,
+        &#39;Tty&#39;: tty,
+        &#39;AttachStdin&#39;: stdin,
+        &#39;AttachStdout&#39;: stdout,
+        &#39;AttachStderr&#39;: stderr,
+        &#39;Cmd&#39;: cmd,
+        &#39;Env&#39;: environment,
+    }
+
+    if detach_keys:
+        data[&#39;detachKeys&#39;] = detach_keys
+    elif &#39;detachKeys&#39; in self._general_configs:
+        data[&#39;detachKeys&#39;] = self._general_configs[&#39;detachKeys&#39;]
+
+    url = self._url(&#39;/containers/{0}/exec&#39;, container)
+    res = self._post_json(url, data=data)
+    return self._result(res, True)
+</code></pre></td></tr></table>
+</div>
+</div><p>exec_create相对还是比较简单，就是post-json数据到 <code>/containers/{0}/exec</code> 接口。然后是exec_start函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def exec_start(self, exec_id, detach=False, tty=False, stream=False,
+               socket=False, demux=False):
+
+    # we want opened socket if socket == True
+
+    data = {
+        &#39;Tty&#39;: tty,
+        &#39;Detach&#39;: detach
+    }
+
+    headers = {} if detach else {
+        &#39;Connection&#39;: &#39;Upgrade&#39;,
+        &#39;Upgrade&#39;: &#39;tcp&#39;
+    }
+
+    res = self._post_json(
+        self._url(&#39;/exec/{0}/start&#39;, exec_id),
+        headers=headers,
+        data=data,
+        stream=True
+    )
+    if detach:
+        return self._result(res)
+    if socket:
+        return self._get_raw_response_socket(res)
+    return self._read_from_socket(res, stream, tty=tty, demux=demux)
+</code></pre></td></tr></table>
+</div>
+</div><p>exec_start是post-json到 <code>/exec/{0}/start</code> 接口，注意这个接口看起来不是到容器，而是到exec。 然后如果socket参数是true则返回socket，可以进行写入；否则仅仅读取数据。</p>
+<h2 id="curldocker-api">使用curl访问docker-api</h2>
+<p>docker-engine的REST-api也可以直接使用 <strong>curl</strong> 访问:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ curl --unix-socket /var/run/docker.sock -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{&#34;Image&#34;: &#34;alpine&#34;, &#34;Cmd&#34;: [&#34;echo&#34;, &#34;hello world&#34;]}&#39; \
+  -X POST http://localhost/v1.41/containers/create
+{&#34;Id&#34;:&#34;1c6594faf5&#34;,&#34;Warnings&#34;:null}
+
+$ curl --unix-socket /var/run/docker.sock -X POST http://localhost/v1.41/containers/1c6594faf5/start
+
+$ curl --unix-socket /var/run/docker.sock -X POST http://localhost/v1.41/containers/1c6594faf5/wait
+{&#34;StatusCode&#34;:0}
+
+$ curl --unix-socket /var/run/docker.sock &#34;http://localhost/v1.41/containers/1c6594faf5/logs?stdout=1&#34;
+hello world
+</code></pre></td></tr></table>
+</div>
+</div><p>可以通过修改<code>/etc/docker/daemon.json</code>更改为http服务方式的api</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">{
+  &#34;debug&#34;: true,
+  &#34;hosts&#34;: [&#34;tcp://192.168.59.3:2376&#34;]
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>然后 curl 命令可以直接访问docker的api</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl http://127.0.0.1:2375/info
+curl http://127.0.0.1:2375/version
+curl http://127.0.0.1:2375/images/json
+curl http://127.0.0.1:2375/images/alpine/json
+curl http://127.0.0.1:2375/containers/json
+curl http://127.0.0.1:2375/containers/25c5805a06b6/json
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="heading">小结</h2>
+<p>利用docker-py可以完全操作docker，这得益docker提供的REST-api操作。同时也发现requests的设计很强大，不仅仅可以用来做http请求，还可以用来做socket请求。学习docker-py后，相信大家对docker的理解一定有那么一点点加深，也希望下面这张图可以帮助你记忆:</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/docker-py.png" alt="API"></p>
+<h2 id="heading-1">小技巧</h2>
+<p>使用 <code>check_resource</code> 装饰器，对函数的参数进行预先处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def check_resource(resource_name):
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapped(self, resource_id=None, *args, **kwargs):
+            if resource_id is None and kwargs.get(resource_name):
+                resource_id = kwargs.pop(resource_name)
+            if isinstance(resource_id, dict):
+                resource_id = resource_id.get(&#39;Id&#39;, resource_id.get(&#39;ID&#39;))
+            if not resource_id:
+                raise errors.NullResource(
+                    &#39;Resource ID was not provided&#39;
+                )
+            return f(self, resource_id, *args, **kwargs)
+        return wrapped
+    return decorator
+</code></pre></td></tr></table>
+</div>
+</div><p>代码版本比较工具:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from distutils.version import StrictVersion
+
+
+def compare_version(v1, v2):
+    &#34;&#34;&#34;Compare docker versions
+
+    &gt;&gt;&gt; v1 = &#39;1.9&#39;
+    &gt;&gt;&gt; v2 = &#39;1.10&#39;
+    &gt;&gt;&gt; compare_version(v1, v2)
+    1
+    &gt;&gt;&gt; compare_version(v2, v1)
+    -1
+    &gt;&gt;&gt; compare_version(v2, v2)
+    0
+    &#34;&#34;&#34;
+    s1 = StrictVersion(v1)
+    s2 = StrictVersion(v2)
+    if s1 == s2:
+        return 0
+    elif s1 &gt; s2:
+        return -1
+    else:
+        return 1
+
+
+def version_lt(v1, v2):
+    return compare_version(v1, v2) &gt; 0
+
+
+def version_gte(v1, v2):
+    return not version_lt(v1, v2)
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="heading-2">参考链接</h2>
+<ul>
+<li><a href="https://docs.docker.com/engine/api/sdk/examples/">https://docs.docker.com/engine/api/sdk/examples/</a></li>
+<li><a href="https://docker-py.readthedocs.io/en/stable/">https://docker-py.readthedocs.io/en/stable/</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-03-25
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/docker/">docker</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/web-serv/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">一步一步实现web服务器</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/python/blinker/">
+            <span class="next-text nav-default">一文打尽python-web开发的signal机制</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-03-25 23:27:04 \x2b0800 CST',
+        title: '不一样的docker操作',
+        link: decodeURI(location.href),
+        desc: 'docker-py是Docker SDK for Python。docker-py主要利用了requests，使用http\/socket协议连接本地的do',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
