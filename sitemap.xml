@@ -10,7 +10,49 @@
   
   <url>
     <loc>https://game404.github.io/categories/</loc>
-    <lastmod>2021-04-17T10:05:57+08:00</lastmod>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/python/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/python/python-core-tools/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/tool/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/</loc>
+    <lastmod>2021-04-22T21:27:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -23,35 +65,7 @@
   </url>
   
   <url>
-    <loc>https://game404.github.io/post/</loc>
-    <lastmod>2021-04-17T10:05:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/categories/python/</loc>
-    <lastmod>2021-04-17T10:05:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://game404.github.io/post/python/sqlalchemy-part-1/</loc>
-    <lastmod>2021-04-17T10:05:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/tags/</loc>
-    <lastmod>2021-04-17T10:05:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/</loc>
     <lastmod>2021-04-17T10:05:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
