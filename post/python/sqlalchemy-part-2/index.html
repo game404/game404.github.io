@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>SQLAlchemy源码阅读-下篇 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/sqlalchemy-part-2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="SQLAlchemy源码阅读-下篇" />
+<meta property="og:description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/sqlalchemy-part-2/" />
+<meta property="article:published_time" content="2021-04-29T22:38:13+08:00" />
+<meta property="article:modified_time" content="2021-04-29T22:38:13+08:00" />
+<meta itemprop="name" content="SQLAlchemy源码阅读-下篇">
+<meta itemprop="description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案">
+<meta itemprop="datePublished" content="2021-04-29T22:38:13&#43;08:00" />
+<meta itemprop="dateModified" content="2021-04-29T22:38:13&#43;08:00" />
+<meta itemprop="wordCount" content="5861">
+
+
+
+<meta itemprop="keywords" content="database,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SQLAlchemy源码阅读-下篇"/>
+<meta name="twitter:description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">SQLAlchemy源码阅读-下篇</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-04-29 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sql-schema">SQL-schema使用示例</a></li>
+    <li><a href="#ddldata-definition-languagetable">DDL(Data Definition Language)创建table</a></li>
+    <li><a href="#dmldata-manipulation-languageinsert">DML(Data Manipulation Language)使用insert插入数据</a></li>
+    <li><a href="#dqldata-query-languageselect">DQL(Data Query Language)使用select查询数据</a></li>
+    <li><a href="#orm-">ORM 示例</a></li>
+    <li><a href="#model">model核心功能</a></li>
+    <li><a href="#heading">小结</a></li>
+    <li><a href="#heading-1">小技巧</a></li>
+    <li><a href="#heading-2">一点感悟</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案，旨在高效，高性能地访问数据库，并符合Pythonic之禅。项目代码量比较大，接近200个文件，7万行代码， 我们一起来挑战一下。由于篇幅原因，分成上下两篇，上篇我们学习了core部分的engine，dialect，connection和pool等部分，下篇主要学习core部分剩余的sql表达式和orm部分，包括如下内容:</p>
+<ul>
+<li>SQL-schema使用示例</li>
+<li>DDL(Data Definition Language)创建table</li>
+<li>DML(Data Manipulation Language)使用insert插入数据</li>
+<li>DQL(Data Query Language)使用select查询数据</li>
+<li>ORM示例</li>
+<li>model核心功能</li>
+<li>小结</li>
+<li>小技巧</li>
+<li>一点感悟</li>
+</ul>
+<h2 id="sql-schema">SQL-schema使用示例</h2>
+<p>上篇中，我们使用的sql都是手工编写的语句，下面这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">create table x (a integer, b integer)
+insert into x (a, b) values (1, 1)
+</code></pre></td></tr></table>
+</div>
+</div><p>在sqlalchemy中可以通过定义schema的方式进行数据操作，完整的示例如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from sqlalchemy import create_engine
+from sqlalchemy import MetaData
+from sqlalchemy import Table
+from sqlalchemy import Column
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.sql import select
+
+engine = create_engine(&#39;sqlite:///:memory:&#39;, echo=True)
+
+metadata = MetaData()
+users = Table(&#39;users&#39;, metadata,
+              Column(&#39;id&#39;, Integer, primary_key=True),
+              Column(&#39;name&#39;, String),
+              Column(&#39;fullname&#39;, String),
+              )
+metadata.create_all(engine)
+
+ins = users.insert().values(name=&#39;jack&#39;, fullname=&#39;Jack Jones&#39;)
+print(ins)
+result = engine.execute(ins)
+print(result, result.inserted_primary_key)
+s = select([users])
+result = conn.execute(s)
+for row in result:
+    print(row)
+
+result = engine.execute(&#34;select * from users&#34;)
+for row in result:
+    print(row)
+</code></pre></td></tr></table>
+</div>
+</div><p>示例程序的执行过程:</p>
+<ul>
+<li>创建engine，用于数据库连接</li>
+<li>创建metadata，用于管理schema</li>
+<li>创建users表的Table，绑定到metadata；同时包括id，name和fullname三个column</li>
+<li>将metadata提交到engine(创建表)</li>
+<li>使用users插入数据</li>
+<li>查询users的数据</li>
+<li>使用普通sql的方式验证数据</li>
+</ul>
+<p>下面是示例的执行日志,清晰展示了上面过程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+2021-04-19 10:02:09,166 INFO sqlalchemy.engine.base.Engine 
+CREATE TABLE users (
+	id INTEGER NOT NULL, 
+	name VARCHAR, 
+	fullname VARCHAR, 
+	PRIMARY KEY (id)
+)
+2021-04-19 10:02:09,166 INFO sqlalchemy.engine.base.Engine ()
+2021-04-19 10:02:09,167 INFO sqlalchemy.engine.base.Engine COMMIT
+INSERT INTO users (name, fullname) VALUES (:name, :fullname)
+2021-04-19 10:02:09,167 INFO sqlalchemy.engine.base.Engine INSERT INTO users (name, fullname) VALUES (?, ?)
+2021-04-19 10:02:09,168 INFO sqlalchemy.engine.base.Engine (&#39;jack&#39;, &#39;Jack Jones&#39;)
+2021-04-19 10:02:09,168 INFO sqlalchemy.engine.base.Engine COMMIT
+&lt;sqlalchemy.engine.result.ResultProxy object at 0x7ffca0607070&gt; [1]
+2021-04-27 11:38:19,134 INFO sqlalchemy.engine.base.Engine SELECT users.id, users.name, users.fullname 
+FROM users
+2021-04-27 11:38:19,134 INFO sqlalchemy.engine.base.Engine ()
+(1, &#39;jack&#39;, &#39;Jack Jones&#39;)
+2021-04-19 10:02:09,168 INFO sqlalchemy.engine.base.Engine select * from users
+2021-04-19 10:02:09,168 INFO sqlalchemy.engine.base.Engine ()
+(1, &#39;jack&#39;, &#39;Jack Jones&#39;)
+</code></pre></td></tr></table>
+</div>
+</div><p>在开始之前，我们需要简单了解一下SQL语句的分类:
+<img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20190826175059/Types-of-SQL-Commands.jpg" alt="SQL"></p>
+<p>在我们的schema使用示例中，就包括了DDL，DML和DQL三种类型的语句，下面我们按照这3种类型，详细了解一下sqlalchemy的sql表达式部分。sql表达式主要在sql包中，部分文件的功能如下:</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base.py</td>
+<td>基础类</td>
+</tr>
+<tr>
+<td>compiler.py</td>
+<td>sql编译</td>
+</tr>
+<tr>
+<td>crud.py</td>
+<td>crud的参数处理</td>
+</tr>
+<tr>
+<td>ddl.py</td>
+<td>DDL语句</td>
+</tr>
+<tr>
+<td>default_comparator.py</td>
+<td>比较</td>
+</tr>
+<tr>
+<td>dml.py</td>
+<td>DML语句</td>
+</tr>
+<tr>
+<td>elements.py</td>
+<td>基本类型</td>
+</tr>
+<tr>
+<td>operators.py</td>
+<td>sql操作符</td>
+</tr>
+<tr>
+<td>schema.py</td>
+<td>schema定义</td>
+</tr>
+<tr>
+<td>selectable.py</td>
+<td>DQL</td>
+</tr>
+<tr>
+<td>sqltypes.py&amp;&amp;type_api.py</td>
+<td>sql数据类型</td>
+</tr>
+<tr>
+<td>vistitors.py</td>
+<td>递归算法</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ddldata-definition-languagetable">DDL(Data Definition Language)创建table</h2>
+<p>首先了解一下schema的基础实现visitable:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class VisitableType(type):
+
+    def __init__(cls, clsname, bases, clsdict):
+        if clsname != &#34;Visitable&#34; and hasattr(cls, &#34;__visit_name__&#34;):
+            _generate_dispatch(cls)
+        super(VisitableType, cls).__init__(clsname, bases, clsdict)
+
+def _generate_dispatch(cls):
+    if &#34;__visit_name__&#34; in cls.__dict__:
+        visit_name = cls.__visit_name__
+        if isinstance(visit_name, str):
+            getter = operator.attrgetter(&#34;visit_%s&#34; % visit_name)
+
+            def _compiler_dispatch(self, visitor, **kw):
+                try:
+                    meth = getter(visitor)
+                except AttributeError:
+                    raise exc.UnsupportedCompilationError(visitor, cls)
+                else:
+                    return meth(self, **kw)
+        
+        cls._compiler_dispatch = _compiler_dispatch
+
+class Visitable(util.with_metaclass(VisitableType, object)):
+    pass
+</code></pre></td></tr></table>
+</div>
+</div><p>Visitable约定子类必须提供 <strong>visit_name</strong> 的类属性，用来绑定编译方法。参与sql的类都继承自Visitable:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SchemaItem(SchemaEventTarget, visitors.Visitable):
+    __visit_name__ = &#34;schema_item&#34;
+    
+class MetaData(SchemaItem):
+    __visit_name__ = &#34;metadata&#34;
+    
+class Table(DialectKWArgs, SchemaItem, TableClause):
+    __visit_name__ = &#34;table&#34;
+
+class Column(DialectKWArgs, SchemaItem, ColumnClause):
+    __visit_name__ = &#34;column&#34;
+
+class TypeEngine(Visitable):
+    ...
+
+class Integer(_LookupExpressionAdapter, TypeEngine):
+    __visit_name__ = &#34;integer&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>MetaData是schema的集合，记录了所有的Table定义, 通过 <code>_add_table</code> 函数用来添加表:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MetaData(SchemaItem):
+    def __init__(
+        self,
+        bind=None,
+        reflect=False,
+        schema=None,
+        quote_schema=None,
+        naming_convention=None,
+        info=None,
+    ):
+        # table集合
+        self.tables = util.immutabledict()
+        
+        self.schema = quoted_name(schema, quote_schema)
+        self._schemas = set()
+    
+    def _add_table(self, name, schema, table):
+        key = _get_table_key(name, schema)
+        dict.__setitem__(self.tables, key, table)
+        if schema:
+            self._schemas.add(schema)
+</code></pre></td></tr></table>
+</div>
+</div><p>Table是column的集合，在创建table对象的时候，把自己添加到metadata中:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Table(DialectKWArgs, SchemaItem, TableClause):
+    
+    def __new__(cls, *args, **kw):
+        name, metadata, args = args[0], args[1], args[2:]
+        schema = metadata.schema
+        table = object.__new__(cls)
+        # 添加到metadata
+        metadata._add_table(name, schema, table)
+        table._init(name, metadata, *args, **kw)
+        return table
+    
+    def _init(self, name, metadata, *args, **kwargs):
+        super(Table, self).__init__(
+            quoted_name(name, kwargs.pop(&#34;quote&#34;, None))
+        )
+        self.metadata = metadata
+        self.schema = metadata.schema
+        # column集合
+        self._columns = ColumnCollection()
+        self._init_items(*args)
+    
+    def _init_items(self, *args):
+        # column 
+        for item in args:
+            if item is not None:
+                item._set_parent_with_dispatch(self)
+</code></pre></td></tr></table>
+</div>
+</div><p>Column是通过下面的方法将column添加到table的colummns中:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Column(DialectKWArgs, SchemaItem, ColumnClause):
+    
+    def __init__(self, *args, **kwargs):
+        pass
+        
+    def _set_parent(self, table):
+        table._columns.replace(self)
+
+class ColumnCollection(util.OrderedProperties):
+    def replace(self, column):
+        ...
+        self._data[column.key] = column
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>现阶段，我们大概厘清了metadata，table和column的数据结构：metadata持有table集合，table持有column集合。接下来我们看看这个数据结构如何转换成sql语句，API是通过 <code>MetaData.create_all</code> 函数实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MetaData(SchemaItem):
+    def create_all(self, bind=None, tables=None, checkfirst=True):
+        bind._run_visitor(
+            ddl.SchemaGenerator, self, checkfirst=checkfirst, tables=tables
+        )
+
+class Engine(Connectable, log.Identified):
+    def _run_visitor(
+        self, visitorcallable, element, connection=None, **kwargs
+    ):
+        with self._optional_conn_ctx_manager(connection) as conn:
+            conn._run_visitor(visitorcallable, element, **kwargs)
+            
+class Connection(Connectable):
+    def _run_visitor(self, visitorcallable, element, **kwargs):
+        visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+</code></pre></td></tr></table>
+</div>
+</div><p>create-table的sql编译主要由ddl中的SchemaGenerator实现, 下面是SchemaGenerator的继承关系和核心的traverse_single函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ClauseVisitor(object):
+
+    def traverse_single(self, obj, **kw):
+        # 遍历所有的visit实现 
+        for v in self.visitor_iterator:
+            meth = getattr(v, &#34;visit_%s&#34; % obj.__visit_name__, None)
+            if meth:
+                return meth(obj, **kw)
+    
+    @property
+    def visitor_iterator(self):
+        v = self
+        while v:
+            yield v
+            v = getattr(v, &#34;_next&#34;, None)
+            
+class SchemaVisitor(ClauseVisitor):
+    ...
+    
+class DDLBase(SchemaVisitor):
+    ...
+
+class SchemaGenerator(DDLBase):
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>创建meta，table和columun的过程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SchemaGenerator(DDLBase):
+    def visit_metadata(self, metadata):
+        tables = list(metadata.tables.values())
+        collection = sort_tables_and_constraints(
+            [t for t in tables if self._can_create_table(t)]
+        )
+        for table, fkcs in collection:
+            if table is not None:
+                # 创建表 
+                self.traverse_single(
+                    table,
+                    create_ok=True,
+                    include_foreign_key_constraints=fkcs,
+                    _is_metadata_operation=True,
+                )
+            
+    def visit_table(
+        self,
+        table,
+        create_ok=False,
+        include_foreign_key_constraints=None,
+        _is_metadata_operation=False,
+    ):
+        for column in table.columns:
+            if column.default is not None:
+                # 创建column-DDLElement
+                self.traverse_single(column.default)
+    
+        self.connection.execute(
+            # fmt: off
+            # 创建create-table-DDLElement
+            CreateTable(
+                table,
+                include_foreign_key_constraints=  # noqa
+                    include_foreign_key_constraints,
+            )
+            # fmt: on
+        )
+</code></pre></td></tr></table>
+</div>
+</div><p>CreateTableDDLElement和CreateColumnDDLElement的继承关系:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _DDLCompiles(ClauseElement):
+    def _compiler(self, dialect, **kw):
+        return dialect.ddl_compiler(dialect, self, **kw)
+        
+class DDLElement(Executable, _DDLCompiles):
+    ...
+
+class _CreateDropBase(DDLElement):
+    ...
+    
+class CreateTable(_CreateDropBase):
+
+    __visit_name__ = &#34;create_table&#34;
+    
+    def __init__(
+        self, element, on=None, bind=None, include_foreign_key_constraints=None
+    ):
+        super(CreateTable, self).__init__(element, on=on, bind=bind)
+        self.columns = [CreateColumn(column) for column in element.columns]
+
+class CreateColumn(_DDLCompiles):
+    __visit_name__ = &#34;create_column&#34;
+
+    def __init__(self, element):
+        self.element = element
+</code></pre></td></tr></table>
+</div>
+</div><p>最终这些DDLElement在compiler中被DDLCompiler编译成sql语句, <code>CREATE TABLE</code>是这样被编译的:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def visit_create_table(self, create):
+    table = create.element
+    preparer = self.preparer
+
+    text = &#34;\nCREATE &#34;
+    if table._prefixes:
+        text += &#34; &#34;.join(table._prefixes) + &#34; &#34;
+    text += &#34;TABLE &#34; + preparer.format_table(table) + &#34; &#34;
+
+    create_table_suffix = self.create_table_suffix(table)
+    if create_table_suffix:
+        text += create_table_suffix + &#34; &#34;
+
+    text += &#34;(&#34;
+
+    separator = &#34;\n&#34;
+
+    # if only one primary key, specify it along with the column
+    first_pk = False
+    for create_column in create.columns:
+        column = create_column.element
+        try:
+            processed = self.process(
+                create_column, first_pk=column.primary_key and not first_pk
+            )
+            if processed is not None:
+                text += separator
+                separator = &#34;, \n&#34;
+                text += &#34;\t&#34; + processed
+            if column.primary_key:
+                first_pk = True
+        except exc.CompileError as ce:
+            ...
+
+    const = self.create_table_constraints(
+        table,
+        _include_foreign_key_constraints=create.include_foreign_key_constraints,  # noqa
+    )
+    if const:
+        text += separator + &#34;\t&#34; + const
+
+    text += &#34;\n)%s\n\n&#34; % self.post_create_table(table)
+    return text
+
+def visit_create_column(self, create, first_pk=False):
+    column = create.element
+
+    text = self.get_column_specification(column, first_pk=first_pk)
+    const = &#34; &#34;.join(
+        self.process(constraint) for constraint in column.constraints
+    )
+    if const:
+        text += &#34; &#34; + const
+
+    return text
+</code></pre></td></tr></table>
+</div>
+</div><p>在前面column介绍中，我们略过了数据类型。大家都知道sql的数据类型和python数据类型有差异, 下面是一些常见的SQL数据类型:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TypeEngine(Visitable):
+    ...
+    
+class Integer(_LookupExpressionAdapter, TypeEngine):
+    __visit_name__ = &#34;integer&#34;
+    ...
+
+class String(Concatenable, TypeEngine):
+    __visit_name__ = &#34;string&#34;
+    ...
+
+class CHAR(String):
+    __visit_name__ = &#34;CHAR&#34;
+    ...
+
+class VARCHAR(String):
+    __visit_name__ = &#34;VARCHAR&#34;
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>数据类型由GenericTypeCompiler进行编译:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TypeCompiler(util.with_metaclass(util.EnsureKWArgType, object)):
+    
+    def process(self, type_, **kw):
+        return type_._compiler_dispatch(self, **kw)
+    
+class GenericTypeCompiler(TypeCompiler):
+    
+    def visit_INTEGER(self, type_, **kw):
+        return &#34;INTEGER&#34;
+        
+    def visit_string(self, type_, **kw):
+        return self.visit_VARCHAR(type_, **kw)
+    
+    def visit_VARCHAR(self, type_, **kw):
+        return self._render_string_type(type_, &#34;VARCHAR&#34;)
+    
+    def _render_string_type(self, type_, name):
+        text = name
+        if type_.length:
+            text += &#34;(%d)&#34; % type_.length
+        if type_.collation:
+            text += &#39; COLLATE &#34;%s&#34;&#39; % type_.collation
+        return text
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="dmldata-manipulation-languageinsert">DML(Data Manipulation Language)使用insert插入数据</h2>
+<p>数据插入的API由TableClause提供的insert函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TableClause(Immutable, FromClause):
+    
+    @util.dependencies(&#34;sqlalchemy.sql.dml&#34;)
+    def insert(self, dml, values=None, inline=False, **kwargs):
+        return dml.Insert(self, values=values, inline=inline, **kwargs)
+</code></pre></td></tr></table>
+</div>
+</div><p>dml中提供了Insert类的实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class UpdateBase(
+    HasCTE, DialectKWArgs, HasPrefixes, Executable, ClauseElement
+):
+    ...
+    
+class ValuesBase(UpdateBase):
+    ...
+    
+class Insert(ValuesBase):
+    __visit_name__ = &#34;insert&#34;
+    ...
+</code></pre></td></tr></table>
+</div>
+</div><p>按照ddl的经验，我们查找insert语句的编译方法，在SQLCompiler中:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SQLCompiler(Compiled):
+    
+    def visit_insert(self, insert_stmt, asfrom=False, **kw):
+
+        crud_params = crud._setup_crud_params(
+            self, insert_stmt, crud.ISINSERT, **kw
+        )
+
+        if insert_stmt._has_multi_parameters:
+            crud_params_single = crud_params[0]
+        else:
+            crud_params_single = crud_params
+
+        preparer = self.preparer
+        supports_default_values = self.dialect.supports_default_values
+
+        text = &#34;INSERT &#34;
+
+        text += &#34;INTO &#34;
+        table_text = preparer.format_table(insert_stmt.table)
+
+        if crud_params_single or not supports_default_values:
+            text += &#34; (%s)&#34; % &#34;, &#34;.join(
+                [preparer.format_column(c[0]) for c in crud_params_single]
+            )
+        ...
+        if insert_stmt.select is not None:
+            select_text = self.process(self._insert_from_select, **kw)
+
+            if self.ctes and toplevel and self.dialect.cte_follows_insert:
+                text += &#34; %s%s&#34; % (self._render_cte_clause(), select_text)
+            else:
+                text += &#34; %s&#34; % select_text
+        elif not crud_params and supports_default_values:
+            text += &#34; DEFAULT VALUES&#34;
+        elif insert_stmt._has_multi_parameters:
+            text += &#34; VALUES %s&#34; % (
+                &#34;, &#34;.join(
+                    &#34;(%s)&#34; % (&#34;, &#34;.join(c[1] for c in crud_param_set))
+                    for crud_param_set in crud_params
+                )
+            )
+        else:
+            text += &#34; VALUES (%s)&#34; % &#34;, &#34;.join([c[1] for c in crud_params])
+
+        return text
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到insert语句就是对Insert对象，通过字符串模版拼接而来。</p>
+<h2 id="dqldata-query-languageselect">DQL(Data Query Language)使用select查询数据</h2>
+<p>数据查询select语句也都有特定的数据结构Select，继承关系如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SelectBase(HasCTE, Executable, FromClause):
+    ...
+    
+class GenerativeSelect(SelectBase):
+    ...
+    
+class Select(HasPrefixes, HasSuffixes, GenerativeSelect):
+    __visit_name__ = &#34;select&#34;
+    
+    def __init__(
+        self,
+        columns=None,
+        whereclause=None,
+        from_obj=None,
+        distinct=False,
+        having=None,
+        correlate=True,
+        prefixes=None,
+        suffixes=None,
+        **kwargs
+    ):
+        GenerativeSelect.__init__(self, **kwargs)
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>select的编译语句也在SQLCompiler中:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SQLCompiler(Compiled):
+    
+    def visit_select(
+        self,
+        select,
+        asfrom=False,
+        parens=True,
+        fromhints=None,
+        compound_index=0,
+        nested_join_translation=False,
+        select_wraps_for=None,
+        lateral=False,
+        **kwargs
+    ):
+        ...
+        
+        froms = self._setup_select_stack(select, entry, asfrom, lateral)
+
+        column_clause_args = kwargs.copy()
+        column_clause_args.update(
+            {&#34;within_label_clause&#34;: False, &#34;within_columns_clause&#34;: False}
+        )
+
+        text = &#34;SELECT &#34;  # we&#39;re off to a good start !
+
+        text += self.get_select_precolumns(select, **kwargs)
+        # the actual list of columns to print in the SELECT column list.
+        inner_columns = [
+            c
+            for c in [
+                self._label_select_column(
+                    select,
+                    column,
+                    populate_result_map,
+                    asfrom,
+                    column_clause_args,
+                    name=name,
+                )
+                for name, column in select._columns_plus_names
+            ]
+            if c is not None
+        ]
+        
+        ...
+        
+        text = self._compose_select_body(
+            text, select, inner_columns, froms, byfrom, kwargs
+        )
+
+        if select._statement_hints:
+            per_dialect = [
+                ht
+                for (dialect_name, ht) in select._statement_hints
+                if dialect_name in (&#34;*&#34;, self.dialect.name)
+            ]
+            if per_dialect:
+                text += &#34; &#34; + self.get_statement_hint_text(per_dialect)
+
+        if self.ctes and toplevel:
+            text = self._render_cte_clause() + text
+
+        if select._suffixes:
+            text += &#34; &#34; + self._generate_prefixes(
+                select, select._suffixes, **kwargs
+            )
+
+        self.stack.pop(-1)
+
+        if (asfrom or lateral) and parens:
+            return &#34;(&#34; + text + &#34;)&#34;
+        else:
+            return text
+</code></pre></td></tr></table>
+</div>
+</div><p>select语句一样是采用字符串拼接得到。</p>
+<h2 id="orm-">ORM 示例</h2>
+<p>orm的使用和schema使用方式略有不同, 下面是orm的示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine(&#39;sqlite:///:memory:&#39;, echo=True)
+Model = declarative_base()
+
+class User(Model):
+    __tablename__ = &#39;users&#39;
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    fullname = Column(String)
+    nickname = Column(String)
+
+    def __repr__(self):
+        return &#34;&lt;User(name=&#39;%s&#39;, fullname=&#39;%s&#39;, nickname=&#39;%s&#39;)&gt;&#34; % (
+            self.name, self.fullname, self.nickname)
+
+Model.metadata.create_all(engine)
+print(&#34;=&#34;*10)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+ed_user = User(name=&#39;ed&#39;, fullname=&#39;Ed Jones&#39;, nickname=&#39;edsnickname&#39;)
+session.add(ed_user)
+session.commit()
+print(ed_user.id)
+result = engine.execute(&#34;select * from users&#34;)
+for row in result:
+    print(row)
+</code></pre></td></tr></table>
+</div>
+</div><p>对比schema和orm的差异，可以得到下表:</p>
+<p>schema方式|orm方式
+创建engine，用于数据库连接|-
+创建metadata，用于管理schema|创建Model
+创建users表的Table|创建User模型
+将metadata提交到engine(创建表)|-
+-|创建session
+使用users插入数据|使用session插入数据</p>
+<p>总结一下主要就2点差异：</p>
+<ol>
+<li>orm时候不用显示的创建表的schema</li>
+<li>orm的数据处理都使用session来操作，而不是使用connection</li>
+</ol>
+<h2 id="model">model核心功能</h2>
+<p>Model类使用declarative_base动态创建:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DeclarativeMeta(type):
+    def __init__(cls, classname, bases, dict_):
+        if &#34;_decl_class_registry&#34; not in cls.__dict__:
+            _as_declarative(cls, classname, cls.__dict__)
+        type.__init__(cls, classname, bases, dict_)
+
+    def __setattr__(cls, key, value):
+        _add_attribute(cls, key, value)
+
+    def __delattr__(cls, key):
+        _del_attribute(cls, key)
+
+def declarative_base(
+    bind=None,
+    metadata=None,
+    mapper=None,
+    cls=object,
+    name=&#34;Base&#34;,
+    constructor=_declarative_constructor,
+    class_registry=None,
+    metaclass=DeclarativeMeta,
+):
+    # 创建metadata
+    lcl_metadata = metadata or MetaData()
+
+    if class_registry is None:
+        class_registry = weakref.WeakValueDictionary()
+
+    bases = not isinstance(cls, tuple) and (cls,) or cls
+    class_dict = dict(
+        _decl_class_registry=class_registry, metadata=lcl_metadata
+    )
+
+    # 构造函数
+    if constructor:
+        class_dict[&#34;__init__&#34;] = constructor
+    if mapper:
+        class_dict[&#34;__mapper_cls__&#34;] = mapper
+    
+    # class-meta
+    return metaclass(name, bases, class_dict)
+</code></pre></td></tr></table>
+</div>
+</div><p>关于如何动态创建类，在小技巧中进行介绍。declarative_base主要定义了Model类的几个特性：</p>
+<ul>
+<li>Model类的构造函数<code>__init__</code>使用_declarative_constructor</li>
+<li>Model类的子类在构造的时候会调用_as_declarative</li>
+<li>model对象会使用_add_attribute进行赋值</li>
+</ul>
+<p>先从构造函数_declarative_constructor开始:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _declarative_constructor(self, **kwargs):
+    cls_ = type(self)
+    for k in kwargs:
+        if not hasattr(cls_, k):
+            raise TypeError(
+                &#34;%r is an invalid keyword argument for %s&#34; % (k, cls_.__name__)
+            )
+        setattr(self, k, kwargs[k])
+
+
+_declarative_constructor.__name__ = &#34;__init__&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>看起来非常简单，但是这里做了一个类和对象实例之间的校验转换。我们先看一段演示代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DummyModel(object):
+    name = [&#34;dummy_model&#34;]  # 引用类型
+
+a = DummyModel()
+b = DummyModel()
+assert id(a.name) == id(b.name) == id(DummyModel.name)
+a.name.append(&#34;a&#34;)
+assert id(a.name) == id(b.name) == id(DummyModel.name)
+</code></pre></td></tr></table>
+</div>
+</div><p>DummyModel的类属性name和a对象的name属性都是同一个引用。如果使用Model类:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Model = declarative_base()
+
+class UserModel(Model):
+    __tablename__ = &#39;user&#39;  # 必须字段
+    id = Column(Integer, primary_key=True)  # 必须字段
+    name = Column(String)
+
+c = UserModel()
+c.name = &#34;c&#34;
+d = UserModel()
+d.name = &#34;d&#34;
+# 注意并不是Column
+assert isinstance(UserModel.name, InstrumentedAttribute)
+assert isinstance(c.name, str)
+assert d.name == &#34;d&#34;
+assert id(c.name) != id(d.name) != id(UserModel.name)
+</code></pre></td></tr></table>
+</div>
+</div><p>可以发现UserModel的类属性name和d对象的name属性完全不一样，类定义的是Cloumn(InstrumentedAttribute)，对象变成了str。这个就是orm模型的特性之一，Model是定义格式模版，对象实例化后转化为普通数据。</p>
+<p>Model的另外一个功能是隐式创建Table对象，在_as_declarative函数中通过_MapperConfig实现</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _MapperConfig(object):
+    def setup_mapping(cls, cls_, classname, dict_):
+        cfg_cls = _MapperConfig
+        cfg_cls(cls_, classname, dict_)
+    
+    def __init__(self, cls_, classname, dict_):
+        ...
+        self._setup_table()
+        ...
+    
+    def _setup_table(self):
+        ...
+        table_cls = Table
+        args, table_kw = (), {}
+        if table_args:
+            if isinstance(table_args, dict):
+                table_kw = table_args
+            elif isinstance(table_args, tuple):
+                if isinstance(table_args[-1], dict):
+                    args, table_kw = table_args[0:-1], table_args[-1]
+                else:
+                    args = table_args
+
+        autoload = dict_.get(&#34;__autoload__&#34;)
+        if autoload:
+            table_kw[&#34;autoload&#34;] = True
+
+        cls.__table__ = table = table_cls(
+            tablename,
+            cls.metadata,
+            *(tuple(declared_columns) + tuple(args)),
+            **table_kw
+        )
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>而Column是通过下面的函数实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _add_attribute(cls, key, value):
+
+    if &#34;__mapper__&#34; in cls.__dict__:
+        if isinstance(value, Column):
+            _undefer_column_name(key, value)
+            cls.__table__.append_column(value)
+            cls.__mapper__.add_property(key, value)
+        ...
+    else:
+        type.__setattr__(cls, key, value)
+</code></pre></td></tr></table>
+</div>
+</div><p>Model通过上面的方式，隐式创建了Schema(Table)，实际使用过程中只需要使用Model类，不用关注Schema的定义。</p>
+<blockquote>
+<p>session的源码由于篇幅和时间有限，留待以后再行分析</p>
+</blockquote>
+<h2 id="heading">小结</h2>
+<p>sqlalchemy可以在低层次上提供了sql语句的方式使用；在次层次上提供定义schema方式使用；在高层次上提供orm的实现，让应用可以根据项目的特点自主选择不同层级的API。</p>
+<p>使用schema时候，主要使用Metadata，Table和Column等定义Schema数据结构，使用编译器自动将schema转换成合法的sql语句。</p>
+<p>使用orm的时候，则是创建特定的数据模型，模型对象会隐式创建schema，通过session方式进行数据访问。</p>
+<p>最后再回顾一下sqlalchemy的架构图:</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210415214714.png" alt="architecture"></p>
+<h2 id="heading-1">小技巧</h2>
+<p>sqlalchemy中提供了一个动态创建类的方式，主要在declarative_base和DeclarativeMeta中实现。我参考这个实现方式做了一个类工厂:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DeclarativeMeta(type):
+    def __init__(cls, klass_name, bases, dict_):
+        print(&#34;class_init&#34;, klass_name, bases, dict_)
+        type.__init__(cls, klass_name, bases, dict_)
+
+def get_attr(self, key):
+    print(&#34;getattr&#34;, self, key)
+    return self.__dict__[key]
+
+def constructor(self, *args, **kwargs):
+    print(&#34;constructor&#34;, self, args, kwargs)
+    for k, v in kwargs.items():
+        setattr(self, k, v)
+
+def dynamic_class(name):
+    class_dict = {
+        &#34;__init__&#34;: constructor,
+        &#34;__getattr__&#34;: get_attr
+    }
+
+    return DeclarativeMeta(name, (object,), class_dict)
+
+DummyModel = dynamic_class(&#34;Dummy&#34;)
+dummy = DummyModel(1, name=&#34;hello&#34;, age=18)
+print(dummy, type(dummy), dummy.name, dummy.age)
+
+
+# class_init Dummy (&lt;class &#39;object&#39;&gt;,) {&#39;__init__&#39;: &lt;function test_dynamic_class.&lt;locals&gt;.constructor at 0x7f898827ef70&gt;, &#39;__getattr__&#39;: &lt;function test_dynamic_class.&lt;locals&gt;.get_attr at 0x7f89882105e0&gt;}
+# constructor &lt;sample.Dummy object at 0x7f89882a5820&gt; (1,) {&#39;name&#39;: &#39;hello&#39;, &#39;age&#39;: 18}
+# &lt;sample.Dummy object at 0x7f89882a5820&gt; &lt;class &#39;sample.Dummy&#39;&gt; hello 18
+
+</code></pre></td></tr></table>
+</div>
+</div><p>示例中我动态创建了一个DummyModel类，<code>type(dummy)</code>可以看到，这个类名是 <strong>Dummy</strong>。这个类可以的构造函数可以接受name和age两个属性。这种创建方式和collections.namedtuple有点类似。</p>
+<h2 id="heading-2">一点感悟</h2>
+<p>sqlalchemy的源码非常复杂，前前后后一共准备了一个月，形成的2篇文档仅仅涉及核心流程和用法，细节部分缺失较多，以后有机会还需要继续阅读。在这一个月中，克服了工作较忙，没有时间写稿的烦躁；克服了阅读进入困境，一度想放弃的心理障碍；克服了deadline临近，文稿还只是一个雏形，使用存稿顶替的羞愧；克服了笔记软件故障，写完的文稿丢失，完全重写的懊恼。战胜这些困难，最终还是得以完成，心理上有大满足。当然最大的收获还是对ORM中间件有了初步的了解，也希望梳理的ORM流程对大家有一定的帮助，如果获得大家的支持会更加满意♥️。</p>
+<p>最后，欢迎加下面的微信和我互动交流，一起进阶:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-04-29
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/database/">database</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/python/python-core-tools/">
+            <span class="next-text nav-default">Python 冷兵器合集</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-04-29 22:38:13 \x2b0800 CST',
+        title: 'SQLAlchemy源码阅读-下篇',
+        link: decodeURI(location.href),
+        desc: 'SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
