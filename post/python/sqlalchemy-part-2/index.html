@@ -49,7 +49,7 @@
 <meta itemprop="description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案">
 <meta itemprop="datePublished" content="2021-04-29T22:38:13&#43;08:00" />
 <meta itemprop="dateModified" content="2021-04-29T22:38:13&#43;08:00" />
-<meta itemprop="wordCount" content="5861">
+<meta itemprop="wordCount" content="5854">
 
 
 
@@ -1478,13 +1478,40 @@ for row in result:
 </code></pre></td></tr></table>
 </div>
 </div><p>对比schema和orm的差异，可以得到下表:</p>
-<p>schema方式|orm方式
-创建engine，用于数据库连接|-
-创建metadata，用于管理schema|创建Model
-创建users表的Table|创建User模型
-将metadata提交到engine(创建表)|-
--|创建session
-使用users插入数据|使用session插入数据</p>
+<table>
+<thead>
+<tr>
+<th>schema方式</th>
+<th>orm方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建engine，用于数据库连接</td>
+<td>-</td>
+</tr>
+<tr>
+<td>创建metadata，用于管理schema</td>
+<td>创建Model</td>
+</tr>
+<tr>
+<td>创建users表的Table</td>
+<td>创建User模型</td>
+</tr>
+<tr>
+<td>将metadata提交到engine(创建表)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>创建session</td>
+</tr>
+<tr>
+<td>使用users插入数据</td>
+<td>使用session插入数据</td>
+</tr>
+</tbody>
+</table>
 <p>总结一下主要就2点差异：</p>
 <ol>
 <li>orm时候不用显示的创建表的schema</li>
@@ -1889,7 +1916,11 @@ print(dummy, type(dummy), dummy.name, dummy.age)
           <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/python/xmlrpc/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">xmlrpc源码阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/python/python-core-tools/">
             <span class="next-text nav-default">Python 冷兵器合集</span>
             <span class="next-text nav-mobile">下一篇</span>
