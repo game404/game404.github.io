@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 06 May 2021 21:08:30 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 11 May 2021 22:41:31 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>PyPy真的能让python比c还快？</title>
+      <link>https://game404.github.io/post/python/pypy-1/</link>
+      <pubDate>Tue, 11 May 2021 22:41:31 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/pypy-1/</guid>
+      <description>最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前</description>
+    </item>
     
     <item>
       <title>xmlrpc源码阅读</title>
