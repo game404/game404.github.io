@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Python 冷兵器合集 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 冷兵器 ，没有趁手的工具时候就可以顶替使用。这些工具都是" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/python-core-tools/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Python 冷兵器合集" />
+<meta property="og:description" content="python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 冷兵器 ，没有趁手的工具时候就可以顶替使用。这些工具都是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/python-core-tools/" />
+<meta property="article:published_time" content="2021-04-22T21:27:47+08:00" />
+<meta property="article:modified_time" content="2021-04-22T21:27:47+08:00" />
+<meta itemprop="name" content="Python 冷兵器合集">
+<meta itemprop="description" content="python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 冷兵器 ，没有趁手的工具时候就可以顶替使用。这些工具都是">
+<meta itemprop="datePublished" content="2021-04-22T21:27:47&#43;08:00" />
+<meta itemprop="dateModified" content="2021-04-22T21:27:47&#43;08:00" />
+<meta itemprop="wordCount" content="2105">
+
+
+
+<meta itemprop="keywords" content="tool," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python 冷兵器合集"/>
+<meta name="twitter:description" content="python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 冷兵器 ，没有趁手的工具时候就可以顶替使用。这些工具都是"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Python 冷兵器合集</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-04-22 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-http-">1. http 服务</a></li>
+    <li><a href="#2-json-">2. json 格式化</a></li>
+    <li><a href="#3-shell">3. 可视化编辑器和shell</a></li>
+    <li><a href="#4-python-">4. python 应用程序打包</a></li>
+    <li><a href="#5-rot13-">5. ROT13 加密</a></li>
+    <li><a href="#6-base64-">6. base64 编码</a></li>
+    <li><a href="#7-mime-">7. mime 识别</a></li>
+    <li><a href="#8-python">8. 查看python环境信息</a></li>
+    <li><a href="#9-">9. 编译脚本</a></li>
+    <li><a href="#10-">10. 压缩和解压</a></li>
+    <li><a href="#11-telnet-">11. telnet 工具</a></li>
+    <li><a href="#12-">12. 性能和调试工具</a></li>
+    <li><a href="#13-pydoc">13. pydoc</a></li>
+    <li><a href="#14-test">14. test</a></li>
+    <li><a href="#heading">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 <strong>冷兵器</strong> ，没有趁手的工具时候就可以顶替使用。这些工具都是python的标准模块，具有 <strong>main</strong> 函数，可以直接使用 <code>python -m </code> 命令执行，多数可以使用 <code>-h/--help</code>查看帮助。</p>
+<h2 id="1-http-">1. http 服务</h2>
+<p>启动一个http的静态文件服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m http.server
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="2-json-">2. json 格式化</h2>
+<p>格式化json数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo &#39;{&#34;amount&#34;:3.4}&#39; | python -m json.tool
+{
+    &#34;amount&#34;: 3.4
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="3-shell">3. 可视化编辑器和shell</h2>
+<p>idlelib模块基于tkinter，可以作为编辑器和shell使用。文件编辑器效果。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python -m idlelib myapp/example.py
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210226234056.png" alt="gui-ide"></p>
+<p>shell效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python -m idlelib
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210226234311.png" alt="gui-shell"></p>
+<h2 id="4-python-">4. python 应用程序打包</h2>
+<p>构建myapp目录如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">├── myapp
+│   ├── example.py
+│   └── hello.py
+</code></pre></td></tr></table>
+</div>
+</div><p>代码分别如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># example.py
+
+import hello
+
+def main():
+   print(&#39;Hello World&#39;)
+   hello.say_hello(&#34;python&#34;)
+   
+if __name__==&#39;__main__&#39;:
+   main()
+
+# hello.py
+
+def say_hello(name):
+	print(&#34;hello&#34;,name)
+</code></pre></td></tr></table>
+</div>
+</div><p>将整个myapp打包成应用程序，命令执行后会生成一个名叫 <strong>myapp.pyz</strong> 应用程序。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python -m zipapp myapp -m &#34;example:main&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>使用python直接运行应用程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python myapp.pyz
+Hello World
+hello python
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="5-rot13-">5. ROT13 加密</h2>
+<p>rot13（rotate by 13 places）是一种简易的替换式密码，是凯撒密码的变种。rot13将原文偏移13位形成密文，因为英文总共26位，所以密文再偏移13位后会回到原文。公式: <code>rot13(rot13(xxx))=xxx</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo &#34;xxx&#34; | python -m encodings.rot_13
+Tvir zr n fgne
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>作为一个小彩蛋，欢迎大家动手破译一下xxx的值</p>
+</blockquote>
+<h2 id="6-base64-">6. base64 编码</h2>
+<p>对一个字符串进行base64编码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo &#34;haha&#34; | python -m base64
+aGFoYQo=
+# echo &#34;aGFoYQo=&#34; | python -m base64 -d
+haha
+</code></pre></td></tr></table>
+</div>
+</div><p>base64还支持对文件编码。编写测试代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># sample.py
+
+def main():
+   print(&#39;Hello World👌&#39;)
+   
+if __name__==&#39;__main__&#39;:
+   main()
+</code></pre></td></tr></table>
+</div>
+</div><p>将代码编译成base64字符串</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m base64 sample.py
+CmRlZiBtYWluKCk6CiAgIHByaW50KCdIZWxsbyBXb3JsZPCfkYwnKQogICAKaWYgX19uYW1lX189
+PSdfX21haW5fXyc6CiAgIG1haW4oKQo=
+</code></pre></td></tr></table>
+</div>
+</div><p>执行编译后的代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo &#34;CmRlZiBtYWluKCk6CiAgIHByaW50KCdIZWxsbyBXb3JsZPCfkYwnKQogICAKaWYgX19uYW1lX189
+PSdfX21haW5fXyc6CiAgIG1haW4oKQo=&#34; | python -m base64 -d | python
+Hello World👌
+</code></pre></td></tr></table>
+</div>
+</div><p>类似的可以使用uu(Unix-to-Unix encoding)编码代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m uu sample.py
+begin 644 sample.py
+M&#34;F1E9B!M86EN*&#34;DZ&#34;B @(&#39;!R:6YT*&#34;=(96QL;R!7;W)L9/&#34;?D8PG*0H@(&#34; *
+C:68@7U]N86UE7U\]/2=?7VUA:6Y?7R&lt;Z&#34;B @(&amp;UA:6XH*0H
+
+end
+</code></pre></td></tr></table>
+</div>
+</div><p>使用quopri(Encode and decode MIME quoted-printable data)编码代码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m quopri -t sample.py
+
+def=20main():
+=20=20=20print(&#39;Hello=20World=F0=9F=91=8C&#39;)
+=20=20=20
+if=20__name__=3D=3D&#39;__main__&#39;:
+=20=20=20main()
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="7-mime-">7. mime 识别</h2>
+<p>识别文件或者url的mime类型</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m mimetypes https://docs.python.org/3/library/mimetypes.html
+type: text/html encoding: None  # html
+# python -m mimetypes https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+type: image/png encoding: None  # png
+# python -m mimetypes sample.py
+type: text/x-python encoding: None  # python文件
+# python -m mimetypes sample.py.gz
+type: text/x-python encoding: gzip  # python文件，gzip压缩
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="8-python">8. 查看python环境信息</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python -m sysconfig
+Platform: &#34;macosx-10.9-x86_64&#34;
+Python version: &#34;3.8&#34;
+Current installation scheme: &#34;posix_prefix&#34;
+
+Paths:
+	data = &#34;/Users/yoo/work/yuanmahui/python/.venv&#34;
+	include = &#34;/Library/Frameworks/Python.framework/Versions/3.8/include/python3.8&#34;
+	...
+
+Variables:
+    ...
+	PYTHON = &#34;python&#34;
+	PYTHONFRAMEWORK = &#34;Python&#34;
+	PYTHONFRAMEWORKDIR = &#34;Python.framework&#34;
+	PYTHONFRAMEWORKINSTALLDIR = &#34;/Library/Frameworks/Python.framework&#34;
+	...
+</code></pre></td></tr></table>
+</div>
+</div><p>也可以使用下面命令查看系统路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m site
+sys.path = [
+    &#39;/Users/yoo/work/yuanmahui/python/python-tools&#39;,
+    &#39;/Library/Frameworks/Python.framework/Versions/3.8/lib/python38.zip&#39;,
+    &#39;/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8&#39;,
+    &#39;/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/lib-dynload&#39;,
+    &#39;/Users/yoo/work/yuanmahui/python/.venv/lib/python3.8/site-packages&#39;,
+]
+USER_BASE: &#39;/Users/yoo/Library/Python/3.8&#39; (exists)
+USER_SITE: &#39;/Users/yoo/Library/Python/3.8/lib/python/site-packages&#39; (exists)
+ENABLE_USER_SITE: False
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="9-">9. 编译脚本</h2>
+<p>compileall可以编译python脚本。<strong>myapp</strong>目录有2个py脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ll myapp
+total 16
+-rw-r--r--  1 yoo  staff   118B  2 26 23:03 example.py
+-rw-r--r--  1 yoo  staff    43B  2 26 23:03 hello.py
+</code></pre></td></tr></table>
+</div>
+</div><p>编译脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m compileall myapp
+Listing &#39;myapp&#39;...
+Compiling &#39;myapp/example.py&#39;...
+Compiling &#39;myapp/hello.py&#39;...
+</code></pre></td></tr></table>
+</div>
+</div><p>查看编译结果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tree myapp -L 3
+myapp
+├── __pycache__
+│   ├── example.cpython-38.pyc
+│   └── hello.cpython-38.pyc
+├── example.py
+└── hello.py
+
+1 directory, 4 files
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="10-">10. 压缩和解压</h2>
+<p>创建和解压tar包</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m tarfile -c myapp.tar myapp  # 创建myapp.tar 压缩包
+# python -m tarfile -e myapp.tar myapp2 # 解压myapp.tar 到 myapp2目录
+</code></pre></td></tr></table>
+</div>
+</div><p>使用gzip压缩文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m gizp sample.py
+# python -m gzip -d sample.py.gz
+</code></pre></td></tr></table>
+</div>
+</div><p>使用zip打包文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m zipfile -c myapp.zip myapp
+# python -m zipfile -e myapp.zip myapp2
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>注意: zipfile和zipapp不一样, 后则是生成一个可以执行的app</p>
+</blockquote>
+<h2 id="11-telnet-">11. telnet 工具</h2>
+<p>没有telnet工具的python容器中可以这样:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m telnetlib -d redis 6379  # 连接redis
+monitor
+Telnet(redis,6379): send b&#39;monitor\n&#39;
+Telnet(redis,6379): recv b&#39;-NOAUTH Authentication required.\r\n&#39;
+-NOAUTH Authentication required.
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>还有 nntplib &amp;&amp; ftplib 两个工具，应该很少使用，就不介绍了</p>
+</blockquote>
+<h2 id="12-">12. 性能和调试工具</h2>
+<p>自带的timeit可以测试脚本的性能数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m timeit &#39;&#34;-&#34;.join([str(n) for n in range(100) if n%2 == 0])&#39;  # 取模求偶数
+20000 loops, best of 5: 12.5 usec per loop
+# python -m timeit &#39;&#34;-&#34;.join([str(n) for n in range(0,100,2)])&#39;  # 步进
+50000 loops, best of 5: 8.85 usec per loop
+# python -m timeit &#39;&#34;-&#34;.join([str(n) for n in range(100) if n&amp;1 == 0])&#39;  # 位运算判断奇偶
+20000 loops, best of 5: 14.3 usec per loop
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>不科学1: 位运算竟然比取模慢？</p>
+</blockquote>
+<p>如果不是一个字符串而是一个脚本：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_normal():
+	tmp = &#34;&#34;
+	for x in range(100):
+		if x % 2 == 0:
+			if tmp:
+				tmp = tmp+&#34;-&#34;+str(x)
+			else:
+				tmp = str(x)
+	return tmp
+
+if __name__ == &#39;__main__&#39;:
+	print(test_normal())
+</code></pre></td></tr></table>
+</div>
+</div><p>可以下面方式变通使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m base64 test_string_join.py | python -m base64 -d | python -m timeit
+50000000 loops, best of 5: 5.33 nsec per loop
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>不科学2: 50000000循环只需要5.33纳秒，而之前的用例20000循环需要12.5微秒</p>
+</blockquote>
+<blockquote>
+<p>标准库中还有 pdb &amp;&amp; profile &amp;&amp; pstats 使用比较复杂，暂时就不介绍</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pypy3 -m timeit &#39;[{} for n in range(1000)]&#39;
+WARNING: timeit is a very unreliable tool. use pyperf or something else for real measurements
+pypy3 -m pip install pyperf
+pypy3 -m pyperf timeit &#39;[{} for n in range(1000)]&#39;
+------------------------------------------------------------
+100000 loops, average of 7: 7.3 +- 0.107 usec per loop (using standard deviation)
+
+[tywork@liujunhong_szfsfz_work1 config]$ pypy3 -m pyperf timeit &#39;[{} for n in range(1000)]&#39;
+........
+Mean +- std dev: 8.42 us +- 0.25 us
+[tywork@liujunhong_szfsfz_work1 config]$
+[tywork@liujunhong_szfsfz_work1 config]$
+[tywork@liujunhong_szfsfz_work1 config]$
+[tywork@liujunhong_szfsfz_work1 config]$ pypy3 -m pyperf timeit &#39;[dict() for n in range(1000)]&#39;
+.........
+Mean +- std dev: 29.6 us +- 1.1 us
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="13-pydoc">13. pydoc</h2>
+<p>本地服务方式查看python代码文档</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m pydoc -p 8080  # 启动一个web服务
+Server ready at http://localhost:8080/
+Server commands: [b]rowser, [q]uit
+server&gt; b
+</code></pre></td></tr></table>
+</div>
+</div><p>文档效果如图
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210227164012.png" alt="requests-doc"></p>
+<h2 id="14-test">14. test</h2>
+<p>执行python自带的测试用例，查看系统支持那些特性</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python -m test.regrtest -u cpu
+== CPython 2.7.16 (default, Jun 5 2020, 22:59:21) [GCC 4.2.1 Compatible Apple LLVM 11.0.3 (clang-1103.0.29.20) (-macos10.15-objc-
+==   Darwin-19.6.0-x86_64-i386-64bit little-endian
+==   /private/var/folders/mv/3vgd3mdx2453clfcst7qlm280000gn/T/test_python_13470
+== CPU count: 12
+Run tests sequentially
+0:00:00 load avg: 2.53 [  1/404] test_grammar
+...
+= Tests result: FAILURE ==
+
+363 tests OK.
+
+5 tests failed:
+    test_import test_posix test_py_compile test_rlcompleter
+    test_scriptpackages
+
+36 tests skipped:
+    test_al test_bsddb test_bsddb3 test_cd test_cl test_codecmaps_cn
+    test_codecmaps_hk test_codecmaps_jp test_codecmaps_kr
+    test_codecmaps_tw test_curses test_epoll test_gdb test_gdbm
+    test_gl test_imgfile test_largefile test_linuxaudiodev test_msilib
+    test_ossaudiodev test_poll test_py3kwarn test_smtpnet
+    test_socketserver test_spwd test_startfile test_sunaudiodev
+    test_timeout test_tk test_tools test_ttk_guionly test_urllib2net
+    test_urllibnet test_winreg test_winsound test_zipfile64
+2 skips unexpected on darwin:
+    test_spwd test_tools
+
+Total duration: 5 min 23 sec
+Tests result: FAILURE
+</code></pre></td></tr></table>
+</div>
+</div><p>从测试用例，可以看到osx支持fork，不支持epoll和poll。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0:00:47 load avg: 1.79 [138/404] test_fork1
+...
+0:00:39 load avg: 1.59 [125/404] test_epoll
+test_epoll skipped -- test works only on Linux 2.6
+...
+0:02:42 load avg: 2.41 [257/404/1] test_poll
+test_poll skipped -- select.poll not defined -- skipping test_poll
+0:02:42 load avg: 2.41 [258/404/1] test_popen -- test_poll skipped
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="heading">参考链接</h2>
+<ul>
+<li>PEP441&ndash;Improving Python ZIP Application Support <a href="https://www.python.org/dev/peps/pep-0441/">https://www.python.org/dev/peps/pep-0441/</a></li>
+<li>ROT13 <a href="https://zh.wikipedia.org/wiki/ROT13">https://zh.wikipedia.org/wiki/ROT13</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-04-22
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/tool/">tool</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/python/sqlalchemy-part-2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">SQLAlchemy源码阅读-下篇</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/python/sqlalchemy-part-1/">
+            <span class="next-text nav-default">SQLAlchemy源码阅读-上篇</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-04-22 21:27:47 \x2b0800 CST',
+        title: 'Python 冷兵器合集',
+        link: decodeURI(location.href),
+        desc: 'python中自带了一些命令行工具，可以用来快速处理一些工作。我把这些命令行工具称之为 冷兵器 ，没有趁手的工具时候就可以顶替使用。这些工具都是',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

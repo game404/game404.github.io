@@ -7,26 +7,44 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 17 Apr 2021 10:05:57 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 06 May 2021 21:08:30 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>database</title>
-      <link>https://game404.github.io/tags/database/</link>
-      <pubDate>Sat, 17 Apr 2021 10:05:57 +0800</pubDate>
+      <title>rpc</title>
+      <link>https://game404.github.io/tags/rpc/</link>
+      <pubDate>Thu, 06 May 2021 21:08:30 +0800</pubDate>
       
-      <guid>https://game404.github.io/tags/database/</guid>
+      <guid>https://game404.github.io/tags/rpc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>源码</title>
       <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
-      <pubDate>Sat, 17 Apr 2021 10:05:57 +0800</pubDate>
+      <pubDate>Thu, 06 May 2021 21:08:30 +0800</pubDate>
       
       <guid>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>database</title>
+      <link>https://game404.github.io/tags/database/</link>
+      <pubDate>Thu, 29 Apr 2021 22:38:13 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tool</title>
+      <link>https://game404.github.io/tags/tool/</link>
+      <pubDate>Thu, 22 Apr 2021 21:27:47 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/tool/</guid>
       <description></description>
     </item>
     
