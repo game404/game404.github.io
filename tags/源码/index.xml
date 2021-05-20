@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 06 May 2021 21:08:30 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 20 May 2021 23:13:57 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>再聊我的源码阅读方法-xmlrpc源码慢读</title>
+      <link>https://game404.github.io/post/python/xmlrpc-server-slow/</link>
+      <pubDate>Thu, 20 May 2021 23:13:57 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/xmlrpc-server-slow/</guid>
+      <description>之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在</description>
+    </item>
     
     <item>
       <title>xmlrpc源码阅读</title>
@@ -37,6 +46,15 @@
       
       <guid>https://game404.github.io/post/python/sqlalchemy-part-1/</guid>
       <description>SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案</description>
+    </item>
+    
+    <item>
+      <title>Requests源码v0.2阅读</title>
+      <link>https://game404.github.io/post/python/requests-v0.2/</link>
+      <pubDate>Thu, 08 Apr 2021 23:23:38 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests-v0.2/</guid>
+      <description>前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对</description>
     </item>
     
     <item>

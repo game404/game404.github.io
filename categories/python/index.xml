@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Tue, 11 May 2021 22:41:31 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 20 May 2021 23:13:57 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>再聊我的源码阅读方法-xmlrpc源码慢读</title>
+      <link>https://game404.github.io/post/python/xmlrpc-server-slow/</link>
+      <pubDate>Thu, 20 May 2021 23:13:57 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/xmlrpc-server-slow/</guid>
+      <description>之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在</description>
+    </item>
     
     <item>
       <title>PyPy真的能让python比c还快？</title>

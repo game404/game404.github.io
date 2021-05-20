@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>阅读方法 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E9%98%85%E8%AF%BB%E6%96%B9%E6%B3%95/</link>
+    <description>Recent content in 阅读方法 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Thu, 20 May 2021 23:13:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E9%98%85%E8%AF%BB%E6%96%B9%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>再聊我的源码阅读方法-xmlrpc源码慢读</title>
+      <link>https://game404.github.io/post/python/xmlrpc-server-slow/</link>
+      <pubDate>Thu, 20 May 2021 23:13:57 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/xmlrpc-server-slow/</guid>
+      <description>之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在</description>
+    </item>
+    
+    <item>
+      <title>Requests源码v0.2阅读</title>
+      <link>https://game404.github.io/post/python/requests-v0.2/</link>
+      <pubDate>Thu, 08 Apr 2021 23:23:38 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests-v0.2/</guid>
+      <description>前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对</description>
+    </item>
+    
+    <item>
+      <title>Redis-py 源码阅读</title>
+      <link>https://game404.github.io/post/python/redis-py/</link>
+      <pubDate>Sat, 09 Jan 2021 21:37:12 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/redis-py/</guid>
+      <description>redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto</description>
+    </item>
+    
+  </channel>
+</rss>
