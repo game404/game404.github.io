@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Werkzeug 源码阅读-上 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/werkzeug-1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Werkzeug 源码阅读-上" />
+<meta property="og:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/werkzeug-1/" />
+<meta property="article:published_time" content="2021-05-28T00:35:13+08:00" />
+<meta property="article:modified_time" content="2021-05-28T00:35:13+08:00" />
+<meta itemprop="name" content="Werkzeug 源码阅读-上">
+<meta itemprop="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是">
+<meta itemprop="datePublished" content="2021-05-28T00:35:13&#43;08:00" />
+<meta itemprop="dateModified" content="2021-05-28T00:35:13&#43;08:00" />
+<meta itemprop="wordCount" content="4922">
+
+
+
+<meta itemprop="keywords" content="http,开源项目,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Werkzeug 源码阅读-上"/>
+<meta name="twitter:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Werkzeug 源码阅读-上</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-05-28 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#heading">概要</a></li>
+    <li><a href="#serving">serving</a></li>
+    <li><a href="#request--response">request && response</a>
+      <ul>
+        <li><a href="#sansiorequest--sansio-response">sansio.Request && sansio-Response</a></li>
+        <li><a href="#wrappersrequest">wrappers.Request</a></li>
+        <li><a href="#wrappersresponse">wrappers.Response</a></li>
+      </ul>
+    </li>
+    <li><a href="#local">local实现</a></li>
+    <li><a href="#heading-1">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。对<code>Werkzeug</code>正确发音这块有兴趣的朋友，可以查看底部的参考链接。本文分下面几个部分:</p>
+<ul>
+<li>概要</li>
+<li>serving &amp;&amp; wsgi</li>
+<li>request &amp;&amp; response</li>
+<li>local实现</li>
+</ul>
+<h2 id="heading">概要</h2>
+<p>本次代码采用的版本是 <code>2.0.0</code>, 项目主要结构如下:</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>serving</td>
+<td>http服务和wsgi规范的实现</td>
+</tr>
+<tr>
+<td>request &amp;&amp; response</td>
+<td>请求和响应处理</td>
+</tr>
+<tr>
+<td>local</td>
+<td>多线程部分实现</td>
+</tr>
+<tr>
+<td>middleware</td>
+<td>中间件部分实现</td>
+</tr>
+<tr>
+<td>routing &amp;&amp; urls</td>
+<td>路由和URL的处理</td>
+</tr>
+<tr>
+<td>datastuctures</td>
+<td>数据结构</td>
+</tr>
+</tbody>
+</table>
+<p>“德国锤子”项目比较重要，我会使用概读法和慢读法把项目尽量读透。文章计划分为上下两篇，本文是上篇，介绍前3个部分。</p>
+<p>正式开始之前，我们先回顾一下http服务和wsgi-application。</p>
+<p>http服务简单回顾:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># http/server.py
+def test(HandlerClass=SimpleHTTPRequestHandler,
+         ServerClass=HTTPServer, protocol=&#34;HTTP/1.0&#34;, port=8000, bind=&#34;&#34;):
+    server_address = (bind, port)
+
+    HandlerClass.protocol_version = protocol
+    with ServerClass(server_address, HandlerClass) as httpd:
+        sa = httpd.socket.getsockname()
+        serve_message = &#34;Serving HTTP on {host} port {port} (http://{host}:{port}/) ...&#34;
+        print(serve_message.format(host=sa[0], port=sa[1]))
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print(&#34;\nKeyboard interrupt received, exiting.&#34;)
+            sys.exit(0)
+
+# self.rfile.readline(65537)
+# self.wfile.write(body)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>HTTPServer负责实现http服务。</li>
+<li>SimpleHTTPRequestHandler处理http请求。</li>
+<li>请求和响应在rfile和wfile这2个IO上。</li>
+</ul>
+<p>wsgi-application简单回顾:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># wsgiref/simple_server.py
+def demo_app(environ,start_response):
+    from io import StringIO
+    stdout = StringIO()
+    print(&#34;Hello world!&#34;, file=stdout)
+    print(file=stdout)
+    h = sorted(environ.items())
+    for k,v in h:
+        print(k,&#39;=&#39;,repr(v), file=stdout)
+    start_response(&#34;200 OK&#34;, [(&#39;Content-Type&#39;,&#39;text/plain; charset=utf-8&#39;)])
+    return [stdout.getvalue().encode(&#34;utf-8&#34;)]
+
+def make_server(
+    host, port, app, server_class=WSGIServer, handler_class=WSGIRequestHandler
+):
+    &#34;&#34;&#34;Create a new WSGI server listening on `host` and `port` for `app`&#34;&#34;&#34;
+    server = server_class((host, port), handler_class)
+    server.set_app(app)
+    return server
+
+if __name__ == &#39;__main__&#39;:
+    with make_server(&#39;&#39;, 8000, demo_app) as httpd:
+        sa = httpd.socket.getsockname()
+        print(&#34;Serving HTTP on&#34;, sa[0], &#34;port&#34;, sa[1], &#34;...&#34;)
+        import webbrowser
+        webbrowser.open(&#39;http://localhost:8000/xyz?abc&#39;)
+        httpd.handle_request()  # serve one request, then exit
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>WSGIServer实现符合wsgi规范的http服务</li>
+<li>WSGIRequestHandler实现wsgi的请求</li>
+<li>wsgi-application负责实现wsgi应用程序</li>
+<li>应用程序从environ中获取请求数据，使用start_response回调函数处理http响应头，使用返回值返回请求数据</li>
+</ul>
+<hr>
+<h2 id="serving">serving</h2>
+<p>serving模块提供服务入口，使用 <code>argparse</code> 处理命令行工具:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def main() -&gt; None:
+    &#34;&#34;&#34;A simple command-line interface for :py:func:`run_simple`.&#34;&#34;&#34;
+    import argparse
+    ...
+    run_simple(
+        hostname=hostname or &#34;127.0.0.1&#34;,
+        port=int(port or 5000),
+        application=import_string(args.application),
+        use_reloader=args.reload,
+        use_debugger=args.debug,
+    )
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>主要就3个参数，服务器IP和端口不用说了，重点是application，可以是外部模块名，自动加载。</li>
+</ul>
+<p>负责创建服务的方法:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def make_server(
+    host: str,
+    port: int,
+    app: &#34;WSGIApplication&#34;,
+    threaded: bool = False,
+    processes: int = 1,
+    request_handler: t.Optional[t.Type[WSGIRequestHandler]] = None,
+    passthrough_errors: bool = False,
+    ssl_context: t.Optional[_TSSLContextArg] = None,
+    fd: t.Optional[int] = None,
+) -&gt; BaseWSGIServer:
+    if threaded:
+        return ThreadedWSGIServer(
+            host, port, app, request_handler, passthrough_errors, ssl_context, fd=fd
+        )
+    elif processes &gt; 1:
+        return ForkingWSGIServer(
+            host, port, app, processes, request_handler, passthrough_errors, ssl_context,fd=fd,
+        )
+    else:
+        return BaseWSGIServer(
+            host, port, app, request_handler, passthrough_errors, ssl_context, fd=fd
+        )
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>根据参数选择是创建多线程，多进程还是普通的服务</li>
+</ul>
+<p>多线程和多进程服务使用MixIn方式组合而来：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ThreadedWSGIServer(socketserver.ThreadingMixIn, BaseWSGIServer):
+    multithread = True
+    daemon_threads = True
+
+class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
+    multiprocess = True
+</code></pre></td></tr></table>
+</div>
+</div><p>WSGIServer的基础实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseWSGIServer(HTTPServer):
+    request_queue_size = LISTEN_QUEUE
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        app: &#34;WSGIApplication&#34;,
+        handler: t.Optional[t.Type[WSGIRequestHandler]] = None,
+        passthrough_errors: bool = False,
+        ssl_context: t.Optional[_TSSLContextArg] = None,
+        fd: t.Optional[int] = None,
+    ) -&gt; None:
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>注意BaseWSGIServer是继承自 <em>HTTPServer</em> 没有使用wsgiref模块</li>
+</ul>
+<p>重点实现在 <em>WSGIRequestHandler</em> 处理请求部分:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRequestHandler(BaseHTTPRequestHandler):
+    &#34;&#34;&#34;A request handler that implements WSGI dispatching.&#34;&#34;&#34;
+    
+    def handle_one_request(self) -&gt; None:
+        &#34;&#34;&#34;Handle a single HTTP request.&#34;&#34;&#34;
+        self.raw_requestline = self.rfile.readline()
+        ...
+        self.parse_request():
+            self.run_wsgi()
+</code></pre></td></tr></table>
+</div>
+</div><p>每个请求都执行对应的WSGI实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run_wsgi(self) -&gt; None:
+    self.environ = environ = self.make_environ()
+    status_set: t.Optional[str] = None
+    headers_set: t.Optional[t.List[t.Tuple[str, str]]] = None
+    
+    def write(data: bytes) -&gt; None:
+        self.wfile.write(data)
+        self.wfile.flush()
+        
+    def start_response(status, headers, exc_info=None):  # type: ignore
+        nonlocal status_set, headers_set
+        ...
+        status_set = status
+        headers_set = headers
+        return write
+
+    def execute(app: &#34;WSGIApplication&#34;) -&gt; None:
+        application_iter = app(environ, start_response)
+        try:
+            for data in application_iter:
+                write(data)
+            if not headers_sent:
+                write(b&#34;&#34;)
+        finally:
+            if hasattr(application_iter, &#34;close&#34;):
+                application_iter.close()  # type: ignore
+    
+    execute(self.server.app)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>生成wsgi的environ</li>
+<li>生成start_response回调方法</li>
+<li>执行app，传入env和start_response回调，然后遍历执行结果，写入到wfile</li>
+</ul>
+<p>make_environ主要就是将请求的数据读取转换成env:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> def make_environ(self) -&gt; &#34;WSGIEnvironment&#34;:
+        environ: &#34;WSGIEnvironment&#34; = {
+            &#34;wsgi.version&#34;: (1, 0),
+            &#34;wsgi.url_scheme&#34;: url_scheme,
+            &#34;wsgi.input&#34;: self.rfile,
+            &#34;wsgi.errors&#34;: sys.stderr,
+            &#34;wsgi.multithread&#34;: self.server.multithread,
+            &#34;wsgi.multiprocess&#34;: self.server.multiprocess,
+            &#34;wsgi.run_once&#34;: False,
+            &#34;werkzeug.server.shutdown&#34;: shutdown_server,
+            &#34;werkzeug.socket&#34;: self.connection,
+            &#34;SERVER_SOFTWARE&#34;: self.server_version,
+            &#34;REQUEST_METHOD&#34;: self.command,
+            &#34;SCRIPT_NAME&#34;: &#34;&#34;,
+            &#34;PATH_INFO&#34;: _wsgi_encoding_dance(path_info),
+            &#34;QUERY_STRING&#34;: _wsgi_encoding_dance(request_url.query),
+            # Non-standard, added by mod_wsgi, uWSGI
+            &#34;REQUEST_URI&#34;: _wsgi_encoding_dance(self.path),
+            # Non-standard, added by gunicorn
+            &#34;RAW_URI&#34;: _wsgi_encoding_dance(self.path),
+            &#34;REMOTE_ADDR&#34;: self.address_string(),
+            &#34;REMOTE_PORT&#34;: self.port_integer(),
+            &#34;SERVER_NAME&#34;: self.server.server_address[0],
+            &#34;SERVER_PORT&#34;: str(self.server.server_address[1]),
+            &#34;SERVER_PROTOCOL&#34;: self.request_version,
+        }
+        return environ
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="request--response">request &amp;&amp; response</h2>
+<p>request&amp;&amp;response分两层实现，底层在sansio包中，是纯粹的逻辑结构；上层在wrappers包中，包含了一下wsgi的实现。</p>
+<h3 id="sansiorequest--sansio-response">sansio.Request &amp;&amp; sansio-Response</h3>
+<p>sansio.Request的构造函数，这个类的注释比较重要，我张贴了原文:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Request:
+    &#34;&#34;&#34;Represents the non-IO parts of a HTTP request, including the
+    method, URL info, and headers.
+
+    This class is not meant for general use. It should only be used when
+    implementing WSGI, ASGI, or another HTTP application spec. Werkzeug
+    provides a WSGI implementation at :cls:`werkzeug.wrappers.Request`.
+    &#34;&#34;&#34;
+    def __init__(
+        self,
+        method: str,
+        scheme: str,
+        server: t.Optional[t.Tuple[str, t.Optional[int]]],
+        root_path: str,
+        path: str,
+        query_string: bytes,
+        headers: Headers,
+        remote_addr: t.Optional[str],
+    ) -&gt; None:
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>sansio.Request是non-IO理念的HTTP request实现，希望IO和逻辑像三明治(sandwich)一样，分层in-IO/业务逻辑/out-IO三层。这种方式实现的Request对象比较抽象，不涉及io和aio具体实现，比较通用，而且可以 <strong>快速测试</strong> 。如果wsgi的实现，推荐使用上层的 <code>werkzeug.wrappers.Request</code>。</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210528002305.png" alt="sansio"></p>
+<blockquote>
+<p>对non-IO感兴趣的，可以查看参考链接。</p>
+</blockquote>
+<p>sansio.Request的实现就比较简单数据模型，都是字段熟悉的取值和赋值。比较有特色的是3个实现。先是使用 <em>cached_property</em> 装饰器包装的属性:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">@cached_property
+def full_path(self) -&gt; str:
+    &#34;&#34;&#34;Requested path, including the query string.&#34;&#34;&#34;
+    return f&#34;{self.path}?{_to_str(self.query_string, self.url_charset)}&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>结合装饰器名称和函数实现可以知道，这种属性为了提高性能，只进行一次计算后就cache住。然后是header_property方式定义的属性:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">content_type = header_property[str](
+    &#34;Content-Type&#34;,
+    doc=&#34;&#34;&#34;The Content-Type entity-header field indicates the media
+    type of the entity-body sent to the recipient or, in the case of
+    the HEAD method, the media type that would have been sent had
+    the request been a GET.&#34;&#34;&#34;,
+    read_only=True,
+)
+</code></pre></td></tr></table>
+</div>
+</div><p>最后是 <em>args</em> 这个非常重要的属性，在web应用程序中一般都是使用 <code>request.args.get(&quot;old&quot;, type=int)</code> 获取http请求参数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">parameter_storage_class: t.Type[MultiDict] = ImmutableMultiDict
+
+@cached_property
+def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
+    &#34;&#34;&#34;The parsed URL parameters (the part in the URL after the question
+    mark).
+
+    By default an
+    :class:`~werkzeug.datastructures.ImmutableMultiDict`
+    is returned from this function.  This can be changed by setting
+    :attr:`parameter_storage_class` to a different type.  This might
+    be necessary if the order of the form data is important.
+    &#34;&#34;&#34;
+    return url_decode(
+        self.query_string,
+        self.url_charset,
+        errors=self.encoding_errors,
+        cls=self.parameter_storage_class,
+    )
+</code></pre></td></tr></table>
+</div>
+</div><p>request数据需要是不可变的，主要依赖ImmutableMultiDict的数据结构，下一篇会详细介绍一下其实现。</p>
+<p>sansio-Response和sansio-Response比较类似:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Response:
+    def __init__(
+        self,
+        status: t.Optional[t.Union[int, str, HTTPStatus]] = None,
+        headers: t.Optional[
+            t.Union[
+                t.Mapping[str, t.Union[str, int, t.Iterable[t.Union[str, int]]]],
+                t.Iterable[t.Tuple[str, t.Union[str, int]]],
+            ]
+        ] = None,
+        mimetype: t.Optional[str] = None,
+        content_type: t.Optional[str] = None,
+    ) -&gt; None:
+        ...
+    
+    @property
+    def status_code(self) -&gt; int:
+        &#34;&#34;&#34;The HTTP status code as a number.&#34;&#34;&#34;
+        return self._status_code
+
+    @status_code.setter
+    def status_code(self, code: int) -&gt; None:
+        self.status = code  # type: ignore
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="wrappersrequest">wrappers.Request</h3>
+<p>wrappers部分的Request和Response相对复杂一些，我们分开来读，先看wrappers.Request:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Request(_SansIORequest):
+    &#34;&#34;&#34;Represents an incoming WSGI HTTP request, with headers and body
+    taken from the WSGI environment. Has properties and methods for
+    using the functionality defined by various HTTP specs. The data in
+    requests object is read-only.
+    &#34;&#34;&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>Request继承自sansio.Request, 注释也详细描述了其功能和特性(read-only)。</p>
+<p>构造函数可以看到使用env构建，包括了http请求中的method，scheme，query_sring等熟悉的属性:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __init__(
+        self,
+        environ: &#34;WSGIEnvironment&#34;,
+        populate_request: bool = True,
+        shallow: bool = False,
+    ) -&gt; None:
+        super().__init__(
+            method=environ.get(&#34;REQUEST_METHOD&#34;, &#34;GET&#34;),
+            scheme=environ.get(&#34;wsgi.url_scheme&#34;, &#34;http&#34;),
+            server=_get_server(environ),
+            root_path=_wsgi_decoding_dance(
+                environ.get(&#34;SCRIPT_NAME&#34;) or &#34;&#34;, self.charset, self.encoding_errors
+            ),
+            path=_wsgi_decoding_dance(
+                environ.get(&#34;PATH_INFO&#34;) or &#34;&#34;, self.charset, self.encoding_errors
+            ),
+            query_string=environ.get(&#34;QUERY_STRING&#34;, &#34;&#34;).encode(&#34;latin1&#34;),
+            headers=EnvironHeaders(environ),
+            remote_addr=environ.get(&#34;REMOTE_ADDR&#34;),
+        )
+        self.environ = environ
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>纯粹的query比较简单，我们一起看看相对复杂的form实现。业务中的form部分API大概是这样使用的:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def on_new_url(self, request):
+    error = None
+    url = &#34;&#34;
+    if request.method == &#34;POST&#34;:
+        url = request.form[&#34;url&#34;]
+        ...
+</code></pre></td></tr></table>
+</div>
+</div><p>wrappers.Request的form也是cached_property，可以提高效率，同时form使用FormDataParser进行解析:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">form_data_parser_class: t.Type[FormDataParser] = FormDataParser
+
+@cached_property
+def form(self) -&gt; &#34;ImmutableMultiDict[str, str]&#34;:
+    self._load_form_data()
+    return self.form  # type: ignore
+
+def _load_form_data(self) -&gt; None:
+    ...
+
+    parser = self.form_data_parser_class(
+            self._get_file_stream,
+            self.charset,
+            self.encoding_errors,
+            self.max_form_memory_size,
+            self.max_content_length,
+            self.parameter_storage_class,
+        )
+    ...
+    data = parser.parse(
+        self._get_stream_for_parsing(),
+        self.mimetype,
+        self.content_length,
+        self.mimetype_params,
+    )
+
+    d = self.__dict__
+    d[&#34;stream&#34;], d[&#34;form&#34;], d[&#34;files&#34;] = data
+</code></pre></td></tr></table>
+</div>
+</div><p>下面是FormDataParser的大概实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># formparser.py
+
+class FormDataParser
+    def parse_from_environ(self, environ: &#34;WSGIEnvironment&#34;) -&gt; &#34;t_parse_result&#34;:
+        &#34;&#34;&#34;Parses the information from the environment as form data.
+    
+        :param environ: the WSGI environment to be used for parsing.
+        :return: A tuple in the form ``(stream, form, files)``.
+        &#34;&#34;&#34;
+        content_type = environ.get(&#34;CONTENT_TYPE&#34;, &#34;&#34;)
+        content_length = get_content_length(environ)
+        mimetype, options = parse_options_header(content_type)
+        return self.parse(get_input_stream(environ), mimetype, content_length, options）
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="wrappersresponse">wrappers.Response</h3>
+<p>wrappers.Response和wrappers.Request类似，继承自sansio.Response:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Response(_SansIOResponse):
+    &#34;&#34;&#34;Represents an outgoing WSGI HTTP response with body, status, and
+    headers. Has properties and methods for using the functionality
+    defined by various HTTP specs.
+    ...
+    The response object is itself a WSGI application callable. When
+    called (:meth:`__call__`) with ``environ`` and ``start_response``,
+    it will pass its status and headers to ``start_response`` then
+    return its body as an iterable&#34;&#34;&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>wrappers.Response注释里也重点介绍了response的使用方法。我们通过下面的示例来了解:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from werkzeug.wrappers.response import Response
+
+def index():
+    return Response(&#34;Hello, World!&#34;)
+
+def application(environ, start_response):
+    path = environ.get(&#34;PATH_INFO&#34;) or &#34;/&#34;
+
+    if path == &#34;/&#34;:
+        response = index()
+    else:
+        response = Response(&#34;Not Found&#34;, status=404)
+
+    return response(environ, start_response)
+</code></pre></td></tr></table>
+</div>
+</div><p>示例可以看到，每个请求生成一个Response对象，然使用environ和start_response参数执行这个对象的call方法并返回。</p>
+<p>wrappers.Response的构造方法:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __init__(
+        self,
+        response: t.Optional[
+            t.Union[t.Iterable[bytes], bytes, t.Iterable[str], str]
+        ] = None,
+        status: t.Optional[t.Union[int, str, HTTPStatus]] = None,
+        headers: t.Optional[
+            t.Union[
+                t.Mapping[str, t.Union[str, int, t.Iterable[t.Union[str, int]]]],
+                t.Iterable[t.Tuple[str, t.Union[str, int]]],
+            ]
+        ] = None,
+        mimetype: t.Optional[str] = None,
+        content_type: t.Optional[str] = None,
+        direct_passthrough: bool = False,
+    ) -&gt; None:
+        super().__init__(
+            status=status,
+            headers=headers,
+            mimetype=mimetype,
+            content_type=content_type,
+        )
+        ...
+        if response is None:
+            self.response = []
+        elif isinstance(response, (str, bytes, bytearray)):
+            self.set_data(response)
+        else:
+            self.response = response
+</code></pre></td></tr></table>
+</div>
+</div><p>重点的call方法和相关的处理函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(
+    self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
+) -&gt; t.Iterable[bytes]:
+    &#34;&#34;&#34;Process this response as WSGI application.
+
+    :param environ: the WSGI environment.
+    :param start_response: the response callable provided by the WSGI
+                           server.
+    :return: an application iterator
+    &#34;&#34;&#34;
+    app_iter, status, headers = self.get_wsgi_response(environ)
+    start_response(status, headers)
+    return app_iter
+
+def get_app_iter(self, environ: &#34;WSGIEnvironment&#34;) -&gt; t.Iterable[bytes]:
+    status = self.status_code
+    if (
+        environ[&#34;REQUEST_METHOD&#34;] == &#34;HEAD&#34;
+        or 100 &lt;= status &lt; 200
+        or status in (204, 304)
+    ):
+        iterable: t.Iterable[bytes] = ()
+    elif self.direct_passthrough:
+        return self.response  # type: ignore
+    else:
+        iterable = self.iter_encoded()
+    return ClosingIterator(iterable, self.close)
+        
+def get_wsgi_response(
+    self, environ: &#34;WSGIEnvironment&#34;
+) -&gt; t.Tuple[t.Iterable[bytes], str, t.List[t.Tuple[str, str]]]:
+    headers = self.get_wsgi_headers(environ)
+    app_iter = self.get_app_iter(environ)
+    return app_iter, self.status, headers.to_wsgi_list()
+</code></pre></td></tr></table>
+</div>
+</div><p>主要就是将wsgi的Response转换成status，header和结果的迭代器给wsgi-server。</p>
+<hr>
+<h2 id="local">local实现</h2>
+<p>local是“德国锤子”非常重要的模块。先看看标准的 <em>threading.local</em> 实现示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import threading
+import logging
+import random
+
+logging.basicConfig(level=logging.DEBUG,
+                    format=&#39;(%(threadName)-0s) %(message)s&#39;,)
+
+def show(d):
+    try:
+        val = d.val
+    except AttributeError:
+        logging.debug(&#39;No value yet&#39;)
+    else:
+        logging.debug(&#39;value=%s&#39;, val)
+
+def f(d):
+    show(d)
+    d.val = random.randint(1, 100)
+    show(d)
+
+if __name__ == &#39;__main__&#39;:
+    d = threading.local()
+    show(d)
+    d.val = 999
+    show(d)
+
+    for i in range(2):
+        t = threading.Thread(target=f, args=(d,))
+        t.start()
+</code></pre></td></tr></table>
+</div>
+</div><p>测试结果可以看到不同的线程，同一个变量d的值是不一样的:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(MainThread) No value yet
+(MainThread) value=999
+(Thread-1) No value yet
+(Thread-1) value=56
+(Thread-2) No value yet
+(Thread-2) value=38
+</code></pre></td></tr></table>
+</div>
+</div><p><em>threading.local</em> 主要是解决2个问题：</p>
+<ul>
+<li>线程之间数据隔离</li>
+<li>代码书写的简单，只需要定义一个变量</li>
+</ul>
+<p>实际上要做到线程隔离，自己用一个字典就可以，比如每个线程的值加上线程ID作为key去区分。“德国锤子”的local正是使用这个思路。同时还为了支持 <code>greenlet</code> 也就是协程的实现，所以实现了一个新的local，没有直接使用 <em>threading.local</em> 。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">try:
+    from greenlet import getcurrent as _get_ident
+except ImportError:
+    from threading import get_ident as _get_ident
+</code></pre></td></tr></table>
+</div>
+</div><p>其中threading.get_ident的官方文档如下:</p>
+<blockquote>
+<p>threading.get_ident()
+返回当前线程的 “线程标识符”。它是一个非零的整数。它的值没有直接含义，主要是用作 magic cookie，比如作为含有线程相关数据的字典的索引。线程标识符可能会在线程退出，新线程创建时被复用。</p>
+<p>3.3 新版功能.</p>
+</blockquote>
+<p>local的基础是ContextVar类:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ContextVar:  # type: ignore
+    &#34;&#34;&#34;A fake ContextVar based on the previous greenlet/threading
+    ident function. Used on Python 3.6, eventlet, and old versions
+    of gevent.
+    &#34;&#34;&#34;
+
+    def __init__(self, _name: str) -&gt; None:
+        self.storage: t.Dict[int, t.Dict[str, t.Any]] = {}
+
+    def get(self, default: t.Dict[str, t.Any]) -&gt; t.Dict[str, t.Any]:
+        return self.storage.get(_get_ident(), default)
+
+    def set(self, value: t.Dict[str, t.Any]) -&gt; None:
+        self.storage[_get_ident()] = value
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ContextVar 定义了一个二级结构的字典，其中一级key是线程/协程的标识，这样就做到线程/协程的数据隔离。</li>
+</ul>
+<p>Local的实现主要是一个 <em>_storage</em> 属性使用ContextVar对象:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Local:
+    __slots__ = (&#34;_storage&#34;,)
+
+    def __init__(self) -&gt; None:
+        object.__setattr__(self, &#34;_storage&#34;, ContextVar(&#34;local_storage&#34;))
+    
+    def __getattr__(self, name: str) -&gt; t.Any:
+        values = self._storage.get({})
+        try:
+            return values[name]
+        except KeyError:
+            raise AttributeError(name)
+
+    def __setattr__(self, name: str, value: t.Any) -&gt; None:
+        values = self._storage.get({}).copy()
+        values[name] = value
+        self._storage.set(values)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>需要注意的是这里每次设置值的时候是copy后再修改(why?欢迎互动探讨)。</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>使用Local实现了一个简单的栈:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class LocalStack
+    def __init__(self) -&gt; None:
+        self._local = Local()
+    
+    def push(self, obj: t.Any) -&gt; t.List[t.Any]:
+        &#34;&#34;&#34;Pushes a new item to the stack&#34;&#34;&#34;
+        rv = getattr(self._local, &#34;stack&#34;, []).copy()
+        rv.append(obj)
+        self._local.stack = rv
+        return rv  # type: ignore
+
+    def pop(self) -&gt; t.Any:
+        &#34;&#34;&#34;Removes the topmost item from the stack, will return the
+        old value or `None` if the stack was already empty.
+        &#34;&#34;&#34;
+        stack = getattr(self._local, &#34;stack&#34;, None)
+        if stack is None:
+            return None
+        elif len(stack) == 1:
+            release_local(self._local)
+            return stack[-1]
+        else:
+            return stack.pop()
+</code></pre></td></tr></table>
+</div>
+</div><p>LocalManager用来管理所有的local数据，重点就是清理数据:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class LocalManager:
+    &#34;&#34;&#34;Local objects cannot manage themselves. For that you need a local
+    manager. You can pass a local manager multiple locals or add them
+    later y appending them to `manager.locals`. Every time the manager
+    cleans up, it will clean up all the data left in the locals for this
+    context
+    &#34;&#34;&#34;
+    
+    def __init__(
+        self,
+        locals: t.Optional[t.Iterable[t.Union[Local, LocalStack]]] = None,
+        ident_func: None = None,
+    ) -&gt; None:
+        if locals is None:
+            self.locals = []
+        elif isinstance(locals, Local):
+            self.locals = [locals]
+        else:
+            self.locals = list(locals)
+        ...
+    
+    def cleanup(self) -&gt; None:
+        &#34;&#34;&#34;Manually clean up the data in the locals for this context.  Call
+        this at the end of the request or use `make_middleware()`.
+        &#34;&#34;&#34;
+        for local in self.locals:
+            release_local(local)
+</code></pre></td></tr></table>
+</div>
+</div><p>local怎么使用呢？使用单例，下面是flask中的示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># flask-globals
+# context locals
+_request_ctx_stack = LocalStack()
+_app_ctx_stack = LocalStack()
+</code></pre></td></tr></table>
+</div>
+</div><p>_request_ctx_stack就是一个线程安全的全局变量，在业务处理中随处可以读取，不用将数据传来传去。</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="heading-1">参考链接</h2>
+<ul>
+<li>werkzeug文档 <a href="https://werkzeug.palletsprojects.com/en/2.0.x/">https://werkzeug.palletsprojects.com/en/2.0.x/</a></li>
+<li>Python 技术名词发音指南(PyCon China 2020 演讲) <a href="https://zhuanlan.zhihu.com/p/320457692">https://zhuanlan.zhihu.com/p/320457692</a></li>
+<li>Sans I/O programming (PyCon UK talk)  <a href="https://alexwlchan.net/2019/10/sans-io-programming/">https://alexwlchan.net/2019/10/sans-io-programming/</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-05-28
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/http/">http</a>
+          <a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/">开源项目</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/python/xmlrpc-server-slow/">
+            <span class="next-text nav-default">再聊我的源码阅读方法-xmlrpc源码慢读</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-05-28 00:35:13 \x2b0800 CST',
+        title: 'Werkzeug 源码阅读-上',
+        link: decodeURI(location.href),
+        desc: 'Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
