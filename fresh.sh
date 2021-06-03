@@ -1,1 +1,1 @@
-cp -r ../homepage/public/* ./*
+cp -r ../homepage/public/* ./
