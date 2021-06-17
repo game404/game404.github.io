@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Werkzeug源码阅读-完结篇 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/werkzeug-3/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Werkzeug源码阅读-完结篇" />
+<meta property="og:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/werkzeug-3/" />
+<meta property="article:published_time" content="2021-06-17T22:39:20+08:00" />
+<meta property="article:modified_time" content="2021-06-17T22:39:20+08:00" />
+<meta itemprop="name" content="Werkzeug源码阅读-完结篇">
+<meta itemprop="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是">
+<meta itemprop="datePublished" content="2021-06-17T22:39:20&#43;08:00" />
+<meta itemprop="dateModified" content="2021-06-17T22:39:20&#43;08:00" />
+<meta itemprop="wordCount" content="4925">
+
+
+
+<meta itemprop="keywords" content="http,开源项目,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Werkzeug源码阅读-完结篇"/>
+<meta name="twitter:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Werkzeug源码阅读-完结篇</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-06-17 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reloader">reloader</a>
+      <ul>
+        <li><a href="#reloader-1">reloader演示</a></li>
+        <li><a href="#reloader-2">reloader的实现原理</a></li>
+      </ul>
+    </li>
+    <li><a href="#debug">debug</a>
+      <ul>
+        <li><a href="#debug-1">debug的展示</a></li>
+        <li><a href="#debug-2">debug的实现原理</a></li>
+        <li><a href="#pin">pin</a></li>
+        <li><a href="#interactive">Interactive</a></li>
+      </ul>
+    </li>
+    <li><a href="#sqlalchemy">配合SQLAlchemy操作数据库</a>
+      <ul>
+        <li><a href="#sqlalchemy-1">SQLAlchemy回顾</a></li>
+        <li><a href="#sqlalchemy-2">SQLAlchemy配合使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading">小结</a></li>
+    <li><a href="#heading-1">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。文章已经完成上下两篇，上篇介绍:</p>
+<ul>
+<li>serving &amp;&amp; wsgi</li>
+<li>request &amp;&amp; response</li>
+<li>local的</li>
+</ul>
+<p>下篇介绍:</p>
+<ul>
+<li>middleware</li>
+<li>routing &amp;&amp; urls</li>
+<li>datastructures</li>
+</ul>
+<p>“德国锤子” 还有3个比较重要的功能，不要放过，我们继续学习:</p>
+<ul>
+<li>reloader</li>
+<li>debug</li>
+<li>配合SQLAlchemy操作数据库</li>
+</ul>
+<h2 id="reloader">reloader</h2>
+<h3 id="reloader-1">reloader演示</h3>
+<p>reloader是调试程序时非常实用的功能，开发的时候不用手动重启服务，修改代码后会自动重启服务，提高研发效率。运行示例中的Shorty服务:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python3 shortly.py
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 722-230-382
+</code></pre></td></tr></table>
+</div>
+</div><p>程序启动后实际上有2个进程， <em>10527</em> 的主进程和 <em>10529</em> 的子进程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">501 10527  7144   0  8:36上午 ttys008    0:00.23 .../Python.app/Contents/MacOS/Python shortly.py
+501 10529 10527   0  8:36上午 ttys008    0:00.34 .../Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/ch20-werkzeug/shortly.py
+</code></pre></td></tr></table>
+</div>
+</div><p>随便修改一下 <code>shortly.py</code> 代码，比如增加一个日志输出。可以发现启动日志有下面reload的信息:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+ * Detected change in &#39;/Users/yoo/work/yuanmahui/python/ch20-werkzeug/shortly.py&#39;, reloading
+ * Restarting with stat
+ ...
+</code></pre></td></tr></table>
+</div>
+</div><p>再观查进程信息可以发现 <em>10529</em> 子进程已经退出，新增了 <em>10634</em> 子进程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">501 10527  7144   0  8:36上午 ttys008    0:00.24 .../Python.app/Contents/MacOS/Python shortly.py
+501 10634 10527   0  8:38上午 ttys008    0:00.77 .../Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/ch20-werkzeug/shortly.py
+</code></pre></td></tr></table>
+</div>
+</div><p>可以推测，主/子进程检测代码变动，然后子进程关闭/退出，再由主进程重新创建一个子进程。那么到底子进程是自动退出还是被主进程关闭？是主进程监听代码变化还是子进程监听的呢？我们带着这2个问题，一起看看代码实现。</p>
+<h3 id="reloader-2">reloader的实现原理</h3>
+<p>启动服务的时候，需要使用 <em>use_reloader=True</em> 参数启动reloader</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">run_simple(&#34;127.0.0.1&#34;, 5000, app, use_debugger=True, use_reloader=True)
+</code></pre></td></tr></table>
+</div>
+</div><p>服务启动时候判断是独立启动，还是由reload启动:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># serving.py
+def run_simple(...):
+    if not is_running_from_reloader():
+        ...
+        
+    from ._reloader import run_with_reloader as _rwr
+    
+    _rwr(
+        inner,
+        extra_files=extra_files,
+        exclude_patterns=exclude_patterns,
+        interval=reloader_interval,
+        reloader_type=reloader_type,
+    )
+</code></pre></td></tr></table>
+</div>
+</div><p>主进程和子进程的判断是通过 <em>WERKZEUG_RUN_MAIN</em> 的环境变量进行判断，默认情况下是没有这个环境变量:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def is_running_from_reloader() -&gt; bool:
+    return os.environ.get(&#34;WERKZEUG_RUN_MAIN&#34;) == &#34;true&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>使用reloader启动的代码如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># _reloader.py
+
+def run_with_reloader(
+    main_func: t.Callable[[], None],
+    extra_files: t.Optional[t.Iterable[str]] = None,
+    exclude_patterns: t.Optional[t.Iterable[str]] = None,
+    interval: t.Union[int, float] = 1,
+    reloader_type: str = &#34;auto&#34;,
+) -&gt; None:
+    &#34;&#34;&#34;Run the given function in an independent Python interpreter.&#34;&#34;&#34;
+    import signal
+
+    signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))
+    reloader = reloader_loops[reloader_type](
+        extra_files=extra_files, exclude_patterns=exclude_patterns, interval=interval
+    )
+
+    try:
+        if os.environ.get(&#34;WERKZEUG_RUN_MAIN&#34;) == &#34;true&#34;:
+            ensure_echo_on()
+            t = threading.Thread(target=main_func, args=())
+            t.daemon = True
+
+            # Enter the reloader to set up initial state, then start
+            # the app thread and reloader update loop.
+            with reloader:
+                t.start()
+                reloader.run()
+        else:
+            sys.exit(reloader.restart_with_reloader())
+    except KeyboardInterrupt:
+        pass
+</code></pre></td></tr></table>
+</div>
+</div><p>代码主要功能:</p>
+<ul>
+<li>注册系统信号处理，支持使用 <em>CTRL+C</em> 退出</li>
+<li>选择reloader的实现，默认是 <code>stat</code> 的实现，还有一种是 <code>watchdog</code> 的实现。后者需要额外安装，但是效率会高一些</li>
+<li>判断是否主进程，主进程则只是启动reloader ; 子进程则使用守护线程方式启动服务程序</li>
+</ul>
+<p>关于stat和watchdog的区别，请看下面的官方文档:</p>
+<blockquote>
+<p>默认stat后端只是mtime定期检查所有文件的 。这对于大多数情况来说已经足够了，但是众所周知，它会耗尽笔记本电脑的电池。</p>
+<p>在watchdog后端使用文件系统事件，而且比stat快, 但是它需要 安装看门狗模块。实现此目的的推荐方法是添加 Werkzeug[watchdog]到您的需求文件中。</p>
+</blockquote>
+<p>ReloaderLoop是reloader实现的基类:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ReloaderLoop:
+    name = &#34;&#34;
+
+    def __init__(
+        self,
+        extra_files: t.Optional[t.Iterable[str]] = None,
+        exclude_patterns: t.Optional[t.Iterable[str]] = None,
+        # 默认1s的间隔
+        interval: t.Union[int, float] = 1,
+    ) -&gt; None:
+        self.extra_files: t.Set[str] = {os.path.abspath(x) for x in extra_files or ()}
+        self.exclude_patterns: t.Set[str] = set(exclude_patterns or ())
+        self.interval = interval
+
+    def __enter__(self) -&gt; &#34;ReloaderLoop&#34;:
+        &#34;&#34;&#34;Do any setup, then run one step of the watch to populate the
+        initial filesystem state.
+        &#34;&#34;&#34;
+        self.run_step()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):  # type: ignore
+        &#34;&#34;&#34;Clean up any resources associated with the reloader.&#34;&#34;&#34;
+        pass
+        
+    def run(self) -&gt; None:
+        &#34;&#34;&#34;Continually run the watch step, sleeping for the configured
+        interval after each step.
+        &#34;&#34;&#34;
+        while True:
+            self.run_step()
+            time.sleep(self.interval)
+    
+    def run_step(self) -&gt; None:
+        &#34;&#34;&#34;Run one step for watching the filesystem. Called once to set
+        up initial state, then repeatedly to update it.
+        &#34;&#34;&#34;
+        pass
+    
+    def restart_with_reloader(self) -&gt; int:
+        &#34;&#34;&#34;Spawn a new Python interpreter with the same arguments as the
+        current one, but running the reloader thread.
+        &#34;&#34;&#34;
+        while True:
+            _log(&#34;info&#34;, f&#34; * Restarting with {self.name}&#34;)
+            args = _get_args_for_reloading()
+            new_environ = os.environ.copy()
+            new_environ[&#34;WERKZEUG_RUN_MAIN&#34;] = &#34;true&#34;
+            exit_code = subprocess.call(args, env=new_environ, close_fds=False)
+    
+            if exit_code != 3:
+                return exit_code
+    
+    def trigger_reload(self, filename: str) -&gt; None:
+        self.log_reload(filename)
+        sys.exit(3)
+    
+    def log_reload(self, filename: str) -&gt; None:
+        filename = os.path.abspath(filename)
+        _log(&#34;info&#34;, f&#34; * Detected change in {filename!r}, reloading&#34;)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ReloaderLoop是一个上下文装饰器，进入的时候自动调用子类的run_step方法。</li>
+<li>在主进程中使用restart_with_reloader函数进行工作。这是一个无限循环，循环中使用 <code>subprocess.call</code> 创建一个子进程，并监听子进程的退出状态。如果退出状态为3则可以无限循环；如果不为3则会退出循环，结束主进程。</li>
+<li>创建子进程时候，设置关键的 <em>WERKZEUG_RUN_MAIN</em> 环境变量标识。</li>
+<li>子进程使用run方法持续监听代码变化。</li>
+<li>如果触发reload则当前子进程退出。</li>
+</ul>
+<p>StatReloaderLoop的实现比较简单，代码如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class StatReloaderLoop(ReloaderLoop):
+    name = &#34;stat&#34;
+
+    def __enter__(self) -&gt; ReloaderLoop:
+        self.mtimes: t.Dict[str, float] = {}
+        return super().__enter__()
+
+    def run_step(self) -&gt; None:
+        for name in chain(_find_stat_paths(self.extra_files, self.exclude_patterns)):
+            try:
+                mtime = os.stat(name).st_mtime
+            except OSError:
+                continue
+
+            old_time = self.mtimes.get(name)
+
+            if old_time is None:
+                self.mtimes[name] = mtime
+                continue
+
+            if mtime &gt; old_time:
+                self.trigger_reload(name)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>run_step中记录每个代码的时间戳，如果发现有文件的时间戳变化，则调用父类的trigger_reload</li>
+</ul>
+<p>所以主进程只是负责持续创建子进程，子进程自己检测代码变化和自动退出。</p>
+<h2 id="debug">debug</h2>
+<h3 id="debug-1">debug的展示</h3>
+<p>在Shortly中增加一个echo的view:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Rule(&#34;/echo&#34;, endpoint=&#34;echo&#34;),
+
+def on_echo(self, request):
+    raise
+</code></pre></td></tr></table>
+</div>
+</div><p>访问这个view可以看到下面的异常信息, 带有完整的业务堆栈:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210617125947.png" alt="debug-info"></p>
+<p>点击右侧的console图标，会提示输入PIN:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210617094309.png" alt="pin-input"></p>
+<p>在console中可以进行调试:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210617104221.png" alt="dump"></p>
+<blockquote>
+<p><code>2.0.1</code> 版本的dubug可能有bug，需要使用 <code>os.environ[&quot;WERKZEUG_DEBUG_PIN&quot;] = &quot;off&quot;</code> 关闭pin-auth的认证，才能够正常工作</p>
+</blockquote>
+<h3 id="debug-2">debug的实现原理</h3>
+<p>python3自带REPL的模块 <code>code</code>, 看起来和python的命令行差不多，仔细对比会发现多了 <em>(InteractiveConsole)</em> 的输出。自己的应用程序中嵌入code，就可以实现交互式的debug功能。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python3 -m code
+Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27)
+[Clang 6.0 (clang-600.0.57)] on darwin
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+(InteractiveConsole) # &lt;- 提示信息
+&gt;&gt;&gt;
+# python3
+Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27)
+[Clang 6.0 (clang-600.0.57)] on darwin
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+&gt;&gt;&gt;
+</code></pre></td></tr></table>
+</div>
+</div><p>启动服务的入口，如果有debug参数则使用DebuggedApplication来包裹业务app:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># serving.py
+def run_simple(...):
+    if use_debugger:
+        from .debug import DebuggedApplication
+        application = DebuggedApplication(application, use_evalex)
+</code></pre></td></tr></table>
+</div>
+</div><p>DebuggedApplication主要的call函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># debug
+def __call__(
+    self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
+) -&gt; t.Iterable[bytes]:
+    &#34;&#34;&#34;Dispatch the requests.&#34;&#34;&#34;
+    request = Request(environ)
+    response = self.debug_application
+    if request.args.get(&#34;__debugger__&#34;) == &#34;yes&#34;:
+        # 处理debug请求
+        cmd = request.args.get(&#34;cmd&#34;)
+        arg = request.args.get(&#34;f&#34;)
+        secret = request.args.get(&#34;s&#34;)
+        frame = self.frames.get(request.args.get(&#34;frm&#34;, type=int))
+        if cmd == &#34;resource&#34; and arg:
+            response = self.get_resource(request, arg)  # type: ignore
+        elif cmd == &#34;pinauth&#34; and secret == self.secret:
+            response = self.pin_auth(request)  # type: ignore
+        elif cmd == &#34;printpin&#34; and secret == self.secret:
+            response = self.log_pin_request()  # type: ignore
+        elif (
+            self.evalex
+            and cmd is not None
+            and frame is not None
+            and self.secret == secret
+            and self.check_pin_trust(environ)
+        ):
+            response = self.execute_command(request, cmd, frame)  # type: ignore
+    elif (
+        self.evalex
+        and self.console_path is not None
+        and request.path == self.console_path
+    ):
+        response = self.display_console(request)  # type: ignore
+    return response(environ, start_response)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>call接收wsgi的输入environ和start_response</li>
+<li>response使用debug_application处理</li>
+<li>如果request上有__debugger__信息，则进行debug处理，比如显示异常堆栈，显示PIN认证以及调试指令等等</li>
+</ul>
+<p>debug的重点在debug_application函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def debug_application(
+    self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
+) -&gt; t.Iterator[bytes]:
+    &#34;&#34;&#34;Run the application and conserve the traceback frames.&#34;&#34;&#34;
+    app_iter = None
+    try:
+        # 正常业务 
+        app_iter = self.app(environ, start_response)
+        yield from app_iter
+        if hasattr(app_iter, &#34;close&#34;):
+            app_iter.close()  # type: ignore
+    except Exception:
+        # 异常调试
+        if hasattr(app_iter, &#34;close&#34;):
+            app_iter.close()  # type: ignore
+        traceback = get_current_traceback(
+            skip=1,
+            show_hidden_frames=self.show_hidden_frames,
+            ignore_system_exceptions=True,
+        )
+        for frame in traceback.frames:
+            self.frames[frame.id] = frame
+        self.tracebacks[traceback.id] = traceback
+
+        try:
+            start_response(
+                &#34;500 INTERNAL SERVER ERROR&#34;,
+                [
+                    (&#34;Content-Type&#34;, &#34;text/html; charset=utf-8&#34;),
+                    (&#34;X-XSS-Protection&#34;, &#34;0&#34;),
+                ],
+            )
+        except Exception:
+            environ[&#34;wsgi.errors&#34;].write(
+                &#34;Debugging middleware caught exception in streamed &#34;
+                &#34;response at a point where response headers were already &#34;
+                &#34;sent.\n&#34;
+            )
+        else:
+            is_trusted = bool(self.check_pin_trust(environ))
+            yield traceback.render_full(
+                evalex=self.evalex, evalex_trusted=is_trusted, secret=self.secret
+            ).encode(&#34;utf-8&#34;, &#34;replace&#34;)
+
+        traceback.log(environ[&#34;wsgi.errors&#34;])
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用 <code>app_iter = self.app(environ, start_response)</code> 执行业务功能</li>
+<li>使用try-except捕获业务异常，对异常信息进行获取traceback</li>
+<li>返回500的http状态，并且使用traceback.render_full渲染html显示异常堆栈</li>
+</ul>
+<h3 id="pin">pin</h3>
+<p>debug可以使用web界面调试程序，这会产生安全问题。所以werkzeug的debug中引入了PIN机制，需要输入PIN验证码才可以进行调试，PIN在服务端的命令行中输出。</p>
+<p>前端页面输入PIN后会提交PIN码:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># debugger.js
+
+function initPinBox() {
+  document.querySelector(&#34;.pin-prompt form&#34;).addEventListener(
+    &#34;submit&#34;,
+    function (event) {
+      ....
+
+      fetch(
+        `${document.location.pathname}?__debugger__=yes&amp;cmd=pinauth&amp;pin=${pin}&amp;s=${encodedSecret}`
+      )
+        .then((res) =&gt; res.json())
+        .then(({auth, exhausted}) =&gt; {
+          if (auth) {
+            EVALEX_TRUSTED = true;
+            fadeOut(document.getElementsByClassName(&#34;pin-prompt&#34;)[0]);
+          } else {
+            ....
+          }
+        })
+        ...
+    },
+    false
+  );
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这段JS代码重点是 <code>__debugger__=yes&amp;cmd=pinauth&amp;pin=${pin}&amp;s=${encodedSecret}</code> 的URL，这个请求会直接被DebuggedApplication处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">    if request.args.get(&#34;__debugger__&#34;) == &#34;yes&#34;:
+        cmd = request.args.get(&#34;cmd&#34;)
+        arg = request.args.get(&#34;f&#34;)
+        secret = request.args.get(&#34;s&#34;)
+        frame = self.frames.get(request.args.get(&#34;frm&#34;, type=int))  # type: ignore
+        ...
+        elif cmd == &#34;pinauth&#34; and secret == self.secret:
+            response = self.pin_auth(request)  # type: ignore
+        ...
+        elif (
+            self.evalex
+            and cmd is not None
+            and frame is not None
+            and self.secret == secret
+            and self.check_pin_trust(environ)
+        ):
+            response = self.execute_command(request, cmd, frame)  # type: ignore
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果cmd=pinauth则进行pin的验证</li>
+<li>如果cmd是其它，比如dump或者对象之类，则执行对应的command, 调试信息的时候会使用</li>
+</ul>
+<p>auth认证函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def pin_auth(self, request: Request) -&gt; Response:
+    &#34;&#34;&#34;Authenticates with the pin.&#34;&#34;&#34;
+    exhausted = False
+    auth = False
+    trust = self.check_pin_trust(request.environ)
+    ...
+    # Otherwise go through pin based authentication
+    else:
+        entered_pin = request.args[&#34;pin&#34;]
+        # 对比PIN
+        if entered_pin.strip().replace(&#34;-&#34;, &#34;&#34;) == pin.replace(&#34;-&#34;, &#34;&#34;):
+            self._failed_pin_auth = 0
+            auth = True
+        else:
+            self._fail_pin_auth()
+
+    rv = Response(
+        json.dumps({&#34;auth&#34;: auth, &#34;exhausted&#34;: exhausted}),
+        mimetype=&#34;application/json&#34;,
+    )
+    if auth:
+        # 设置cookie
+        rv.set_cookie(
+            self.pin_cookie_name,
+            f&#34;{int(time.time())}|{hash_pin(pin)}&#34;,
+            httponly=True,
+            samesite=&#34;None&#34;,
+        )
+    elif bad_cookie:
+        rv.delete_cookie(self.pin_cookie_name)
+    return rv
+</code></pre></td></tr></table>
+</div>
+</div><p>查看http请求详情，会发现认证成功后会设置一个Response-Cookie：<em>__wzd10d9760bb71ac5d1b21e</em> ，这样后续的debug调试都使用这个cookie。
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210617180723.png" alt="pin-auth"></p>
+<blockquote>
+<p>开启PIN验证后，无法调试就是因为这个cookie在调试的时候没有附带上</p>
+</blockquote>
+<h3 id="interactive">Interactive</h3>
+<p>debug调试主要使用_InteractiveConsole的runsource实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _InteractiveConsole(code.InteractiveInterpreter):
+    locals: t.Dict[str, t.Any]
+    ...
+    def runsource(self, source: str, **kwargs: t.Any) -&gt; str:  # type: ignore
+        source = f&#34;{source.rstrip()}\n&#34;
+        ThreadedStream.push()
+        prompt = &#34;... &#34; if self.more else &#34;&gt;&gt;&gt; &#34;
+        try:
+            source_to_eval = &#34;&#34;.join(self.buffer + [source])
+            if super().runsource(source_to_eval, &#34;&lt;debugger&gt;&#34;, &#34;single&#34;):
+                self.more = True
+                self.buffer.append(source)
+            else:
+                self.more = False
+                del self.buffer[:]
+        finally:
+            output = ThreadedStream.fetch()
+        return prompt + escape(source) + output
+   ...
+
+</code></pre></td></tr></table>
+</div>
+</div><p>runsource函数比较复杂，但是核心就是对前端网页提交的字符串信息进行编译执行，并把执行的输出捕获后反馈给前端，和之前的介绍CGI实现类似。</p>
+<p>开发的时候，可以利用debug功能协助进行调试，提高研发效率。需要注意的是，debug功能不可以用于线上环境。</p>
+<h2 id="sqlalchemy">配合SQLAlchemy操作数据库</h2>
+<p>数据库操作是Web程序非常重要的一环，werkzeug中操作数据可以使用sqlalchemy。</p>
+<h3 id="sqlalchemy-1">SQLAlchemy回顾</h3>
+<p>在正式介绍Werkzeug配合SQLAlchemy操作数据库操作数据库之前，我们先简单回顾一下SQLAlchemy的ORM使用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine(&#39;sqlite:///:memory:&#39;, echo=True)
+Model = declarative_base()
+
+class User(Model):
+    __tablename__ = &#39;users&#39;
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    fullname = Column(String)
+    nickname = Column(String)
+
+    def __repr__(self):
+        return &#34;&lt;User(name=&#39;%s&#39;, fullname=&#39;%s&#39;, nickname=&#39;%s&#39;)&gt;&#34; % (
+            self.name, self.fullname, self.nickname)
+
+Model.metadata.create_all(engine)
+print(&#34;=&#34; * 10)
+Session = sessionmaker(bind=engine)
+session = Session()
+ed_user = User(name=&#39;ed&#39;, fullname=&#39;Ed Jones&#39;, nickname=&#39;edsnickname&#39;)
+session.add(ed_user)
+session.commit()
+print(ed_user.id)
+result = engine.execute(&#34;select * from users&#34;)
+for row in result:
+    print(row)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>创建engine，用于数据库连接</li>
+<li>创建Model</li>
+<li>创建User模型</li>
+<li>将metadata提交到engine(创建表)</li>
+<li>创建session</li>
+<li>使用users插入数据:创建对象，add到session，然后提交session</li>
+<li>&hellip;</li>
+</ul>
+<h3 id="sqlalchemy-2">SQLAlchemy配合使用</h3>
+<p>示例shorty中演示了如何使用SQLAlchemy操作SQLite数据库。使用方法是先使用 <code>initdb</code> 初始化sqlite数据库，然后再使用 <code>runserver</code> 启动服务:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 manage-shorty.py initdb
+python3 manage-shorty.py runserver
+</code></pre></td></tr></table>
+</div>
+</div><p>先看看View中如何通过ORM操作数据，这是插入数据:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">uid = URL(url, &#34;private&#34; not in request.form, alias).uid
+session.commit()
+</code></pre></td></tr></table>
+</div>
+</div><p>这是查询数据:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">url = URL.query.get(uid)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>创建数据后使用session.commit后就提交</li>
+<li>查询数据使用模型的query</li>
+</ul>
+<p>URL的数据模型是这样定义的:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">url_table = Table(
+    &#34;urls&#34;,
+    metadata,
+    Column(&#34;uid&#34;, String(140), primary_key=True),
+    Column(&#34;target&#34;, String(500)),
+    Column(&#34;added&#34;, DateTime),
+    Column(&#34;public&#34;, Boolean),
+)
+
+class URL:
+    query = session.query_property()
+
+    def __init__(self, target, public=True, uid=None, added=None):
+        self.target = target
+        self.public = public
+        self.added = added or datetime.utcnow()
+        if not uid:
+            while 1:
+                uid = get_random_uid()
+                if not URL.query.get(uid):
+                    break
+        self.uid = uid
+        session.add(self)
+
+    @property
+    def short_url(self):
+        return url_for(&#34;link&#34;, uid=self.uid, _external=True)
+
+    def __repr__(self):
+        return f&#34;&lt;URL {self.uid!r}&gt;&#34;
+
+mapper(URL, url_table)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>注意URL模型的init方法，创建对象时候自动生成uid，并且添加到session，然后view使用commit就提交数据。这种使用方式和回顾里一致。</li>
+<li>URL中定义了一个query，可以用来检索数据，这和django中Model的object类似。</li>
+</ul>
+<p>database_engine在创建创建App时候创建:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Shorty:
+    def __init__(self, db_uri):
+        local.application = self
+        self.database_engine = create_engine(db_uri, convert_unicode=True)
+
+        self.dispatch = SharedDataMiddleware(self.dispatch, {&#34;/static&#34;: STATIC_PATH})
+
+    def init_database(self):
+        # 等同 Model.metadata.create_all(engine)
+        metadata.create_all(self.database_engine)
+</code></pre></td></tr></table>
+</div>
+</div><p>最关键的地方是session:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">local = Local()
+local_manager = LocalManager([local])
+# local.application = self
+application = local(&#34;application&#34;)
+...
+session = scoped_session(
+    lambda: create_session(
+        application.database_engine, autocommit=False, autoflush=False
+    )
+)
+</code></pre></td></tr></table>
+</div>
+</div><p>简单的说这里scoped_session是绑定到线程的，跟随请求的生命周期。这样在请求中可以使用session访问数据。</p>
+<h2 id="heading">小结</h2>
+<p>本章我们学习了web框架如何使用reload和debug协助研发，提高研发效率。reload主要是使用了subprocess开启多个python进程，debug则是使用code的REPL功能。</p>
+<p>werkzeug也提供了使用sqlalchemy操作数据库的示例Shorty，使用ORM功能可以快速编写适配多种数据存储引擎的程序。</p>
+<p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+<h2 id="heading-1">参考链接</h2>
+<ul>
+<li>Contextual/Thread-local Sessions <a href="https://docs.sqlalchemy.org/en/13/orm/contextual.html">https://docs.sqlalchemy.org/en/13/orm/contextual.html</a></li>
+<li><a href="https://stackoverflow.com/questions/6519546/scoped-sessionsessionmaker-or-plain-sessionmaker-in-sqlalchemy">https://stackoverflow.com/questions/6519546/scoped-sessionsessionmaker-or-plain-sessionmaker-in-sqlalchemy</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-06-17
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/http/">http</a>
+          <a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/">开源项目</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/python/werkzeug-2/">
+            <span class="next-text nav-default">Werkzeug 源码阅读-下</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-06-17 22:39:20 \x2b0800 CST',
+        title: 'Werkzeug源码阅读-完结篇',
+        link: decodeURI(location.href),
+        desc: 'Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
