@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>测试 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E6%B5%8B%E8%AF%95/</link>
+    <description>Recent content in 测试 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Thu, 22 Jul 2021 22:50:22 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E6%B5%8B%E8%AF%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>pytest 简易指南</title>
+      <link>https://game404.github.io/post/python/pytest/</link>
+      <pubDate>Thu, 22 Jul 2021 22:50:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/pytest/</guid>
+      <description>pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使</description>
+    </item>
+    
+  </channel>
+</rss>

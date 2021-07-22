@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Fri, 02 Jul 2021 00:03:55 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 22 Jul 2021 22:50:22 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>pytest 简易指南</title>
+      <link>https://game404.github.io/post/python/pytest/</link>
+      <pubDate>Thu, 22 Jul 2021 22:50:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/pytest/</guid>
+      <description>pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使</description>
+    </item>
+    
+    <item>
+      <title>Flask 源码阅读-下篇</title>
+      <link>https://game404.github.io/post/python/flask-2/</link>
+      <pubDate>Thu, 22 Jul 2021 22:50:13 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/flask-2/</guid>
+      <description>flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有</description>
+    </item>
     
     <item>
       <title>Flask 源码阅读-正菜</title>
