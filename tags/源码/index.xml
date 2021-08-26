@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 22 Jul 2021 22:50:13 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 26 Aug 2021 19:52:59 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>requests项目如何使用pytest进行单元测试</title>
+      <link>https://game404.github.io/post/python/requests-test/</link>
+      <pubDate>Thu, 26 Aug 2021 19:52:59 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/requests-test/</guid>
+      <description>pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，</description>
+    </item>
     
     <item>
       <title>Flask 源码阅读-下篇</title>
