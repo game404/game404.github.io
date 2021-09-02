@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 26 Aug 2021 19:52:59 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 02 Sep 2021 21:50:56 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»，觉得博文有用欢迎点个关注, 及时更新不迷路: 肖恩：码农，40+，全栈，游戏从业者。 关注</description>
+    </item>
+    
+    <item>
+      <title>python 对象杂谈</title>
+      <link>https://game404.github.io/post/python/python-object-and-dict/</link>
+      <pubDate>Thu, 02 Sep 2021 21:50:56 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/python-object-and-dict/</guid>
+      <description>需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一</description>
     </item>
     
     <item>

@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 26 Aug 2021 19:52:59 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 02 Sep 2021 21:50:56 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>python 对象杂谈</title>
+      <link>https://game404.github.io/post/python/python-object-and-dict/</link>
+      <pubDate>Thu, 02 Sep 2021 21:50:56 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/python-object-and-dict/</guid>
+      <description>需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一</description>
+    </item>
     
     <item>
       <title>requests项目如何使用pytest进行单元测试</title>

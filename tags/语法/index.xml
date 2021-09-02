@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>语法 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E8%AF%AD%E6%B3%95/</link>
+    <description>Recent content in 语法 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Thu, 02 Sep 2021 21:50:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E8%AF%AD%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>python 对象杂谈</title>
+      <link>https://game404.github.io/post/python/python-object-and-dict/</link>
+      <pubDate>Thu, 02 Sep 2021 21:50:56 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/python-object-and-dict/</guid>
+      <description>需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一</description>
+    </item>
+    
+  </channel>
+</rss>
