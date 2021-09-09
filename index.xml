@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 02 Sep 2021 21:50:56 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 10 Sep 2021 00:04:10 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»，觉得博文有用欢迎点个关注, 及时更新不迷路: 肖恩：码农，40+，全栈，游戏从业者。 关注</description>
+    </item>
+    
+    <item>
+      <title>kubernetes 初体验-mac版</title>
+      <link>https://game404.github.io/post/mac-desktop-kubernetes/</link>
+      <pubDate>Fri, 10 Sep 2021 00:04:10 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/mac-desktop-kubernetes/</guid>
+      <description>之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。</description>
     </item>
     
     <item>
