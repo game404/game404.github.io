@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>celery on 游戏不存在</title>
+    <link>https://game404.github.io/tags/celery/</link>
+    <description>Recent content in celery on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Fri, 24 Sep 2021 00:00:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/celery/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>celery 源码阅读 - 1</title>
+      <link>https://game404.github.io/post/python/celery-1/</link>
+      <pubDate>Fri, 24 Sep 2021 00:00:31 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-1/</guid>
+      <description>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可</description>
+    </item>
+    
+  </channel>
+</rss>

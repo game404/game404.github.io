@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>celery 源码阅读 - 1 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/celery-1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="celery 源码阅读 - 1" />
+<meta property="og:description" content="Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/celery-1/" />
+<meta property="article:published_time" content="2021-09-24T00:00:31+08:00" />
+<meta property="article:modified_time" content="2021-09-24T00:00:31+08:00" />
+<meta itemprop="name" content="celery 源码阅读 - 1">
+<meta itemprop="description" content="Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可">
+<meta itemprop="datePublished" content="2021-09-24T00:00:31&#43;08:00" />
+<meta itemprop="dateModified" content="2021-09-24T00:00:31&#43;08:00" />
+<meta itemprop="wordCount" content="4805">
+
+
+
+<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="celery 源码阅读 - 1"/>
+<meta name="twitter:description" content="Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">celery 源码阅读 - 1</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-09-24 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#celery">celery应用场景</a></li>
+    <li><a href="#celery-1">celery的项目结构</a></li>
+    <li><a href="#promise">promise库的实现</a>
+      <ul>
+        <li><a href="#promise-">promise 简介</a></li>
+        <li><a href="#promise-1">Promise的实现</a></li>
+        <li><a href="#barrier">Barrier的实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading">小结</a></li>
+    <li><a href="#heading-1">小技巧</a></li>
+    <li><a href="#heading-2">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+<p>Celery在github上有18k的star和4.1k的fork，非常受欢迎；截止当前总共发布了216个版本，最近一个版本是19天前，更新非常活跃。如果你需要一个python实现的任务调度框架，首推就是它了。</p>
+<p>从这周开始，我们一起阅读celery的源码，学习如何使用celery，了解分布式任务调度框架是如何构建，深入celery的实现细节。celery代码量比较大，预计需要3~4周的时间吧。话不多说，一起开始，本周内容主要包括下面几个部分:</p>
+<ul>
+<li>任务应用场景</li>
+<li>celery的项目结构</li>
+<li>promise库的实现</li>
+<li>小结</li>
+<li>小技巧</li>
+</ul>
+<p>另外非常重要的一点是，考虑到之前的文章，在源码和解读上做的不够好，这次做一个小小的改进。就是我会把项目源码增加我自己的注释，上传到github上。这样想了解细节实现的小伙伴请使用【阅读原文】。 我的源码阅读项目 <em>yuanmahui</em>，也欢迎大家在github上点赞支持❤。</p>
+<h2 id="celery">celery应用场景</h2>
+<p>我们有这样一个flask实现的web服务，其中hello接口，需要进行外部调用(比如发送发送短信验证码之类)。这里我们使用 <em>time.sleep</em> 模拟这个耗时的操作:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">import time
+
+from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route(&#39;/&#39;)
+def hello():
+    time.sleep(1)  # 模拟一下耗时操作
+    return &#39;Hello, World!&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>可以使用ab来验证这个接口的耗时情况:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ab -n 10 -c 5 http://127.0.0.1:5000/
+...
+Requests per second:    3.30 [#/sec] (mean)
+Time per request:       1513.100 [ms] (mean)
+Time per request:       302.620 [ms] (mean, across all concurrent requests)
+Transfer rate:          0.54 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       0
+Processing:  1007 1008   1.2   1008    1010
+Waiting:     1005 1007   1.0   1007    1008
+Total:       1007 1008   1.2   1009    1010
+...
+</code></pre></td></tr></table>
+</div>
+</div><p>测试显示这个接口的平均耗时需要1.5秒左右，响应缓慢。同时，这样的接口还会导致前端页面的卡顿。要解决这个问题，就可以使用任务调度的方式，把这个耗时操作转换成背景任务，同时及时返回http响应, 调整方法如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">....
+
+@app.route(&#39;/&#39;)
+def hello():
+    # time.sleep(1)
+    do_task(id(request))  # 启动背景任务
+    return &#39;Hello, World!&#39;
+
+
+def do_task(index):
+    t = threading.Thread(target=lambda idx: time.sleep(1), args=(index,))
+    t.start()
+</code></pre></td></tr></table>
+</div>
+</div><p>do_task中新开了一个任务线程去执行这个 <em>time.sleep</em> 操作，当前的线程在启动任务线程后立即返回。再次使用ab对接口耗时进行测试：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+Time per request:       6.304 [ms] (mean)
+...
+</code></pre></td></tr></table>
+</div>
+</div><p>可以发现使用任务方式后，hello接口的响应效率有了巨大的提升。 当然这个简单的任务调度还有2个问题:</p>
+<ol>
+<li>任务执行的结果没法返回给前端</li>
+<li>任务和web服务在一个进程里执行，效率不会太高
+Celery的分布式任务调度就可以比较好的解决这2个问题。</li>
+</ol>
+<h2 id="celery-1">celery的项目结构</h2>
+<p>celery我们选用 <em>5.0.5</em> 版本，首先requirements/default.txt文件描述主要依赖下面几个库:</p>
+<ul>
+<li>billiard celery项目提供的一个多进程池的实现</li>
+<li>kombu celery项目提供的一个消息库，可以对接不同的消息队列，比如RabbitMQ，Redis</li>
+<li>vine celery项目提供的一个promise实现，可以处理任务的组合和pipline等</li>
+</ul>
+<p>celery支持下面3种工作模式:</p>
+<ul>
+<li>beat 使用定时心跳的方式启动</li>
+<li>multi 使用集群方式启动，会形成多个工作进程</li>
+<li>worker 普通的工作进程方式启动</li>
+</ul>
+<p>celery任务执行的结果也支持多种存储方式:</p>
+<ul>
+<li>Mongo</li>
+<li>Redis</li>
+<li>Elasticsearch</li>
+<li>&hellip;</li>
+</ul>
+<p>celery的并发也支持多种实现</p>
+<ul>
+<li>多进程的fork</li>
+<li>gevent</li>
+<li>多线程</li>
+<li>eventlet</li>
+<li>&hellip;</li>
+</ul>
+<p>celery支持工作流</p>
+<ul>
+<li>可以根据函数签名进行调度</li>
+<li>可以支持链式任务</li>
+<li>可以支持分组，和弦&hellip;</li>
+</ul>
+<p>celery的项目结构就简单介绍这些，后续章节再进行详细介绍。</p>
+<h2 id="promise">promise库的实现</h2>
+<p>promise在异步任务中非常重要，所以celery有个vine项目实现了promise功能，在开始celery之前，我们先扫清这些外围障碍。</p>
+<h3 id="promise-">promise 简介</h3>
+<p>Promise是一个对象，它代表了一个异步操作的最终完成或者失败。我觉得MDN中的介绍非常好，我们先了解它，再对比看看Python中如何实现它。比如有一个创建音频文件的操作，成功和失败的时候使用不同的输出:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 成功的回调函数
+function successCallback(result) {
+  console.log(&#34;音频文件创建成功: &#34; + result);
+}
+
+// 失败的回调函数
+function failureCallback(error) {
+  console.log(&#34;音频文件创建失败: &#34; + error);
+}
+
+createAudioFileAsync(audioSettings, successCallback, failureCallback)
+</code></pre></td></tr></table>
+</div>
+</div><p>传统的方式就是使用callback方式调用，把正确和错误的回调传入执行函数createAudioFileAsync中。如果使用Promise方式就会变成:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 创建一个Promise对象
+const promise = createAudioFileAsync(audioSettings);
+# 执行这个Promise对象
+promise.then(successCallback, failureCallback);
+</code></pre></td></tr></table>
+</div>
+</div><p>虽然上面代码使用的是JavaScript，我相信熟悉python的你也可以正确理解。就上面的例子，还不容易看出Promise的优点。继续看下面的例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">doSomething(function(result) {
+  doSomethingElse(result, function(newResult) {
+    doThirdThing(newResult, function(finalResult) {
+      console.log(&#39;Got the final result: &#39; + finalResult);
+    }, failureCallback);
+  }, failureCallback);
+}, failureCallback);
+</code></pre></td></tr></table>
+</div>
+</div><p>这里是一个多重回调的实现，先处理doSomething，收到结果后再处理doSomethingElse，最后再执行doThirdThing。仅仅3层回调还可以接收，如果回调多了以后就形成回调地狱，代码丑陋且难用。如果使用Promise实现，就会变成:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">doSomething().then(function(result) {
+  return doSomethingElse(result);
+})
+.then(function(newResult) {
+  return doThirdThing(newResult);
+})
+.then(function(finalResult) {
+  console.log(&#39;Got the final result: &#39; + finalResult);
+})
+.catch(failureCallback);
+</code></pre></td></tr></table>
+</div>
+</div><p>可以发现使用Promise方式后，代码会变扁平，非常清爽。这里展示了Promise的2个特点:</p>
+<ul>
+<li>then函数执行后返回的是一个Promise对象</li>
+<li>Promise可以进行链式(chain)调用</li>
+</ul>
+<p>简单理解Promise后，我们再回头看doSomething，doSomethingElse和doThirdThing，如果这是3个任务，需要按顺序调度执行，后者需要前者的执行结果作为参数？所以可以知道，从逻辑上讲，Promise功能对于任务调度，非常重要。这种实现方式，和语言其实无关。</p>
+<h3 id="promise-1">Promise的实现</h3>
+<p>先单元测试用例看从promise的使用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_signal(self):
+    # mock一个函数
+    callback = Mock(name=&#39;callback&#39;)
+    # 创建一个Promise对象
+    a = promise()
+    # 使用then函数添加callback
+    a.then(callback)
+    # 执行Promise对象
+    a(42)
+    # 函数被调用，参数为42
+    callback.assert_called_once_with(42)
+</code></pre></td></tr></table>
+</div>
+</div><p>不难看出python版本的Promise使用和JavaScript版本没有太大区别。promise的构造函数如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class promise:
+    ...
+    def __init__(self, fun=None, args=None, kwargs=None,
+             callback=None, on_error=None, weak=False,
+             ignore_result=False):
+    self.weak = weak
+    self.ignore_result = ignore_result
+    # 要执行的函数
+    self.fun = self._get_fun_or_weakref(fun=fun, weak=weak)
+    # 注意位置参数是元祖，这样才可以在call里叠加
+    self.args = args or ()
+    # 关键字参数是字典
+    self.kwargs = kwargs or {}
+    # ready，failed，cancelled 三个状态，默认都是false
+    self.ready = False
+    self.failed = False
+    self.value = None
+    self.reason = None
+    # Optimization
+    # Most promises will only have one callback, so we optimize for this
+    # case by using a list only when there are multiple callbacks.
+    #   s(calar) pending / l(ist) pending
+    # 单个callback/多个callback
+    self._svpending = None
+    self._lvpending = None
+    self.on_error = on_error
+    self.cancelled = False
+    # 可见callback可以通过参数传递，也可以通过then函数传递
+    if callback is not None:
+        self.then(callback)
+</code></pre></td></tr></table>
+</div>
+</div><p>每个Promise有3个状态位:ready，cancelled和failed，默认都是false。</p>
+<p>重点就是then函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def then(self, callback, on_error=None):
+    # callback是普通函数，就用promise再嵌套一下
+    if not isinstance(callback, Thenable):
+        callback = promise(callback, on_error=on_error)
+    if self.cancelled:
+        callback.cancel()
+        return callback
+    if self.failed:
+        callback.throw(self.reason)
+    elif self.ready:
+        args, kwargs = self.value
+        callback(*args, **kwargs)
+    if self._lvpending is None:
+        svpending = self._svpending
+        if svpending is not None:
+            self._svpending, self._lvpending = None, deque([svpending])
+        else:
+            # 初始复制callback给_svpending
+            # 就是一种递归
+            self._svpending = callback
+            return callback
+    # 添加到右侧
+    self._lvpending.append(callback)
+    # 返回的是一个promise可以继续then，实现a.then(fun_x).then(fun_y).then(fun_z)这样的链式调用
+    return callback
+</code></pre></td></tr></table>
+</div>
+</div><p>在JavaScript版本已经介绍过Promise的2个特性就是，then返回一个新的Promise对象，又由于返回的是Promise对象，又可以继续执行then函数添加新的callback链式调用。</p>
+<p>Promise对象的执行就在魔法函数 *__call__:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(self, *args, **kwargs):
+    retval = None
+    if self.cancelled:
+        return
+    # 叠加参数
+    final_args = self.args + args if args else self.args
+    final_kwargs = dict(self.kwargs, **kwargs) if kwargs else self.kwargs
+    # self.fun may be a weakref
+    fun = self._fun_is_alive(self.fun)
+    if fun is not None:
+        try:
+            if self.ignore_result:
+                fun(*final_args, **final_kwargs)
+                ca = ()
+                ck = {}
+            else:
+                # 执行函数
+                retval = fun(*final_args, **final_kwargs)
+                self.value = (ca, ck) = (retval,), {}
+        except Exception:
+            # 异常
+            return self.throw()
+    else:
+        self.value = (ca, ck) = final_args, final_kwargs
+    # 更改ready状态
+    self.ready = True
+    svpending = self._svpending
+    # 执行callback，把fun执行的结果往callback里传入这样形成pipeline
+    if svpending is not None:
+        try:
+            svpending(*ca, **ck)
+        finally:
+            self._svpending = None
+    else:
+        lvpending = self._lvpending
+        try:
+            while lvpending:
+                # 从左开始执行
+                p = lvpending.popleft()
+                p(*ca, **ck)
+        finally:
+            self._lvpending = None
+    return retval
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码主要步骤有：</p>
+<ul>
+<li>合并Promise对象的参数和函数调用参数</li>
+<li>如果有初始函数，则执行初始函数</li>
+<li>更改Promise对象的ready状态</li>
+<li>执行callback</li>
+</ul>
+<p>链式调用的示例，请看:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_chained(self):
+
+    def add(x, y):
+        return x + y
+
+    def pow2(x):
+        return x ** 2
+
+    adder = Mock(name=&#39;adder&#39;)
+    adder.side_effect = add
+
+    power = Mock(name=&#39;multiplier&#39;)
+    power.side_effect = pow2
+
+    final = Mock(name=&#39;final&#39;)
+
+    p = promise()
+    # 链式调用(注意是有序的)
+    p.then(adder).then(power).then(final)
+
+    p(42, 42)
+    assert p.value == ((42, 42), {})
+    adder.assert_called_with(42, 42)
+    power.assert_called_with(84)
+    final.assert_called_with(7056)
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="barrier">Barrier的实现</h3>
+<p>vine还提供了一个叫做barrier的实现，处理多个Promise对象的串行化，下面是单元测试:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class test_barrier:
+
+    def setup(self):
+        self.m1, self.m2, self.m3 = Mock(), Mock(), Mock()
+        self.ps = [promise(self.m1), promise(self.m2), promise(self.m3)]
+
+    def test_evaluate(self):
+        # 需要执行4才才变成ready
+        x = barrier(self.ps)
+        x()
+        assert not x.ready
+        x()
+        assert not x.ready
+        x.add(promise())
+        x()
+        assert not x.ready
+        x()
+        assert x.ready
+        x()
+        x()
+        # 已经执行完成继续添加会报错
+        with pytest.raises(ValueError):
+            x.add(promise())
+</code></pre></td></tr></table>
+</div>
+</div><p>使用barrier后，4个Promise对象的调用可以串行化，并且可以单步执行。执行一次x()消耗一个Promise。</p>
+<p>barrier的构造函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class barrier:
+    
+    def __init__(self, promises=None, args=None, kwargs=None,
+                 callback=None, size=None):
+        # Promise的实现
+        self.p = promise()
+        self.args = args or ()
+        self.kwargs = kwargs or {}
+        self._value = 0
+        self.size = size or 0
+        if not self.size and promises:
+            # iter(l) calls len(l) so generator wrappers
+            # can only return NotImplemented in the case the
+            # generator is not fully consumed yet.
+            plen = promises.__len__()
+            if plen is not NotImplemented:
+                self.size = plen
+        self.ready = self.failed = False
+        self.reason = None
+        self.cancelled = False
+        self.finalized = False
+        # 列表推导式
+        [self.add_noincr(p) for p in promises or []]
+        self.finalized = bool(promises or self.size)
+        if callback:
+            self.then(callback)
+</code></pre></td></tr></table>
+</div>
+</div><p>barrier重点是默认有一个promise实现，用来作为整个批处理的尾部。参数中的promises列表通过add_noincr函数形成调用链:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def add_noincr(self, p):
+    if not self.cancelled:
+        # 已经完成了就不能够再添加了
+        if self.ready:
+            raise ValueError(&#39;Cannot add promise to full barrier&#39;)
+        # 其实就是then().then().then() 添加到自己之前，自己主要执行最开始定义的callback
+        p.then(self)
+</code></pre></td></tr></table>
+</div>
+</div><p>每执行一次进行计数，直到执行完成后更改状态和执行自身(尾部)的Promise对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(self, *args, **kwargs):
+    # 判断是否已经执行完成：ready和cancelled
+    if not self.ready and not self.cancelled:
+        self._value += 1
+        if self.finalized and self._value &gt;= self.size:
+            self.ready = True
+            self.p(*self.args, **self.kwargs)
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="heading">小结</h2>
+<p>我们了解的celery是python实现的一个任务调度系统，在github上广受欢迎，更新活跃。学习可以使用任务调度方式，帮助我们处理web服务中一些耗时任务。简单了解celery项目的一些特点，从celery的依赖项目vine开始，了解Promise在任务调度系统中的应用。最后从vine项目源码中学习，如何创建一个Promise系统。</p>
+<p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+<h2 id="heading-1">小技巧</h2>
+<p>对于抽象的实现，在Python中除了可以使用继承方式，还可以使用组合Mixin。比如下面：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Thenable(Callable, metaclass=abc.ABCMeta):  # pragma: no cover
+    ...
+    @abc.abstractmethod
+    def then(self, on_success, on_error=None):
+        &#34;&#34;&#34;成功和失败的2个回调&#34;&#34;&#34;
+        raise NotImplementedError()
+    
+class CanThen:
+
+    def then(self, x, y):
+        pass
+        
+assert isinstance(CanThen(), Thenable)
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到CanThen实现then函数后，就可以被认定为Thenable的实现，但是CanThen并未继承自Thenable。这个魔法主要是由ABCMeta的register和__subclasshook__两个方法实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Thenable(Callable, metaclass=abc.ABCMeta): 
+    
+    ...
+    
+    @classmethod
+    def __subclasshook__(cls, C):
+        # 也由ABCMeta提供
+        if cls is Thenable:
+            if any(&#39;then&#39; in B.__dict__ for B in C.__mro__):
+                return True
+        return NotImplemented
+
+    @classmethod
+    def register(cls, other):
+        # overide to return other so `register` can be used as a decorator
+        # 这个register方法是由ABCMeta提供，其实现类使用装饰器方式
+        # https://docs.python.org/zh-cn/3/library/abc.html
+        type(cls).register(cls, other)
+        return other
+
+@Thenable.register
+class promise:
+    pass
+
+assert isinstance(promise(lambda x: x), Thenable)
+</code></pre></td></tr></table>
+</div>
+</div><p>promise类经过Thenable.register类装饰圈注释一下后，就可以被认定位Thenable的实现，并不需要显示的编写继承。</p>
+<h2 id="heading-2">参考链接</h2>
+<ul>
+<li>Celery中文手册 <a href="https://www.celerycn.io/">https://www.celerycn.io/</a></li>
+<li>JavaScript的promise实现 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_promises">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Using_promises</a></li>
+<li>源码汇 <a href="https://github.com/game404/yuanmahui">https://github.com/game404/yuanmahui</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-09-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/celery/">celery</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/mac-desktop-kubernetes/">
+            <span class="next-text nav-default">kubernetes 初体验-mac版</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-09-24 00:00:31 \x2b0800 CST',
+        title: 'celery 源码阅读 - 1',
+        link: decodeURI(location.href),
+        desc: 'Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 是一款消息队列工具，可',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
