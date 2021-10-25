@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 11 Oct 2021 22:10:53 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 25 Oct 2021 21:19:23 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>神器 celery 源码解析 - 3</title>
+      <link>https://game404.github.io/post/python/celery-3/</link>
+      <pubDate>Mon, 25 Oct 2021 21:19:23 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-3/</guid>
+      <description>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，</description>
+    </item>
     
     <item>
       <title>神器 celery 源码解析 - 2 </title>
