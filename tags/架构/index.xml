@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>架构 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+    <description>Recent content in 架构 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sun, 07 Nov 2021 23:05:22 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>谁是虽好的语言 ？- 语言选型闲聊（上）</title>
+      <link>https://game404.github.io/post/service-lang/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/service-lang/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 25 Oct 2021 21:19:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Nov 2021 23:05:44 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>celery</title>
       <link>https://game404.github.io/tags/celery/</link>
-      <pubDate>Mon, 25 Oct 2021 21:19:23 +0800</pubDate>
+      <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
       
       <guid>https://game404.github.io/tags/celery/</guid>
       <description></description>
@@ -24,9 +24,27 @@
     <item>
       <title>源码</title>
       <link>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</link>
-      <pubDate>Mon, 25 Oct 2021 21:19:23 +0800</pubDate>
+      <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
       
       <guid>https://game404.github.io/tags/%E6%BA%90%E7%A0%81/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>算法</title>
+      <link>https://game404.github.io/tags/%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/%E7%AE%97%E6%B3%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>架构</title>
+      <link>https://game404.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/%E6%9E%B6%E6%9E%84/</guid>
       <description></description>
     </item>
     

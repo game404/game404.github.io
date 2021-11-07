@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 25 Oct 2021 21:19:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Nov 2021 23:05:44 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Celery 源码解析 - 4</title>
+      <link>https://game404.github.io/post/python/celery-4/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-4/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
+    </item>
+    
+    <item>
+      <title>谁是虽好的语言 ？- 语言选型闲聊（上）</title>
+      <link>https://game404.github.io/post/service-lang/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/service-lang/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列</description>
+    </item>
     
     <item>
       <title>神器 celery 源码解析 - 3</title>

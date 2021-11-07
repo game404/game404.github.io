@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 22 Apr 2019 00:29:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Nov 2021 23:05:22 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/go/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>谁是虽好的语言 ？- 语言选型闲聊（上）</title>
+      <link>https://game404.github.io/post/service-lang/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/service-lang/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列</description>
+    </item>
     
     <item>
       <title>Go 优秀库推荐 - 命令行工具 cobra</title>

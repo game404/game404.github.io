@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 25 Oct 2021 21:19:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Nov 2021 23:05:44 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,9 +15,18 @@
     <item>
       <title>python</title>
       <link>https://game404.github.io/categories/python/</link>
-      <pubDate>Mon, 25 Oct 2021 21:19:23 +0800</pubDate>
+      <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
       
       <guid>https://game404.github.io/categories/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go</title>
+      <link>https://game404.github.io/categories/go/</link>
+      <pubDate>Sun, 07 Nov 2021 23:05:22 +0800</pubDate>
+      
+      <guid>https://game404.github.io/categories/go/</guid>
       <description></description>
     </item>
     
@@ -36,15 +45,6 @@
       <pubDate>Thu, 25 Mar 2021 23:27:04 +0800</pubDate>
       
       <guid>https://game404.github.io/categories/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go</title>
-      <link>https://game404.github.io/categories/go/</link>
-      <pubDate>Mon, 22 Apr 2019 00:29:00 +0800</pubDate>
-      
-      <guid>https://game404.github.io/categories/go/</guid>
       <description></description>
     </item>
     
