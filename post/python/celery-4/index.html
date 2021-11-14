@@ -1120,7 +1120,7 @@ HELLO 3
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="heading-1">小结</h2>
-<p>本篇文章，我们学习了5中实用的业务算法。LRU缓存淘汰算法，可以对缓存中最早的数据进行淘汰。令牌桶限流算法，可以协助进行服务流量限流，较好的保护后端服务，避免突发流量的到时的崩溃。Round-Robin调度算法，可以进行负载的均衡，保障资源的平衡使用。LamportClock时间戳算法，可以在分布式系统中，进行不同服务之间的有序时间戳同步。LaxBoundedSemaphore有限信号量算法，是一种无锁算法，可高效的提供资源使用控制。</p>
+<p>本篇文章，我们学习了5种实用的业务算法。LRU缓存淘汰算法，可以对缓存中最早的数据进行淘汰。令牌桶限流算法，可以协助进行服务流量限流，较好的保护后端服务，避免突发流量的到时的崩溃。Round-Robin调度算法，可以进行负载的均衡，保障资源的平衡使用。LamportClock时间戳算法，可以在分布式系统中，进行不同服务之间的有序时间戳同步。LaxBoundedSemaphore有限信号量算法，是一种无锁算法，可高效的提供资源使用控制。</p>
 <h2 id="heading-2">小技巧</h2>
 <p>kombu中提供了一个自动重试算法，可以作为重试算法的模版:</p>
 <div class="highlight"><div class="chroma">
@@ -1225,7 +1225,11 @@ def retry_over_time(fun, catch, args=None, kwargs=None, errback=None,
           <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/python/celery-5/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Celery 源码解析 - 5</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/service-lang/">
             <span class="next-text nav-default">谁是虽好的语言 ？- 语言选型闲聊（上）</span>
             <span class="next-text nav-mobile">下一篇</span>
