@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Mon, 15 Nov 2021 07:36:51 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Nov 2021 16:30:43 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»，觉得博文有用欢迎点个关注, 及时更新不迷路: 肖恩：码农，40+，全栈，游戏从业者。 关注</description>
+    </item>
+    
+    <item>
+      <title>谁是虽好的语言 ？- 语言选型闲聊（下）</title>
+      <link>https://game404.github.io/post/service-lang-2/</link>
+      <pubDate>Sat, 20 Nov 2021 16:30:43 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/service-lang-2/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这</description>
     </item>
     
     <item>
