@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sat, 20 Nov 2021 16:30:43 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Dec 2021 19:54:18 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -19,6 +19,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»，觉得博文有用欢迎点个关注, 及时更新不迷路: 肖恩：码农，40+，全栈，游戏从业者。 关注</description>
+    </item>
+    
+    <item>
+      <title>Celery 源码解析 - 6</title>
+      <link>https://game404.github.io/post/python/celery-6/</link>
+      <pubDate>Sun, 05 Dec 2021 19:54:18 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-6/</guid>
+      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
     </item>
     
     <item>
