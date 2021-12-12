@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="shawn" /><meta name="description" content="大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+<meta name="author" content="shawn" /><meta name="description" content="本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
 
 
 
@@ -40,22 +40,22 @@
 
 
 <meta property="og:title" content="Celery 源码解析 - 4" />
-<meta property="og:description" content="大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C" />
+<meta property="og:description" content="本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/celery-4/" />
 <meta property="article:published_time" content="2021-11-07T23:05:44+08:00" />
 <meta property="article:modified_time" content="2021-11-07T23:05:44+08:00" />
 <meta itemprop="name" content="Celery 源码解析 - 4">
-<meta itemprop="description" content="大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C">
+<meta itemprop="description" content="本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大">
 <meta itemprop="datePublished" content="2021-11-07T23:05:44&#43;08:00" />
 <meta itemprop="dateModified" content="2021-11-07T23:05:44&#43;08:00" />
-<meta itemprop="wordCount" content="5525">
+<meta itemprop="wordCount" content="5520">
 
 
 
 <meta itemprop="keywords" content="celery,源码,算法," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 源码解析 - 4"/>
-<meta name="twitter:description" content="大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C"/>
+<meta name="twitter:description" content="本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -151,11 +151,7 @@
   </div>
 </div>
     <div class="post-content">
-      <blockquote>
-<p>大家好，我是肖恩，源码解析每周见</p>
-</blockquote>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+      <p>本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。</p>
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
 <p>本文是是celery源码解析的第<strong>四</strong>篇，在前3篇里分别介绍了vine, py-amqp和kombu:</p>
 <ol>
@@ -163,7 +159,7 @@
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
 <li><a href="https://game404.github.io/post/python/celery-3/">神器 celery 源码解析- kombu，一个python实现的消息库</a></li>
 </ol>
-<p>本篇我们继续聊聊kombu这个python实现的消息库中的一些常用算法实现，和各种排序算法不一样，都是解决一些具体的业务问题，非常有用。本文包括下面几个部分:</p>
+<p>kombu中的高级算法和各种排序算法不一样，都是解决一些具体的业务问题，非常有用。本文包括下面几个部分:</p>
 <ul>
 <li>LRU缓存淘汰算法</li>
 <li>令牌桶限流算法</li>
@@ -1247,7 +1243,7 @@ def retry_over_time(fun, catch, args=None, kwargs=None, errback=None,
         id: '2021-11-07 23:05:44 \x2b0800 CST',
         title: 'Celery 源码解析 - 4',
         link: decodeURI(location.href),
-        desc: '大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C',
+        desc: '本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大',
         owner: 'game404',
         repo: 'game404.github.io',
         oauth: {

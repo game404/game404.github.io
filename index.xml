@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 05 Dec 2021 19:54:18 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 12 Dec 2021 22:55:38 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -22,12 +22,21 @@
     </item>
     
     <item>
+      <title>Celery 源码解析 - 7</title>
+      <link>https://game404.github.io/post/python/celery-7/</link>
+      <pubDate>Sun, 12 Dec 2021 22:55:38 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-7/</guid>
+      <description>本章我们从celery的蓝图学习celery的实现细节。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一</description>
+    </item>
+    
+    <item>
       <title>Celery 源码解析 - 6</title>
       <link>https://game404.github.io/post/python/celery-6/</link>
       <pubDate>Sun, 05 Dec 2021 19:54:18 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-6/</guid>
-      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
+      <description>本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的</description>
     </item>
     
     <item>
@@ -45,7 +54,7 @@
       <pubDate>Mon, 15 Nov 2021 07:36:51 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-5/</guid>
-      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
+      <description>基本扫清celery的基础库后，我们正式进入celery的源码解析. Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，</description>
     </item>
     
     <item>
@@ -54,7 +63,7 @@
       <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-4/</guid>
-      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
+      <description>本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大</description>
     </item>
     
     <item>
@@ -72,7 +81,7 @@
       <pubDate>Mon, 25 Oct 2021 21:19:23 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-3/</guid>
-      <description>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，</description>
+      <description>kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。 Celery是一款非常简单、灵活、</description>
     </item>
     
     <item>
@@ -81,7 +90,7 @@
       <pubDate>Mon, 11 Oct 2021 22:10:53 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-2/</guid>
-      <description>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，</description>
+      <description>python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下</description>
     </item>
     
     <item>

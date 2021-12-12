@@ -18,7 +18,7 @@
       <pubDate>Sun, 07 Nov 2021 23:05:44 +0800</pubDate>
       
       <guid>https://game404.github.io/post/python/celery-4/</guid>
-      <description>大家好，我是肖恩，源码解析每周见 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。C</description>
+      <description>本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大</description>
     </item>
     
   </channel>
