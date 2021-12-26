@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 19 Dec 2021 21:04:03 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 26 Dec 2021 23:26:05 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Celery 源码解析 - 8</title>
+      <link>https://game404.github.io/post/python/celery-8/</link>
+      <pubDate>Sun, 26 Dec 2021 23:26:05 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/celery-8/</guid>
+      <description>本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供</description>
+    </item>
     
     <item>
       <title>容器安全漏洞实验</title>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Celery 源码解析 - 8 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/python/celery-8/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Celery 源码解析 - 8" />
+<meta property="og:description" content="本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/python/celery-8/" />
+<meta property="article:published_time" content="2021-12-26T23:26:05+08:00" />
+<meta property="article:modified_time" content="2021-12-26T23:26:05+08:00" />
+<meta itemprop="name" content="Celery 源码解析 - 8">
+<meta itemprop="description" content="本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供">
+<meta itemprop="datePublished" content="2021-12-26T23:26:05&#43;08:00" />
+<meta itemprop="dateModified" content="2021-12-26T23:26:05&#43;08:00" />
+<meta itemprop="wordCount" content="4913">
+
+
+
+<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Celery 源码解析 - 8"/>
+<meta name="twitter:description" content="本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Celery 源码解析 - 8</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-12-26 </span>
+        <div class="post-category">
+            <a href="/categories/python/"> python </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#heading">基础概念</a>
+      <ul>
+        <li><a href="#map-filter-and-reduce">高阶函数(Map, Filter and Reduce)</a></li>
+        <li><a href="#pipeline">管道模型(pipeline)</a></li>
+        <li><a href="#currying">柯里化(Currying)</a></li>
+        <li><a href="#partial">部分函数(partial)</a></li>
+      </ul>
+    </li>
+    <li><a href="#celeryworkflow">celery工作流(workflow)示例</a>
+      <ul>
+        <li><a href="#signatures">签名(Signatures)</a></li>
+        <li><a href="#primitive">原语(Primitive)</a></li>
+      </ul>
+    </li>
+    <li><a href="#canvas">canvas模块实现</a></li>
+    <li><a href="#heading-1">小结</a></li>
+    <li><a href="#heading-2">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本章我们从celery的设计工作流程来了解分布式任务的实现。</p>
+<p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+<p>本文是是celery源码解析的第<strong>八</strong>篇，在前七篇里分别介绍了:</p>
+<ol>
+<li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
+<li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
+<li><a href="https://game404.github.io/post/python/celery-3/">神器 celery 源码解析- kombu，一个python实现的消息库</a></li>
+<li><a href="https://game404.github.io/post/python/celery-4/">神器 celery 源码解析- kombu的企业级算法</a></li>
+<li><a href="https://game404.github.io/post/python/celery-5/">神器 celery 源码解析- celery启动流程分析</a></li>
+<li><a href="https://game404.github.io/post/python/celery-6/">神器 celery 源码解析- celery启动日志跟踪</a></li>
+<li><a href="https://game404.github.io/post/python/celery-7/">神器 celery 源码解析- 蓝图分析</a></li>
+</ol>
+<h2 id="heading">基础概念</h2>
+<p>日常生活中一个大型的任务，我们一般都会进行拆分，变成若干小任务；为了提高处理效率，缩短任务的执行时间，我们还会将没有依赖关系的任务并行推进，最后再把所有分支任务进行汇总。</p>
+<p>celery作为一个分布式任务系统，也是这样设计其工作流的。在开始之前我们先看看其中几个基础概念。</p>
+<h3 id="map-filter-and-reduce">高阶函数(Map, Filter and Reduce)</h3>
+<p>python中提供了3个高阶函数: map, filter和reduce，可以对数据(任务)进行批处理。下面是map函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">items = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x**2, items))
+print(squared)
+
+# output: [1, 4, 9, 16, 25]
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到使用map函数对目标列表[1, 2, 3, 4, 5]的每一个元素，执行了一次平方操作，并且返回一个新的结果列表[1, 4, 9, 16, 25]。使用map函数，比我们使用for循环实现要简洁。</p>
+<p>filter函数和map类似，区别在于对目标列表的每个元素执行一次条件过滤判断，符合要求的数据才会保存到结果列表:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">number_list = range(-5, 5)
+less_than_zero = list(filter(lambda x: x &lt; 0, number_list))
+print(less_than_zero)
+
+# Output: [-5, -4, -3, -2, -1]
+</code></pre></td></tr></table>
+</div>
+</div><p>reduce函数则是对目标列表依次执行函数并且进行累积:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from functools import reduce
+# 1*2*3*4=24
+product = reduce((lambda x, y: x * y), [1, 2, 3, 4])
+
+# Output: 24
+</code></pre></td></tr></table>
+</div>
+</div><p>大数据中的MapReduce也是这样的思路，把大量的数据分成多个块，分别计算，最后再把结果汇总：</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211226155608.png" alt=""></p>
+<h3 id="pipeline">管道模型(pipeline)</h3>
+<p>管道模型，大家应该都不陌生。比如linux系统中使用管道符 <code>|</code> ，用下面命令快速查找 nginx的进程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ps -ef | grep nginx
+</code></pre></td></tr></table>
+</div>
+</div><p>在我之前的requests源码解析文章中，也介绍过hook系统使用管道模型，可以把多个钩子串行化处理:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def dispatch_hook(key, hooks, hook_data, **kwargs):
+    &#34;&#34;&#34;Dispatches a hook dictionary on a given piece of data.&#34;&#34;&#34;
+    ...
+    for hook in hooks:
+        _hook_data = hook(hook_data, **kwargs)
+        if _hook_data is not None:
+            hook_data = _hook_data
+    ...
+    return hook_data
+</code></pre></td></tr></table>
+</div>
+</div><p>dispatch_hook函数中:</p>
+<ul>
+<li>每个hook接收hook_data数据并返回一个hook_data数据</li>
+<li>前一个hook的返回值会当做下一个hook的参数</li>
+</ul>
+<h3 id="currying">柯里化(Currying)</h3>
+<p>柯里化（Currying）是一种关于函数的高阶技术, 柯里化是一种函数的转换，它是指将一个函数从可调用的 f(a, b, c) 转换为可调用的 f(a)(b)(c)。柯里化不会调用函数。它只是对函数进行转换。下面是js版本示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">function curry(f) { // curry(f) 执行柯里化转换
+  return function(a) {
+    return function(b) {
+      return f(a, b);
+    };
+  };
+}
+
+// 用法
+function sum(a, b) {
+  return a + b;
+}
+
+let curriedSum = curry(sum);
+
+alert( curriedSum(1)(2) ); // 3
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>sum函数的两个参数，通过柯里化的处理方式，变成了2个匿名函数</li>
+<li>每次函数的调用会传递1个参数并返回一个新函数，直到执行完成</li>
+</ul>
+<h3 id="partial">部分函数(partial)</h3>
+<p>在python中partial()会被“冻结了”一部分函数参数和/或关键字的部分函数应用所使用，从而得到一个具有简化签名的新对象，和柯里化很类似。下面是示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">from functools import partial
+
+# A normal function
+def f(a, b, c, x):
+	return 1000*a + 100*b + 10*c + x
+
+# A partial function that calls f with
+# a as 3, b as 1 and c as 4.
+g = partial(f, 3, 1, 4)
+
+# Calling g()
+print(g(5))
+print(g(6))
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>通过partial将f函数的4个参数分成2个部分传入</li>
+<li>先传入3，1，4得到一个函数g</li>
+<li>使用g可以用来反复用计算x的值</li>
+</ul>
+<p>currying和partial都是利用了闭包的特性，将函数的部分参数临时缓存住，从而达到重用函数的目的。</p>
+<h2 id="celeryworkflow">celery工作流(workflow)示例</h2>
+<h3 id="signatures">签名(Signatures)</h3>
+<p>签名可以把任务使用函数签名的方式进行调用，这样可以让任务的生产者和消费者进行解耦。这样介绍有点泛泛，还是看一看其具体的使用过程, 我们先使用<code>celery -A myapp worker -l DEBUG</code>启动我们的测试worker ，然后新开一个python3的shell:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ python3
+Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27)
+[Clang 6.0 (clang-600.0.57)] on darwin
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+&gt;&gt;&gt; from celery import Celery
+&gt;&gt;&gt; app = Celery(
+...     &#39;myapp&#39;,
+...     broker=&#39;redis://localhost:6379/0&#39;,
+...     result_backend=&#39;redis://localhost:6379/0&#39;,
+...     # ## add result backend here if needed.
+...     backend=&#39;rpc&#39;
+... )
+&gt;&gt;&gt;
+</code></pre></td></tr></table>
+</div>
+</div><p>在新的shell中我们需要创建celery的app，然后使用signature方式创建一个task：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from celery import signature
+&gt;&gt;&gt; t = signature(&#39;myapp.add&#39;, args=(2, 2), countdown=10)
+</code></pre></td></tr></table>
+</div>
+</div><p>这个签名包括了任务的名称是 <em>myapp.add</em>， 2个参数，超时时间设置为10s。使用task的apply_async函数获取到AsyncResult结果:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; r = t.apply_async()
+&gt;&gt;&gt; r.get()
+4
+</code></pre></td></tr></table>
+</div>
+</div><p>观测worker的日志也可以看到myapp.add被远程执行。</p>
+<p>本地(进程)是没有add这个任务函数的，可以使用下面方式校验，直接执行t任务会报错：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; t()
+Traceback (most recent call last):
+  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+  File &#34;/Users/yoo/work/yuanmahui/python/.venv/lib/python3.8/site-packages/celery/canvas.py&#34;, line 174, in __call__
+    return self.type(*args, **kwargs)
+  File &#34;/Users/yoo/work/yuanmahui/python/.venv/lib/python3.8/site-packages/kombu/utils/objects.py&#34;, line 29, in __get__
+    return super().__get__(instance, owner)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.8/lib/python3.8/functools.py&#34;, line 967, in __get__
+    val = self.func(instance)
+  File &#34;/Users/yoo/work/yuanmahui/python/.venv/lib/python3.8/site-packages/celery/canvas.py&#34;, line 505, in type
+    return self._type or self.app.tasks[self[&#39;task&#39;]]
+  File &#34;/Users/yoo/work/yuanmahui/python/.venv/lib/python3.8/site-packages/celery/app/registry.py&#34;, line 18, in __missing__
+    raise self.NotRegistered(key)
+celery.exceptions.NotRegistered: &#39;myapp.add&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>上面就是signature的示例。这样我们的任务系统就可以脱离web服务的实现，仅提供任务函数的签名，也就是任务名称和参数要求。在web服务中要执行任务只需要使用这个函数签名进行调用。web服务和celery任务解耦后，让代码维护更容易维护。</p>
+<p>signature还提供了快捷方式, 可以从task创建:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; add.signature((2, 2), countdown=10)
+tasks.add(2, 2)
+&gt;&gt;&gt; add.s(2, 2)
+tasks.add(2, 2)
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="primitive">原语(Primitive)</h3>
+<p>celery提供了一系列的组合任务执行的方法函数，叫做原语(Primitives)，主要包括:</p>
+<ul>
+<li>group 可以并行处理的一组任务</li>
+<li>chain 将任务组装成一个调用链</li>
+<li>chord 可以使用Map-Reduce的方式执行任务</li>
+<li>map 使用map方式执行系列任务</li>
+<li>starmap 类似map方式，支持*args</li>
+<li>chunks 将任务拆分成块进行执行
+我们重点看一看chain，chord和chunks三种方式的示例。</li>
+</ul>
+<p>下面是chain方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from celery import chain
+
+&gt;&gt;&gt; # 2 + 2 + 4 + 8
+&gt;&gt;&gt; res = chain(add.s(2, 2), add.s(4), add.s(8))()
+&gt;&gt;&gt; res.get()
+16
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到3个add任务使用chain关键字串联起来，前面函数的结果是后面函数的参数。第一个add使用了2个参数2+2, 第二/三个add则只有一个参数。chain还可以使用管道方式创建:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; res = (add.si(2, 2) | add.si(4, 4) | add.si(8, 8))()
+&gt;&gt;&gt; res.get()
+16
+</code></pre></td></tr></table>
+</div>
+</div><p>chord(和弦)的示例如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from celery import chord
+&gt;&gt;&gt; res = chord((add.s(i, i) for i in range(10)), xsum.s())()
+&gt;&gt;&gt; res.get()
+90
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>chord 需要提供2个参数，第一个是任务列表，这种分步任务叫做header-task，第二个是汇总任务叫做body-task</li>
+<li>任务提交后会先执行每个header-task，最后再把这些header-task的结果使用body-task汇总</li>
+</ul>
+<p>chunks的示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; items = zip(range(1000), range(1000))  # 1000 items
+&gt;&gt;&gt; add.chunks(items, 10)
+</code></pre></td></tr></table>
+</div>
+</div><p>先复习一下zip函数的逻辑:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">languages = [&#39;Java&#39;, &#39;Python&#39;, &#39;JavaScript&#39;]
+versions = [14, 3, 6]
+
+result = zip(languages, versions)
+print(list(result))
+
+# Output: [(&#39;Java&#39;, 14), (&#39;Python&#39;, 3), (&#39;JavaScript&#39;, 6)]
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到zip把两个列表合并形成一个二维数组，就像拉链一样。上面的<em>add.chunks</em>就是把1000个元素的二维数组，逐一执行一下add函数，执行过程分成10个块，这样会产生100个任务。使用chunks可以批量生成的系列任务。</p>
+<p>回头再看 <strong>原语</strong>，简单的理解就是把一系列复杂的逻辑操作抽象封装成一个单一的操作(函数)，提供一个唯一的关键字。</p>
+<h2 id="canvas">canvas模块实现</h2>
+<p>了解了celery-workflow的基础知识和示例后，我们继续深入了解它是如何实现的。主要实现都在canvas模块，其类结构大概如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">                          +-----------+
+                          | Signature |
+                          +------^----+
+                                 |
+      +------------+-------------+-------------+----------+--------------+
+      |            |             |             |          |              |
+      |            |             |             |          |              |
++-----+-+     +----+---+    +-------+     +----+--+    +--+---+    +-----+----+
+| chain |     | chunks |    | group |     | chord |    | xmap |    | xstarmap |
++-------+     +--------+    +-------+     +-------+    +------+    +----------+
+</code></pre></td></tr></table>
+</div>
+</div><p>因为所有的原语都继承自Signature类，我们从Signature开始:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Signature(dict):
+    
+    def __init__(self, task=None, args=None, kwargs=None, options=None,
+             type=None, subtask_type=None, immutable=False,
+             app=None, **ex):
+        self._app = app
+        
+        try:
+            # task
+            task_name = task.name
+        except AttributeError:
+            # 字符串
+            task_name = task
+        else:
+            self._type = task
+        
+        # self[&#39;task&#39;]
+        super().__init__(
+            task=task_name, args=tuple(args or ()),
+            kwargs=kwargs or {},
+            options=dict(options or {}, **ex),
+            subtask_type=subtask_type,
+            immutable=immutable,
+            chord_size=None,
+        )
+</code></pre></td></tr></table>
+</div>
+</div><p>Signature继承自dict，主要的key是:task，就是任务的名称;args和kwargs，执行任务的参数；options，前面的选项。重点是signature关联app，这个后面会用来执行任务。</p>
+<p>执行任务使用apply_async：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def apply_async(self, args=None, kwargs=None, route_name=None, **options):
+    args = args if args else ()
+    kwargs = kwargs if kwargs else {}
+    # Extra options set to None are dismissed
+    options = {k: v for k, v in options.items() if v is not None}
+    try:
+        _apply = self._apply_async
+    except IndexError:  # pragma: no cover
+        # no tasks for chain, etc to find type
+        return
+    # For callbacks: extra args are prepended to the stored args.
+    if args or kwargs or options:
+        # 合并参数
+        args, kwargs, options = self._merge(args, kwargs, options)
+    else:
+        args, kwargs, options = self.args, self.kwargs, self.options
+    # pylint: disable=too-many-function-args
+    #   Borks on this, as it&#39;s a property
+    return _apply(args, kwargs, **options)
+</code></pre></td></tr></table>
+</div>
+</div><p>apply_async执行任务的时候，还可以继续传入参数，传入的参数会和signature的参数进行合并，这就为chain提供了基础。创建signature时候提供一部分参数，执行的时候再提供一部分参数。任务的具体执行，实际上使用的是app的<em>send_task</em>方法，因为每个signature的task_name都是一样的，所以这里使用了partial的方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _apply_async(self):
+    try:
+        return self.type.apply_async
+    except KeyError:
+        # 使用app的send_task发送任务
+        return _partial(self.app.send_task, self[&#39;task&#39;])
+</code></pre></td></tr></table>
+</div>
+</div><p>signature实际上就是task的一种包装，比较特别的是它还可以使用 <code>|</code> 进行按位或运算，模拟管道的执行，比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; res = (add.si(2, 2) | add.si(4, 4) | add.si(8, 8))()
+&gt;&gt;&gt; res.get()
+16
+</code></pre></td></tr></table>
+</div>
+</div><p>这个功能的是因为signature使用了元编程，覆盖了<code>__or__</code>函数， 其部分实现如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __or__(self, other):
+    # These could be implemented in each individual class,
+    # I&#39;m sure, but for now we have this.
+    ...
+    elif isinstance(other, Signature):
+        if isinstance(self, _chain):
+            ...
+            # chain | task -&gt; chain
+            return _chain(seq_concat_item(
+                self.unchain_tasks(), other), app=self._app)
+        # task | task -&gt; chain
+        return _chain(self, other, app=self._app)
+    return NotImplemented
+</code></pre></td></tr></table>
+</div>
+</div><p>这个过程大概分成2步:</p>
+<ul>
+<li>第一步add.si(2, 2) | add.si(4, 4) 是上是task | task，这时候会返回一个chain</li>
+<li>第二步是chain和add.si(8, 8)这样的task进行按位或，会继续返回一个chain</li>
+</ul>
+<p><code>__or__</code>函数中同样提供了group类型，chord类型的实现，原理类似。我们继续查看chain的实现：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class chain(_chain):
+ 
+    def __new__(cls, *tasks, **kwargs):
+        # This forces `chain(X, Y, Z)` to work the same way as `X | Y | Z`
+        if not kwargs and tasks:
+            if len(tasks) != 1 or is_list(tasks[0]):
+                tasks = tasks[0] if len(tasks) == 1 else tasks
+                return reduce(operator.or_, tasks, chain())
+        return super().__new__(cls, *tasks, **kwargs)
+</code></pre></td></tr></table>
+</div>
+</div><p>从注释可以理解<code>chain(X, Y, Z)</code>，本质上就是<code>X | Y | Z</code>，通过reduce函数实现。</p>
+<p>然后我们在跟踪一下第一个task的结果如何传递给第二个task主要在run函数和prepare_steps中:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run(self, args=None, kwargs=None, group_id=None, chord=None,
+        task_id=None, link=None, link_error=None, publisher=None,
+        producer=None, root_id=None, parent_id=None, app=None, **options):
+    ...
+    tasks, results_from_prepare = self.prepare_steps(
+            args, kwargs, self.tasks, root_id, parent_id, link_error, app,
+            task_id, group_id, chord,
+        )
+    ...
+    if results_from_prepare:
+        first_task = tasks.pop()
+        options = _prepare_chain_from_options(options, tasks, use_link)
+        # 执行第一个任务
+        result_from_apply = first_task.apply_async(**options)
+        if not tasks:
+            return result_from_apply
+        else:
+            # 依次返回下一个任务
+            return results_from_prepare[0]
+
+def prepare_steps(self, args, kwargs, tasks,
+                      root_id=None, parent_id=None, link_error=None, app=None,
+                      last_task_id=None, group_id=None, chord_body=None,
+                      clone=True, from_dict=Signature.from_dict,
+                      group_index=None):
+    steps = deque(tasks)
+    prev_task = None
+    prev_res = None
+    tasks, results = [], []
+    i = 0
+    while steps:
+        ...
+        task = steps_pop()
+        res = task.freeze(root_id=root_id)
+        ...
+        # 把任务的结果串起来
+        if prev_res and not prev_res.parent:
+            prev_res.parent = res
+        ...
+        tasks.append(task)
+        results.append(res)
+        ...
+    return tasks, results
+</code></pre></td></tr></table>
+</div>
+</div><p>为什么每个task可以串起来呢，是因为freeze函数返回AsyncResult， 而AsyncResult是vine的promise，所以可以串起来执行:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def freeze(self, _id=None, group_id=None, chord=None,
+           root_id=None, parent_id=None, group_index=None):
+    opts = self.options
+    try:
+        tid = opts[&#39;task_id&#39;]
+    except KeyError:
+        tid = opts[&#39;task_id&#39;] = _id or uuid()
+    if root_id:
+        opts[&#39;root_id&#39;] = root_id
+    if parent_id:
+        opts[&#39;parent_id&#39;] = parent_id
+    ...
+    return self.AsyncResult(tid)        
+</code></pre></td></tr></table>
+</div>
+</div><p>chord和chunks的实现和chain差不多，就不再赘述了。</p>
+<h2 id="heading-1">小结</h2>
+<p>本文我们了解了一些批量处理任务的方法：map/filter/reduce/pipeline。了解对函数进行partial和curry处理，都是利用闭包机制，提高函数的重用性。celery利用这些机制，提供了一些便捷使用的原语: chain, chord, chunks &hellip; , 帮助应用组合和拆分任务构建任务的工作流，提高效率。同时celery作为一个分布式任务系统，也可以使用任务签名Signature的方式进行任务调用，将任务的生产者和消费者分离，降低系统耦合度，这对大型系统非常有用。</p>
+<p>我们通过对celery的了解，相信大家对 <strong>分布式系统</strong> 有初步的认识，建立了一些 <strong>索引</strong> ，需要研究的时候，会知道在那些地方进行深入的学习，我想这就达到了预期目的。</p>
+<blockquote>
+<p>一点题外话: celery的源码解析是9月份开始，当时预计3~4篇，结果没有想到写了8篇，持续4个月。由于能力和精力有限，一些内容没有解析的很细致，不过还是打算暂时完结，本篇是系列的最后一篇。未到位的地方，以后有机会再补充。感谢大家付出的时间！</p>
+</blockquote>
+<h2 id="heading-2">参考链接</h2>
+<ul>
+<li><a href="https://book.pythontips.com/en/latest/map_filter.html">https://book.pythontips.com/en/latest/map_filter.html</a></li>
+<li><a href="https://zh.javascript.info/currying-partials">https://zh.javascript.info/currying-partials</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021-12-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/celery/">celery</a>
+          <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/docker/uid_gosu/">
+            <span class="next-text nav-default">容器安全漏洞实验</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2021-12-26 23:26:05 \x2b0800 CST',
+        title: 'Celery 源码解析 - 8',
+        link: decodeURI(location.href),
+        desc: '本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
