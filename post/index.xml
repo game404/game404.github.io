@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 26 Dec 2021 23:26:05 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 31 Dec 2021 23:19:25 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>2021年终总结</title>
+      <link>https://game404.github.io/post/2021/</link>
+      <pubDate>Fri, 31 Dec 2021 23:19:25 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/2021/</guid>
+      <description>大家好，我是肖恩。坚持在「游戏不存在」分享开源项目源码解析已经一年，其中酸甜苦辣也是尝了个够。在这21年的尾巴上，回味一下过去的时光，总结一</description>
+    </item>
     
     <item>
       <title>Celery 源码解析 - 8</title>
