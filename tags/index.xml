@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Fri, 31 Dec 2021 23:19:25 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jan 2022 23:33:30 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>flask</title>
+      <link>https://game404.github.io/tags/flask/</link>
+      <pubDate>Sun, 09 Jan 2022 23:33:30 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/flask/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>http</title>
+      <link>https://game404.github.io/tags/http/</link>
+      <pubDate>Sun, 09 Jan 2022 23:33:30 +0800</pubDate>
+      
+      <guid>https://game404.github.io/tags/http/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>总结</title>
@@ -99,24 +117,6 @@
       <pubDate>Thu, 26 Aug 2021 19:52:59 +0800</pubDate>
       
       <guid>https://game404.github.io/tags/%E6%B5%8B%E8%AF%95/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>flask</title>
-      <link>https://game404.github.io/tags/flask/</link>
-      <pubDate>Thu, 22 Jul 2021 22:50:13 +0800</pubDate>
-      
-      <guid>https://game404.github.io/tags/flask/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>http</title>
-      <link>https://game404.github.io/tags/http/</link>
-      <pubDate>Thu, 17 Jun 2021 22:39:20 +0800</pubDate>
-      
-      <guid>https://game404.github.io/tags/http/</guid>
       <description></description>
     </item>
     

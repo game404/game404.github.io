@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 22 Jul 2021 22:50:13 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jan 2022 23:33:30 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/flask/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>httpbin源码解析</title>
+      <link>https://game404.github.io/post/python/httpbin/</link>
+      <pubDate>Sun, 09 Jan 2022 23:33:30 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/httpbin/</guid>
+      <description>httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可</description>
+    </item>
     
     <item>
       <title>Flask 源码阅读-下篇</title>
