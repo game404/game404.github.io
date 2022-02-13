@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 16 Jan 2022 21:34:41 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 13 Feb 2022 21:36:48 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>密码学笔记杂谈 - 上</title>
+      <link>https://game404.github.io/post/cryptology-1/</link>
+      <pubDate>Sun, 13 Feb 2022 21:36:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/cryptology-1/</guid>
+      <description>安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深</description>
+    </item>
     
     <item>
       <title>flask-website源码解析</title>

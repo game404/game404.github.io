@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>笔记 on 游戏不存在</title>
+    <link>https://game404.github.io/tags/%E7%AC%94%E8%AE%B0/</link>
+    <description>Recent content in 笔记 on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sun, 13 Feb 2022 21:36:48 +0800</lastBuildDate>
+    
+	<atom:link href="https://game404.github.io/tags/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>密码学笔记杂谈 - 上</title>
+      <link>https://game404.github.io/post/cryptology-1/</link>
+      <pubDate>Sun, 13 Feb 2022 21:36:48 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/cryptology-1/</guid>
+      <description>安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深</description>
+    </item>
+    
+  </channel>
+</rss>

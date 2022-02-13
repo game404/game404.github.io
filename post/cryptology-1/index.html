@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>密码学笔记杂谈 - 上 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/cryptology-1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="密码学笔记杂谈 - 上" />
+<meta property="og:description" content="安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/cryptology-1/" />
+<meta property="article:published_time" content="2022-02-13T21:36:48+08:00" />
+<meta property="article:modified_time" content="2022-02-13T21:36:48+08:00" />
+<meta itemprop="name" content="密码学笔记杂谈 - 上">
+<meta itemprop="description" content="安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深">
+<meta itemprop="datePublished" content="2022-02-13T21:36:48&#43;08:00" />
+<meta itemprop="dateModified" content="2022-02-13T21:36:48&#43;08:00" />
+<meta itemprop="wordCount" content="3481">
+
+
+
+<meta itemprop="keywords" content="笔记," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="密码学笔记杂谈 - 上"/>
+<meta name="twitter:description" content="安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">密码学笔记杂谈 - 上</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-02-13 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/"> 密码学 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#heading">安全防护</a></li>
+    <li><a href="#heading-1">加密和签名</a></li>
+    <li><a href="#heading-2">证书</a></li>
+    <li><a href="#heading-3">摘要</a>
+      <ul>
+        <li><a href="#heading-4">去重</a></li>
+        <li><a href="#heading-5">密码保护</a></li>
+        <li><a href="#heading-6">接口签名</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading-7">小结</a></li>
+    <li><a href="#heading-8">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="heading">安全防护</h2>
+<p>最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深入介绍，仅仅针对涉及的几个应用场景进行介绍。</p>
+<p>我们使用密码学，个人认为是应对安全防护上的三个概念: 防窃听，防伪造，防篡改，这是安全防护的主要目的。</p>
+<p>防窃听是指防止信息在传递过程中被第三方读取。明信片在邮递过程中，信息可以被任何接触到的人看到，信息就泄露了。解决这个问题，最简单的办法，加一个密封的信封。这样信息在传递过程中就是安全的，其它人看不到。</p>
+<p>防伪造是指防止信息的来源被第三方伪造。传统的信件防伪方法有印章，比如在圣旨上盖个大印，宣布发布者的身份，避免伪传圣旨。</p>
+<p>防篡改是指防止信息被第三方修改。传统的方法是使用蜡丸/火漆来包装信息，完整的蜡丸/火漆表示信息未被修改。篡改信息的知名故事有“传位于四(十四)阿哥”的康熙遗旨事件。</p>
+<p>安全防护的防泄露，防伪造，防篡改在不同的场景中有不同的需求，可以单独应用也可以结合使用。</p>
+<p>网络中防窃听的方法是发送方把原文信息进行数字加密，传输密文，接收方只有使用秘钥才可以解开，保证信息的<em>私密性</em>。防伪造的方法是数字签名，发送方给信息附加一个数字签名，表明信息<em>来源的真实性</em>。防篡改的方式是数字摘要，对信息形成一个唯一的摘要，任何微小的原文修改都会导致数字摘要变化，从而保证信息的<em>完整性</em>。总结如下表:</p>
+<table>
+<thead>
+<tr>
+<th>安全防护</th>
+<th>目的</th>
+<th>措施</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>防窃听</td>
+<td>信息的私密性</td>
+<td>加密</td>
+</tr>
+<tr>
+<td>防伪造</td>
+<td>信息来源真实性</td>
+<td>签名</td>
+</tr>
+<tr>
+<td>防篡改</td>
+<td>信息的完整性</td>
+<td>摘要</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-1">加密和签名</h2>
+<p>加密和解密是一个对称操作，使用秘钥对原文进行加密得到密文，再使用同一秘钥对密文进行解密得到原文。</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220210102423.png" alt=""></p>
+<p>这种使用 <em>唯一秘钥</em> 的加密方式叫做 <code>对称加密</code> 。对称加密执行效率很高，但是在网络中如何安全的传输秘钥是个问题？秘钥无法安全传输，加密就达不到防护效果。</p>
+<p>下面是使用openssl工具进行对称加密的演示:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo &#34;123abc&#34; | openssl enc -e -aes-128-cbc -pass pass:game404 -base64 -md sha1
+U2FsdGVkX1+wwmevh948fa38juYRyBxYYcdL2rWBhMQ=
+...
+# echo &#34;U2FsdGVkX1+wwmevh948fa38juYRyBxYYcdL2rWBhMQ=&#34; | openssl enc -d -aes-128-cbc -pass pass:game404 -base64 -md sha1
+123abc
+</code></pre></td></tr></table>
+</div>
+</div><p><code>非对称加密</code> 可以解决秘钥传输的安全问题。在非对称加密中使用<em>一对秘钥</em>: 私钥+公钥。私钥发送方(通常是服务端)保存，公钥通过网络对外发布，可以有多个接收方（通常是客户端）。客户端使用公钥加密后的密文，只能够在服务端使用私钥进行解密，即使再使用公钥也无法完成密文解密。</p>
+<p>当然也可以反过来，使用私钥“加密”信息，公钥“解密”信息。但是由于公钥有多个，任何持有公钥的客户端，都可以对信息进行解密，所以这种私钥“加密”的信息，起不到保密的作用。只可以用来验证信息来源的唯一性，这个过程通常叫做 <em>签名</em> 和 <em>验签</em>。</p>
+<p>私钥和公钥还有一个主要特点：公钥是通过私钥生成的，通过公钥很难推断出私钥，这样由于私钥的唯一性，可以做到信息保密。</p>
+<p>总结一下口诀: <strong>公钥加密，私钥解密；私钥签名，公钥验签</strong> 。</p>
+<p>同样使用openssl工具创建非对称加密的私钥:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># openssl genrsa -out private.pem 1024
+Generating RSA private key, 1024 bit long modulus
+...............++++++
+.++++++
+e is 65537 (0x10001)
+# cat private.pem
+-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQDj73NhxbtD0lNJtYA5bWrMRKYhN07r6BYOKqsFMm9N91ZtvW/R
+7w87XO6WSt5uqVzBgQAHshQZNh0PNeBp8DpwIQYArG9x/ZZhZnTIsD3wUpbMbp5E
+EF4IBgw1284IKtpvV8a7HJzNchl4//bFGkAU/flIP1Upl6ZkOMk6KP76wQIDAQAB
+AoGALAqdWbvyBhXCoBBg2TfKFfQBwZNFPZHXiR83ckafeQocehHLZF3zrH21X/bR
+acJxuLXrQpFnDsQE82ZumSmgsKJK27yKIrf4eM7IKB0n6vK8WK9V+3L2FFg+p19i
+v9sA/sXZuJ7tNmXcbk3Vsqgv0ZRcro1I5PKZJUKZU3yoakECQQD9prACGI6igdMQ
+2YhZvuZPZ1zQPjuCBG046+WKXKFUO/IrLJbvvmpz218wzKdL/24A/dZwZHs/KOOh
+FYf11DoJAkEA5gvM98VOA+dGmf/KGy5Fx3CgFW+lEojDaNAFo1ZJY1kr6FJIY9H3
+n1mxXbXNObvBKi5FMQVgvsiCCHotw0BI+QJBALCxbgh3vNydXT9umZoS7nK/yRrT
+TzbaCI/PXB4POt7nx2Gl9Rra5WMBnQTse1nofGO6b6fphyVPQYpT6lsn1KkCQGg7
+JI2G6kg+e/C+wtX560foMcBEq6hwKwnMZyGQsQPAnXJQBdikg+vBeemZu/jSpzzz
+ZgpGA4Wt16z7nsx+zhECQCnN3OhSpOlT9Pq8CVXDMVNilutSbnNuO996k89Jg/zR
+s1XIN4zfEDxWLJi9N/iZ0BK7JnwtKMZ3Z+9IStWGqkg=
+-----END RSA PRIVATE KEY-----
+</code></pre></td></tr></table>
+</div>
+</div><p>根据私钥创建公钥:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># openssl rsa -in private.pem -pubout -out public.pem
+writing RSA key
+# cat public.pem
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDj73NhxbtD0lNJtYA5bWrMRKYh
+N07r6BYOKqsFMm9N91ZtvW/R7w87XO6WSt5uqVzBgQAHshQZNh0PNeBp8DpwIQYA
+rG9x/ZZhZnTIsD3wUpbMbp5EEF4IBgw1284IKtpvV8a7HJzNchl4//bFGkAU/flI
+P1Upl6ZkOMk6KP76wQIDAQAB
+-----END PUBLIC KEY-----
+</code></pre></td></tr></table>
+</div>
+</div><p>对信息进行加密的部分过程:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># openssl rsautl -sign -in license.md5 -out license -inkey private.pem
+# base64 license
+hkBRNnalRvi21K+dnOvAg8W3V/ntheouUhlJelwvzzW3CMZbKw08z4TQzV4Qkx0DU7YgiUOdCNvn
+KWRdxVnj4jatqLZeMJp9BOYI3SrdzsQETzXQOV/37L+s6nA4T+EM8YfsdgoEfyt5GYezBqQW3Iii
+fppNQ4e67qSTBqpfD88=
+</code></pre></td></tr></table>
+</div>
+</div><p>在非对称加密过程中还存在2个问题:</p>
+<ol>
+<li>私钥加密无法达到保密效果，服务端响应信息无法加密。</li>
+<li>要求明文信息必须小于秘钥长度。</li>
+</ol>
+<p>一种容易想到的方法是让每个客户端也生成一对私钥+公钥，这样服务端使用客户端的公钥加密响应信息。这种方法的副作用是服务端需要保存所有的客户端公钥，实现成本较高，一般非金融类业务不会这样处理。对于明文信息必须小于秘钥长度，可采用明文分段方式进行加密，这种方法的副作用是效率更低。</p>
+<p>比较好的解决上述2个问题的方法是把对称加密和非对称加密结合起来。客户端随机生成一个对称秘钥，然后使用公钥加密秘钥，服务端收到密文信息后解密得到秘钥。服务端使用秘钥对响应信息进行对称加密，客户端使用秘钥解密信息。这样就解决了服务端响应信息的加密问题。以后客户端再发送请求信息，都可以使用这个秘钥进行对称加密，同时也解决非对称加密效率低和秘钥长度的问题。流程如下:</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>客户端</th>
+<th>服务端</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>生成对称秘钥</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>公钥加密对称秘钥</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>-</td>
+<td>私钥解密获得对称秘钥</td>
+</tr>
+<tr>
+<td>4</td>
+<td>使用对称秘钥加密请求明文</td>
+<td>-</td>
+</tr>
+<tr>
+<td>5</td>
+<td>-</td>
+<td>使用对称秘钥解密请求密文</td>
+</tr>
+<tr>
+<td>6</td>
+<td>-</td>
+<td>使用对称秘钥加密响应明文</td>
+</tr>
+<tr>
+<td>7</td>
+<td>使用对称秘钥解密响应明文</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="heading-2">证书</h2>
+<p>使用对称加密+非对称加密的结合，还有秘钥伪造的安全问题。假设客户端请求A网站服务，需要先获取A网站的公钥。如果在网络传输中B网站使用自己的公钥进行伪装替换，客户端错误的把B网站的公钥当做A网站的公钥。那么客户端发送给A网站的信息就可以被B网站窃取。</p>
+<p>解决的办法就需要使用 <em>证书</em>。由一个专业的安全机构，给A网站颁发一个证书。证书实际上就是把A网站的公钥使用自己的私钥包装一下。同时这个机构还会和操作系统配合，提前在操作系统中预制自己的公钥。这样通讯中获取到A站点的证书后，使用操作系统提供的安全机构公钥解密得到A站点的公钥，从而解决公钥伪造问题。以上处理方式就是https协议的安全基础。</p>
+<h2 id="heading-3">摘要</h2>
+<p>摘要一个应用场景是公示信息的完整性。下载网站在提供软件下载的时候，一般还会提供一个数字摘要，用来防止流氓软件捆绑。比如下面pypy软件包的摘要信息:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pypy3.9-v3.7.8 sha256:
+---------------------
+89dd0399a89a04b58c22e9b773747258807996bd5071dbf996a85bf8af432393  pypy3.9-v7.3.8rc1-linux32.tar.bz2
+f3f90203afcf7ee359e8c8a871bfaa06d96f926781fd94fb81f471dcd32f7332  pypy3.9-v7.3.8rc1-linux64.tar.bz2
+9a5d7217d8173bbdf1c7351b34651fee0596b0bcfe6fe4becae150d4a5469487  pypy3.9-v7.3.8rc1-osx64.tar.bz2
+4651d804341046be824af0ca35b7ebbbb6d5cdcef0d4a373891398dba182d010  pypy3.9-v7.3.8rc1-src.tar.bz2
+c4db62a854c2cc994d46fac0105a8e3bd4273093b9844c1f7cb69118fae6df72  pypy3.9-v7.3.8rc1-src.zip
+ad214e4a44c893dc503e7e0b6f6bdfa7523db80b9d4890523f8ee96339d05fc9  pypy3.9-v7.3.8rc1-win64.zip
+</code></pre></td></tr></table>
+</div>
+</div><p>通过特定的散列算法，对 pypy3.9-v7.3.8rc1-linux32.tar.bz2 计算得到值为 89dd0399a89a04b58c22e9b773747258807996bd5071dbf996a85bf8af432393 的摘要。下载完成后比较一下摘要就知道软件包的完整性。</p>
+<p>下面是另外一个摘要算法md5的示例:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ echo &#34;123456789&#34; | md5sum
+b2cfa4183267af678ea06c7407d4d6d8  -
+➜  ~ echo &#34;123456789&#34; | md5sum
+b2cfa4183267af678ea06c7407d4d6d8  -
+➜  ~ echo &#34;1&#34; | md5sum
+b026324c6904b2a9cb4b88d6d61c81d1  -
+➜  ~ echo &#34;123456780&#34; | md5sum
+9af763c0ffc99c565a6a9460e1a2ca7e  -
+</code></pre></td></tr></table>
+</div>
+</div><p>散列函数形成的摘要都具有下面几个特点:</p>
+<ul>
+<li>单向 只能够从tar包得到一个摘要值，从摘要值是无法还原完整的tar包</li>
+<li>结果确定 同一个算法对每个输入的计算结果是确定</li>
+<li>结果定长 可以看到字符串&quot;1&quot;和&quot;123456789&quot;得到的结果长度都是一样的</li>
+<li>结果分散无规律 可以看到字符串&quot;123456780&quot;和&quot;123456789&rdquo;，仅仅变动了1个字符，摘要却变化非常大</li>
+<li>效率高 工程上摘要的计算非常快速</li>
+</ul>
+<p>下面是摘要算法的一些应用场景。</p>
+<h3 id="heading-4">去重</h3>
+<p>因为摘要算法的确定性，所以可以用来进行去重。对于数据是否变更，仅仅需要比较信息的摘要指是否变动:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">if data[&#34;targets_md5&#34;] != self.route_data.get(&#34;targets_md5&#34;, None):
+    do_update()
+else:
+    log.info(&#34;update_router_info targets not changed !&#34;)
+    pass
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="heading-5">密码保护</h3>
+<p>系统存储用户密码时，并不记录密码本身，仅记录密码的散列值。这样只有用户自己知道密码的明文。校验密码时，只要输入的密码正确，得到的散列值一定是一样的，表示校验通过。即使系统的数据库不小心产生泄露问题，也不会导致用户的密码泄露。</p>
+<p>很多用户习惯使用同一个密码访问所有网站，比如A网站和B网站使用同一个密码，假设网站都是明文存储用户名和密码。A网站是大站点，网络安全处理比较好。但是B网站是小站点，发送了数据库泄露。这样攻击者利用盗取数据中的用户名和密码，从而拿到用户在A网站的重要信息。</p>
+<p>md5算中123456789的值固定是b2cfa4183267af678ea06c7407d4d6d8，所以即使使用散列存储，也可以反向推断值为b2cfa4183267af678ea06c7407d4d6d8的密码明文是123456789。这种攻击方法一般称为 <em>彩虹表</em>，就是利用一些常用密码的散列值进行推测密码明文。解决这个问题的方法是 <em>加盐</em> 。加盐是一个通俗说法，利用散列算法的分散特性，在明文中混入一个其它数据，这样得到密文就会产生大的变化。校验的时候只要保证使用相同的盐，就可以确定明文是正确。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">明文+盐值 --&gt; 密文
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="heading-6">接口签名</h3>
+<p>摘要算法还可以用来做服务之间接口的安全认证。比如某个接口的参数如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">appid： wxd930ea5d5a258f4f
+mch_id： 10000100
+device_info： 1000
+body： test
+nonce_str： ibuaiVcKdpRxkhJA
+</code></pre></td></tr></table>
+</div>
+</div><p>对接口的参数信息进行拼接，形成一个原始的字符串:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">stringA=&#34;appid=wxd930ea5d5a258f4f&amp;body=test&amp;device_info=1000&amp;mch_id=10000100&amp;nonce_str=ibuaiVcKdpRxkhJA&#34;;
+</code></pre></td></tr></table>
+</div>
+</div><p>结合参数信息和秘钥形成一个摘要签名:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">MD5签名方式：
+stringSignTemp=stringA+&#34;&amp;key=192006250b4c09247ec02edce69f6a2d&#34; //注：key为商户平台设置的密钥key
+sign=MD5(stringSignTemp).toUpperCase()=&#34;9A0A8659F005D6984697E2CA0A9CF3B7&#34; //注：MD5签名方式
+</code></pre></td></tr></table>
+</div>
+</div><p>因为秘钥进行双方服务器存放，不进过网络传输。所以每个请求可以通过验证签名确定来源和信息的完整性。</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="heading-7">小结</h2>
+<p>本文我们了解了密码学的一些应用场景和解决问题的目的。目的这个很重要，可以让我们知道 <em>加密</em>，<em>签名</em>，<em>摘要</em> 都在保护什么。加密是保护信息的私密性，签名是保护信息来源真实性，摘要是保护信息的完整性。进而可以根据自己的需求，灵活的应用，比如创建一个自己的授权证书license。</p>
+<p>下一节我会介绍一些算法的具体实现，以及如何实现一个license。</p>
+<h2 id="heading-8">参考链接</h2>
+<ul>
+<li>阮一峰密码学笔记 <a href="http://www.ruanyifeng.com/blog/2006/12/notes_on_cryptography.html">http://www.ruanyifeng.com/blog/2006/12/notes_on_cryptography.html</a></li>
+<li>微信支付签名算法 <a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2022-02-13
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/python/flask-website/">
+            <span class="next-text nav-default">flask-website源码解析</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2022-02-13 21:36:48 \x2b0800 CST',
+        title: '密码学笔记杂谈 - 上',
+        link: decodeURI(location.href),
+        desc: '安全防护 最近做软件的商业license设计，又一次对密码学进行了一些学习和了解，整理形成本文的笔记。密码学比较复杂，我了解有限，所以不打算深',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2022
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">game404</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>
