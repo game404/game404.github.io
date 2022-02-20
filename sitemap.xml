@@ -10,48 +10,55 @@
   
   <url>
     <loc>https://game404.github.io/categories/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://game404.github.io/post/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://game404.github.io/tags/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://game404.github.io/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://game404.github.io/post/cryptology-1/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <loc>https://game404.github.io/post/cryptology-2/</loc>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://game404.github.io/</loc>
-    <lastmod>2022-02-13T21:36:48+08:00</lastmod>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://game404.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2022-02-20T21:48:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/cryptology-1/</loc>
     <lastmod>2022-02-13T21:36:48+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
