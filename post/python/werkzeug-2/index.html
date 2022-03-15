@@ -617,7 +617,7 @@ def fibonacci(num):
     return fibonacci(num - 1) + fibonacci(num - 2)
 
 # 实际函数调用方式
-cache(count_calls(fibonacci(num)))
+cache(count_calls(fibonacci))(num)
 </code></pre></td></tr></table>
 </div>
 </div><p>目标函数被装饰器逐层包裹调用，每个装饰器层都可以对requst和response各进行一次处理。</p>
