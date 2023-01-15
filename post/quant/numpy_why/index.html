@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>为什么NumPy这么快 - 游戏不存在</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="shawn" /><meta name="description" content="NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播" /><meta name="keywords" content="game, docker, kubernetes, python, go,  microservice" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
+
+
+<link rel="canonical" href="https://game404.github.io/post/quant/numpy_why/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="为什么NumPy这么快" />
+<meta property="og:description" content="NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://game404.github.io/post/quant/numpy_why/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-01-15T23:10:04+08:00" />
+<meta property="article:modified_time" content="2023-01-15T23:10:04+08:00" />
+
+<meta itemprop="name" content="为什么NumPy这么快">
+<meta itemprop="description" content="NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播"><meta itemprop="datePublished" content="2023-01-15T23:10:04+08:00" />
+<meta itemprop="dateModified" content="2023-01-15T23:10:04+08:00" />
+<meta itemprop="wordCount" content="2324">
+<meta itemprop="keywords" content="numpy," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="为什么NumPy这么快"/>
+<meta name="twitter:description" content="NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">游戏不存在</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">游戏不存在</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">为什么NumPy这么快</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-01-15 </span>
+        <div class="post-category">
+            <a href="/categories/quant/"> quant </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#高性能的numpy">高性能的NumPy</a></li>
+    <li><a href="#简单易用的numpy">简单易用的NumPy</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点:</p>
+<ol>
+<li>强大的 N 维数组。NumPy 向量化、索引和广播概念快速且通用，是当今数组计算的实际标准。</li>
+<li>数值计算工具。NumPy 提供全面的数学函数、随机数生成器、线性代数例程、傅里叶变换等。</li>
+<li>可互操作。NumPy 支持广泛的硬件和计算平台，与分布式、GPU 和稀疏数组库配合良好。</li>
+<li>高性能。NumPy 的核心是经过良好优化的 C 代码。享受 Python 的灵活性和编译代码的速度。</li>
+<li>使用方便。NumPy 的高级语法使任何背景或经验水平的程序员都可以轻松访问并提高效率。</li>
+<li>开源。NumPy在自由BSD 许可下分发，由充满活力、响应迅速且多样化的社区在 GitHub 上公开开发和维护。</li>
+</ol>
+<p>以上来自NumPy的官网，个人觉得NumPy主要具有下面二个特点，我们一起来了解它:</p>
+<ol>
+<li>高性能</li>
+<li>API简单易用</li>
+</ol>
+<h2 id="高性能的numpy">高性能的NumPy</h2>
+<p>高性能是科学计算的首要需求，大量数据，大量的循环，快字当先，毕竟谁也不希望跑一个模型好几天。我们先看一个简单的例子: 使用Python的列表推导式输出长度1000的数组，每个元素是自然数的平方, 代码如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">L = range(1000)
+</span></span><span class="line"><span class="cl">%timeit [i**2 for i in L]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这是使用NumPy的方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">a = np.arange(1000)
+</span></span><span class="line"><span class="cl">%timeit a**2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>测试结果中两者的耗时如下表:</p>
+<table>
+<thead>
+<tr>
+<th>循环测试</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>列表推导式循环</td>
+<td>437 µs ± 1.38 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)</td>
+</tr>
+<tr>
+<td>numpy循环</td>
+<td>1.97 µs ± 19.3 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到测试结果NumPy比列表推导式快了几百倍。</p>
+<p>为什么NumPy这么快呢？首要原因在于NumPy的核心是经过良好优化的C代码，具有编译代码的速度。其次在于NumPy的数据结构设计和算法，这一点是很多文章都没有介绍的，这是我想重点介绍的内容。</p>
+<p>NumPy提供的最重要的数据结构是一个称为NumPy数组的强大对象，它有下面两个特点:</p>
+<ol>
+<li>数组长度固定</li>
+<li>仅支持同类型数据元素</li>
+</ol>
+<p>我们知道Python的list，是动态的并且可以存放任意类型的元素, 比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; a = [&#34;a&#34;, 9, 9.0, True]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.append(&#34;b&#34;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a
+</span></span><span class="line"><span class="cl">[&#39;a&#39;, 9, 9.0, True, &#39;b&#39;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>a数组包含了4个元素，数据类型各不相同，我们还可以使用append方法往a中添加元素。实际数组有长度(length)和容量(capacity)两个概念，我这里借用一下go-slice的图示意一下:</p>
+<p><img src="https://miro.medium.com/max/640/1*p3wNR1_4I6dmqdI7han4vA.webp" alt="容量和长度"></p>
+<ul>
+<li>长度表示当前数组内元素个数</li>
+<li>容量表示当前数组最多可以存储多少个元素，超过了则需要重新申请内存区域</li>
+<li>一般扩容申请都会翻倍。比如上图是6个方格，已经使用了4个，再添加3个，这时候会直接再申请6个，而不是3个。</li>
+</ul>
+<p>所以我们可以设想一下，使用列表推导式的时候，经过多次的内存申请，效率就低了下来。而NumPy数组是长度固定的，一次申请到位，自然效率会高不少。</p>
+<p>如果大家做过协议处理，一定理解定长和不定长协议。定长协议中，每个协议长度相同，计算起来非常快捷，直接当前位置+固定长度就可以获取下一个协议位置；而不定长协议，还需要解析当前协议长度，判断当前协议的长度，才可以得知下一个协议的位置。</p>
+<p>我们把数组在内存中的存储相信成协议的字节流，这就一致了。NumPy仅支持同类型的数据元素，就是定长协议的解析，效率很高。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 定长
+</span></span><span class="line"><span class="cl">+---+---+---+---+---+---+
+</span></span><span class="line"><span class="cl">|   |   |   |   |   |   |
+</span></span><span class="line"><span class="cl">+---+---+---+---+---+---+
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 不定长
+</span></span><span class="line"><span class="cl">+--+----+------+--+-----+
+</span></span><span class="line"><span class="cl">|  |    |      |  |     |
+</span></span><span class="line"><span class="cl">+--+----+------+--+-----+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>字符图不好理解的话，大家可以把定长元素想象为高铁车厢，不定长元素想象成汽车，那么春运的铁路运输和公路运输效率就一目了然</li>
+</ul>
+<p>需要注意，NumPy中数组也可以放不同 <em>Python类型</em> 元素，但是它们都会(长度)向上对齐到 <em>NumPy数据类型</em> ，下面的U32就是NumPy的数据类型:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">np.array([&#34;a&#34;, 9, 9.0])
+</span></span><span class="line"><span class="cl">array([&#39;a&#39;, &#39;9&#39;, &#39;9.0&#39;], dtype=&#39;&lt;U32&#39;)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>NumPy支持矩阵运算，这也是NumPy高性能原因所在。</p>
+<p>我们先复习一下矩阵的哈达玛积(Hadamard product)，使用符号A⊙B表示：</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20230115222327.png" alt=""></p>
+<ul>
+<li>两个矩阵对应位置的元素逐一相乘</li>
+</ul>
+<p>那么a**2的运算使用矩阵的方式就是这样:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+-----------+     +-----------+     +--------------+
+</span></span><span class="line"><span class="cl">|1,2,3,...,n|  ⊙  |1,2,3,...,n|  =  |1,4,9,...,N*N |
+</span></span><span class="line"><span class="cl">+-----------+     +-----------+     +--------------+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这里二维变成一维，计算法则是一样的</li>
+</ul>
+<p>使用矩阵后就可以进行并发处理了，这和大数据中的map-reduce模型类似。我们可以这样理解它，普通的列表推导式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">L = range(1000)
+</span></span><span class="line"><span class="cl">for i in L:
+</span></span><span class="line"><span class="cl">    i**2        
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需要经历1000次循环，并且只能够在CPU的单核上逐次执行。根据矩阵运算公式，对应A_i位置的元素，只需要和B_i位置的元素相乘，和其它的999个数都无关，那么我们可以将整个大的运算拆分成1000个小运算，分到多个CPU核上并发执行，计算出每个位置元素后，再汇总即可。</p>
+<p>所以NumPy采用良好的数据结构+高效的算法，性能自然上去了。</p>
+<h2 id="简单易用的numpy">简单易用的NumPy</h2>
+<p>如果仅关注性能那么Fortran, matlab, R语言也足够了，或者直接使用C语言。Python语言足够简洁和灵活，使用它包装的API简单易用，又使NumPy的开发效率带来很大提升。我们可以通过下面几个小的例子来了解NumPy的这个特点。</p>
+<p>首先是NumPy的数组切片非常强大，如图:
+<img src="https://scipy-lectures.org/_images/numpy_indexing.png" alt=""></p>
+<ul>
+<li>红色切片取第0行的，第3-第4个元素(左闭右开)</li>
+<li>绿色切片取第4行和第4列后面的元素</li>
+<li>蓝色切片取第3列</li>
+<li>紫色切片按照2的步进取元素</li>
+</ul>
+<p>然后是NumPy支持数学运算:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; import numpy as np
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a = np.arange(5)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a
+</span></span><span class="line"><span class="cl">array([0, 1, 2, 3, 4])
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; np.sin(a)
+</span></span><span class="line"><span class="cl">array([ 0.        ,  0.84147098,  0.90929743,  0.14112001, -0.7568025 ])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>同样的计算，我们在python中大概这样实现:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import math
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; import math
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; items = [0, 1, 2, 3, 4]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; list(map(lambda x: math.sin(x), items))
+</span></span><span class="line"><span class="cl">[0.0, 0.8414709848078965, 0.9092974268256817, 0.1411200080598672, -0.7568024953079282]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>对比可见，NumPy包装的API更便捷。</p>
+<p>最后NumPy还提供了很多统计函数， 比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; x = np.array([1, 2, 3, 4])
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; np.sum(x)
+</span></span><span class="line"><span class="cl">10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; x.sum()
+</span></span><span class="line"><span class="cl">10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; x.max()
+</span></span><span class="line"><span class="cl">4
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; x.min()
+</span></span><span class="line"><span class="cl">1
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; x.mean()
+</span></span><span class="line"><span class="cl">2.5
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>np.sum(x)</code> 和 <code>x.sum()</code> 是API的两种写法，我们更常使用后面的方法</li>
+</ul>
+<p>更多的API使用，可以阅读参考链接中的用户指南和参考手册</p>
+<h2 id="小结">小结</h2>
+<p>NumPy由于高性能和简单易用，是Python进行科学计算的基石。本文从NumPy的数据结构和算法实现上，探讨了其高性能的原理，并简单介绍了部分API，希望能吸引你学习它的兴趣。</p>
+<h2 id="参考链接">参考链接</h2>
+<ul>
+<li><a href="https://www.numpy.org.cn/user/">https://www.numpy.org.cn/user/</a></li>
+<li><a href="https://www.numpy.org.cn/about/">https://www.numpy.org.cn/about/</a></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">shawn</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-01-15
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/numpy/">numpy</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/python-env-2023/">
+            <span class="next-text nav-default">Python 虚拟环境指南 2023 版</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="comments-gitment"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitment = new Gitment({
+        id: '2023-01-15 23:10:04 \u002b0800 CST',
+        title: '为什么NumPy这么快',
+        link: decodeURI(location.href),
+        desc: 'NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播',
+        owner: 'game404',
+        repo: 'game404.github.io',
+        oauth: {
+          client_id: '28a86ccaa3184b49dfc4',
+          client_secret: '15ab0f7c1445c0afb5e3d7a8995c89f2fd081eb7'
+        }
+      });
+      gitment.render('comments-gitment');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:studyoo@foxmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/game404" class="iconfont icon-github" title="github"></a>
+      <a href="https://juejin.im/user/593f44b8da2f60006736604e" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://game404.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-137813525-1', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+
+
+
+
+</body>
+</html>

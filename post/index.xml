@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 08 Jan 2023 20:41:21 +0800</lastBuildDate><atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 15 Jan 2023 23:10:04 +0800</lastBuildDate><atom:link href="https://game404.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>为什么NumPy这么快</title>
+      <link>https://game404.github.io/post/quant/numpy_why/</link>
+      <pubDate>Sun, 15 Jan 2023 23:10:04 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/quant/numpy_why/</guid>
+      <description>NumPy是使用 Python 进行科学计算的基础包，是Python数据科学基础中的基础。它具有下面六大特点: 强大的 N 维数组。NumPy 向量化、索引和广播</description>
+    </item>
+    
     <item>
       <title>Python 虚拟环境指南 2023 版</title>
       <link>https://game404.github.io/post/python-env-2023/</link>
