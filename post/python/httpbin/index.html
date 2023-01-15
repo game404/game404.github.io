@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/httpbin/" />
-<meta property="article:published_time" content="2022-01-09T23:33:30+08:00" />
-<meta property="article:modified_time" content="2022-01-09T23:33:30+08:00" />
+<meta property="article:published_time" content="2022-01-09T23:33:30&#43;08:00"/>
+<meta property="article:modified_time" content="2022-01-09T23:33:30&#43;08:00"/>
+
 <meta itemprop="name" content="httpbin源码解析">
 <meta itemprop="description" content="httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可">
+
+
 <meta itemprop="datePublished" content="2022-01-09T23:33:30&#43;08:00" />
 <meta itemprop="dateModified" content="2022-01-09T23:33:30&#43;08:00" />
-<meta itemprop="wordCount" content="3314">
+<meta itemprop="wordCount" content="3324">
 
 
 
-<meta itemprop="keywords" content="flask,http," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="flask,http," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="httpbin源码解析"/>
 <meta name="twitter:description" content="httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可"/>
 
@@ -137,41 +141,51 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#httpbin">httpbin的项目结构</a></li>
-    <li><a href="#httpbin-1">httpbin的使用</a></li>
-    <li><a href="#httpbin-2">httpbin的实现</a>
-      <ul>
-        <li><a href="#httpbin-3">httpbin的部署</a></li>
-        <li><a href="#get-api">get API的实现</a></li>
-        <li><a href="#seo">seo</a></li>
-        <li><a href="#heading">压缩</a></li>
-        <li><a href="#basic-auth">Basic-Auth认证</a></li>
-        <li><a href="#heading-1">流</a></li>
-        <li><a href="#heading-2">单元测试</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading-3">小结</a></li>
-    <li><a href="#heading-4">小技巧</a></li>
-    <li><a href="#heading-5">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#httpbin的项目结构">httpbin的项目结构</a></li>
+<li><a href="#httpbin的使用">httpbin的使用</a></li>
+<li><a href="#httpbin的实现">httpbin的实现</a>
+<ul>
+<li><a href="#httpbin的部署">httpbin的部署</a></li>
+<li><a href="#get-api的实现">get API的实现</a></li>
+<li><a href="#seo">seo</a></li>
+<li><a href="#压缩">压缩</a></li>
+<li><a href="#basic-auth认证">Basic-Auth认证</a></li>
+<li><a href="#流">流</a></li>
+<li><a href="#单元测试">单元测试</a></li>
+</ul></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可以获得两个小收获:</p>
+      
+
+<p>httpbin是requests作者Kenneth Reitz的项目，是一个使用flask制作的http协议演示项目。学习这个项目，我们大概可以获得两个小收获:</p>
+
 <ol>
 <li>学习如何使用flask制作一个网站</li>
 <li>学习一些http协议的细节</li>
 </ol>
+
 <p>正式开始之前，对flask不熟悉的朋友，欢迎去回顾flask的源码解析:</p>
+
 <ul>
 <li>flask 源码阅读-上</li>
 <li>flask 源码阅读-中</li>
 <li>flask 源码阅读-下</li>
 </ul>
-<h2 id="httpbin">httpbin的项目结构</h2>
+
+<h2 id="httpbin的项目结构">httpbin的项目结构</h2>
+
 <p>我们选用httpbin的v0.7.0版本，项目大概结构如下:</p>
+
 <table>
 <thead>
 <tr>
@@ -179,53 +193,62 @@
 <th>功能</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>templates</td>
 <td>模版文件</td>
 </tr>
+
 <tr>
 <td>core</td>
 <td>功能实现</td>
 </tr>
+
 <tr>
 <td>fileters</td>
 <td>一些装饰器实现</td>
 </tr>
+
 <tr>
 <td>helpers</td>
 <td>一些帮助类</td>
 </tr>
+
 <tr>
 <td>structures</td>
 <td>数据结构实现</td>
 </tr>
+
 <tr>
 <td>utils</td>
 <td>一些工具类</td>
 </tr>
+
 <tr>
 <td>Dockerfile</td>
 <td>docker镜像文件</td>
 </tr>
+
 <tr>
 <td>test_httpbin.py</td>
 <td>单元测试用例</td>
 </tr>
 </tbody>
 </table>
-<h2 id="httpbin-1">httpbin的使用</h2>
+
+<h2 id="httpbin的使用">httpbin的使用</h2>
+
 <p>httpbin项目，可以直接在<a href="https://httpbin.org/">https://httpbin.org/</a>网站感受，网站交互式的展示了一些http的使用, 比如<code>get</code>请求
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220109214612.png" alt="示例"></p>
-<ul>
-<li>使用http协议的GET方法请求数据</li>
-<li>request的header中设置 <em>accept:application/json</em> 接收json输出</li>
-<li>展示response的状态码,header和body</li>
-</ul>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220109214612.png" alt="示例" />
+* 使用http协议的GET方法请求数据
+* request的header中设置 <em>accept:application/json</em> 接收json输出
+* 展示response的状态码,header和body</p>
+
 <p>我们也可以在终端中使用curl观测:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -246,9 +269,9 @@
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -v -X GET &#34;https://httpbin.org/get&#34; -H &#34;accept: application/json&#34;
+<pre class="chroma">curl -v -X GET &#34;https://httpbin.org/get&#34; -H &#34;accept: application/json&#34;
 ...
 &lt; HTTP/2 200
 &lt; date: Sun, 09 Jan 2022 12:34:55 GMT
@@ -268,19 +291,23 @@
   },
   &#34;origin&#34;: &#34;111.201.135.46&#34;,
   &#34;url&#34;: &#34;https://httpbin.org/get&#34;
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>-v 参数跟踪请求过程</p>
 </blockquote>
+
 <p>对比可发现这和网站上展示的数据是一致的。httpbin网站上还有很多http方法的演示，大家可以自己逐一尝试。</p>
-<h2 id="httpbin-2">httpbin的实现</h2>
-<h3 id="httpbin-3">httpbin的部署</h3>
+
+<h2 id="httpbin的实现">httpbin的实现</h2>
+
+<h3 id="httpbin的部署">httpbin的部署</h3>
+
 <p>Dockerfile文件描述了httpbin如何使用gunicorn部署运行的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -298,9 +325,9 @@
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python基础镜像
+<pre class="chroma"># python基础镜像
 FROM python:3-alpine
 # 设置环境变量
 ENV WEB_CONCURRENCY=4
@@ -317,74 +344,76 @@ RUN apk add -U ca-certificates libffi libstdc++ &amp;&amp; \
 # 申明端口
 EXPOSE 8080
 # 使用gunicorn启动服务
-CMD [&#34;gunicorn&#34;, &#34;-b&#34;, &#34;0.0.0.0:8080&#34;, &#34;httpbin:app&#34;]
-</code></pre></td></tr></table>
+CMD [&#34;gunicorn&#34;, &#34;-b&#34;, &#34;0.0.0.0:8080&#34;, &#34;httpbin:app&#34;]</pre></td></tr></table>
 </div>
-</div><p>gunicorn启动<em>httpbin:app</em>，这个app在httpbin包下，由core模块提供：</p>
+</div>
+<p>gunicorn启动*httpbin:app*，这个app在httpbin包下，由core模块提供：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+<pre class="chroma">...
 # Find the correct template folder when running from a different location
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), &#39;templates&#39;)
 
 app = Flask(__name__, template_folder=tmpl_dir)
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>启动app的同时，设置flask项目的模版文件路径在templates目录，这个目录是和core文件同级。</li>
 </ul>
-<h3 id="get-api">get API的实现</h3>
+
+<h3 id="get-api的实现">get API的实现</h3>
+
 <p><code>/get</code>API返回请求的url，args，header和origin，并将结果json化输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/get&#39;, methods=(&#39;GET&#39;,))
+<pre class="chroma">@app.route(&#39;/get&#39;, methods=(&#39;GET&#39;,))
 def view_get():
     &#34;&#34;&#34;Returns GET Data.&#34;&#34;&#34;
 
-    return jsonify(get_dict(&#39;url&#39;, &#39;args&#39;, &#39;headers&#39;, &#39;origin&#39;))
-</code></pre></td></tr></table>
+    return jsonify(get_dict(&#39;url&#39;, &#39;args&#39;, &#39;headers&#39;, &#39;origin&#39;))</pre></td></tr></table>
 </div>
-</div><p>jsonify输出使用了flask提供的jsonify功能，仅仅在默认结果上增加一个换行输出:</p>
+</div>
+<p>jsonify输出使用了flask提供的jsonify功能，仅仅在默认结果上增加一个换行输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from flask import jsonify as flask_jsonify
+<pre class="chroma">from flask import jsonify as flask_jsonify
 
 def jsonify(*args, **kwargs):
     response = flask_jsonify(*args, **kwargs)
     if not response.data.endswith(b&#39;\n&#39;):
         response.data += b&#39;\n&#39;
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><p>get_dict是对request的操作，flask的request会绑定到线程上，所以不需要传递request参数到get_dict函数:</p>
+</div>
+<p>get_dict是对request的操作，flask的request会绑定到线程上，所以不需要传递request参数到get_dict函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -413,9 +442,9 @@ def jsonify(*args, **kwargs):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_dict(*keys, **extras):
+<pre class="chroma">def get_dict(*keys, **extras):
     &#34;&#34;&#34;Returns request dict of given keys.&#34;&#34;&#34;
 
     _keys = (&#39;url&#39;, &#39;args&#39;, &#39;form&#39;, &#39;data&#39;, &#39;origin&#39;, &#39;headers&#39;, &#39;files&#39;, &#39;json&#39;, &#39;method&#39;)
@@ -443,13 +472,13 @@ def jsonify(*args, **kwargs):
 
     out_d.update(extras)
 
-    return out_d
-</code></pre></td></tr></table>
+    return out_d</pre></td></tr></table>
 </div>
-</div><p>可以使用下面的命令行演示args参数, <em>name=shawn&amp;age=18</em>的查询，会自动转换成args字典:</p>
+</div>
+<p>可以使用下面的命令行演示args参数, *name=shawn&amp;age=18*的查询，会自动转换成args字典:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -464,9 +493,9 @@ def jsonify(*args, **kwargs):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -X GET &#34;https://httpbin.org/get?name=game404&amp;age=18&#34;
+<pre class="chroma">curl -X GET &#34;https://httpbin.org/get?name=game404&amp;age=18&#34;
 {
   &#34;args&#34;: {
     &#34;age&#34;: &#34;18&#34;,
@@ -480,37 +509,38 @@ def jsonify(*args, **kwargs):
   },
   &#34;origin&#34;: &#34;111.201.135.46&#34;,
   &#34;url&#34;: &#34;https://httpbin.org/get?name=shawn&amp;age=18&#34;
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>http是超文本协议，所以age参数默认是字符串，而不是数字</p>
 </blockquote>
+
 <p>http-bin还提供了两个基于flask的Middlewares实现，其中一个是after_request，在请求完成后处理跨域问题，给响应header增加两个跨域标志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.after_request
+<pre class="chroma">@app.after_request
 def set_cors_headers(response):
     # 设置跨域
     response.headers[&#39;Access-Control-Allow-Origin&#39;] = request.headers.get(&#39;Origin&#39;, &#39;*&#39;)
     response.headers[&#39;Access-Control-Allow-Credentials&#39;] = &#39;true&#39;
     ...
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><p>在chrome浏览的console中可以这样验证:</p>
+</div>
+<p>在chrome浏览的console中可以这样验证:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -519,9 +549,9 @@ def set_cors_headers(response):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">var xmlHttp = new XMLHttpRequest();
+<pre class="chroma">var xmlHttp = new XMLHttpRequest();
 # 发送请求
 xmlHttp.open( &#34;GET&#34;, &#34;https://httpbin.org/get&#34;, false ); 
 xmlHttp.send( null );
@@ -529,14 +559,15 @@ xmlHttp.send( null );
 xmlHttp.status
 200
 xmlHttp.responseText;
-&#39;{\n  &#34;args&#34;: {}, \n  &#34;headers&#34;: {\n    &#34;Accept&#34;: &#34;*/*&#34;, \n    &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, \n    &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;, \n    &#34;Host&#34;: &#34;httpbin.org&#34;, \n    &#34;Origin&#34;: &#34;https://stackoverflow.com&#34;, \n    &#34;Referer&#34;: &#34;https://stackoverflow.com/&#34;, \n    &#34;Sec-Ch-Ua&#34;: &#34;\\&#34; Not A;Brand\\&#34;;v=\\&#34;99\\&#34;, \\&#34;Chromium\\&#34;;v=\\&#34;96\\&#34;, \\&#34;Google Chrome\\&#34;;v=\\&#34;96\\&#34;&#34;, \n    &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, \n    &#34;Sec-Ch-Ua-Platform&#34;: &#34;\\&#34;macOS\\&#34;&#34;, \n    &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, \n    &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, \n    &#34;Sec-Fetch-Site&#34;: &#34;cross-site&#34;, \n    &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, \n    &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dadc7c-70a2cde54a07ab3a6df28d5c&#34;\n  }, \n  &#34;origin&#34;: &#34;111.201.135.46&#34;, \n  &#34;url&#34;: &#34;https://httpbin.org/get&#34;\n}\n&#39;
-</code></pre></td></tr></table>
+&#39;{\n  &#34;args&#34;: {}, \n  &#34;headers&#34;: {\n    &#34;Accept&#34;: &#34;*/*&#34;, \n    &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, \n    &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;, \n    &#34;Host&#34;: &#34;httpbin.org&#34;, \n    &#34;Origin&#34;: &#34;https://stackoverflow.com&#34;, \n    &#34;Referer&#34;: &#34;https://stackoverflow.com/&#34;, \n    &#34;Sec-Ch-Ua&#34;: &#34;\\&#34; Not A;Brand\\&#34;;v=\\&#34;99\\&#34;, \\&#34;Chromium\\&#34;;v=\\&#34;96\\&#34;, \\&#34;Google Chrome\\&#34;;v=\\&#34;96\\&#34;&#34;, \n    &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, \n    &#34;Sec-Ch-Ua-Platform&#34;: &#34;\\&#34;macOS\\&#34;&#34;, \n    &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, \n    &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, \n    &#34;Sec-Fetch-Site&#34;: &#34;cross-site&#34;, \n    &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, \n    &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dadc7c-70a2cde54a07ab3a6df28d5c&#34;\n  }, \n  &#34;origin&#34;: &#34;111.201.135.46&#34;, \n  &#34;url&#34;: &#34;https://httpbin.org/get&#34;\n}\n&#39;</pre></td></tr></table>
 </div>
-</div><h3 id="seo">seo</h3>
+</div>
+<h3 id="seo">seo</h3>
+
 <p>在web2.0时代，seo的支持很重要，可以免费利用搜索引擎带来很多访问量。robots.txt是网站和搜索引擎爬虫的约定，httpbin中提供了一个简单的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -544,64 +575,65 @@ xmlHttp.responseText;
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/robots.txt&#39;)
+<pre class="chroma">@app.route(&#39;/robots.txt&#39;)
 def view_robots_page():
     &#34;&#34;&#34;Simple Html Page&#34;&#34;&#34;
 
     response = make_response()
     response.data = ROBOT_TXT
     response.content_type = &#34;text/plain&#34;
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>robots.txt使用纯文本方式输出</li>
 </ul>
+
 <p>robots.txt的内容是禁止<code>/deny</code>目录的访问:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">ROBOT_TXT = &#34;&#34;&#34;User-agent: *
+<pre class="chroma">ROBOT_TXT = &#34;&#34;&#34;User-agent: *
 Disallow: /deny
-&#34;&#34;&#34;
-</code></pre></td></tr></table>
+&#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>如果不遵守robots.txt访问了<code>/deny</code>目录，http-bin的示意是会生气，大家可以自己去测试感受一下。</p>
-<blockquote>
-<p>Kenneth Reitz 这里设计的挺有意思的，包括代码里面402的FWord，展示作者活泼的一面</p>
-</blockquote>
-<h3 id="heading">压缩</h3>
+</div>
+<p>如果不遵守robots.txt访问了<code>/deny</code>目录，http-bin的示意是会生气，大家可以自己去测试感受一下。
+&gt; Kenneth Reitz 这里设计的挺有意思的，包括代码里面402的FWord，展示作者活泼的一面</p>
+
+<h3 id="压缩">压缩</h3>
+
 <p>http的压缩，支持gzip，deflate和brotli三种算法。下面是gzip支持实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/gzip&#39;)
+<pre class="chroma">@app.route(&#39;/gzip&#39;)
 @filters.gzip
 def view_gzip_encoded_content():
     &#34;&#34;&#34;Returns GZip-Encoded Data.&#34;&#34;&#34;
 
     return jsonify(get_dict(
-        &#39;origin&#39;, &#39;headers&#39;, method=request.method, gzipped=True))
-</code></pre></td></tr></table>
+        &#39;origin&#39;, &#39;headers&#39;, method=request.method, gzipped=True))</pre></td></tr></table>
 </div>
-</div><p>gzip使用装饰器实现:</p>
+</div>
+<p>gzip使用装饰器实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -634,9 +666,9 @@ def view_gzip_encoded_content():
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from decorator import decorator
+<pre class="chroma">from decorator import decorator
 import gzip as gzip2
 
 @decorator
@@ -668,21 +700,25 @@ def gzip(f, *args, **kwargs):
 
         return data
 
-    return gzip_data
-</code></pre></td></tr></table>
+    return gzip_data</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>使用gzip压缩数据</li>
-<li>压缩完成的数据要修改2个响应的http头<em>Content-Encoding</em>和<em>Content-Length</em></li>
+<li>压缩完成的数据要修改2个响应的http头*Content-Encoding*和<em>Content-Length</em></li>
 </ul>
+
 <p>比较特别的是这里的gzip装饰器使用了decorator这个库实现。和普通的装饰器不一样，decorator号称给人类使用的装饰器，核心特点就是没有多层嵌套的函数结构，函数的第一个参数就是函数，然后args和kwargs是原生函数的动态参数。</p>
-<h3 id="basic-auth">Basic-Auth认证</h3>
+
+<h3 id="basic-auth认证">Basic-Auth认证</h3>
+
 <p>http-bin还提供了简单认证的实现。简单认证情况下，浏览器默认会提供一个用户名和密码的输入框，验证通过后才可以继续访问:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220109213006.png" alt=""></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220109213006.png" alt="" /></p>
+
 <p>下面是其代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -697,9 +733,9 @@ def gzip(f, *args, **kwargs):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/basic-auth/&lt;user&gt;/&lt;passwd&gt;&#39;)
+<pre class="chroma">@app.route(&#39;/basic-auth/&lt;user&gt;/&lt;passwd&gt;&#39;)
 def basic_auth(user=&#39;user&#39;, passwd=&#39;passwd&#39;):
     &#34;&#34;&#34;Prompts the user for authorization using HTTP Basic Auth.&#34;&#34;&#34;
 
@@ -713,13 +749,13 @@ def check_basic_auth(user, passwd):
 
     auth = request.authorization
     # 基础的用户名密码认证
-    return auth and auth.username == user and auth.password == passwd
-</code></pre></td></tr></table>
+    return auth and auth.username == user and auth.password == passwd</pre></td></tr></table>
 </div>
-</div><p>使用curl更容易跟踪到这个过程:</p>
+</div>
+<p>使用curl更容易跟踪到这个过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -728,9 +764,9 @@ def check_basic_auth(user, passwd):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl -v -X GET &#34;https://httpbin.org/basic-auth/game_404/123456&#34; -H &#34;accept: application/json&#34;
+<pre class="chroma">curl -v -X GET &#34;https://httpbin.org/basic-auth/game_404/123456&#34; -H &#34;accept: application/json&#34;
 ...
 &lt; HTTP/2 401
 &lt; date: Sun, 09 Jan 2022 13:33:00 GMT
@@ -738,32 +774,34 @@ def check_basic_auth(user, passwd):
 &lt; server: gunicorn/19.9.0
 &lt; www-authenticate: Basic realm=&#34;Fake Realm&#34;
 &lt; access-control-allow-origin: *
-&lt; access-control-allow-credentials: true
-</code></pre></td></tr></table>
+&lt; access-control-allow-credentials: true</pre></td></tr></table>
 </div>
-</div><p>可以看到第一次会收到401，这时候响应头上有WWW-Authenticate:</p>
+</div>
+<p>可以看到第一次会收到401，这时候响应头上有WWW-Authenticate:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">code_map = {
+<pre class="chroma">code_map = {
     ...
     401: dict(headers={&#39;WWW-Authenticate&#39;: &#39;Basic realm=&#34;Fake Realm&#34;&#39;}),
     ...
-}    
-</code></pre></td></tr></table>
+}    </pre></td></tr></table>
 </div>
-</div><p>然后 <em>浏览器</em> 会自动弹出用户名和密码输入框，用户输入用户名和密码后通过认证。这个窗口不需要应用程序进行开发。</p>
-<h3 id="heading-1">流</h3>
+</div>
+<p>然后 <em>浏览器</em> 会自动弹出用户名和密码输入框，用户输入用户名和密码后通过认证。这个窗口不需要应用程序进行开发。</p>
+
+<h3 id="流">流</h3>
+
 <p>stream流传输，可以用于http文件的下载，比如下面的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -778,9 +816,9 @@ def check_basic_auth(user, passwd):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/stream/&lt;int:n&gt;&#39;)
+<pre class="chroma">@app.route(&#39;/stream/&lt;int:n&gt;&#39;)
 def stream_n_messages(n):
     &#34;&#34;&#34;Stream n JSON messages&#34;&#34;&#34;
     response = get_dict(&#39;url&#39;, &#39;args&#39;, &#39;headers&#39;, &#39;origin&#39;)
@@ -794,32 +832,34 @@ def stream_n_messages(n):
 
     return Response(generate_stream(), headers={
         &#34;Content-Type&#34;: &#34;application/json&#34;,
-        })
-</code></pre></td></tr></table>
+        })</pre></td></tr></table>
 </div>
-</div><p>测试中我们可以看到一次请求，响应分成了多段接收，这样对于大的文件，可以进行断点续传。</p>
+</div>
+<p>测试中我们可以看到一次请求，响应分成了多段接收，这样对于大的文件，可以进行断点续传。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">can&#39;t parse JSON.  Raw result:
+<pre class="chroma">can&#39;t parse JSON.  Raw result:
 
 {&#34;url&#34;: &#34;https://httpbin.org/stream/3&#34;, &#34;args&#34;: {}, &#34;headers&#34;: {&#34;Host&#34;: &#34;httpbin.org&#34;, &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dae496-15998ef6666f82c444ca483c&#34;, &#34;Sec-Ch-Ua&#34;: &#34;\&#34; Not A;Brand\&#34;;v=\&#34;99\&#34;, \&#34;Chromium\&#34;;v=\&#34;96\&#34;, \&#34;Google Chrome\&#34;;v=\&#34;96\&#34;&#34;, &#34;Accept&#34;: &#34;application/json&#34;, &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, &#34;Sec-Ch-Ua-Platform&#34;: &#34;\&#34;macOS\&#34;&#34;, &#34;Sec-Fetch-Site&#34;: &#34;same-origin&#34;, &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, &#34;Referer&#34;: &#34;https://httpbin.org/&#34;, &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;}, &#34;origin&#34;: &#34;111.201.135.46&#34;, &#34;id&#34;: 0}
 {&#34;url&#34;: &#34;https://httpbin.org/stream/3&#34;, &#34;args&#34;: {}, &#34;headers&#34;: {&#34;Host&#34;: &#34;httpbin.org&#34;, &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dae496-15998ef6666f82c444ca483c&#34;, &#34;Sec-Ch-Ua&#34;: &#34;\&#34; Not A;Brand\&#34;;v=\&#34;99\&#34;, \&#34;Chromium\&#34;;v=\&#34;96\&#34;, \&#34;Google Chrome\&#34;;v=\&#34;96\&#34;&#34;, &#34;Accept&#34;: &#34;application/json&#34;, &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, &#34;Sec-Ch-Ua-Platform&#34;: &#34;\&#34;macOS\&#34;&#34;, &#34;Sec-Fetch-Site&#34;: &#34;same-origin&#34;, &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, &#34;Referer&#34;: &#34;https://httpbin.org/&#34;, &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;}, &#34;origin&#34;: &#34;111.201.135.46&#34;, &#34;id&#34;: 1}
-{&#34;url&#34;: &#34;https://httpbin.org/stream/3&#34;, &#34;args&#34;: {}, &#34;headers&#34;: {&#34;Host&#34;: &#34;httpbin.org&#34;, &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dae496-15998ef6666f82c444ca483c&#34;, &#34;Sec-Ch-Ua&#34;: &#34;\&#34; Not A;Brand\&#34;;v=\&#34;99\&#34;, \&#34;Chromium\&#34;;v=\&#34;96\&#34;, \&#34;Google Chrome\&#34;;v=\&#34;96\&#34;&#34;, &#34;Accept&#34;: &#34;application/json&#34;, &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, &#34;Sec-Ch-Ua-Platform&#34;: &#34;\&#34;macOS\&#34;&#34;, &#34;Sec-Fetch-Site&#34;: &#34;same-origin&#34;, &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, &#34;Referer&#34;: &#34;https://httpbin.org/&#34;, &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;}, &#34;origin&#34;: &#34;111.201.135.46&#34;, &#34;id&#34;: 2}
-</code></pre></td></tr></table>
+{&#34;url&#34;: &#34;https://httpbin.org/stream/3&#34;, &#34;args&#34;: {}, &#34;headers&#34;: {&#34;Host&#34;: &#34;httpbin.org&#34;, &#34;X-Amzn-Trace-Id&#34;: &#34;Root=1-61dae496-15998ef6666f82c444ca483c&#34;, &#34;Sec-Ch-Ua&#34;: &#34;\&#34; Not A;Brand\&#34;;v=\&#34;99\&#34;, \&#34;Chromium\&#34;;v=\&#34;96\&#34;, \&#34;Google Chrome\&#34;;v=\&#34;96\&#34;&#34;, &#34;Accept&#34;: &#34;application/json&#34;, &#34;Sec-Ch-Ua-Mobile&#34;: &#34;?0&#34;, &#34;User-Agent&#34;: &#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36&#34;, &#34;Sec-Ch-Ua-Platform&#34;: &#34;\&#34;macOS\&#34;&#34;, &#34;Sec-Fetch-Site&#34;: &#34;same-origin&#34;, &#34;Sec-Fetch-Mode&#34;: &#34;cors&#34;, &#34;Sec-Fetch-Dest&#34;: &#34;empty&#34;, &#34;Referer&#34;: &#34;https://httpbin.org/&#34;, &#34;Accept-Encoding&#34;: &#34;gzip, deflate, br&#34;, &#34;Accept-Language&#34;: &#34;en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7&#34;}, &#34;origin&#34;: &#34;111.201.135.46&#34;, &#34;id&#34;: 2}</pre></td></tr></table>
 </div>
-</div><p>httpbin里还提供了一些其它的http示例，大家可以自行体验，本文就不再一一介绍了。</p>
-<h3 id="heading-2">单元测试</h3>
+</div>
+<p>httpbin里还提供了一些其它的http示例，大家可以自行体验，本文就不再一一介绍了。</p>
+
+<h3 id="单元测试">单元测试</h3>
+
 <p><code>/get</code> API的单元测试展示了如何使用unittest测试一个http接口:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -837,9 +877,9 @@ def stream_n_messages(n):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class HttpbinTestCase(unittest.TestCase):
+<pre class="chroma">class HttpbinTestCase(unittest.TestCase):
     &#34;&#34;&#34;Httpbin tests&#34;&#34;&#34;
 
     def setUp(self):
@@ -856,22 +896,27 @@ def stream_n_messages(n):
         self.assertEqual(data[&#39;headers&#39;][&#39;User-Agent&#39;], &#39;test&#39;)
         # self.assertEqual(data[&#39;origin&#39;], None)
         self.assertEqual(data[&#39;url&#39;], &#39;http://localhost/get&#39;)
-        self.assertTrue(response.data.endswith(b&#39;\n&#39;))
-</code></pre></td></tr></table>
+        self.assertTrue(response.data.endswith(b&#39;\n&#39;))</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>在setUp方法中httpbin.app.test_client()返回一个测试app，模拟服务</li>
-<li>self.app.get('/get&rsquo;, headers={&lsquo;User-Agent&rsquo;: &lsquo;test&rsquo;}) 模拟requests请求</li>
+<li>self.app.get(&lsquo;/get&rsquo;, headers={&lsquo;User-Agent&rsquo;: &lsquo;test&rsquo;}) 模拟requests请求</li>
 <li>response方法就和真实的http响应一致</li>
 </ul>
+
 <p>这种单元测试方法，脱离了http服务，执行更高效。在django框架中也有类似的方式。</p>
-<h2 id="heading-3">小结</h2>
+
+<h2 id="小结">小结</h2>
+
 <p>本文我们学习了基于flask框架实现的网站httpbin源码，了解了一些http协议实现细节，相信对大家掌握http协议也有一定的帮助。</p>
-<h2 id="heading-4">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>在utils中提供了一个很巧妙的带权重的随机算法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -891,9 +936,9 @@ def stream_n_messages(n):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def weighted_choice(choices):
+<pre class="chroma">def weighted_choice(choices):
     &#34;&#34;&#34;Returns a value from choices chosen by weighted random selection
 
     choices should be a list of (value, weight) tuples.
@@ -912,10 +957,11 @@ def stream_n_messages(n):
     x = random.uniform(0, total)
     # 二分查找
     i = bisect.bisect(cum_weights, x)
-    return values[i]
-</code></pre></td></tr></table>
+    return values[i]</pre></td></tr></table>
 </div>
-</div><h2 id="heading-5">参考链接</h2>
+</div>
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://httpbin.org/">https://httpbin.org/</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Robots_exclusion_standard">https://en.wikipedia.org/wiki/Robots_exclusion_standard</a></li>
@@ -1004,7 +1050,7 @@ def stream_n_messages(n):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

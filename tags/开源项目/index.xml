@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>开源项目 on 游戏不存在</title>
@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Thu, 17 Jun 2021 22:39:20 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 14 Sep 2022 10:11:51 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Template Engine 源码阅读</title>
+      <link>https://game404.github.io/post/python/template_engine/</link>
+      <pubDate>Wed, 14 Sep 2022 10:11:51 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/template_engine/</guid>
+      <description>500 Lines or Less 是一个开源项目，也是一本同名书。代码+文档，相得益彰。其中部分内容还有中文翻译。这个项目由多个独立的章节组成，每个章节由领域大牛试图</description>
+    </item>
     
     <item>
       <title>Werkzeug源码阅读-完结篇</title>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="大家好，我是肖恩，源码解析每周见 近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/service-lang-2/" />
-<meta property="article:published_time" content="2021-11-20T16:30:43+08:00" />
-<meta property="article:modified_time" content="2021-11-20T16:30:43+08:00" />
+<meta property="article:published_time" content="2021-11-20T16:30:43&#43;08:00"/>
+<meta property="article:modified_time" content="2021-11-20T16:30:43&#43;08:00"/>
+
 <meta itemprop="name" content="谁是虽好的语言 ？- 语言选型闲聊（下）">
 <meta itemprop="description" content="大家好，我是肖恩，源码解析每周见 近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这">
+
+
 <meta itemprop="datePublished" content="2021-11-20T16:30:43&#43;08:00" />
 <meta itemprop="dateModified" content="2021-11-20T16:30:43&#43;08:00" />
-<meta itemprop="wordCount" content="3168">
+<meta itemprop="wordCount" content="3177">
 
 
 
-<meta itemprop="keywords" content="架构," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="架构," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="谁是虽好的语言 ？- 语言选型闲聊（下）"/>
 <meta name="twitter:description" content="大家好，我是肖恩，源码解析每周见 近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这"/>
 
@@ -137,118 +141,134 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#go-">go 语言</a></li>
-    <li><a href="#javarust">java和rust</a></li>
-    <li><a href="#heading">语言生态</a></li>
-    <li><a href="#heading-1">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#go-语言">go 语言</a></li>
+<li><a href="#java和rust">java和rust</a></li>
+<li><a href="#语言生态">语言生态</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <blockquote>
+      
+
+<blockquote>
 <p>大家好，我是肖恩，源码解析每周见</p>
 </blockquote>
+
 <p>近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这个过程中有一些个人看法，可能会有些偏颇或者不正确的地方，我就简单一说，大家一乐，无意引战。</p>
+
 <p>在上篇中，我简单介绍了一下游戏行业的一些技术栈特点，以及python，Typescript和c#三种语言的使用感受，没有看过的同学可以去看看<a href="https://game404.github.io/post/service-lang/">链接</a>。本文继续介绍go和java，rust的故事。</p>
-<h2 id="go-">go 语言</h2>
+
+<h2 id="go-语言">go 语言</h2>
+
 <p>Go 是一种开源编程语言，可以轻松构建 简单、可靠且高效的软件。Go 语言诞生于 2009 年，由google开源，发展到今天已经有过去了10 多年。伴随着云原生的发展，Go语言也是轰轰烈烈红红火火；许多知名的框架，docker，Kubernetes，etcd等都是使用go实现。国内最近的新闻是字节这样的大厂全面拥抱，很多培训机构也在推各种go课程，一切看着都很不错。</p>
+
 <p>我们先简单感受一下，编写下面的的<code>main.go</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<pre class="chroma"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 
-<span class="kd">func</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Hello, 世界&#34;</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Hello, 世界&#34;</span><span class="p">)</span>
+<span class="p">}</span></pre></td></tr></table>
 </div>
-</div><p>直接运行这个hello程序:</p>
+</div>
+<p>直接运行这个hello程序:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># go run main.go
-Hello, 世界
-</code></pre></td></tr></table>
+<pre class="chroma"># go run main.go
+Hello, 世界</pre></td></tr></table>
 </div>
-</div><p>分别使用下面3个命令，将hello编译成对应操作系统的可执行程序:</p>
+</div>
+<p>分别使用下面3个命令，将hello编译成对应操作系统的可执行程序:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">GOOS=darwin GOARCH=amd64 go build -o hello_mac
+<pre class="chroma">GOOS=darwin GOARCH=amd64 go build -o hello_mac
 GOOS=linux GOARCH=amd64 go build
-GOOS=windows GOARCH=amd64 go build
-</code></pre></td></tr></table>
+GOOS=windows GOARCH=amd64 go build</pre></td></tr></table>
 </div>
-</div><p>查看各自的编译结果:</p>
+</div>
+<p>查看各自的编译结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  file hello
+<pre class="chroma">➜  file hello
 hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=YPrL0x5YX4DVXlh5kkKE/Y2HJXrRQkDsOpEXTVASf/NrLBfe3AB23u7MFL1ITI/GpLRUEatK4FJEmJ8Q5mW, not stripped
 ➜  file hello.exe
 hello.exe: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
 ➜  file hello_mac
-hello_mac: Mach-O 64-bit executable x86_64
-</code></pre></td></tr></table>
+hello_mac: Mach-O 64-bit executable x86_64</pre></td></tr></table>
 </div>
-</div><p>在mac下可以直接执行hello_mac:</p>
+</div>
+<p>在mac下可以直接执行hello_mac:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  hello ./hello
+<pre class="chroma">➜  hello ./hello
 zsh: exec format error: ./hello
 ➜  hello ./hello.exe
 zsh: exec format error: ./hello.exe
 ➜  hello ./hello_mac
-Hello, 世界
-</code></pre></td></tr></table>
+Hello, 世界</pre></td></tr></table>
 </div>
-</div><p>这种不需要虚拟机/解释器环境，可以直接执行的能力非常强大。</p>
+</div>
+<p>这种不需要虚拟机/解释器环境，可以直接执行的能力非常强大。</p>
+
 <p>我自己接触go大概是14年的样子，那时候大概看的是beego的作者Asta谢的书吧。可惜在当时看来感觉go是一个很语法诡异的语言，还不如php/java省事。第二次接触是19年，因为要临时支援一个项目，同时又因为对docker，k8s的学习，了解了go的社区发展，觉得这会是一个很有前景的语言。奈何后来项目变动，又没有继续深入下去。最近算是第三次接触吧，先是写了一些小工具和小服务，计划会写一点网关服务，应该有机会深入下去。无独有偶，发现也有和我感觉类似的同学，我直接摘录在下面:</p>
+
 <blockquote>
 <p>from draveness</p>
+
 <p>作者目前也使用 Go 语言作为日常开发的主要语言，虽然 Go 语言没有 Lisp 系语言的开发效率和强大表达能力，但是却是一门非常容易使用并且大规模运用的工程语言，这也是作者学习和使用 Go 语言的主要原因。</p>
+
 <p>作者是从 2018 年才开始学习和使用 Go 语言的，刚刚接触 Go 语言时是有些排斥和拒绝的，一度认为 Go 语言 GOPATH 的设计非常诡异，而简单的语法也导致了低下的表达能力并且影响开发效率。但是随着对 Go 语言的深入学习和理解，作者的这一观念也在不断改变。</p>
+
 <p>到了今天，作者认为我们在工业界需要这么一门语法简单的编译型语言，它能够提供简单的抽象和概念，虽然目前 Go 语言也有很多问题，但是语言以及周边工具的不断完善也让作者感受到了社区的活力，也坚定地认为这门语言未来的发展会越来愈好。</p>
 </blockquote>
+
 <p>学go时候需要一定的适应期。比如下面一段代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -256,57 +276,73 @@ Hello, 世界
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># gin/context.go
+<pre class="chroma"># gin/context.go
 
 func (c *Context) GetString(key string) (s string) {
-	if val, ok := c.Get(key); ok &amp;&amp; val != nil {
-		s, _ = val.(string)
-	}
-	return
-}
-</code></pre></td></tr></table>
+    if val, ok := c.Get(key); ok &amp;&amp; val != nil {
+        s, _ = val.(string)
+    }
+    return
+}</pre></td></tr></table>
 </div>
-</div><p>代码理解起来不难，从一个context中取一个key的值后转换成字符串返回。不同的地方在:</p>
-<ul>
-<li><code>if val, ok := c.Get(key); ok &amp;&amp; val != nil {...}</code> 这样的三段式结构，这种语法几乎遍布在go的任何函数。这是因为go没有try/catch语法，所有的函数都要做异常判断。</li>
-<li><code>(c *Context)</code> 这样的接口实现方式，和面向对象的接口实现有很大的差别。</li>
-</ul>
+</div>
+<p>代码理解起来不难，从一个context中取一个key的值后转换成字符串返回。不同的地方在:
+* <code>if val, ok := c.Get(key); ok &amp;&amp; val != nil {...}</code> 这样的三段式结构，这种语法几乎遍布在go的任何函数。这是因为go没有try/catch语法，所有的函数都要做异常判断。
+* <code>(c *Context)</code> 这样的接口实现方式，和面向对象的接口实现有很大的差别。</p>
+
 <p>初期看go的代码，会感觉非常别扭，渡过适应期后，就觉得这种实现方式也没什么问题。然后再陷入go并发不要通过共享内存的方式进行通信，而是应该通过通信的方式共享内存的坑中。</p>
+
 <p>go的学习过程，大概就像是windows电脑使用简单还是mac电脑使用简单的争论，是一个打破先入为主印象的问题。</p>
-<h2 id="javarust">java和rust</h2>
+
+<h2 id="java和rust">java和rust</h2>
+
 <p>java不用介绍了，工业界的霸主，大厂的最爱。优点非常多，缺点嘛，主要就是个人不精通，已经放弃。</p>
+
 <p>Rust是一门赋予每个人构建可靠且高效软件能力的语言。Rust 速度惊人且内存利用率极高。由于没有运行时和垃圾回收，它能够胜任对性能要求特别高的服务。Rust 丰富的类型系统和所有权模型保证了内存安全和线程安全，让您在编译期就能够消除各种各样的错误。看着是真棒。</p>
+
 <p>我对rust的了解只是浅尝辄止，因为大家都说它上手难度极高。其中所有权的概念，是其核心功能也是核心阻碍。简单举例一下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">let s1 = String::from(&#34;hello&#34;);
+<pre class="chroma">let s1 = String::from(&#34;hello&#34;);
 let s2 = s1;
 
-println!(&#34;{}, world!&#34;, s1);
-</code></pre></td></tr></table>
+println!(&#34;{}, world!&#34;, s1);</pre></td></tr></table>
 </div>
-</div><p>类似上面代码在其它语言中都可以正常运行，就是把s1赋值给s2，然后打印s1。不管是浅拷贝还是深拷贝，只会涉及性能问题，不会执行错误。但是在rust中却是无法执行成功的，因为rust认为s1赋值s2后，s1不再使用了，应该被销毁，这大概就是所有权的概念。</p>
-<h2 id="heading">语言生态</h2>
+</div>
+<p>类似上面代码在其它语言中都可以正常运行，就是把s1赋值给s2，然后打印s1。不管是浅拷贝还是深拷贝，只会涉及性能问题，不会执行错误。但是在rust中却是无法执行成功的，因为rust认为s1赋值s2后，s1不再使用了，应该被销毁，这大概就是所有权的概念。</p>
+
+<h2 id="语言生态">语言生态</h2>
+
 <p>语言的学习，前面介绍的内容，都是语法层面。一般来说还涉及语言的生态或者社区，我自己简单归纳语言生态包括下面几个部分:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120145745.png" alt="语言生态"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120145745.png" alt="语言生态" /></p>
+
 <p>学习语言的语法后，需要了解语言如何执行。比如python，就需要了解cpython的解释器，了解GIL，了解GC；java需要做JVM的调优，要熟练掌握某种编程语言，仅仅会语法显然是不够的。不同的语言，一般还有不同的IDE工具，比如c#大家惯用的是Visual Studio，熟练使用IDE工具，才可以提高研发效率。虽然现在VSCode，也还不错，但是如果不安装插件，不太好用，安装插件，对新手又不够友好。最好的办法，还是使用jetbrains家的工具，pycharm，rider，goland都是神器。我们还需要学习语言的包管理工具，这样才可以利用于同语言的各种库，站在开源的肩膀上。</p>
+
 <p>语言的社区也是非常重要的一环。首先就是文档，是否有足量的文档去介绍各种语法细节，并且是否有中文文档，对语言学习入门有很大的帮助。我个人比较习惯，中英文文档对照着看，中文看的快，对一些感觉中文介绍不太顺的地方，再从英文中对比理解。然后就是是否有足够多的开源项目，可以去使用，有杀手级的应用可以去参考。开源项目够足，编程实现的时候才会便捷，一般工作都是搬砖，不用从沙子开始造起。</p>
+
 <p>学习语言也是为了工作，除了语言自身的情况，还要考虑一下招聘市场和人才市场。招聘市场可以从岗位的数量和薪资情况反映，下面是一个语言及工资情况的统计数据:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120151709.png" alt=""></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120151709.png" alt="" /></p>
+
 <blockquote>
 <p>注意: 贴图仅仅示意，并不代表真实的数据</p>
 </blockquote>
+
 <p>人才市场可以从语言的流行度反映, 比如TIOBE2019-2020年的语言流行度排名:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120152102.png" alt=""></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211120152102.png" alt="" /></p>
+
 <p>从上图看Java和Python都还不赖。我个人把各种语言总结成下表:</p>
+
 <table>
 <thead>
 <tr>
@@ -319,6 +355,7 @@ println!(&#34;{}, world!&#34;, s1);
 <th>个人推荐</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>python</td>
@@ -329,6 +366,7 @@ println!(&#34;{}, world!&#34;, s1);
 <td>应用广泛:爬虫，数据分析，后端服务，AI等</td>
 <td>⭐️⭐️⭐️⭐️</td>
 </tr>
+
 <tr>
 <td>typescript</td>
 <td>简单</td>
@@ -338,6 +376,7 @@ println!(&#34;{}, world!&#34;, s1);
 <td>推荐前端应用，或者基于前端的全栈</td>
 <td>⭐️⭐️⭐️</td>
 </tr>
+
 <tr>
 <td>c#</td>
 <td>中等</td>
@@ -347,6 +386,7 @@ println!(&#34;{}, world!&#34;, s1);
 <td>游戏制作</td>
 <td>⭐️⭐️⭐️</td>
 </tr>
+
 <tr>
 <td>go</td>
 <td>特别</td>
@@ -356,6 +396,7 @@ println!(&#34;{}, world!&#34;, s1);
 <td>云原生服务</td>
 <td>⭐️⭐️⭐️⭐️</td>
 </tr>
+
 <tr>
 <td>java</td>
 <td>中等</td>
@@ -365,6 +406,7 @@ println!(&#34;{}, world!&#34;, s1);
 <td>anywhere</td>
 <td>⭐️⭐️⭐️</td>
 </tr>
+
 <tr>
 <td>rust</td>
 <td>特别</td>
@@ -376,10 +418,11 @@ println!(&#34;{}, world!&#34;, s1);
 </tr>
 </tbody>
 </table>
+
 <p>在学习和了解各种语言的语法，对自己的编程能力提升有帮助，可以开阔不少视野。大家关注不同语言应该重点放在这一块, 对于语言的生态，除非打算用来工作，否则不建议深入，因为不用就会忘记，简单了解即可。带着思考去学习不同语法，比如下面一个python函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -388,9 +431,9 @@ println!(&#34;{}, world!&#34;, s1);
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def readme(a, b):
+<pre class="chroma">def readme(a, b):
     with open(&#39;README.rst&#39;, &#39;w&#39;) as f:
         c = 1
         a = a+c;
@@ -398,22 +441,24 @@ println!(&#34;{}, world!&#34;, s1);
         f.write(a)
         f.write(b)
     print(a, c)
-    return b
-</code></pre></td></tr></table>
+    return b</pre></td></tr></table>
 </div>
-</div><p>我们可以思考下面几个问题:</p>
-<ul>
-<li>参数a和b的类型</li>
-<li>入参和出参</li>
-<li>参数的值传递和引用传递</li>
-<li>b的值和引用</li>
-<li>f,c,a的作用域</li>
-<li>函数是否有返回值，可以返回几个值</li>
-<li>如果函数是一个类/接口的实现，语法上又应该如何表示?</li>
-</ul>
+</div>
+<p>我们可以思考下面几个问题:
+* 参数a和b的类型
+* 入参和出参
+* 参数的值传递和引用传递
+* b的值和引用
+* f,c,a的作用域
+* 函数是否有返回值，可以返回几个值
+* 如果函数是一个类/接口的实现，语法上又应该如何表示?</p>
+
 <p>上面这几个问题，在不同的语言上，都有不同的实现或者表达方式，多看看就会更加理解函数的本质。</p>
+
 <p>最后的最后，还是推荐大家学习一下c，毕竟这个是鼻祖，是历史，其它语言都是从这个根上派生而来。</p>
-<h2 id="heading-1">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>Go 语言设计与实现 <a href="https://draveness.me/golang/">https://draveness.me/golang/</a></li>
 <li>Rust 程序设计语言 <a href="https://kaisery.github.io/trpl-zh-cn/foreword.html">https://kaisery.github.io/trpl-zh-cn/foreword.html</a></li>
@@ -501,7 +546,7 @@ println!(&#34;{}, world!&#34;, s1);
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

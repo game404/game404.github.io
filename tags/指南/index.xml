@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>指南 on 游戏不存在</title>
@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Fri, 10 Sep 2021 00:04:10 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 08 Jan 2023 20:41:21 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/tags/%E6%8C%87%E5%8D%97/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python 虚拟环境指南 2023 版</title>
+      <link>https://game404.github.io/post/python-env-2023/</link>
+      <pubDate>Sun, 08 Jan 2023 20:41:21 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2023/</guid>
+      <description>Python在数据科学、机器学习领域也是重要利器(yyds)。这是一篇Python环境指南，告诉你如何配置Python环境，并安装相关的库，</description>
+    </item>
+    
+    <item>
+      <title>Python 虚拟环境指南 2022 版</title>
+      <link>https://game404.github.io/post/python-env-2022/</link>
+      <pubDate>Wed, 31 Aug 2022 20:41:21 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2022/</guid>
+      <description>过去三年中，我都会发布一下 Python 虚拟环境指南，今年的指南有点晚。如果是新的读者朋友欢迎点开下面链接，去查看往年的文章: Python 虚拟环境指南 2021 版 Python 虚拟环</description>
+    </item>
     
     <item>
       <title>kubernetes 初体验-mac版</title>

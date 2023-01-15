@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/flask-2/" />
-<meta property="article:published_time" content="2021-07-22T22:50:13+08:00" />
-<meta property="article:modified_time" content="2021-07-22T22:50:13+08:00" />
+<meta property="article:published_time" content="2021-07-22T22:50:13&#43;08:00"/>
+<meta property="article:modified_time" content="2021-07-22T22:50:13&#43;08:00"/>
+
 <meta itemprop="name" content="Flask 源码阅读-下篇">
 <meta itemprop="description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有">
+
+
 <meta itemprop="datePublished" content="2021-07-22T22:50:13&#43;08:00" />
 <meta itemprop="dateModified" content="2021-07-22T22:50:13&#43;08:00" />
-<meta itemprop="wordCount" content="2108">
+<meta itemprop="wordCount" content="2110">
 
 
 
-<meta itemprop="keywords" content="源码,flask," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="源码,flask," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Flask 源码阅读-下篇"/>
 <meta name="twitter:description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有"/>
 
@@ -137,46 +141,55 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#view-">view 解析</a></li>
-    <li><a href="#blueprint-">blueprint 解析</a></li>
-    <li><a href="#heading">小结</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#view-解析">view 解析</a></li>
+<li><a href="#blueprint-解析">blueprint 解析</a></li>
+<li><a href="#小结">小结</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有不同的应用场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是第3篇-自助餐，主要包括:</p>
+      
+
+<p>flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有不同的应用场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是第3篇-自助餐，主要包括:</p>
+
 <ul>
 <li>view 解析</li>
 <li>blueprint 解析</li>
 <li>小结</li>
 </ul>
-<h2 id="view-">view 解析</h2>
+
+<h2 id="view-解析">view 解析</h2>
+
 <p>flask一个简单的监听函数如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@app.route(&#39;/login&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+<pre class="chroma">@app.route(&#39;/login&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
 def login():
     if request.method == &#39;POST&#39;:
         return do_the_login()
     else:
-        return show_the_login_form()
-</code></pre></td></tr></table>
+        return show_the_login_form()</pre></td></tr></table>
 </div>
-</div><p>如果URL多了，就需要实现多个监听函数，代码会比较乱。同时对于一个URL，在监听函数中区分http的method，进行不同的业务逻辑处理。一个函数中处理两种逻辑，也不太符合单一职责，会让代码难以维护。</p>
+</div>
+<p>如果URL多了，就需要实现多个监听函数，代码会比较乱。同时对于一个URL，在监听函数中区分http的method，进行不同的业务逻辑处理。一个函数中处理两种逻辑，也不太符合单一职责，会让代码难以维护。</p>
+
 <p>这种情况下，就需要使用视图。下面是一个视图示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -186,9 +199,9 @@ def login():
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class CounterAPI(MethodView):
+<pre class="chroma">class CounterAPI(MethodView):
 
     def get(self):
         return session.get(&#39;counter&#39;, 0)
@@ -197,13 +210,13 @@ def login():
         session[&#39;counter&#39;] = session.get(&#39;counter&#39;, 0) + 1
         return &#39;OK&#39;
 
-app.add_url_rule(&#39;/counter&#39;, view_func=CounterAPI.as_view(&#39;counter&#39;))
-</code></pre></td></tr></table>
+app.add_url_rule(&#39;/counter&#39;, view_func=CounterAPI.as_view(&#39;counter&#39;))</pre></td></tr></table>
 </div>
-</div><p>CounterAPI可以把一个类的实例方法注册到一个URL上，自动将get和post方法区分开。我们一起看看View的实现，先是所有View的基类:</p>
+</div>
+<p>CounterAPI可以把一个类的实例方法注册到一个URL上，自动将get和post方法区分开。我们一起看看View的实现，先是所有View的基类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -216,9 +229,9 @@ app.add_url_rule(&#39;/counter&#39;, view_func=CounterAPI.as_view(&#39;counter&#
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class View(object):
+<pre class="chroma">class View(object):
     
     @classmethod
     def as_view(cls, name, *class_args, **class_kwargs):
@@ -230,14 +243,15 @@ app.add_url_rule(&#39;/counter&#39;, view_func=CounterAPI.as_view(&#39;counter&#
         view.view_class = cls
         view.__name__ = name
         ...
-        return view
-</code></pre></td></tr></table>
+        return view</pre></td></tr></table>
 </div>
-</div><p>as_view函数返回一个视图函数，在视图函数里可以派发和处理request。</p>
+</div>
+<p>as_view函数返回一个视图函数，在视图函数里可以派发和处理request。</p>
+
 <p>MethodViewType是一个元类，定义了视图支持的所有HTTP方法的集合:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -255,9 +269,9 @@ app.add_url_rule(&#39;/counter&#39;, view_func=CounterAPI.as_view(&#39;counter&#
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">http_method_funcs = frozenset(
+<pre class="chroma">http_method_funcs = frozenset(
     [&#34;get&#34;, &#34;post&#34;, &#34;head&#34;, &#34;options&#34;, &#34;delete&#34;, &#34;put&#34;, &#34;trace&#34;, &#34;patch&#34;]
 )
 
@@ -274,36 +288,38 @@ class MethodViewType(type):
                     methods.add(key.upper())
 
             if methods:
-                cls.methods = methods
-</code></pre></td></tr></table>
+                cls.methods = methods</pre></td></tr></table>
 </div>
-</div><p>MethodView是使用MethodViewType和View创建的新类：</p>
+</div>
+<p>MethodView是使用MethodViewType和View创建的新类：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MethodView(with_metaclass(MethodViewType, View)):
+<pre class="chroma">class MethodView(with_metaclass(MethodViewType, View)):
 
     def dispatch_request(self, *args, **kwargs):
         meth = getattr(self, request.method.lower(), None)
         ...
-        return meth(*args, **kwargs)
-</code></pre></td></tr></table>
+        return meth(*args, **kwargs)</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>with_metaclass 是为了兼容python2的语法，可以简单的理解为继承自MethodViewType和View</p>
 </blockquote>
+
 <p>dispatch_request中根据请求的http-method找到对应的方法，进行执行。</p>
+
 <p>view的处理函数还可以增加装饰器，示例如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -332,9 +348,9 @@ class MethodViewType(type):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 使用示例
+<pre class="chroma"># 使用示例
 class SecretView(View):
     methods = [&#39;GET&#39;]
     decorators = [login_required]
@@ -362,14 +378,15 @@ def login_required(view):
 
         return view(**kwargs)
 
-    return wrapped_view
-</code></pre></td></tr></table>
+    return wrapped_view</pre></td></tr></table>
 </div>
-</div><h2 id="blueprint-">blueprint 解析</h2>
+</div>
+<h2 id="blueprint-解析">blueprint 解析</h2>
+
 <p>View相对还是比较单薄，大型的项目都会分模块进行开发，所以flask还有blueprint的概念。下面是示例项目flaskr中的 <code>auth.py</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -390,9 +407,9 @@ def login_required(view):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">import functools
+<pre class="chroma">import functools
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -412,13 +429,13 @@ def login():
     
 @bp.route(&#39;/logout&#39;)
 def logout():
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>这里定义了一个名称叫做auth的蓝图，里面定义了3个方法: register , login 和 logout 。蓝图在app的<code>__init__.py</code>中注册:</p>
+</div>
+<p>这里定义了一个名称叫做auth的蓝图，里面定义了3个方法: register , login 和 logout 。蓝图在app的<code>__init__.py</code>中注册:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -426,22 +443,22 @@ def logout():
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def create_app():
+<pre class="chroma">def create_app():
     app = ...
     # existing code omitted
 
     from . import auth
     app.register_blueprint(auth.bp)
 
-    return app
-</code></pre></td></tr></table>
+    return app</pre></td></tr></table>
 </div>
-</div><p>在flask项目中还有名为blog的蓝图，提供博客文章的增删改查方法:</p>
+</div>
+<p>在flask项目中还有名为blog的蓝图，提供博客文章的增删改查方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -452,10 +469,9 @@ def logout():
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">bp = Blueprint(&#34;blog&#34;, __name__)
+<pre class="chroma">bp = Blueprint(&#34;blog&#34;, __name__)
 
 
 @bp.route(&#34;/&#34;)
@@ -465,15 +481,15 @@ def index():
 @bp.route(&#34;/create&#34;, methods=(&#34;GET&#34;, &#34;POST&#34;))
 @login_required
 def create():
-    ...
-
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>采用这种方式，就可以很方便的分模块进行程序开发。</p>
+</div>
+<p>采用这种方式，就可以很方便的分模块进行程序开发。</p>
+
 <p>了解了bluerpint的使用方法后，我们再看看其实现原理。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -501,9 +517,9 @@ def create():
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Blueprint(_PackageBoundObject):
+<pre class="chroma">class Blueprint(_PackageBoundObject):
     
     def __init__(
         self,
@@ -530,19 +546,18 @@ def create():
         if url_defaults is None:
             url_defaults = {}
         self.url_values_defaults = url_defaults
-        self.cli_group = cli_group
-</code></pre></td></tr></table>
+        self.cli_group = cli_group</pre></td></tr></table>
 </div>
-</div><p>上面Blueprint的构造函数中显示：</p>
-<ul>
-<li>继承自_PackageBoundObject。_PackageBoundObject上一篇介绍过，主要实现本地目录的动态加载，因为蓝图也有一些模版需求，所以继承了_PackageBoundObject。</li>
-<li>deferred_functions数组是蓝图的所有视图的集合</li>
-<li>url_prefix，subdomain， static_folder等是蓝图模块化的功能参数</li>
-</ul>
+</div>
+<p>上面Blueprint的构造函数中显示：
+* 继承自_PackageBoundObject。_PackageBoundObject上一篇介绍过，主要实现本地目录的动态加载，因为蓝图也有一些模版需求，所以继承了_PackageBoundObject。
+* deferred_functions数组是蓝图的所有视图的集合
+* url_prefix，subdomain， static_folder等是蓝图模块化的功能参数</p>
+
 <p>蓝图的route装饰器:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -556,9 +571,9 @@ def create():
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def route(self, rule, **options):
+<pre class="chroma">def route(self, rule, **options):
     def decorator(f):
         endpoint = options.pop(&#34;endpoint&#34;, f.__name__)
         self.add_url_rule(rule, endpoint, f, **options)
@@ -571,13 +586,13 @@ def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
     self.record(lambda s: s.add_url_rule(rule, endpoint, view_func, **options))
 
 def record(self, func):
-    self.deferred_functions.append(func)
-</code></pre></td></tr></table>
+    self.deferred_functions.append(func)</pre></td></tr></table>
 </div>
-</div><p>这里主要的疑问在添加视图函数时候的lambda函数的参数 <code>s</code> 是什么？继续看看蓝图的注册:</p>
+</div>
+<p>这里主要的疑问在添加视图函数时候的lambda函数的参数 <code>s</code> 是什么？继续看看蓝图的注册:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -594,9 +609,9 @@ def record(self, func):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># app的方法
+<pre class="chroma"># app的方法
 def register_blueprint(self, blueprint, **options):
 
     self.blueprints[blueprint.name] = blueprint
@@ -612,13 +627,13 @@ def register(self, app, options, first_registration=False):
 
     for deferred in self.deferred_functions:
         deferred(state)
-   ...
-</code></pre></td></tr></table>
+   ...</pre></td></tr></table>
 </div>
-</div><p>make_setup_stat创建BlueprintSetupState对象, 然后执行蓝图route添加到deferred_functions的方法。这个方法就是前面的lambda函数，前面的 <code>s</code> 就是state对象.</p>
+</div>
+<p>make_setup_stat创建BlueprintSetupState对象, 然后执行蓝图route添加到deferred_functions的方法。这个方法就是前面的lambda函数，前面的 <code>s</code> 就是state对象.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -648,9 +663,9 @@ def register(self, app, options, first_registration=False):
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BlueprintSetupState(object):
+<pre class="chroma">class BlueprintSetupState(object):
     
     def __init__(self, blueprint, app, options, first_registration):
         #: a reference to the current application
@@ -679,14 +694,17 @@ def register(self, app, options, first_registration=False):
             view_func,
             defaults=defaults,
             **options
-        )
-</code></pre></td></tr></table>
+        )</pre></td></tr></table>
 </div>
-</div><p>BlueprintSetupState中建立了app和blueprint的关联，并且使用app的add_url_rule方法，把blueprint的视图函数注册进入app。</p>
-<h2 id="heading">小结</h2>
+</div>
+<p>BlueprintSetupState中建立了app和blueprint的关联，并且使用app的add_url_rule方法，把blueprint的视图函数注册进入app。</p>
+
+<h2 id="小结">小结</h2>
+
 <p>flask是一个 <code>micro</code> 框架，但是也(至少)可以支持中型项目。我们可以利用Blueprint和View功能进行模块化: View可以很好的区分URL上的http-method；Blueprint可以很好的定义子域名和URL前缀等。</p>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
 
     </div>
 
@@ -771,7 +789,7 @@ def register(self, app, options, first_registration=False):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

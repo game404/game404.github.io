@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on 游戏不存在</title>
@@ -7,10 +7,46 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Tue, 15 Mar 2022 23:55:23 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 08 Jan 2023 20:41:21 +0800</lastBuildDate>
     
 	<atom:link href="https://game404.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python 虚拟环境指南 2023 版</title>
+      <link>https://game404.github.io/post/python-env-2023/</link>
+      <pubDate>Sun, 08 Jan 2023 20:41:21 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2023/</guid>
+      <description>Python在数据科学、机器学习领域也是重要利器(yyds)。这是一篇Python环境指南，告诉你如何配置Python环境，并安装相关的库，</description>
+    </item>
+    
+    <item>
+      <title>json-rpc 源码阅读</title>
+      <link>https://game404.github.io/post/python/json_rpc/</link>
+      <pubDate>Mon, 17 Oct 2022 10:12:18 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/json_rpc/</guid>
+      <description>JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth</description>
+    </item>
+    
+    <item>
+      <title>Template Engine 源码阅读</title>
+      <link>https://game404.github.io/post/python/template_engine/</link>
+      <pubDate>Wed, 14 Sep 2022 10:11:51 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python/template_engine/</guid>
+      <description>500 Lines or Less 是一个开源项目，也是一本同名书。代码+文档，相得益彰。其中部分内容还有中文翻译。这个项目由多个独立的章节组成，每个章节由领域大牛试图</description>
+    </item>
+    
+    <item>
+      <title>Python 虚拟环境指南 2022 版</title>
+      <link>https://game404.github.io/post/python-env-2022/</link>
+      <pubDate>Wed, 31 Aug 2022 20:41:21 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/python-env-2022/</guid>
+      <description>过去三年中，我都会发布一下 Python 虚拟环境指南，今年的指南有点晚。如果是新的读者朋友欢迎点开下面链接，去查看往年的文章: Python 虚拟环境指南 2021 版 Python 虚拟环</description>
+    </item>
     
     <item>
       <title>Django 源码解析 - 2 请求处理流程</title>

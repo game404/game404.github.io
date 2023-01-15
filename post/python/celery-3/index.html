@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。 Celery是一款非常简单、灵活、" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/celery-3/" />
-<meta property="article:published_time" content="2021-10-25T21:19:23+08:00" />
-<meta property="article:modified_time" content="2021-10-25T21:19:23+08:00" />
+<meta property="article:published_time" content="2021-10-25T21:19:23&#43;08:00"/>
+<meta property="article:modified_time" content="2021-10-25T21:19:23&#43;08:00"/>
+
 <meta itemprop="name" content="神器 celery 源码解析 - 3">
 <meta itemprop="description" content="kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。 Celery是一款非常简单、灵活、">
+
+
 <meta itemprop="datePublished" content="2021-10-25T21:19:23&#43;08:00" />
 <meta itemprop="dateModified" content="2021-10-25T21:19:23&#43;08:00" />
-<meta itemprop="wordCount" content="7693">
+<meta itemprop="wordCount" content="7715">
 
 
 
-<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="celery,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="神器 celery 源码解析 - 3"/>
 <meta name="twitter:description" content="kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。 Celery是一款非常简单、灵活、"/>
 
@@ -137,42 +141,48 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#amqp-">AMQP 概念</a></li>
-    <li><a href="#kombu">kombu概述</a></li>
-    <li><a href="#kombu-">kombu 使用指南</a></li>
-    <li><a href="#producer--consumer-">Producer && Consumer 解析</a>
-      <ul>
-        <li><a href="#proudcer">Proudcer解析</a></li>
-        <li><a href="#consumer">Consumer解析</a></li>
-      </ul>
-    </li>
-    <li><a href="#exchange--queue-">Exchange && Queue 解析</a></li>
-    <li><a href="#message-">Message 解析</a></li>
-    <li><a href="#connection-">Connection 解析</a></li>
-    <li><a href="#matcher--serialization">Matcher && serialization</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a>
-      <ul>
-        <li><a href="#pickle">pickle打包函数</a></li>
-        <li><a href="#heading-2">配置类的简化</a></li>
-        <li><a href="#countid">使用count提供自增ID</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading-3">参考连接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#amqp-概念">AMQP 概念</a></li>
+<li><a href="#kombu概述">kombu概述</a></li>
+<li><a href="#kombu-使用指南">kombu 使用指南</a></li>
+<li><a href="#producer-consumer-解析">Producer &amp;&amp; Consumer 解析</a>
+<ul>
+<li><a href="#proudcer解析">Proudcer解析</a></li>
+<li><a href="#consumer解析">Consumer解析</a></li>
+</ul></li>
+<li><a href="#exchange-queue-解析">Exchange &amp;&amp; Queue 解析</a></li>
+<li><a href="#message-解析">Message 解析</a></li>
+<li><a href="#connection-解析">Connection 解析</a></li>
+<li><a href="#matcher-serialization">Matcher &amp;&amp; serialization</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a>
+<ul>
+<li><a href="#pickle打包函数">pickle打包函数</a></li>
+</ul></li>
+<li><a href="#参考连接">参考连接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。</p>
+      
+
+<p>kombu，一个python实现的消息库，是celery的基础库，在celery中承担核心的消息处理流程。</p>
+
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+
 <p>本文是是celery源码解析的第三篇，在前两篇里分别介绍了vine和py-amqp:</p>
+
 <ol>
 <li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
 </ol>
+
 <p>本文包括下面几个部分:</p>
+
 <ul>
 <li>AMQP协议</li>
 <li>kombu概述</li>
@@ -185,13 +195,21 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="amqp-">AMQP 概念</h2>
+
+<h2 id="amqp-概念">AMQP 概念</h2>
+
 <p>接上篇，我们继续学习AMQP的相关概念。理解这些基础概念对kombu为什么这样实现很有帮助。这次我们用小故事来模拟kombu的消息处理流程。</p>
+
 <p>小学三年级的小明同学喜欢同桌的小红同学，喜欢她的马尾和笑容，经常写小纸条给她。这里小纸条就是Message，小明同学是Producer, 小红同学是Consumer，这种直接投递的方式是direct。有时候，小红同学不在座位上，小明就把纸条放在她的抽屉里。抽屉就当做Queue使用，临时存放投递的消息。老师发现小明和小红上课经常有小动作后，棒打鸳鸯把他们分开了，他们不再是同桌。小明同学没法忘记小红的笑容，距离产生了更多的美，就拜托前面的小马帮他递小纸条，纸条封面上写着“请给小红”。小马就是Exchange，小马的前座也是Exchange，“请给小红”就是消息的route-key。常在河边走，哪有不湿脚。有次纸条被老师抓住，老师让小明同学在讲台上把纸条的内容讲给大家听。当众念小纸条这叫广播, 也就是fanout。</p>
+
 <p>幼稚的小故事也是一种真实的生活，谁又没有写过小纸条呢，请暂停回忆一分钟:) 。 业务是生活场景的一种抽象，代码又是更高层一点的抽象。理解业务，就对代码上的概念不发楞。</p>
+
 <p>以上这些概念Exchange，Queue都是broker要实现的内容。可是客户端Producer/Consumer也包含，这是为什么呢？消息传输过程可不可以简化成一个客户端只使用producer发送消息，另外一个客户端只使用consumer消费消息呢？这样也不是不行，前提是AMQP协议中exchange和queue的创建及绑定，需要使用管理工具在broker先创建好，这无疑约束了AMPQ使用的灵活性。kombu中包含了Exchange，Queue模型，主要是用来对broker的管理。</p>
-<h2 id="kombu">kombu概述</h2>
+
+<h2 id="kombu概述">kombu概述</h2>
+
 <p>kombu是植物家族的重要一员, 芹菜(celery)、葡萄藤(vine)、海带(kombu)是快乐的一家人。我们解析kombu，采用的版本是 <code>5.0.0</code>, 主要模块如下:</p>
+
 <table>
 <thead>
 <tr>
@@ -199,59 +217,73 @@
 <th>功能</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>abstract.py</td>
 <td>抽象的绑定实现，对象是否可以绑定到channel</td>
 </tr>
+
 <tr>
 <td>compression.py</td>
 <td>压缩算法的汇总</td>
 </tr>
+
 <tr>
 <td>connection.py</td>
 <td>broker的连接</td>
 </tr>
+
 <tr>
 <td>entity.py</td>
 <td>实体类，包括Exchange，binding和Queue对象的实现</td>
 </tr>
+
 <tr>
 <td>matcher.py</td>
 <td>匹配策略</td>
 </tr>
+
 <tr>
 <td>message.py</td>
 <td>消息对象,并且附带消息的操作接口ack，reject等</td>
 </tr>
+
 <tr>
 <td>messaging.py</td>
 <td>消息处理，包括Producer和Consumer</td>
 </tr>
+
 <tr>
 <td>mixins.py,pools.py,simple.py</td>
 <td>增强功能或者提升便捷使用的封装</td>
 </tr>
+
 <tr>
 <td>serialization.py</td>
 <td>序列化算法的汇总</td>
 </tr>
+
 <tr>
 <td>transport</td>
 <td>对接各种存储引擎的数据传输实现，主要有内存，redis，pyamqp(RabbitMQ) 等</td>
 </tr>
+
 <tr>
 <td>asynchronous</td>
 <td>异步实现</td>
 </tr>
 </tbody>
 </table>
+
 <p>kombu底层使用pyamqp提供的AMQP协议支持，并完成Producer，Consumer，Exchange，Queue等模型实现。</p>
-<h2 id="kombu-">kombu 使用指南</h2>
+
+<h2 id="kombu-使用指南">kombu 使用指南</h2>
+
 <p>老规矩，先从kombu的使用开始。下面是一个生产者发送消息的示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -265,9 +297,9 @@
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># kombu-5.0.0/examples/complete_send.py
+<pre class="chroma"># kombu-5.0.0/examples/complete_send.py
 
 from kombu import Connection, Producer, Exchange, Queue
 
@@ -280,20 +312,19 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
     producer.publish({&#39;hello&#39;: &#39;world&#39;},
                      exchange=exchange,
                      routing_key=&#39;kombu_demo&#39;,
-                     serializer=&#39;json&#39;, compression=&#39;zlib&#39;)
-</code></pre></td></tr></table>
+                     serializer=&#39;json&#39;, compression=&#39;zlib&#39;)</pre></td></tr></table>
 </div>
-</div><p>生产者示例包括下面几步:</p>
-<ul>
-<li>创建名为kombu_demo的exchange</li>
-<li>创建到broker的connection并使用其作为上下文</li>
-<li>使用connection创建发送消息的producer</li>
-<li>使用创建完成的producer发送普通的json消息到创建好的exchange，并且指明routing_key为kombu_demo。约定消息使用json序列化，zlib算法压缩。</li>
-</ul>
+</div>
+<p>生产者示例包括下面几步:
+* 创建名为kombu_demo的exchange
+* 创建到broker的connection并使用其作为上下文
+* 使用connection创建发送消息的producer
+* 使用创建完成的producer发送普通的json消息到创建好的exchange，并且指明routing_key为kombu_demo。约定消息使用json序列化，zlib算法压缩。</p>
+
 <p>消费者的示例会略微复杂一点:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -319,9 +350,9 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">kombu-5.0.0/examples/complete_receive.py
+<pre class="chroma">kombu-5.0.0/examples/complete_receive.py
 
 from pprint import pformat
 
@@ -346,27 +377,31 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
     with Consumer(connection, queue, callbacks=[handle_message]):
 
         for _ in eventloop(connection):
-            pass
-</code></pre></td></tr></table>
+            pass</pre></td></tr></table>
 </div>
-</div><p>消费者示例主要包括下面几步:</p>
-<ul>
-<li>同样创建名为kombu_demo的exchange</li>
-<li>创建名为kombu_demo的queue, 绑定到exchange，并且设置消费的routing_key</li>
-<li>创建callback函数，接收body和message。body是纯粹的业务信息，message则包含一些投递信息，并且可以使用message直接执行ack回应给broker。</li>
-<li>和生产者一样，创建到broker的connection并使用其作为上下文</li>
-<li>使用connection创建消费者，消费者需要绑定到queue，并且设置callback函数</li>
-<li>持续监听connection上的事件循环</li>
-</ul>
+</div>
+<p>消费者示例主要包括下面几步:
+* 同样创建名为kombu_demo的exchange
+* 创建名为kombu_demo的queue, 绑定到exchange，并且设置消费的routing_key
+* 创建callback函数，接收body和message。body是纯粹的业务信息，message则包含一些投递信息，并且可以使用message直接执行ack回应给broker。
+* 和生产者一样，创建到broker的connection并使用其作为上下文
+* 使用connection创建消费者，消费者需要绑定到queue，并且设置callback函数
+* 持续监听connection上的事件循环</p>
+
 <p>我们再回头看看下图，对比一下示例，加强理解：</p>
-<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing"></p>
+
+<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing" /></p>
+
 <p>示例中的生产者位于图的左半区，消费者位于图的右半区。中间部分的broker，在文章的第一篇里，我们使用redis服务作为broker。示例还有重要的一点就是，全程没有创建channel，都是自动创建的。一般情况下，我们有3个进程，Producer进程和Consumer进程通过Broker进程进行消息的处理，这是一个典型的分布式系统。</p>
-<h2 id="producer--consumer-">Producer &amp;&amp; Consumer 解析</h2>
-<h3 id="proudcer">Proudcer解析</h3>
+
+<h2 id="producer-consumer-解析">Producer &amp;&amp; Consumer 解析</h2>
+
+<h3 id="proudcer解析">Proudcer解析</h3>
+
 <p>Proudcer的构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -400,9 +435,9 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Producer:
+<pre class="chroma">class Producer:
     def __init__(self, channel, exchange=None, routing_key=None,
                  serializer=None, auto_declare=None, compression=None,
                  on_return=None):
@@ -435,13 +470,13 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
             self._channel = channel
             if self.on_return:
                 self._channel.events[&#39;basic_return&#39;].add(self.on_return)
-            self.exchange = self.exchange(channel)
-</code></pre></td></tr></table>
+            self.exchange = self.exchange(channel)</pre></td></tr></table>
 </div>
-</div><p>Producer除了设置自身的属性外，还包括对channel的处理。前文介绍过connection也是channel的一种，这里要先处理好connection，然后再从connection获得默认的channel。同时对于已经成功的channel，则进行将producer绑定到channel。<code>self.exchange(channel)</code> 等同于 <code>self.exchange.__call__(channel)</code>。producer创建完成后，可以通过publish方法发送消息:</p>
+</div>
+<p>Producer除了设置自身的属性外，还包括对channel的处理。前文介绍过connection也是channel的一种，这里要先处理好connection，然后再从connection获得默认的channel。同时对于已经成功的channel，则进行将producer绑定到channel。<code>self.exchange(channel)</code> 等同于 <code>self.exchange.__call__(channel)</code>。producer创建完成后，可以通过publish方法发送消息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -470,9 +505,9 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def publish(self, body, routing_key=None, delivery_mode=None,
+<pre class="chroma">def publish(self, body, routing_key=None, delivery_mode=None,
                 mandatory=False, immediate=False, priority=0,
                 content_type=None, content_encoding=None, serializer=None,
                 headers=None, compression=None, exchange=None, retry=False,
@@ -500,15 +535,17 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
         exchange=exchange, routing_key=routing_key,
         mandatory=mandatory, immediate=immediate,
         timeout=timeout
-    )
-</code></pre></td></tr></table>
+    )</pre></td></tr></table>
 </div>
-</div><p>Producer是对channel的业务封装，创建时候有channel则使用channel，没有channel则使用connection的default_channel。Producer发送消息的过程，完成exchange和message包装后，使用channel进行发送。</p>
-<h3 id="consumer">Consumer解析</h3>
+</div>
+<p>Producer是对channel的业务封装，创建时候有channel则使用channel，没有channel则使用connection的default_channel。Producer发送消息的过程，完成exchange和message包装后，使用channel进行发送。</p>
+
+<h3 id="consumer解析">Consumer解析</h3>
+
 <p>Consumer的构造函数和上下文：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -545,9 +582,9 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Consumer:
+<pre class="chroma">class Consumer:
     
     def __init__(self, channel, queues=None, no_ack=None, auto_declare=None,
                  callbacks=None, on_decode_error=None, on_message=None,
@@ -583,13 +620,13 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
     
     def __enter__(self):
         self.consume()
-        return self
-</code></pre></td></tr></table>
+        return self</pre></td></tr></table>
 </div>
-</div><p>Consumer和Producer类似，设置完属性后也要处理好channel，不同的是其中的queue(在producer中是exchange)和channel绑定并提供一个上下文环境。在上下文环境中进行消息消费:</p>
+</div>
+<p>Consumer和Producer类似，设置完属性后也要处理好channel，不同的是其中的queue(在producer中是exchange)和channel绑定并提供一个上下文环境。在上下文环境中进行消息消费:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -628,9 +665,9 @@ with Connection(&#39;amqp://guest:guest@localhost:5672//&#39;) as connection:
 </span><span class="lnt">37
 </span><span class="lnt">38
 </span><span class="lnt">39
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def consume(self, no_ack=None):
+<pre class="chroma">def consume(self, no_ack=None):
     tag = self._add_tag(queue, consumer_tag)
     # 每个queue消息消息
     for queue in self._queues:
@@ -668,15 +705,17 @@ def receive(self, body, message):
     callbacks = self.callbacks
     ...
     # 默认就是body和message回传给业务函数
-    [callback(body, message) for callback in callbacks]
-</code></pre></td></tr></table>
+    [callback(body, message) for callback in callbacks]</pre></td></tr></table>
 </div>
-</div><p>consumer可以使用多个queue，每个queue消费消息的时候可以使用覆盖处理函数或者使用系统的处理函数。一般情况下callback会获得到解码后的body和消息原文。如何持续的消费消息，在connection部分再介绍。</p>
-<h2 id="exchange--queue-">Exchange &amp;&amp; Queue 解析</h2>
+</div>
+<p>consumer可以使用多个queue，每个queue消费消息的时候可以使用覆盖处理函数或者使用系统的处理函数。一般情况下callback会获得到解码后的body和消息原文。如何持续的消费消息，在connection部分再介绍。</p>
+
+<h2 id="exchange-queue-解析">Exchange &amp;&amp; Queue 解析</h2>
+
 <p>producer需要使用exchange，consumer需要使用queue，消息是通过exchange和queue搭桥传递的。Exchange和Queue有共同的父类MaybeChannelBound:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -685,9 +724,9 @@ def receive(self, body, message):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">              +-------------------+
+<pre class="chroma">              +-------------------+
               | MaybeChannelBound |
               +-------^-----------+
                       |
@@ -695,13 +734,13 @@ def receive(self, body, message):
      |                                 |
 +----+-----+                       +---+---+
 | Exchange |                       | Queue |
-+----------+                       +-------+
-</code></pre></td></tr></table>
++----------+                       +-------+</pre></td></tr></table>
 </div>
-</div><p>MaybeChannelBound约定了类对channel的绑定行为:</p>
+</div>
+<p>MaybeChannelBound约定了类对channel的绑定行为:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -709,26 +748,27 @@ def receive(self, body, message):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MaybeChannelBound(Object):
+<pre class="chroma">class MaybeChannelBound(Object):
     
     _channel = None
     _is_bound = False
     
     def __call__(self, channel):
         &#34;&#34;&#34;`self(channel) -&gt; self.bind(channel)`.&#34;&#34;&#34;
-        return self.bind(channel)
-</code></pre></td></tr></table>
+        return self.bind(channel)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>_channel 和 _is_bound 都是类属性，可以知道channel在类上重用</li>
 <li>__call__魔法函数让类方法, 比如exchange(channel)和queue(channel)执行的时候会自动执行绑定到channel的动作。</li>
 </ul>
+
 <p>下面绑定channel的动作和是否绑定的判断也可以验证这一点。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -740,9 +780,9 @@ def receive(self, body, message):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def maybe_bind(self, channel):
+<pre class="chroma">def maybe_bind(self, channel):
     &#34;&#34;&#34;Bind instance to channel if not already bound.&#34;&#34;&#34;
     if not self.is_bound and channel:
         self._channel = maybe_channel(channel)
@@ -753,34 +793,34 @@ def receive(self, body, message):
 @property
 def is_bound(self):
     &#34;&#34;&#34;Flag set if the channel is bound.&#34;&#34;&#34;
-    return self._is_bound and self._channel is not None
-</code></pre></td></tr></table>
+    return self._is_bound and self._channel is not None</pre></td></tr></table>
 </div>
-</div><p>exchange对象的创建和绑定到channel:</p>
+</div>
+<p>exchange对象的创建和绑定到channel:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Exchange(MaybeChannelBound):
+<pre class="chroma">class Exchange(MaybeChannelBound):
     def __init__(self, name=&#39;&#39;, type=&#39;&#39;, channel=None, **kwargs):
         super().__init__(**kwargs)
         self.name = name or self.name
         self.type = type or self.type
         self.maybe_bind(channel)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>创建完成的exchange对象需要进行申明，申明的过程就是让broker创建exchange的过程:</p>
+</div>
+<p>创建完成的exchange对象需要进行申明，申明的过程就是让broker创建exchange的过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -798,9 +838,9 @@ def is_bound(self):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def declare(self, nowait=False, passive=None, channel=None):
+<pre class="chroma">def declare(self, nowait=False, passive=None, channel=None):
     &#34;&#34;&#34;Declare the exchange.
 
     Creates the exchange on the broker, unless passive is set
@@ -817,14 +857,15 @@ def is_bound(self):
             exchange=self.name, type=self.type, durable=self.durable,
             auto_delete=self.auto_delete, arguments=self.arguments,
             nowait=nowait, passive=passive,
-        )
-</code></pre></td></tr></table>
+        )</pre></td></tr></table>
 </div>
-</div><hr>
+</div>
+<hr />
+
 <p>queue对象创建完成后也需要绑定到channel:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -832,22 +873,22 @@ def is_bound(self):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Queue(MaybeChannelBound):
+<pre class="chroma">class Queue(MaybeChannelBound):
     def __init__(self, name=&#39;&#39;, exchange=None, routing_key=&#39;&#39;,
                  channel=None, bindings=None, on_declared=None,
                  **kwargs):
         super().__init__(**kwargs)
         self.name = name or self.name
         self.maybe_bind(channel)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>然后申明queue，这个过程包括下面3个步骤:</p>
+</div>
+<p>然后申明queue，这个过程包括下面3个步骤:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -873,9 +914,9 @@ def is_bound(self):
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def declare(self, nowait=False, channel=None):
+<pre class="chroma">def declare(self, nowait=False, channel=None):
     &#34;&#34;&#34;Declare queue and exchange then binds queue to exchange.&#34;&#34;&#34;
     if not self.no_declare:
         # - declare main binding.
@@ -900,13 +941,13 @@ def _create_bindings(self, nowait=False, channel=None):
     for B in self.bindings:
         channel = channel or self.channel
         B.declare(channel)
-        B.bind(self, nowait=nowait, channel=channel)
-</code></pre></td></tr></table>
+        B.bind(self, nowait=nowait, channel=channel)</pre></td></tr></table>
 </div>
-</div><p>queue的申明也是让broker创建queue:</p>
+</div>
+<p>queue的申明也是让broker创建queue:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -918,9 +959,9 @@ def _create_bindings(self, nowait=False, channel=None):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def queue_declare(self, nowait=False, passive=False, channel=None):
+<pre class="chroma">def queue_declare(self, nowait=False, passive=False, channel=None):
     ...
     ret = channel.queue_declare(
             queue=self.name,
@@ -931,13 +972,13 @@ def _create_bindings(self, nowait=False, channel=None):
             arguments=queue_arguments,
             nowait=nowait,
         )
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>queue比exchange多一个步骤就是bind到exchange。queue_bind的工作是让broker创建queue和exchange的关联关系。</p>
+</div>
+<p>queue比exchange多一个步骤就是bind到exchange。queue_bind的工作是让broker创建queue和exchange的关联关系。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -946,9 +987,9 @@ def _create_bindings(self, nowait=False, channel=None):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def queue_bind(self, nowait=False, channel=None):
+<pre class="chroma">def queue_bind(self, nowait=False, channel=None):
     &#34;&#34;&#34;Create the queue binding on the server.&#34;&#34;&#34;
     return (channel or self.channel).queue_bind(
         queue=self.name,
@@ -956,15 +997,17 @@ def _create_bindings(self, nowait=False, channel=None):
         routing_key=routing_key,
         arguments=arguments,
         nowait=nowait,
-    )
-</code></pre></td></tr></table>
+    )</pre></td></tr></table>
 </div>
-</div><p>从Exchange和Queue的实现，我们可以知道生产者不用关心消费者的实现，只需要创建和申明exchange即可。消费者则是需要知道生产者，除了创建和申明queue后，还需要绑定queue和exchange的关系。又因为消费者和生产者在不同的进程，即使生成者创建了exchange，消费者也需要在本地隐式创建exchange对象。</p>
-<h2 id="message-">Message 解析</h2>
+</div>
+<p>从Exchange和Queue的实现，我们可以知道生产者不用关心消费者的实现，只需要创建和申明exchange即可。消费者则是需要知道生产者，除了创建和申明queue后，还需要绑定queue和exchange的关系。又因为消费者和生产者在不同的进程，即使生成者创建了exchange，消费者也需要在本地隐式创建exchange对象。</p>
+
+<h2 id="message-解析">Message 解析</h2>
+
 <p>消息对象，除了纯粹的数据结构外，也包含channel的引用，毕竟消息可以直接执行ack动作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -978,9 +1021,9 @@ def _create_bindings(self, nowait=False, channel=None):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Message:
+<pre class="chroma">class Message:
     def __init__(self, body=None, delivery_tag=None,
                  content_type=None, content_encoding=None, delivery_info=None,
                  properties=None, headers=None, postencode=None,
@@ -993,20 +1036,19 @@ def _create_bindings(self, nowait=False, channel=None):
         self.headers = headers or {}
         self.body = body
         ...
-        self._state = &#39;RECEIVED&#39;
-</code></pre></td></tr></table>
+        self._state = &#39;RECEIVED&#39;</pre></td></tr></table>
 </div>
-</div><p>消息本身还带有四个状态:</p>
-<ul>
-<li><code>RECEIVED</code> 默认状态</li>
-<li><code>ACK</code> 完成ack响应</li>
-<li><code>REJECTED</code> 拒绝消息</li>
-<li><code>REQUEUED</code> 重新投递消息</li>
-</ul>
+</div>
+<p>消息本身还带有四个状态:
+* <code>RECEIVED</code> 默认状态
+* <code>ACK</code> 完成ack响应
+* <code>REJECTED</code> 拒绝消息
+* <code>REQUEUED</code> 重新投递消息</p>
+
 <p>其中 <code>{'ACK', 'REJECTED', 'REQUEUED'}</code> 三个状态的转换都需要使用channel进行操作broker，成功后再切换:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1020,9 +1062,9 @@ def _create_bindings(self, nowait=False, channel=None):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def ack(self, multiple=False):
+<pre class="chroma">def ack(self, multiple=False):
     # 回应ACK
     self.channel.basic_ack(self.delivery_tag, multiple=multiple)
     self._state = &#39;ACK&#39;
@@ -1035,33 +1077,34 @@ def reject(self, requeue=False):
 def requeue(self):
     # 拒绝（退回消息）（和reject区别在requeue=True）
     self.channel.basic_reject(self.delivery_tag, requeue=True)
-    self._state = &#39;REQUEUED&#39;
-</code></pre></td></tr></table>
+    self._state = &#39;REQUEUED&#39;</pre></td></tr></table>
 </div>
-</div><p>消息上附带的信息，通过不同的load方法进行序列化:</p>
+</div>
+<p>消息上附带的信息，通过不同的load方法进行序列化:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from .serialization import loads
+<pre class="chroma">from .serialization import loads
 
 @property
 def payload(self):
     return loads(self.body, self.content_type,
-                     self.content_encoding, accept=self.accept)    
-</code></pre></td></tr></table>
+                     self.content_encoding, accept=self.accept)    </pre></td></tr></table>
 </div>
-</div><h2 id="connection-">Connection 解析</h2>
+</div>
+<h2 id="connection-解析">Connection 解析</h2>
+
 <p>Connection负责管理producer/consumer到broker的网络连接:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1080,9 +1123,9 @@ def payload(self):
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Connection:
+<pre class="chroma">class Connection:
     def __init__(self, hostname=&#39;localhost&#39;, userid=None,
                  password=None, virtual_host=None, port=None, insist=False,
                  ssl=False, transport=None, connect_timeout=5,
@@ -1100,13 +1143,13 @@ def payload(self):
         ...
         
         self._init_params(**params)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>重点在_init_params中对各种支持AQMP协议的broker的管理, 比如redis，RobbitMQ:</p>
+</div>
+<p>重点在_init_params中对各种支持AQMP协议的broker的管理, 比如redis，RobbitMQ:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1131,9 +1174,9 @@ def payload(self):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _init_params(self, hostname, userid, password, virtual_host, port,
+<pre class="chroma">def _init_params(self, hostname, userid, password, virtual_host, port,
                  insist, ssl, transport, connect_timeout,
                  login_method, heartbeat):
     transport = transport or &#39;amqp&#39;
@@ -1157,13 +1200,13 @@ def payload(self):
     self.ssl = ssl
     # 传输类
     self.transport_cls = transport
-    self.heartbeat = heartbeat and float(heartbeat)
-</code></pre></td></tr></table>
+    self.heartbeat = heartbeat and float(heartbeat)</pre></td></tr></table>
 </div>
-</div><p>配置完connection信息后，就需要创建网络连接。这个过程通过调用connection属性或者default_channel属性时候自动创建：</p>
+</div>
+<p>配置完connection信息后，就需要创建网络连接。这个过程通过调用connection属性或者default_channel属性时候自动创建：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1199,9 +1242,9 @@ def payload(self):
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@property
+<pre class="chroma">@property
 def connection(self):
     &#34;&#34;&#34;The underlying connection object.
 
@@ -1236,13 +1279,13 @@ def default_channel(self):
 
     if self._default_channel is None:
         self._default_channel = self.channel()
-    return self._default_channel
-</code></pre></td></tr></table>
+    return self._default_channel</pre></td></tr></table>
 </div>
-</div><p>连接创建完成后，继续创建channel:</p>
+</div>
+<p>连接创建完成后，继续创建channel:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1258,9 +1301,9 @@ def default_channel(self):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def channel(self):
+<pre class="chroma">def channel(self):
     &#34;&#34;&#34;Create and return a new channel.&#34;&#34;&#34;
     self._debug(&#39;create channel&#39;)
     chan = self.transport.create_channel(self.connection)
@@ -1275,16 +1318,19 @@ def get_transport_cls(self):
     transport_cls = self.transport_cls
     if not transport_cls or isinstance(transport_cls, str):
         transport_cls = get_transport_cls(transport_cls)
-    return transport_cls
-</code></pre></td></tr></table>
+    return transport_cls</pre></td></tr></table>
 </div>
-</div><p>创建broker的连接过程，是通过transport的创建，其中细节涉及对不同类型的broker服务的适配，内容挺多，我们下一章再进行解析。</p>
-<h2 id="matcher--serialization">Matcher &amp;&amp; serialization</h2>
+</div>
+<p>创建broker的连接过程，是通过transport的创建，其中细节涉及对不同类型的broker服务的适配，内容挺多，我们下一章再进行解析。</p>
+
+<h2 id="matcher-serialization">Matcher &amp;&amp; serialization</h2>
+
 <p>Matcher负责处理消息的匹配机制，serialization复杂消息的序列化。两者的实现方式类似，都使用注册中心模式+策略模式实现。</p>
+
 <p>Matcher的注册中心:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1297,9 +1343,9 @@ def get_transport_cls(self):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MatcherRegistry:
+<pre class="chroma">class MatcherRegistry:
     &#34;&#34;&#34;Pattern matching function registry.&#34;&#34;&#34;
     &#34;&#34;&#34;匹配器的注册中心&#34;&#34;&#34;
 
@@ -1311,13 +1357,13 @@ def get_transport_cls(self):
         self._default_matcher = None
 
 #: Global registry of matchers.
-registry = MatcherRegistry()
-</code></pre></td></tr></table>
+registry = MatcherRegistry()</pre></td></tr></table>
 </div>
-</div><p>注册glob(模糊)模式和pcre(正则)模式两种策略:</p>
+</div>
+<p>注册glob(模糊)模式和pcre(正则)模式两种策略:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1332,9 +1378,9 @@ registry = MatcherRegistry()
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_glob():
+<pre class="chroma">def register_glob():
     &#34;&#34;&#34;Register glob into default registry.&#34;&#34;&#34;
     &#34;&#34;&#34;使用glob(通配符)匹配&#34;&#34;&#34;
     registry.register(&#39;glob&#39;, fnmatch)
@@ -1348,13 +1394,13 @@ def register_pcre():
 
 # Register the base matching methods.
 register_glob()
-register_pcre()
-</code></pre></td></tr></table>
+register_pcre()</pre></td></tr></table>
 </div>
-</div><p>匹配消息的方法，就是使用模式进行识别:</p>
+</div>
+<p>匹配消息的方法，就是使用模式进行识别:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1370,9 +1416,9 @@ register_pcre()
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match(self, data, pattern, matcher=None, matcher_kwargs=None):
+<pre class="chroma">def match(self, data, pattern, matcher=None, matcher_kwargs=None):
     &#34;&#34;&#34;Call the matcher.&#34;&#34;&#34;
     if matcher and not self._matchers.get(matcher):
         raise self.MatcherNotInstalled(
@@ -1387,13 +1433,13 @@ register_pcre()
     else:
         first_arg = bytes_to_str(data)
         second_arg = bytes_to_str(pattern)
-    return match_func(first_arg, second_arg, **matcher_kwargs or {})
-</code></pre></td></tr></table>
+    return match_func(first_arg, second_arg, **matcher_kwargs or {})</pre></td></tr></table>
 </div>
-</div><p>Serializer的注册中心:</p>
+</div>
+<p>Serializer的注册中心:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1415,9 +1461,9 @@ register_pcre()
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SerializerRegistry:
+<pre class="chroma">class SerializerRegistry:
     &#34;&#34;&#34;The registry keeps track of serialization methods.&#34;&#34;&#34;
     &#34;&#34;&#34;序列化方法的注册中心&#34;&#34;&#34;
 
@@ -1438,13 +1484,13 @@ registry = SerializerRegistry()
 dumps = registry.dumps
 loads = registry.loads
 register = registry.register
-unregister = registry.unregister
-</code></pre></td></tr></table>
+unregister = registry.unregister</pre></td></tr></table>
 </div>
-</div><p>json, yaml, pickle和msgpack四种序列化策略的注册:</p>
+</div>
+<p>json, yaml, pickle和msgpack四种序列化策略的注册:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1503,9 +1549,9 @@ unregister = registry.unregister
 </span><span class="lnt">57
 </span><span class="lnt">58
 </span><span class="lnt">59
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_json():
+<pre class="chroma">def register_json():
     &#34;&#34;&#34;Register a encoder/decoder for JSON serialization.&#34;&#34;&#34;
     from kombu.utils import json as _json
 
@@ -1563,13 +1609,13 @@ def register_msgpack():
 register_json()
 register_pickle()
 register_yaml()
-register_msgpack()
-</code></pre></td></tr></table>
+register_msgpack()</pre></td></tr></table>
 </div>
-</div><p>反序列化的使用:</p>
+</div>
+<p>反序列化的使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1581,9 +1627,9 @@ register_msgpack()
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># kombu-5.0.0/kombu/serialization.py:285
+<pre class="chroma"># kombu-5.0.0/kombu/serialization.py:285
 # 导出策略
 loads = registry.loads
 
@@ -1594,17 +1640,21 @@ class Message:
     def _decode(self):
         # 使用策略反序列化message-body
         return loads(self.body, self.content_type,
-                     self.content_encoding, accept=self.accept)
-</code></pre></td></tr></table>
+                     self.content_encoding, accept=self.accept)</pre></td></tr></table>
 </div>
-</div><h2 id="heading">小结</h2>
+</div>
+<h2 id="小结">小结</h2>
+
 <p>通过kombu的Producer可以发送消息到broker，使用Comsumer则可以消费消息。发送消息的时候需要使用Exchange，用来将消费分发到不同的目标Queue；消费消息的时候，需要使用Queue，Queue还需要通过绑定的方式和Exchange关联起来。Exchange和Queue都是使用底层的channel进行数据传输，所以需要进绑定(binding)；还需要在远程的broker中创建，所以创建后的的Exchange和Queue需要进行申明(declare)。消息会附带上投递信息，进行序列化后从生产者到broker转发给消费者，消费者再使用投递信息上的序列化约定，将消息反序列成业务信息。</p>
-<h2 id="heading-1">小技巧</h2>
-<h3 id="pickle">pickle打包函数</h3>
+
+<h2 id="小技巧">小技巧</h2>
+
+<h3 id="pickle打包函数">pickle打包函数</h3>
+
 <p>pickle不仅支持数据接口的序列化，还支持函数的序列化:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1622,9 +1672,9 @@ class Message:
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3
+<pre class="chroma">python3
 Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27)
 [Clang 6.0 (clang-600.0.57)] on darwin
 Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
@@ -1641,106 +1691,15 @@ b&#39;\x80\x04\x95\x16\x00\x00\x00\x00\x00\x00\x00\x8c\x08__main__\x94\x8c\x05he
 &gt;&gt;&gt;
 &gt;&gt;&gt; q(&#34;python&#34;)
 hello python
-&gt;&gt;&gt;
-</code></pre></td></tr></table>
+&gt;&gt;&gt;</pre></td></tr></table>
 </div>
-</div><p>上面的hello函数可以通过pickle打包，再重新解包执行。利用这个机制使用kombu，可以将producer进程的函数发送到consumer进程远程执行。pickle支持的数据类型还挺丰富，官方文档中介绍包括下面多种类型:</p>
+</div>
+<p>上面的hello函数可以通过pickle打包，再重新解包执行。利用这个机制使用kombu，可以将producer进程的函数发送到consumer进程远程执行。pickle支持的数据类型还挺丰富，官方文档中介绍包括下面多种类型:</p>
+
 <blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">The following types can be pickled:
-
-* None, True, and False
-
-* integers, floating point numbers, complex numbers
-
-* strings, bytes, bytearrays
-
-* tuples, lists, sets, and dictionaries containing only picklable objects
-
-* functions defined at the top level of a module (using def, not lambda)
-
-* built-in functions defined at the top level of a module
-
-* classes that are defined at the top level of a module
-
-* instances of such classes whose __dict__ or the result of calling __getstate__() is picklable (see section Pickling Class Instances for details).
-</code></pre></td></tr></table>
-</div>
-</div></blockquote>
-<h3 id="heading-2">配置类的简化</h3>
-<p><code>Object</code>提供了一种快速构建对象的方法:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Object:
-    &#34;&#34;&#34;Common base class.
-
-    Supports automatic kwargs-&gt;attributes handling, and cloning.
-    &#34;&#34;&#34;
-
-    attrs = ()
-
-    def __init__(self, *args, **kwargs):
-        # attrs 在子类中定义
-        for name, type_ in self.attrs:
-            value = kwargs.get(name)
-            # 从字典参数给属性动态赋值
-            if value is not None:
-                setattr(self, name, (type_ or _any)(value))
-            else:
-                try:
-                    getattr(self, name)
-                except AttributeError:
-                    setattr(self, name, None)
-
-</code></pre></td></tr></table>
-</div>
-</div><p>Queue展示了这种方式的示例，比如max_length属性:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1763,39 +1722,39 @@ hello python
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Queue(MaybeChannelBound):
-    attrs = (
-        ..
-        (&#39;max_length&#39;, int),
-        ...
-    )
-    def __init__(self, name=&#39;&#39;, exchange=None, routing_key=&#39;&#39;,
-                 channel=None, bindings=None, on_declared=None,
-                 **kwargs):
-        self.name = name or self.name
-        ...
-    
-    def queue_declare(self, nowait=False, passive=False, channel=None):
-        ...
-        queue_arguments = channel.prepare_queue_arguments(
-            self.queue_arguments or {},
-            expires=self.expires,
-            message_ttl=self.message_ttl,
-            max_length=self.max_length,
-            max_length_bytes=self.max_length_bytes,
-            max_priority=self.max_priority,
-        )
-        ...
-</code></pre></td></tr></table>
+<pre class="chroma">&gt; The following types can be pickled:
+&gt; 
+&gt; * None, True, and False
+&gt; 
+&gt; * integers, floating point numbers, complex numbers
+&gt; 
+&gt; * strings, bytes, bytearrays
+&gt; 
+&gt; * tuples, lists, sets, and dictionaries containing only picklable objects
+&gt; 
+&gt; * functions defined at the top level of a module (using def, not lambda)
+&gt; 
+&gt; * built-in functions defined at the top level of a module
+&gt; 
+&gt; * classes that are defined at the top level of a module
+&gt; 
+&gt; * instances of such classes whose __dict__ or the result of calling __getstate__() is picklable (see section Pickling Class Instances for details).
+&gt; ```
+&gt; 
+
+### 配置类的简化
+
+`Object`提供了一种快速构建对象的方法:</pre></td></tr></table>
 </div>
-</div><p>在Queue的构造函数中并没有定义max_length属性，但是queue_declare中却可以直接使用这个属性，可以对比name属性感受一下差异。这对我们简化定义属性很多的对象有帮助，比如一些配置类。</p>
-<h3 id="countid">使用count提供自增ID</h3>
-<p><code>itertools.count</code>提供了一种通过迭代器生成递增ID的方法:</p>
+</div>
+<p>class Object:
+    &ldquo;&rdquo;&ldquo;Common base class.</p>
+</blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1809,25 +1768,115 @@ hello python
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; from itertools import count
-&gt;&gt;&gt;
-&gt;&gt;&gt; for i in count():
-...     if i % 10 == 0:
-...             print(i)
-...     if i&gt;50:
-...             break
-...
+<pre class="chroma">Supports automatic kwargs-&gt;attributes handling, and cloning.
+&#34;&#34;&#34;
+
+attrs = ()
+
+def __init__(self, *args, **kwargs):
+    # attrs 在子类中定义
+    for name, type_ in self.attrs:
+        value = kwargs.get(name)
+        # 从字典参数给属性动态赋值
+        if value is not None:
+            setattr(self, name, (type_ or _any)(value))
+        else:
+            try:
+                getattr(self, name)
+            except AttributeError:
+                setattr(self, name, None)</pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">Queue展示了这种方式的示例，比如max_length属性:</pre></td></tr></table>
+</div>
+</div>
+<p>class Queue(MaybeChannelBound):
+    attrs = (
+        ..
+        (&lsquo;max_length&rsquo;, int),
+        &hellip;
+    )
+    def <strong>init</strong>(self, name=&ldquo;, exchange=None, routing_key=&ldquo;,
+                 channel=None, bindings=None, on_declared=None,
+                 **kwargs):
+        self.name = name or self.name
+        &hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">def queue_declare(self, nowait=False, passive=False, channel=None):
+    ...
+    queue_arguments = channel.prepare_queue_arguments(
+        self.queue_arguments or {},
+        expires=self.expires,
+        message_ttl=self.message_ttl,
+        max_length=self.max_length,
+        max_length_bytes=self.max_length_bytes,
+        max_priority=self.max_priority,
+    )
+    ...</pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">在Queue的构造函数中并没有定义max\_length属性，但是queue\_declare中却可以直接使用这个属性，可以对比name属性感受一下差异。这对我们简化定义属性很多的对象有帮助，比如一些配置类。
+
+### 使用count提供自增ID
+
+`itertools.count`提供了一种通过迭代器生成递增ID的方法:</pre></td></tr></table>
+</div>
+</div>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from itertools import count</p>
+
+<p>for i in count():
+&hellip;     if i % 10 == 0:
+&hellip;             print(i)
+&hellip;     if i&gt;50:
+&hellip;             break
+&hellip;
 0
 10
 20
 30
 40
 50
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="heading-3">参考连接</h2>
+```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<h2 id="参考连接">参考连接</h2>
+
 <ul>
 <li><a href="https://github.com/celery/kombu">https://github.com/celery/kombu</a></li>
 <li>Talking to RabbitMQ with Python and Kombu <a href="https://medium.com/python-pandemonium/talking-to-rabbitmq-with-python-and-kombu-6cbee93b1298">https://medium.com/python-pandemonium/talking-to-rabbitmq-with-python-and-kombu-6cbee93b1298</a></li>
@@ -1917,7 +1966,7 @@ hello python
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

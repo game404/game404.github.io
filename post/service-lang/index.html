@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/service-lang/" />
-<meta property="article:published_time" content="2021-11-07T23:05:22+08:00" />
-<meta property="article:modified_time" content="2021-11-07T23:05:22+08:00" />
+<meta property="article:published_time" content="2021-11-07T23:05:22&#43;08:00"/>
+<meta property="article:modified_time" content="2021-11-07T23:05:22&#43;08:00"/>
+
 <meta itemprop="name" content="谁是虽好的语言 ？- 语言选型闲聊（上）">
 <meta itemprop="description" content="大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列">
+
+
 <meta itemprop="datePublished" content="2021-11-07T23:05:22&#43;08:00" />
 <meta itemprop="dateModified" content="2021-11-07T23:05:22&#43;08:00" />
 <meta itemprop="wordCount" content="3964">
 
 
 
-<meta itemprop="keywords" content="架构," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="架构," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="谁是虽好的语言 ？- 语言选型闲聊（上）"/>
 <meta name="twitter:description" content="大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列"/>
 
@@ -137,30 +141,43 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#python">python</a></li>
-    <li><a href="#typescript">TypeScript</a></li>
-    <li><a href="#c">c#</a></li>
-    <li><a href="#heading">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#python">python</a></li>
+<li><a href="#typescript">TypeScript</a></li>
+<li><a href="#c">c</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <blockquote>
+      
+
+<blockquote>
 <p>大家好，我是肖恩，源码解析每周见</p>
 </blockquote>
+
 <p>谁是最好的语言？当然是php了 :)  先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列又又要延期了。为了避免大家误以为停更，今天简单聊点别的内容吧。近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这个过程中有一些个人看法，可能会有些偏颇或者不正确的地方，我就简单一说，大家一乐，无意引战。</p>
+
 <p>游戏公司和互联网公司不太一样的地方，除了前端web，ios，安卓，后端这些划分外，还有重要的一块是客户端游戏引擎。现在的客户端游戏引擎中，主流的 <em>商业</em> 引擎大概是UE4，Unity和cocos-creator。早些时候2d&amp;2.5d游戏用cocos比较多，现在3d游戏unity比较多，而更重度的3A大作，主要使用UE4。cocos支持JavaScript实现，也支持TypeScript实现；unity中可以使用c#，JavaScript，lua&hellip;；UE4需要使用c++。游戏客户端还有一个重要的特点是: 热更。如果一个简单的功能更新，或者是bug修复，需要玩家重新安装客户端，玩家流失率肯定要飙升，产品绝对不会主动接受这样的缺陷。使用脚本语言实现的功能，更容易进行热更新，不需要玩家重新安装客户端。另外一个因素是如果每个引擎都需要专门的人才储备，也是不小的成本，企鹅家的puerts可以支持TypeScript编写，跨UE4和Unity引擎工作。这样看，使用TypeScript是游戏客户端较好的语言选择。</p>
+
 <p>我们公司服务端的语言体系也比较多，有python，java，go，还有c#，我们传统使用的是python。现在有新的业务机会，老板也支持来一次重新选择，为以后的后端架构奠定一点基础。对于后端的语言选择，我们的核心需求是高性能，这个一点也不意外，高性能意味着低服务器成本。同样如果可以支持热更会更好，可以不重启服务直接修复bug，对追求糙猛快的游戏服务非常有吸引力。天下武功，唯快不破。如果后端语言能够和客户端统一，那更是极好的。除了工具栈统一，方便交流，还有一个易见的好处：代码重用。有些游戏逻辑，比如战斗功能，客户端需要计算，服务器也需要对客户端结果进行校验，不然外挂横行，会冲垮游戏体系。同样的功能和逻辑，不同的语言各自实现一遍，成本肯定是双杀。</p>
+
 <p>在语言及其生态之外，还得考虑人才市场的情况，架构不只是技术。对后端来说，c/c++肯定性能最高效，但是人难招。我们也要跟随市场上主流的技术方向。</p>
+
 <p>以上是一些主要背景知识，我之前工作中还做过一些网页游戏开发，用的是Flash/ActionScript/html5; 单机游戏开发，用的是cocos-xLua; 基于java的企业系统开发; 基于php的网站和CRM系统.., 对这些语言也是略有了解，虽然杂而不精。回到正题，下面我们正式聊聊各种语言：TypeScript(ts)，c#，rust， go 和 java，当然包括绕不过去的python。</p>
+
 <h2 id="python">python</h2>
+
 <p>python毕竟简单轻便，人生苦短，我用python，上手极快，功能强大，在公司里一直霸榜。可以做游戏服务，可以做内部系统，可以做自动化测试，可以做数据分析，可以做自动化运维&hellip;。优点很多，但是就游戏服务而言，主要就一个缺点：性能有限。由于GIL锁的原因，导致无法很好的发挥CPU多核的潜力。虽然我们有一些实践，利用pypy协程+twisted的异步IO，可以提高单线程的并发能力和降低编码难度，可是终究无法绕过多进程模型这个槛。举个简单的例子。游戏里有大量的配置文件，在多进程模型下，每个进程都要加载配置并序列化到内存，这样就造成内存浪费。同时因为进程数量庞大，管理和维护成本也在递增。当我们的玩家规模增长后，就出现各种问题，要解决这些问题，又需要做一些复杂的hack设计。</p>
+
 <p>python可以做到比较好的性能，不过我个人认为，这种优化工作，应该是编译器/运行时做的工作，而不是程序编码。举个例子:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -171,9 +188,9 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># py-amqp-5.0.6/amqp/method_framing.py
+<pre class="chroma"># py-amqp-5.0.6/amqp/method_framing.py
 
 def frame_writer(connection, transport,
                  pack=pack, pack_into=pack_into, range=range, len=len,
@@ -183,13 +200,13 @@ def frame_writer(connection, transport,
     ...
     write(pack(&#39;&gt;BHI%dsB&#39; % framelen,
                        type_, channel, framelen, frame, 0xce))
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>示例选自py-amqp的代码，<em>write</em> 函数来自 <em>transport</em> 的同名函数，为了提高 <em>frame_writer</em> 的性能，在函数内部进行了本地化，重新定义了一个内部变量。这种提高性能的处理方式，我们可以在很多库中看到。关于一些框架的性能实测数据，github上的 <strong>FrameworkBenchmarks</strong> 项目里有一些展示，我自己也有一些对比实测数据，如下表:</p>
+</div>
+<p>示例选自py-amqp的代码，<em>write</em> 函数来自 <em>transport</em> 的同名函数，为了提高 <em>frame_writer</em> 的性能，在函数内部进行了本地化，重新定义了一个内部变量。这种提高性能的处理方式，我们可以在很多库中看到。关于一些框架的性能实测数据，github上的 <strong>FrameworkBenchmarks</strong> 项目里有一些展示，我自己也有一些对比实测数据，如下表:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -199,9 +216,9 @@ def frame_writer(connection, transport,
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">| 框架            | QPS (plaintext/json) |
+<pre class="chroma">| 框架            | QPS (plaintext/json) |
 | --------------- | -------------------- |
 | nginx           | 85267                |
 | go              | 89354/87626          |
@@ -210,20 +227,25 @@ def frame_writer(connection, transport,
 | node-cluster(2) | 77450/71943          |
 | pypy3+twisted   | 14349/15921          |
 | python3+aiohttp | 4959/4625            |
-| c#              | 59347/58829            
-</code></pre></td></tr></table>
+| c#              | 59347/58829            </pre></td></tr></table>
 </div>
-</div><p>最终的结果个人觉得，python目前的服务性能优化，就像你拿着手工刀在绣花，费老大劲；结果别人用3d打印，瞬间完成。</p>
+</div>
+<p>最终的结果个人觉得，python目前的服务性能优化，就像你拿着手工刀在绣花，费老大劲；结果别人用3d打印，瞬间完成。</p>
+
 <blockquote>
 <p>对我的实测详细数据感兴趣的请公众号留言，如果留言比较多，我会整理公开分享出来。</p>
 </blockquote>
+
 <h2 id="typescript">TypeScript</h2>
+
 <p>TypeScript是微软家推出的语言，是JavaScript的超集。TypeScript 发展至今，已经成为大型项目的标配，其提供的静态类型系统，大大增强了代码的可读性以及可维护性；同时，它提供最新和不断发展的 JavaScript 特性，能让我们建立更健壮的组件。TypeScript经过静态编译，生成JavaScript代码供各种环境执行。对后端服务来说，主要就是基于的NodeJS环境的运行时。</p>
+
 <p>ts语法支持类型注解，解决了JavaScript的弱类型这一诟病；同时又是面向对象的语言，支持类，接口，继承，泛型等等；提供了很多先进的语法糖，比如装饰器，Mixin，预处理指令等。得益于Node.js 处理非阻塞 I/O 操作的事件循环机制运行效率也非常高效。主要缺点也是多进程和多线程使用起来复杂，而且不一定高效。比如上面示例，多线程方式反而比单线程效率低；多进程实现，又没法共享可变数据。</p>
+
 <p>就语言的特定来说，其编译时和运行时两个状态加大了心理负担。比如下面的多线程实现, 这是node-js实现的主线程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -249,9 +271,9 @@ def frame_writer(connection, transport,
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">//add this code snippet to main.js
+<pre class="chroma">//add this code snippet to main.js
 
 const { Worker } = require(&#39;worker_threads&#39;)
 
@@ -276,28 +298,28 @@ const run = async () =&gt; {
     console.log(result);
 }
 
-run().catch(err =&gt; console.error(err))
-</code></pre></td></tr></table>
+run().catch(err =&gt; console.error(err))</pre></td></tr></table>
 </div>
-</div><p>主要就是启动主线程的时候创建了一个worker，也就是用户可控制的线程，然后主线程和这个子线程交互消息。线程的实现代码:</p>
+</div>
+<p>主要就是启动主线程的时候创建了一个worker，也就是用户可控制的线程，然后主线程和这个子线程交互消息。线程的实现代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// add this to workerExample.js file.
+<pre class="chroma">// add this to workerExample.js file.
 const { workerData, parentPort } = require(&#39;worker_threads&#39;)
 console.log(&#34;receive:&#34;, workerData)
-parentPort.postMessage({ welcome: workerData })
-</code></pre></td></tr></table>
+parentPort.postMessage({ welcome: workerData })</pre></td></tr></table>
 </div>
-</div><p>如果换成使用ts实现，则worker大概需要提供两个文件，分别是js和ts，代表编译时候和运行时候的状态, 理解起来有点困难:</p>
+</div>
+<p>如果换成使用ts实现，则worker大概需要提供两个文件，分别是js和ts，代表编译时候和运行时候的状态, 理解起来有点困难:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -307,9 +329,9 @@ parentPort.postMessage({ welcome: workerData })
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># worker.js
+<pre class="chroma"># worker.js
 const path = require(&#34;path&#34;);
 require(&#34;ts-node&#34;).register();
 require(path.resolve(__dirname, &#34;./worker.ts&#34;));
@@ -318,13 +340,13 @@ require(path.resolve(__dirname, &#34;./worker.ts&#34;));
 import worker from &#34;worker_threads&#34;;
 
 const wd = worker.workerData;
-process.on(&#39;message&#39;, func(this));
-</code></pre></td></tr></table>
+process.on(&#39;message&#39;, func(this));</pre></td></tr></table>
 </div>
-</div><p>还要一个缺点是，语言提供的库太少，导致项目依赖项有点太多了。比如下面是一个项目的依赖情况，虽然有一些是dev依赖，但是要想很好的工作也需要逐个去了解:</p>
+</div>
+<p>还要一个缺点是，语言提供的库太少，导致项目依赖项有点太多了。比如下面是一个项目的依赖情况，虽然有一些是dev依赖，但是要想很好的工作也需要逐个去了解:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -366,9 +388,9 @@ process.on(&#39;message&#39;, func(this));
 </span><span class="lnt">40
 </span><span class="lnt">41
 </span><span class="lnt">42
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># package.json
+<pre class="chroma"># package.json
 {
     &#34;devDependencies&#34;: {
         &#34;@lerna/batch-packages&#34;: &#34;^3.16.0&#34;,
@@ -409,22 +431,28 @@ process.on(&#39;message&#39;, func(this));
         &#34;tslint&#34;: &#34;^5.11.0&#34;,
         &#34;typescript&#34;: &#34;^4.3.5&#34;
   },
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>从Node.JS的趋势上看。07年大家耳熟的Atwood定律：凡是可以用 JavaScript 来写的应用，最终都会用 JavaScript 来写。进过十年后，在17年达到顶峰，然后逐渐下跌。
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211104222551.png" alt="Node.JS"></p>
-<h2 id="c">c#</h2>
+</div>
+<p>从Node.JS的趋势上看。07年大家耳熟的Atwood定律：凡是可以用 JavaScript 来写的应用，最终都会用 JavaScript 来写。进过十年后，在17年达到顶峰，然后逐渐下跌。
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211104222551.png" alt="Node.JS" /></p>
+
+<h2 id="c">c</h2>
+
 <p>c#在国内后端圈，感觉非常小众，可能是微软给人的深刻影响导致。比如下面juejin的主题关注和文章数据对比:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211104224221.png" alt=""></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211104224221.png" alt="" /></p>
+
 <p>实际上可能大家一叶障目了，是刻板印象。c#的语法比java更优秀，传闻java的很多语法都又借鉴自c#，.net也很早就支持跨平台运行。据2017年数据统计显示，微软是github上贡献最大的公司，而且现在github也是它家的。我们公司最近引入了一位大佬，极力推荐c#。大佬在c#上构建了部分游戏服务生态，比如一个叫做 <strong>鲁班(luban)</strong> 的配置工具，可以一键将游戏策划的excel转换成程序可以使用的配置数据，提供了一个配置文件的完整解决方案。</p>
+
 <blockquote>
 <p>目前鲁班(luban)已经完全在github上开源，获得251个赞。欢迎大家点击文章左下角「阅读原文」前去围观点赞。送人玫瑰，手留余香。</p>
 </blockquote>
+
 <p>c#使用下面简单的几行代码，就可以实现一个http服务, 全部的依赖仅仅使用系统包:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -484,9 +512,9 @@ process.on(&#39;message&#39;, func(this));
 </span><span class="lnt">58
 </span><span class="lnt">59
 </span><span class="lnt">60
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">using System;
+<pre class="chroma">using System;
 using System.IO;
 using System.Text;
 using System.Net;
@@ -545,13 +573,17 @@ namespace HttpListenerExample
             listener.Close();
         }
     }
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>这样看c#的语法会和java很类似，同时dotnet还提供了mvc模式的框架，使用起来和spring-mvc很接近。对于java熟悉的同学上手应该非常迅速。</p>
+</div>
+<p>这样看c#的语法会和java很类似，同时dotnet还提供了mvc模式的框架，使用起来和spring-mvc很接近。对于java熟悉的同学上手应该非常迅速。</p>
+
 <p>c#也有一些问题，比较不爽的地方就是不像go一样，可以方便的编译成单个bin文件，跨平台运行。还有一个问题是它歧视macOS，你想不到吧，它竟然歧视macOS。我们计划的架构中使用http2协议作为服务间通讯，经过一番实验发现，mac下竟然不支持，官方文档是这样说的 “HTTP/2 will be supported on macOS in a future release.” 。曾经的鄙视链底端windows，翻身农奴把歌唱了，鄙视起尊贵的mac。</p>
+
 <p>好了，时间到。今天就先闲聊到这里吧，下篇我们继续讲讲go和java的故事，别忘了「阅读原文」去github点赞哦。</p>
-<h2 id="heading">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>FrameworkBenchmarks <a href="https://github.com/TechEmpower/FrameworkBenchmarks">https://github.com/TechEmpower/FrameworkBenchmarks</a></li>
 <li>TypeScript <a href="https://www.tslang.cn/index.html">https://www.tslang.cn/index.html</a></li>
@@ -642,7 +674,7 @@ namespace HttpListenerExample
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="Django是一款经典的Python Web开发框架，是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/django-2/" />
-<meta property="article:published_time" content="2022-03-15T23:55:23+08:00" />
-<meta property="article:modified_time" content="2022-03-15T23:55:23+08:00" />
+<meta property="article:published_time" content="2022-03-15T23:55:23&#43;08:00"/>
+<meta property="article:modified_time" content="2022-03-15T23:55:23&#43;08:00"/>
+
 <meta itemprop="name" content="Django 源码解析 - 2 请求处理流程">
 <meta itemprop="description" content="Django是一款经典的Python Web开发框架，是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可">
+
+
 <meta itemprop="datePublished" content="2022-03-15T23:55:23&#43;08:00" />
 <meta itemprop="dateModified" content="2022-03-15T23:55:23&#43;08:00" />
 <meta itemprop="wordCount" content="5078">
 
 
 
-<meta itemprop="keywords" content="django,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="django,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Django 源码解析 - 2 请求处理流程"/>
 <meta name="twitter:description" content="Django是一款经典的Python Web开发框架，是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可"/>
 
@@ -137,30 +141,38 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#tcp--http--wsgi-">tcp && http && wsgi 协议分层</a></li>
-    <li><a href="#middleware">中间件(middleware)链条</a></li>
-    <li><a href="#url-router">url-router路由搜索</a></li>
-    <li><a href="#requestresponse">请求(request)和response响应</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#tcp-http-wsgi-协议分层">tcp &amp;&amp; http &amp;&amp; wsgi 协议分层</a></li>
+<li><a href="#中间件-middleware-链条">中间件(middleware)链条</a></li>
+<li><a href="#url-router路由搜索">url-router路由搜索</a></li>
+<li><a href="#请求-request-和response响应">请求(request)和response响应</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>Django是一款经典的Python Web开发框架，是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可以帮助开发者快速搭建一个Web项目。 从上周开始，我们一起进入Djaong项目的源码解析，加深对django的理解，熟练掌握python web开发。在上篇文章中我们首先采用概读法，了解django项目的创建和启动过程。这篇文章我们同样使用概读法，了解diango中http协议的处理流程。这个流程也是客户端的请求如何在django中传递和处理，再返回客户端的过程。本文大概分下面几个部分:</p>
+      
+
+<p>Django是一款经典的Python Web开发框架，是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可以帮助开发者快速搭建一个Web项目。 从上周开始，我们一起进入Djaong项目的源码解析，加深对django的理解，熟练掌握python web开发。在上篇文章中我们首先采用概读法，了解django项目的创建和启动过程。这篇文章我们同样使用概读法，了解diango中http协议的处理流程。这个流程也是客户端的请求如何在django中传递和处理，再返回客户端的过程。本文大概分下面几个部分:</p>
+
 <ul>
 <li>tcp &amp;&amp; http &amp;&amp; wsgi 协议分层</li>
 <li>中间件(middleware)链表</li>
 <li>URL路由搜索</li>
 <li>请求(request)和response响应</li>
 </ul>
-<h2 id="tcp--http--wsgi-">tcp &amp;&amp; http &amp;&amp; wsgi 协议分层</h2>
+
+<h2 id="tcp-http-wsgi-协议分层">tcp &amp;&amp; http &amp;&amp; wsgi 协议分层</h2>
+
 <p>接上一篇，我们知道django在runserver命令中启动http服务入口:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -168,24 +180,26 @@
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># runserver.py
+<pre class="chroma"># runserver.py
 from django.core.servers.basehttp import (
     WSGIServer, get_internal_wsgi_application, run,
 )
 ...
 handler = get_internal_wsgi_application()
 run(self.addr, int(self.port), handler,
-    ipv6=self.use_ipv6, threading=threading, server_cls=WSGIServer)
-</code></pre></td></tr></table>
+    ipv6=self.use_ipv6, threading=threading, server_cls=WSGIServer)</pre></td></tr></table>
 </div>
-</div><p>http-server和wsgi-server的实现都在basehttp模块。下面是改模块的结构图:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305165705.png" alt=""></p>
+</div>
+<p>http-server和wsgi-server的实现都在basehttp模块。下面是改模块的结构图:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305165705.png" alt="" /></p>
+
 <p>从结构图总我们不难发现tcp，http和wsgi的结构层级主要关系大概如下图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -198,9 +212,9 @@ run(self.addr, int(self.port), handler,
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">+------------+      +--------------------+
+<pre class="chroma">+------------+      +--------------------+
 | WSGIServer &lt;------+ WSGIRequestHandler |
 +-----+------+      +------+-------------+
       |                    |
@@ -212,18 +226,19 @@ run(self.addr, int(self.port), handler,
       |                    |
 +-----v------+      +------v-------------+
 |  TCPServer &lt;------+  TCPRequestHandler |
-+------------+      +--------------------+
-</code></pre></td></tr></table>
++------------+      +--------------------+</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>每一层服务的实现，都有对应的RequestHandler处理对应协议的请求</li>
 <li>客户端的请求从底层的tcp，封装成上层的http请求，再到wsgi请求</li>
 <li>上层类都继承自下层类</li>
 </ul>
+
 <p>比较特别的是多出来的ServerHandler和WSGIRequestHandler的关系:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -235,9 +250,9 @@ run(self.addr, int(self.port), handler,
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRequestHandler(BaseHTTPRequestHandler):
+<pre class="chroma">class WSGIRequestHandler(BaseHTTPRequestHandler):
 
     def handle(self):
         &#34;&#34;&#34;Handle a single HTTP request&#34;&#34;&#34;
@@ -248,17 +263,19 @@ run(self.addr, int(self.port), handler,
             multithread=False,
         )
         handler.request_handler = self      # backpointer for logging
-        handler.run(self.server.get_app())
-</code></pre></td></tr></table>
+        handler.run(self.server.get_app())</pre></td></tr></table>
 </div>
-</div><p>这里把http请求，委托给支持wsgi的application，也就是django的application。</p>
+</div>
+<p>这里把http请求，委托给支持wsgi的application，也就是django的application。</p>
+
 <blockquote>
 <p>关于http和wsgi的详细内容，可以参考之前的文章 <a href="https://game404.github.io/post/python/wsgiref/">wsgiref 源码阅读</a>，这里不再详细介绍。</p>
 </blockquote>
+
 <p>了解三层协议后，我们在看看application的动态载入:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -273,9 +290,9 @@ run(self.addr, int(self.port), handler,
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_internal_wsgi_application():
+<pre class="chroma">def get_internal_wsgi_application():
     &#34;&#34;&#34;
     Load and return the WSGI application as configured by the user in
     ``settings.WSGI_APPLICATION``. With the default ``startproject`` layout,
@@ -289,13 +306,13 @@ run(self.addr, int(self.port), handler,
     whatever ``django.core.wsgi.get_wsgi_application`` returns.
     &#34;&#34;&#34;
     ...
-    return get_wsgi_application()
-</code></pre></td></tr></table>
+    return get_wsgi_application()</pre></td></tr></table>
 </div>
-</div><p>application实际上是一个WSGIHandler对象实例:</p>
+</div>
+<p>application实际上是一个WSGIHandler对象实例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -304,9 +321,9 @@ run(self.addr, int(self.port), handler,
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_wsgi_application():
+<pre class="chroma">def get_wsgi_application():
     &#34;&#34;&#34;
     The public interface to Django&#39;s WSGI support. Return a WSGI callable.
 
@@ -314,16 +331,17 @@ run(self.addr, int(self.port), handler,
     internal WSGI implementation changes or moves in the future.
     &#34;&#34;&#34;
     django.setup(set_prefix=False)
-    return WSGIHandler()
-</code></pre></td></tr></table>
+    return WSGIHandler()</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>需要注意的是WSGIHandler和WSGIRequestHandler不是同一个类</li>
 </ul>
+
 <p>这个WSGIHandle对象执行了wsgi的实现，接收wsgi-environ，在start_response中处理http状态码和http头，返回http响应。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -346,9 +364,9 @@ run(self.addr, int(self.port), handler,
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIHandler(base.BaseHandler):
+<pre class="chroma">class WSGIHandler(base.BaseHandler):
     request_class = WSGIRequest
 
     def __init__(self, *args, **kwargs):
@@ -370,64 +388,67 @@ run(self.addr, int(self.port), handler,
         ]
         start_response(status, response_headers)
         ...
-        return response
-</code></pre></td></tr></table>
+        return response</pre></td></tr></table>
 </div>
-</div><p>另外一个非常重要的点是WSGIHandle对象在初始化时候进行了load_middleware，加载了django的中间件。</p>
-<h2 id="middleware">中间件(middleware)链条</h2>
+</div>
+<p>另外一个非常重要的点是WSGIHandle对象在初始化时候进行了load_middleware，加载了django的中间件。</p>
+
+<h2 id="中间件-middleware-链条">中间件(middleware)链条</h2>
+
 <p>在开始介绍中间件(middleware)之前，我们先了解一点点基础知识。装饰器模式是python中非常重要的设计模式，也是中间件的基础。下面是一个装饰器的简单示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from decorators import debug, do_twice
+<pre class="chroma">from decorators import debug, do_twice
 
 @debug
 @do_twice
 def greet(name):
-    print(f&#34;Hello {name}&#34;)
-</code></pre></td></tr></table>
+    print(f&#34;Hello {name}&#34;)</pre></td></tr></table>
 </div>
-</div><p>程序的运行结果:</p>
+</div>
+<p>程序的运行结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; greet(&#34;Eva&#34;)
+<pre class="chroma">&gt;&gt;&gt; greet(&#34;Eva&#34;)
 Calling greet(&#39;Eva&#39;)
 Hello Eva
 Hello Eva
-&#39;greet&#39; returned None
-</code></pre></td></tr></table>
+&#39;greet&#39; returned None</pre></td></tr></table>
 </div>
-</div><p>我们可以看到整个过程是从外至内的，首先是debug装饰器生效，告知开始运行greet函数；然后是do_twice装饰器生效，调用了两次greet函数；最里层的greet目标函数最后执行并返回。取消掉<code>@</code>字符这个语法糖，上面函数的调用过程大概是这样的:</p>
+</div>
+<p>我们可以看到整个过程是从外至内的，首先是debug装饰器生效，告知开始运行greet函数；然后是do_twice装饰器生效，调用了两次greet函数；最里层的greet目标函数最后执行并返回。取消掉<code>@</code>字符这个语法糖，上面函数的调用过程大概是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">debug(do_twice(greet))(name)
-</code></pre></td></tr></table>
+<pre class="chroma">debug(do_twice(greet))(name)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>debug和do_twice的参数和返回值都是函数</li>
 <li>name是最后一个函数的参数</li>
 </ul>
+
 <p>利用装饰器，我们可以在不修改目标函数的情况下，给函数增加各种额外功能。在django中这是中间件(middleware)的工作。下面是一个最简单的函数式中间件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -442,9 +463,9 @@ Hello Eva
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def simple_middleware(get_response):
+<pre class="chroma">def simple_middleware(get_response):
     # One-time configuration and initialization.
 
     def middleware(request):
@@ -458,19 +479,20 @@ Hello Eva
 
         return response
 
-    return middleware
-</code></pre></td></tr></table>
+    return middleware</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>simple_middleware是标准的装饰器实现</li>
 <li>simple_middleware包装WSGIHandler的get_response方法</li>
 <li>get_response函数处理request然后返回response</li>
 <li>2个注释部分预留了可以扩展的空间: 在目标函数执行之前对request进行处理和在目标函数执行之后对response进行处理</li>
 </ul>
+
 <p>实际上所有的middlew都继承自MiddlewareMixin，在其中使用模版模式，定义了<code>process_request</code>和<code>process_response</code>两个待子类扩展的方法，进一步明确了中间件的处理位置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -480,9 +502,9 @@ Hello Eva
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MiddlewareMixin:
+<pre class="chroma">class MiddlewareMixin:
 
     def __call__(self, request):
         response = None
@@ -491,37 +513,38 @@ Hello Eva
         response = response or self.get_response(request)
         if hasattr(self, &#39;process_response&#39;):
             response = self.process_response(request, response)
-        return response
-</code></pre></td></tr></table>
+        return response</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>MiddlewareMixin是一个以类方式实现的装饰器</p>
 </blockquote>
+
 <p>默认的CommonMiddleware中示例了扩展出一个通用的中间件(middleware): 继承自MiddlewareMixin，扩展process_request和process_response方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class CommonMiddleware(MiddlewareMixin):
+<pre class="chroma">class CommonMiddleware(MiddlewareMixin):
     
     def process_request(self, request):
         pass
         
     def process_response(self, request, response):
-        pass
-</code></pre></td></tr></table>
+        pass</pre></td></tr></table>
 </div>
-</div><p>下面是process_request的全部代码:</p>
+</div>
+<p>下面是process_request的全部代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -549,9 +572,9 @@ Hello Eva
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def process_request(self, request):
+<pre class="chroma">def process_request(self, request):
     &#34;&#34;&#34;
     Check for denied User-Agents and rewrite the URL based on
     settings.APPEND_SLASH and settings.PREPEND_WWW
@@ -578,17 +601,18 @@ Hello Eva
     # Return a redirect if necessary
     if redirect_url or path != request.get_full_path():
         redirect_url += path
-        return self.response_redirect_class(redirect_url)
-</code></pre></td></tr></table>
+        return self.response_redirect_class(redirect_url)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>检查http头中的HTTP_USER_AGENT是否被禁止</li>
 <li>检查请求的域名是否需要跳转</li>
 </ul>
+
 <p>下面是process_response的全部代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -604,9 +628,9 @@ Hello Eva
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def process_response(self, request, response):
+<pre class="chroma">def process_response(self, request, response):
     &#34;&#34;&#34;
     When the status code of the response is 404, it may redirect to a path
     with an appended slash if should_redirect_with_slash() returns True.
@@ -621,16 +645,17 @@ Hello Eva
     if not response.streaming and not response.has_header(&#39;Content-Length&#39;):
         response.headers[&#39;Content-Length&#39;] = str(len(response.content))
 
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>确保给http响应增加Content-Length的http头</li>
 </ul>
+
 <p>了解单个中间件(middleware)实现后，我们继续看所有中间件协作原理。默认情况下会配置下面这些预制的中间件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -639,9 +664,9 @@ Hello Eva
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">MIDDLEWARE = [
+<pre class="chroma">MIDDLEWARE = [
     &#39;django.middleware.security.SecurityMiddleware&#39;,
     &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,
     &#39;django.middleware.common.CommonMiddleware&#39;,
@@ -649,13 +674,13 @@ Hello Eva
     &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,
     &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,
     &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>前面介绍过这些中间件列表是由load_middleware函数处理:</p>
+</div>
+<p>前面介绍过这些中间件列表是由load_middleware函数处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -667,9 +692,9 @@ Hello Eva
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def load_middleware(self, is_async=False):
+<pre class="chroma">def load_middleware(self, is_async=False):
     ...
     handler = self._get_response
     ...
@@ -680,18 +705,19 @@ Hello Eva
         ...
         handler = mw_instance
     ...
-    self._middleware_chain = handler
-</code></pre></td></tr></table>
+    self._middleware_chain = handler</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>通过get_response获取到view的函数</li>
 <li>逐一加载中间件类并实例化中间件对象</li>
 <li>将所有的中间件对象形成一个链表</li>
 </ul>
+
 <p>中间件可以形成一个链表是因为MiddlewareMixin的结构，每个middleware包括了一个指向后续中间件的引用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -700,9 +726,9 @@ Hello Eva
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MiddlewareMixin:
+<pre class="chroma">class MiddlewareMixin:
     ...
     
     def __init__(self, get_response):
@@ -710,57 +736,61 @@ Hello Eva
         # 后续处理的指针
         self.get_response = get_response
         ...
-        super().__init__()
-</code></pre></td></tr></table>
+        super().__init__()</pre></td></tr></table>
 </div>
-</div><p>每个wsgi-application的请求响应，都需要调用_middleware_chain处理:</p>
+</div>
+<p>每个wsgi-application的请求响应，都需要调用_middleware_chain处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_response(self, request):
+<pre class="chroma">def get_response(self, request):
     &#34;&#34;&#34;Return an HttpResponse object for the given HttpRequest.&#34;&#34;&#34;
     # Setup default url resolver for this thread
     set_urlconf(settings.ROOT_URLCONF)
     response = self._middleware_chain(request)
     ...
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><p>在werkzeug中，我们介绍过「洋葱模型」:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210602214409.png" alt="onion-model"></p>
+</div>
+<p>在werkzeug中，我们介绍过「洋葱模型」:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210602214409.png" alt="onion-model" /></p>
+
 <p>可以看到django的middleware也是类似的逻辑，中间件层层包裹形成一个链，可以在穿透和返回过程中对请求和响应各进行一次额外处理。</p>
-<h2 id="url-router">url-router路由搜索</h2>
+
+<h2 id="url-router路由搜索">url-router路由搜索</h2>
+
 <p>http的URL和view函数对应，是通过urlpatterns配置。比如下面将api-app的根路径<code>api/</code>和view层的index函数映射起来:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">urlpatterns = [
+<pre class="chroma">urlpatterns = [
     path(&#39;&#39;, views.index, name=&#39;index&#39;),
 ]
 
 def index(request):
-    return HttpResponse(&#34;Hello, Python 2. You&#39;re at the index.&#34;)
-</code></pre></td></tr></table>
+    return HttpResponse(&#34;Hello, Python 2. You&#39;re at the index.&#34;)</pre></td></tr></table>
 </div>
-</div><p>django提供了一个些实现，可以根据请求的URL查找到业务View的函数。前面的load_middleware中就是通过_get_response开始查找业务View:</p>
+</div>
+<p>django提供了一个些实现，可以根据请求的URL查找到业务View的函数。前面的load_middleware中就是通过_get_response开始查找业务View:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -771,9 +801,9 @@ def index(request):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _get_response(self, request):
+<pre class="chroma">def _get_response(self, request):
     &#34;&#34;&#34;
     Resolve and call the view, then apply view, exception, and
     template_response middleware. This method is everything that happens
@@ -783,13 +813,13 @@ def index(request):
     ...
     response = callback(request, *callback_args, **callback_kwargs)
     ...
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><p>resolver对象根据request.path_info也就是URL查找View函数:</p>
+</div>
+<p>resolver对象根据request.path_info也就是URL查找View函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -801,9 +831,9 @@ def index(request):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def resolve_request(self, request):
+<pre class="chroma">def resolve_request(self, request):
     &#34;&#34;&#34;
     Retrieve/set the urlconf for the request. Return the view resolved,
     with its args and kwargs.
@@ -814,13 +844,13 @@ def index(request):
     # Resolve the view, and assign the match object back to the request.
     resolver_match = resolver.resolve(request.path_info)
     request.resolver_match = resolver_match
-    return resolver_match
-</code></pre></td></tr></table>
+    return resolver_match</pre></td></tr></table>
 </div>
-</div><p>resolver对象通过下面的方式创建:</p>
+</div>
+<p>resolver对象通过下面的方式创建:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -828,25 +858,26 @@ def index(request):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_resolver(urlconf=None):
+<pre class="chroma">def get_resolver(urlconf=None):
     if urlconf is None:
         urlconf = settings.ROOT_URLCONF
     return _get_cached_resolver(urlconf)
 
 @functools.lru_cache(maxsize=None)
 def _get_cached_resolver(urlconf=None):
-    return URLResolver(RegexPattern(r&#39;^/&#39;), urlconf)
-</code></pre></td></tr></table>
+    return URLResolver(RegexPattern(r&#39;^/&#39;), urlconf)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>这里使用了lru_cache来缓存URLResolver对象提高效率</li>
 </ul>
+
 <p>resolve主要使用url的匹配规则查找配置的url_patterns：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -867,9 +898,9 @@ def _get_cached_resolver(urlconf=None):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def resolve(self, path):
+<pre class="chroma">def resolve(self, path):
     path = str(path)  # path may be a reverse_lazy object
     tried = []
     match = self.pattern.match(path)
@@ -889,13 +920,13 @@ def _get_cached_resolver(urlconf=None):
                             [self.namespace] + sub_match.namespaces,
                             self._join_route(current_route, sub_match.route),
                             tried,
-                        )
-</code></pre></td></tr></table>
+                        )</pre></td></tr></table>
 </div>
-</div><p>url_patterns可以进行二级递归加载:</p>
+</div>
+<p>url_patterns可以进行二级递归加载:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -911,9 +942,9 @@ def _get_cached_resolver(urlconf=None):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"> @cached_property
+<pre class="chroma"> @cached_property
 def urlconf_module(self):
     if isinstance(self.urlconf_name, str):
         return import_module(self.urlconf_name)
@@ -928,75 +959,78 @@ def url_patterns(self):
         iter(patterns)
     except TypeError as e:
         ...
-    return patterns
-</code></pre></td></tr></table>
+    return patterns</pre></td></tr></table>
 </div>
-</div><p>下面代码示例了在project中，导入app的url，形成一个project-app的二级树状结构。这样的结构设计和flask的蓝图非常类似，对于组织大型web项目非常有用。</p>
+</div>
+<p>下面代码示例了在project中，导入app的url，形成一个project-app的二级树状结构。这样的结构设计和flask的蓝图非常类似，对于组织大型web项目非常有用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.contrib import admin
+<pre class="chroma">from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path(&#39;admin/&#39;, admin.site.urls),
     path(&#39;api/&#39;, include(&#39;api.urls&#39;)),
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>我们可以发现django的router实现实际上是一种懒加载模式，有请求对象才开始初始化。ResolverMatch的算法实现，我们以后再行详细介绍。</p>
-<h2 id="requestresponse">请求(request)和response响应</h2>
+</div>
+<p>我们可以发现django的router实现实际上是一种懒加载模式，有请求对象才开始初始化。ResolverMatch的算法实现，我们以后再行详细介绍。</p>
+
+<h2 id="请求-request-和response响应">请求(request)和response响应</h2>
+
 <p>我们再观测django的view函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def index(request):
-    return HttpResponse(&#34;Hello, Python 2. You&#39;re at the index.&#34;)
-</code></pre></td></tr></table>
+<pre class="chroma">def index(request):
+    return HttpResponse(&#34;Hello, Python 2. You&#39;re at the index.&#34;)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>请求是一个request对象</li>
 <li>返回是一个HttpResponse对象</li>
 </ul>
+
 <p>在WSGIHandler中有定义request的类是WSGIRequest:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIHandler(base.BaseHandler):
-    request_class = WSGIRequest
-</code></pre></td></tr></table>
+<pre class="chroma">class WSGIHandler(base.BaseHandler):
+    request_class = WSGIRequest</pre></td></tr></table>
 </div>
-</div><p>request类的继承关系如下:</p>
+</div>
+<p>request类的继承关系如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">+-------------+   +-------------+   +--------+
+<pre class="chroma">+-------------+   +-------------+   +--------+
 | WSGIRequest +---&gt; HttpRequest +---&gt; object |
-+-------------+   +-------------+   +--------+
-</code></pre></td></tr></table>
++-------------+   +-------------+   +--------+</pre></td></tr></table>
 </div>
-</div><p>对于request我们跟踪一下http协议的header，query和body如何传递到request对象, 都是通过env对象传递。比如query对象是这样封装到wsgi-env上:</p>
+</div>
+<p>对于request我们跟踪一下http协议的header，query和body如何传递到request对象, 都是通过env对象传递。比如query对象是这样封装到wsgi-env上:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1006,9 +1040,9 @@ urlpatterns = [
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRequestHandler(BaseHTTPRequestHandler):
+<pre class="chroma">class WSGIRequestHandler(BaseHTTPRequestHandler):
     
     def get_environ(self):
         if &#39;?&#39; in self.path:
@@ -1017,83 +1051,83 @@ urlpatterns = [
             path,query = self.path,&#39;&#39;
 
         env[&#39;PATH_INFO&#39;] = urllib.parse.unquote(path, &#39;iso-8859-1&#39;)
-        env[&#39;QUERY_STRING&#39;] = query
-</code></pre></td></tr></table>
+        env[&#39;QUERY_STRING&#39;] = query</pre></td></tr></table>
 </div>
-</div><p>wsgi的env会传递给wsgi-application:</p>
+</div>
+<p>wsgi的env会传递给wsgi-application:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseHandler:
+<pre class="chroma">class BaseHandler:
     
     def run(self, application):
         self.setup_environ()
         self.result = application(self.environ, self.start_response)
-        self.finish_response()
-</code></pre></td></tr></table>
+        self.finish_response()</pre></td></tr></table>
 </div>
-</div><p>在WSGIRequest中从wsgi-env中读取query放到GET属性上:</p>
+</div>
+<p>在WSGIRequest中从wsgi-env中读取query放到GET属性上:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@cached_property
+<pre class="chroma">@cached_property
 def GET(self):
     # The WSGI spec says &#39;QUERY_STRING&#39; may be absent.
     raw_query_string = get_bytes_from_wsgi(self.environ, &#39;QUERY_STRING&#39;, &#39;&#39;)
-    return QueryDict(raw_query_string, encoding=self._encoding)
-</code></pre></td></tr></table>
+    return QueryDict(raw_query_string, encoding=self._encoding)</pre></td></tr></table>
 </div>
-</div><p>比如body是在stdin上，也是封装在env的 <em>wsgi.input</em> key上:</p>
+</div>
+<p>比如body是在stdin上，也是封装在env的 <em>wsgi.input</em> key上:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseHandler:
+<pre class="chroma">class BaseHandler:
 
     def setup_environ(self):
         &#34;&#34;&#34;Set up the environment for one request&#34;&#34;&#34;
         ...
         env[&#39;wsgi.input&#39;]        = self.get_stdin()
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>在WSGIRequest中使用LimitedStream封装一下:</p>
+</div>
+<p>在WSGIRequest中使用LimitedStream封装一下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRequest(HttpRequest):
+<pre class="chroma">class WSGIRequest(HttpRequest):
     def __init__(self, environ):
-        self._stream = LimitedStream(self.environ[&#39;wsgi.input&#39;], content_length)
-</code></pre></td></tr></table>
+        self._stream = LimitedStream(self.environ[&#39;wsgi.input&#39;], content_length)</pre></td></tr></table>
 </div>
-</div><p>这样body就从这个流中读取:</p>
+</div>
+<p>这样body就从这个流中读取:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1103,9 +1137,9 @@ def GET(self):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@property
+<pre class="chroma">@property
     def body(self):
         if not hasattr(self, &#39;_body&#39;):
             ...
@@ -1114,13 +1148,13 @@ def GET(self):
             except OSError as e:
                 raise UnreadablePostError(*e.args) from e
             self._stream = BytesIO(self._body)
-        return self._bod
-</code></pre></td></tr></table>
+        return self._bod</pre></td></tr></table>
 </div>
-</div><p>http的响应处理则不太一样，view返回的是普通的HttpResponse对象，在wsgi框架中将其转换写入到stdout中:</p>
+</div>
+<p>http的响应处理则不太一样，view返回的是普通的HttpResponse对象，在wsgi框架中将其转换写入到stdout中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1151,9 +1185,9 @@ def GET(self):
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleHandler(BaseHandler):
+<pre class="chroma">class SimpleHandler(BaseHandler):
     def _write(self,data):
         result = self.stdout.write(data)
         ...
@@ -1183,16 +1217,23 @@ def finish_response(self):
         # We only call close() when no exception is raised, because it
         # will set status, result, headers, and environ fields to None.
         # See bpo-29183 for more details.
-        self.close()
-</code></pre></td></tr></table>
+        self.close()</pre></td></tr></table>
 </div>
-</div><p>具体到http模块下的HttpRequest和HttpResponse的实现，就是比较存粹的python对象，我认为这也是sansio的实现。</p>
+</div>
+<p>具体到http模块下的HttpRequest和HttpResponse的实现，就是比较存粹的python对象，我认为这也是sansio的实现。</p>
+
 <p>sansio.Request是non-IO理念的HTTP request实现，希望IO和逻辑像三明治(sandwich)一样，分层in-IO/业务逻辑/out-IO三层。这种方式实现的Request对象比较抽象，不涉及io和aio具体实现，比较通用，而且可以 <strong>快速测试</strong> 。如果wsgi的实现，推荐使用上层的 <code>werkzeug.wrappers.Request</code>。</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210528002305.png" alt="sansio"></p>
-<h2 id="heading">小结</h2>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210528002305.png" alt="sansio" /></p>
+
+<h2 id="小结">小结</h2>
+
 <p>通过对django的wsgi模块进行分析，我们梳理了tcp，http和wsgi的三层关系，了解了wsgi-application和wsgi-handler之间的委托方式。然后分析了中间件(middleware)的构造，加载方式和多个中间件如何构成中间件链表并对请求进行额外的处理。分析了如何通过http的URL路由到对应的view函数，进行业务响应。最后对django的request和response对象如何和http协议进行结合进行了简单分析。</p>
+
 <p>完成上面四个步骤的分析后，我们可以知道远程的http请求如何传递到业务view函数并进行响应返回的整个流程。</p>
-<h2 id="heading-1">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://realpython.com/primer-on-python-decorators/">https://realpython.com/primer-on-python-decorators/</a></li>
 </ul>
@@ -1220,7 +1261,11 @@ def finish_response(self):
           <a href="/tags/%E6%BA%90%E7%A0%81/">源码</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/python-env-2022/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Python 虚拟环境指南 2022 版</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/python/django-1/">
             <span class="next-text nav-default">Django 源码解析 - 1 创建和启动</span>
             <span class="next-text nav-mobile">下一篇</span>
@@ -1276,7 +1321,7 @@ def finish_response(self):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

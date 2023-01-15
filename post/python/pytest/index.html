@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/pytest/" />
-<meta property="article:published_time" content="2021-07-22T22:50:22+08:00" />
-<meta property="article:modified_time" content="2021-07-22T22:50:22+08:00" />
+<meta property="article:published_time" content="2021-07-22T22:50:22&#43;08:00"/>
+<meta property="article:modified_time" content="2021-07-22T22:50:22&#43;08:00"/>
+
 <meta itemprop="name" content="pytest 简易指南">
 <meta itemprop="description" content="pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使">
+
+
 <meta itemprop="datePublished" content="2021-07-22T22:50:22&#43;08:00" />
 <meta itemprop="dateModified" content="2021-07-22T22:50:22&#43;08:00" />
-<meta itemprop="wordCount" content="1948">
+<meta itemprop="wordCount" content="1946">
 
 
 
-<meta itemprop="keywords" content="测试," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="测试," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="pytest 简易指南"/>
 <meta name="twitter:description" content="pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使"/>
 
@@ -137,63 +141,71 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">入门用例</a>
-      <ul>
-        <li><a href="#heading-1">简易用例</a></li>
-        <li><a href="#heading-2">异常处理</a></li>
-        <li><a href="#heading-3">测试类</a></li>
-        <li><a href="#heading-4">自动测试</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading-5">进阶技巧</a>
-      <ul>
-        <li><a href="#parametrize">parametrize</a></li>
-        <li><a href="#mark">mark</a></li>
-        <li><a href="#fixture">fixture</a></li>
-        <li><a href="#pluginhook">plugin&&hook</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading-6">小结</a></li>
-    <li><a href="#heading-7">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#入门用例">入门用例</a>
+<ul>
+<li><a href="#简易用例">简易用例</a></li>
+<li><a href="#异常处理">异常处理</a></li>
+<li><a href="#测试类">测试类</a></li>
+<li><a href="#自动测试">自动测试</a></li>
+</ul></li>
+<li><a href="#进阶技巧">进阶技巧</a>
+<ul>
+<li><a href="#parametrize">parametrize</a></li>
+<li><a href="#mark">mark</a></li>
+<li><a href="#fixture">fixture</a></li>
+<li><a href="#plugin-hook">plugin&amp;&amp;hook</a></li>
+</ul></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使用pytest这个测试框架。</p>
+      
+
+<p>pytest是一个单元测试框架，可以帮助写出更优质的程序。flask， werkzeug，gunicorn 等项目中都使用它，本文一起学习如何使用pytest这个测试框架。</p>
+
 <ul>
 <li>入门用例</li>
 <li>进阶技巧</li>
 <li>小结</li>
 </ul>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading">入门用例</h2>
-<h3 id="heading-1">简易用例</h3>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="入门用例">入门用例</h2>
+
+<h3 id="简易用例">简易用例</h3>
+
 <p>编写一个简单的示例 <code>test_sample.py</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat test_sample.py
+<pre class="chroma"># cat test_sample.py
 def inc(x):
     return x + 1
 
 def test_answer():
-    assert inc(3) == 5
-</code></pre></td></tr></table>
+    assert inc(3) == 5</pre></td></tr></table>
 </div>
-</div><p>示例中定义的两个方法，都非常简单。<code>test_answer</code> 对目标函数 <code>inc</code> 进行断言。使用 <code>pytest test_sample.py</code> 运行测试用例:</p>
+</div>
+<p>示例中定义的两个方法，都非常简单。<code>test_answer</code> 对目标函数 <code>inc</code> 进行断言。使用 <code>pytest test_sample.py</code> 运行测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -217,9 +229,9 @@ def test_answer():
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># pytest test_sample.py
+<pre class="chroma"># pytest test_sample.py
 ========================================================================================================= test session starts ==========================================================================================================
 platform darwin -- Python 3.7.5, pytest-6.0.2, py-1.9.0, pluggy-0.13.1
 rootdir: /Users/yoo/codes/ft6work/devops-py/tests
@@ -242,24 +254,29 @@ test_sample.py:7: AssertionError
 test_answer
 ======================================================================================================= short test summary info ========================================================================================================
 FAILED test_sample.py::test_answer - assert 4 == 5
-========================================================================================================== 1 failed in 0.04s ===========================================================================================================
-</code></pre></td></tr></table>
+========================================================================================================== 1 failed in 0.04s ===========================================================================================================</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>如果还没有安装pytest，可以使用 <code>pip install pytest</code> 安装。</p>
 </blockquote>
+
 <p>测试结果显示，运行了一个测试用例，结果是红色，表示失败。错误信息显示，在代码的第7行抛出AssertionError。可以更改一下代码，让测试用例绿色通过。</p>
+
 <p>这个测试用例涉及pytest的3个简单的规则:</p>
+
 <ul>
 <li>测试模块以 <strong>test_</strong> 前缀命名</li>
 <li>测试用例(函数)同样以 <strong>test_</strong> 前缀命名</li>
 <li>结果判断使用 <em>assert</em> 断言即可</li>
 </ul>
-<h3 id="heading-2">异常处理</h3>
+
+<h3 id="异常处理">异常处理</h3>
+
 <p>pytest支持异常的捕获, 使用 <em>with</em> + <em>pytest.raises</em> 捕获目标函数的异常:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -269,9 +286,9 @@ FAILED test_sample.py::test_answer - assert 4 == 5
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat test_exception.py
+<pre class="chroma"># cat test_exception.py
 import pytest
 
 def f():
@@ -280,14 +297,15 @@ def f():
 
 def test_mytest():
     with pytest.raises(SystemExit):
-        f()
-</code></pre></td></tr></table>
+        f()</pre></td></tr></table>
 </div>
-</div><h3 id="heading-3">测试类</h3>
+</div>
+<h3 id="测试类">测试类</h3>
+
 <p>pytest支持测试类，测试类可以用来做测试用例分组:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -296,9 +314,9 @@ def test_mytest():
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat test_class.py
+<pre class="chroma"># cat test_class.py
 class TestClass:
     def test_one(self):
         x = &#34;this&#34;
@@ -306,32 +324,34 @@ class TestClass:
 
     def test_two(self):
         x = &#34;hello&#34;
-        assert hasattr(x, &#34;check&#34;)
-</code></pre></td></tr></table>
+        assert hasattr(x, &#34;check&#34;)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>类使用 <strong>Test</strong> 前缀, 并且测试类不需要额外的继承。</li>
 </ul>
-<h3 id="heading-4">自动测试</h3>
+
+<h3 id="自动测试">自动测试</h3>
+
 <p>我们的目录下有下面3个测试模块:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ll
+<pre class="chroma"># ll
 -rw-r--r--  1 yoo  staff   168B Jul 22 21:32 test_class.py
 -rw-r--r--  1 yoo  staff   117B Jul 22 21:30 test_exception.py
--rw-r--r--  1 yoo  staff    73B Jul 22 21:09 test_sample.py
-</code></pre></td></tr></table>
+-rw-r--r--  1 yoo  staff    73B Jul 22 21:09 test_sample.py</pre></td></tr></table>
 </div>
-</div><p>运行<code>pytest</code> -不带额外参数- 可以自动测试3个模块，非常方便:</p>
+</div>
+<p>运行<code>pytest</code> -不带额外参数- 可以自动测试3个模块，非常方便:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -341,9 +361,9 @@ class TestClass:
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># pytest
+<pre class="chroma"># pytest
 ============================================================================================== test session starts ===============================================================================================
 platform darwin -- Python 3.8.5, pytest-6.2.2, py-1.10.0, pluggy-0.13.1
 rootdir: /Users/yoo/work/yuanmahui/python/ch22-pytest
@@ -352,107 +372,113 @@ test_class.py ..                                                                
 test_exception.py .                                                                                                                                                                                        [ 75%]
 test_sample.py .                                                                                                                                                                                           [100%]
 
-=============================================================================================== 4 passed in 0.02s ================================================================================================
-</code></pre></td></tr></table>
+=============================================================================================== 4 passed in 0.02s ================================================================================================</pre></td></tr></table>
 </div>
-</div><h2 id="heading-5">进阶技巧</h2>
+</div>
+<h2 id="进阶技巧">进阶技巧</h2>
+
 <p>了解pytest的基本使用方法后，我们再学习一些进阶技巧，可以帮助我们更好的编写测试用例。</p>
+
 <h3 id="parametrize">parametrize</h3>
+
 <p>parametrize可以减少测试用例的编写。比如下面的测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_eval():
+<pre class="chroma">def test_eval():
     assert eval(&#34;3+5&#34;) == 8
     assert eval(&#34;&#39;2&#39;+&#39;4&#39;&#34;) == &#34;24&#34;
-    assert eval(&#34;6*9&#34;) == 54
-</code></pre></td></tr></table>
+    assert eval(&#34;6*9&#34;) == 54</pre></td></tr></table>
 </div>
-</div><p>对eval的测试条件很多，再增加用例就需要调整函数。这样代码不简洁，也不容易维护。使用 <em>parametrize</em> 可以优化这个问题:</p>
+</div>
+<p>对eval的测试条件很多，再增加用例就需要调整函数。这样代码不简洁，也不容易维护。使用 <em>parametrize</em> 可以优化这个问题:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@pytest.mark.parametrize(&#34;test_input,expected&#34;, [
+<pre class="chroma">@pytest.mark.parametrize(&#34;test_input,expected&#34;, [
     (&#34;3+5&#34;, 8),
     (&#34;&#39;2&#39;+&#39;4&#39;&#34;, &#34;24&#34;),
     (&#34;6*9&#34;, 54)
 ])
 def test_eval_1(test_input, expected):
-    assert eval(test_input) == expected
-</code></pre></td></tr></table>
+    assert eval(test_input) == expected</pre></td></tr></table>
 </div>
-</div><p>调整测试函数的参数为输入和期望，然后在parametrize填写参数值，运行时候会自动进行函数参数赋值。这样再增加测试条件，不需要改动test_eval_1的函数体, 增加条件数组即可。</p>
+</div>
+<p>调整测试函数的参数为输入和期望，然后在parametrize填写参数值，运行时候会自动进行函数参数赋值。这样再增加测试条件，不需要改动test_eval_1的函数体, 增加条件数组即可。</p>
+
 <h3 id="mark">mark</h3>
+
 <p>mark是一个标签，可以通过下面方式配置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@pytest.mark.slow
+<pre class="chroma">@pytest.mark.slow
 def test_mark():
     print(&#34;test mark&#34;)
     # 模拟运行很耗时的测试用例
     time.sleep(10)
-    assert 5 == 5
-</code></pre></td></tr></table>
+    assert 5 == 5</pre></td></tr></table>
 </div>
-</div><p>然后目录下增加 <code>pytest.ini</code> 文件，对pytest进行配置:</p>
+</div>
+<p>然后目录下增加 <code>pytest.ini</code> 文件，对pytest进行配置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat pytest.ini
+<pre class="chroma"># cat pytest.ini
 [pytest]
 markers =
-    slow: marks tests as slow (deselect with &#39;-m &#34;not slow&#34;&#39;)
-</code></pre></td></tr></table>
+    slow: marks tests as slow (deselect with &#39;-m &#34;not slow&#34;&#39;)</pre></td></tr></table>
 </div>
-</div><p>使用下面命令可以跳过标记的函数，加快测试速度：</p>
+</div>
+<p>使用下面命令可以跳过标记的函数，加快测试速度：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"> pytest test_sample.py -m &#34;not slow&#34;
-</code></pre></td></tr></table>
+<pre class="chroma"> pytest test_sample.py -m &#34;not slow&#34;</pre></td></tr></table>
 </div>
-</div><p>也可以仅仅运行标记的函数</p>
+</div>
+<p>也可以仅仅运行标记的函数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -m slow
-</code></pre></td></tr></table>
+<pre class="chroma">pytest -m slow</pre></td></tr></table>
 </div>
-</div><h3 id="fixture">fixture</h3>
+</div>
+<h3 id="fixture">fixture</h3>
+
 <p>fixture可以提供类似初始化和mock功能, 下面是一个完整示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -484,10 +510,9 @@ markers =
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span><span class="lnt">33
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">import pytest
+<pre class="chroma">import pytest
 
 # Arrange
 @pytest.fixture
@@ -518,49 +543,51 @@ def test_string(order, expected_list):
     order.append(3.0)
 
     # Assert
-    assert order == expected_list
-
-</code></pre></td></tr></table>
+    assert order == expected_list</pre></td></tr></table>
 </div>
-</div><p>可以看到test_string的order参数和expected_list都是前面使用<code>pytest.fixture</code>装饰器标记的函数结果。fixture还可以嵌套，order嵌套了first_entry和second_entry。</p>
+</div>
+<p>可以看到test_string的order参数和expected_list都是前面使用<code>pytest.fixture</code>装饰器标记的函数结果。fixture还可以嵌套，order嵌套了first_entry和second_entry。</p>
+
 <p>知道fixture如何使用后，可能还有疑问，这样写有什么用？比如测试数据库写入的用例, 需要一个数据库连接参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_database_insert_record(database_connection):
+<pre class="chroma">def test_database_insert_record(database_connection):
     if database_connection:
         print(&#34;Insertion Successful. &#34;, database_connection)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>使用fixture就可以解决这个问题，在测试用例目录编写 <code>conftest.py</code>:</p>
+</div>
+<p>使用fixture就可以解决这个问题，在测试用例目录编写 <code>conftest.py</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat conftest.py
+<pre class="chroma"># cat conftest.py
 @pytest.fixture
 def database_connection():
     # mock...
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><h3 id="pluginhook">plugin&amp;&amp;hook</h3>
+</div>
+<h3 id="plugin-hook">plugin&amp;&amp;hook</h3>
+
 <p>可以编写pytest的插件plugin和钩子hook对pytest进行扩展。</p>
+
 <p>先创建一个a目录，然后在a目录中创建 <code>conftest.py</code>和 <code>test-sub.py</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -570,10 +597,9 @@ def database_connection():
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># cat a/conftest.py
+<pre class="chroma"># cat a/conftest.py
 
 def pytest_runtest_setup(item):
         # called for running each test in &#39;a&#39; directory
@@ -582,40 +608,46 @@ def pytest_runtest_setup(item):
 # cat a/test_sub.py
 
 def test_sub():
-    pass
-
-</code></pre></td></tr></table>
+    pass</pre></td></tr></table>
 </div>
-</div><p>使用 <code> pytest a/test_sub.py --capture=no</code> 会加载我们编写的插件和钩子，在console中可以看到下面字样:</p>
+</div>
+<p>使用 <code>pytest a/test_sub.py --capture=no</code> 会加载我们编写的插件和钩子，在console中可以看到下面字样:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
-a/test_sub.py setting up &lt;Function test_sub&gt;
-</code></pre></td></tr></table>
+<pre class="chroma">...
+a/test_sub.py setting up &lt;Function test_sub&gt;</pre></td></tr></table>
 </div>
-</div><ul>
-<li>使用系统钩子，以 *pytest_* 为前缀，名为 *runtest_setup* 。</li>
+</div>
+<ul>
+<li>使用系统钩子，以 <em>pytest_</em> 为前缀，名为 <em>runtest_setup</em> 。</li>
 </ul>
+
 <p>使用pytest_runtest_setup可以实现测试框架中的setup类似功能。</p>
-<h2 id="heading-6">小结</h2>
+
+<h2 id="小结">小结</h2>
+
 <p>pytest是一个简单易用的测试用例，在flask， werkzeug，gunicorn等项目中使用。使用方法如下:</p>
+
 <ul>
 <li>测试目录一般使用 <em>tests</em> 命名和src同层级</li>
-<li>测试模块使用 *test_* 前缀</li>
+<li>测试模块使用 <em>test_</em> 前缀</li>
 <li>测试类使用 <em>Test</em> 前缀，不需要继承其它父类</li>
-<li>测试用例也使用 *test_* 前缀</li>
+<li>测试用例也使用 <em>test_</em> 前缀</li>
 <li>可以使用parametrize进行参数化处理</li>
 <li>可以使用mark给测试用例加标签</li>
 <li>可以使用fixture模拟测试条件</li>
 <li>使用pytest.ini文件对pytest进行配置</li>
 <li>可以编写插件和hoo对pytest扩展</li>
 </ul>
+
 <p>pytest还有很多用法，下次我们继续学习。</p>
-<h2 id="heading-7">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>pytest文档 <a href="https://docs.pytest.org/en/6.2.x/">https://docs.pytest.org/en/6.2.x/</a></li>
 </ul>
@@ -702,7 +734,7 @@ a/test_sub.py setting up &lt;Function test_sub&gt;
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

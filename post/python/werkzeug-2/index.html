@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/werkzeug-2/" />
-<meta property="article:published_time" content="2021-06-03T23:37:07+08:00" />
-<meta property="article:modified_time" content="2021-06-03T23:37:07+08:00" />
+<meta property="article:published_time" content="2021-06-03T23:37:07&#43;08:00"/>
+<meta property="article:modified_time" content="2021-06-03T23:37:07&#43;08:00"/>
+
 <meta itemprop="name" content="Werkzeug 源码阅读-下">
 <meta itemprop="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是">
+
+
 <meta itemprop="datePublished" content="2021-06-03T23:37:07&#43;08:00" />
 <meta itemprop="dateModified" content="2021-06-03T23:37:07&#43;08:00" />
 <meta itemprop="wordCount" content="5050">
 
 
 
-<meta itemprop="keywords" content="http,开源项目,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="http,开源项目,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Werkzeug 源码阅读-下"/>
 <meta name="twitter:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是"/>
 
@@ -137,39 +141,46 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#middleware">middleware</a>
-      <ul>
-        <li><a href="#shareddatamiddleware">SharedDataMiddleware</a></li>
-        <li><a href="#proxymiddleware">ProxyMiddleware</a></li>
-        <li><a href="#profilermiddleware">ProfilerMiddleware</a></li>
-      </ul>
-    </li>
-    <li><a href="#routing">routing</a></li>
-    <li><a href="#datastructures">datastructures</a>
-      <ul>
-        <li><a href="#immutablelistimmutabledict">ImmutableList&ImmutableDict</a></li>
-        <li><a href="#typeconversiondict">TypeConversionDict</a></li>
-        <li><a href="#multidict">MultiDict</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#middleware">middleware</a>
+<ul>
+<li><a href="#shareddatamiddleware">SharedDataMiddleware</a></li>
+<li><a href="#proxymiddleware">ProxyMiddleware</a></li>
+<li><a href="#profilermiddleware">ProfilerMiddleware</a></li>
+</ul></li>
+<li><a href="#routing">routing</a></li>
+<li><a href="#datastructures">datastructures</a>
+<ul>
+<li><a href="#immutablelist-immutabledict">ImmutableList&amp;ImmutableDict</a></li>
+<li><a href="#typeconversiondict">TypeConversionDict</a></li>
+<li><a href="#multidict">MultiDict</a></li>
+</ul></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。文章计划分上下两篇，上篇介绍了 1）serving &amp;&amp; wsgi 2）request &amp;&amp; response
+      
+
+<p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。文章计划分上下两篇，上篇介绍了 1）serving &amp;&amp; wsgi 2）request &amp;&amp; response
 3）local的实现三个部分，下篇也分3个部分:</p>
+
 <ul>
 <li>middleware</li>
 <li>routing &amp;&amp; urls</li>
 <li>datastructures</li>
 </ul>
+
 <h2 id="middleware">middleware</h2>
+
 <p>middleware中提供了下面6个示例:</p>
+
 <table>
 <thead>
 <tr>
@@ -177,51 +188,59 @@
 <th>功能</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>shared_data</td>
 <td>静态文件</td>
 </tr>
+
 <tr>
 <td>http_proxy</td>
 <td>http连接的代理</td>
 </tr>
+
 <tr>
 <td>profiler</td>
 <td>性能检测</td>
 </tr>
+
 <tr>
 <td>proxy_fix</td>
 <td>X-Forwarded-For</td>
 </tr>
+
 <tr>
 <td>dispatcher</td>
 <td>多app支持</td>
 </tr>
+
 <tr>
 <td>lint</td>
 <td>WSGI Protocol Linter</td>
 </tr>
 </tbody>
 </table>
+
 <h3 id="shareddatamiddleware">SharedDataMiddleware</h3>
+
 <p><code>SharedDataMiddleware</code> 可以支持css,image等静态文件及目录， 常用方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">app = SharedDataMiddleware(app, {
+<pre class="chroma">app = SharedDataMiddleware(app, {
     &#39;/static&#39;: os.path.join(os.path.dirname(__file__), &#39;static&#39;)
-})
-</code></pre></td></tr></table>
+})</pre></td></tr></table>
 </div>
-</div><p>从示例可以猜到，SharedDataMiddleware自动将http路径变成文件读取，基本就是 <code>http.server</code> 的功能。同时SharedDataMiddleware是一个类装饰器，传入app再返回app。 类装饰器具主要就是 <em><strong>init</strong></em> 和 <em><strong>call</strong></em> 两个方法。</p>
+</div>
+<p>从示例可以猜到，SharedDataMiddleware自动将http路径变成文件读取，基本就是 <code>http.server</code> 的功能。同时SharedDataMiddleware是一个类装饰器，传入app再返回app。 类装饰器具主要就是 <em><strong>init</strong></em> 和 <em><strong>call</strong></em> 两个方法。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -257,41 +276,42 @@
 <pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">SharedDataMiddleware</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">app</span><span class="p">:</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">WSGIApplication</span><span class="s2">&#34;</span><span class="p">,</span>
+        <span class="n">app</span><span class="p">:</span> <span class="s2">&#34;WSGIApplication&#34;</span><span class="p">,</span>
         <span class="n">exports</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">,</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">,</span>
-        <span class="p">]</span><span class="p">,</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]],</span>
+        <span class="p">],</span>
         <span class="n">disallow</span><span class="p">:</span> <span class="bp">None</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
         <span class="n">cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
         <span class="n">cache_timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span>
-        <span class="n">fallback_mimetype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">application/octet-stream</span><span class="s2">&#34;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-</span><span class="o">&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fallback_mimetype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&#34;application/octet-stream&#34;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exports</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_TLoader</span><span class="p">]</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exports</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_TLoader</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cache</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_timeout</span> <span class="o">=</span> <span class="n">cache_timeout</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exports</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span><span class="p">:</span>
-            <span class="n">exports</span> <span class="o">=</span> <span class="n">exports</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exports</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">exports</span> <span class="o">=</span> <span class="n">exports</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">exports</span><span class="p">:</span>
-            <span class="o">.</span><span class="o">.</span><span class="o">.</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="p">:</span>
+            <span class="o">...</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                     <span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_loader</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_directory_loader</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="o">.</span><span class="o">.</span><span class="o">.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">loader</span><span class="p">)</span><span class="p">)</span>
-        <span class="o">.</span><span class="o">.</span><span class="o">.</span>
-</code></pre></td></tr></table>
+            <span class="o">...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exports</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">loader</span><span class="p">))</span>
+        <span class="o">...</span></code></pre></td></tr></table>
 </div>
-</div><p>SharedDataMiddleware构造函数接收app和exports两个参数。其中exports可以是一个字典或者可迭代对象，对export中的文件路径，生成一个文件加载器。注意这里文件没有立即加载，而是有真实调用的时候才会加载。</p>
+</div>
+<p>SharedDataMiddleware构造函数接收app和exports两个参数。其中exports可以是一个字典或者可迭代对象，对export中的文件路径，生成一个文件加载器。注意这里文件没有立即加载，而是有真实调用的时候才会加载。</p>
+
 <p>call方法负责请求的响应:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -337,9 +357,9 @@
 </span><span class="lnt">44
 </span><span class="lnt">45
 </span><span class="lnt">46
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(
+<pre class="chroma">def __call__(
         self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
     ) -&gt; t.Iterable[bytes]:
         path = get_path_info(environ)
@@ -384,41 +404,45 @@
             )
         )
         start_response(&#34;200 OK&#34;, headers)
-        return wrap_file(environ, f)
-</code></pre></td></tr></table>
+        return wrap_file(environ, f)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>根据request(wsgi.environ)的路径，去加载文件</li>
 <li>生成文件的http头，包括Date(服务器时间), Content-Type(MIME类型), Last-Modified(文件最后修改时间)&hellip;</li>
 <li>直接返回文件的包装器</li>
 </ul>
+
 <p>这里有2个小细节：</p>
+
 <ol>
 <li>匹配上正确文件后，是直接返回，并未经过app处理</li>
 <li>默认支持浏览器的本地cache，通过http头的Etag，Cache-Control和Expires控制。</li>
 </ol>
+
 <h3 id="proxymiddleware">ProxyMiddleware</h3>
+
 <p>ProxyMiddleware使用如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">app = ProxyMiddleware(app, {
+<pre class="chroma">app = ProxyMiddleware(app, {
     &#34;/static/&#34;: {
         &#34;target&#34;: &#34;http://127.0.0.1:5001/&#34;,
     }
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>从使用方式可以推测将<code>/static/</code>的url代理到 <code>http://127.0.0.1:5001</code>服务。http代理的主要实现过程如下:</p>
+</div>
+<p>从使用方式可以推测将<code>/static/</code>的url代理到 <code>http://127.0.0.1:5001</code>服务。http代理的主要实现过程如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -471,9 +495,9 @@
 </span><span class="lnt">51
 </span><span class="lnt">52
 </span><span class="lnt">53
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from http import client
+<pre class="chroma">from http import client
 
 con = client.HTTPConnection(
             host, target.port or 80, timeout=self.timeout
@@ -525,10 +549,10 @@ def read() -&gt; t.Iterator[bytes]:
 
         yield data
 
-return read()
-</code></pre></td></tr></table>
+return read()</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>代理创建远程服务的http连接</li>
 <li>代理向远程服务发送http头</li>
 <li>读取客户端请求中的body部分，转发到远程服务</li>
@@ -536,12 +560,15 @@ return read()
 <li>获取远程服务http状态码和响应头信息，返回给客户端请求的response</li>
 <li>包装远程服务的body读取方法返回给调用者</li>
 </ul>
+
 <p>学会了ProxyMiddleware就知道了如何实现一个简单的http代理服务，科学上网的逻辑也就懂了。</p>
+
 <h3 id="profilermiddleware">ProfilerMiddleware</h3>
+
 <p>ProfilerMiddleware展示了如何对代码进行性能测试。主要是使用 <code>profile.runcall</code> 方法，因为该方法没有返回值，所以使用一个临时的列表response_body和catching_start_response中转一下。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -564,9 +591,9 @@ return read()
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(
+<pre class="chroma">def __call__(
     self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
 ) -&gt; t.Iterable[bytes]:
     
@@ -588,15 +615,17 @@ return read()
     body = b&#34;&#34;.join(response_body)
     elapsed = time.time() - start
     ...
-    return [body]
-</code></pre></td></tr></table>
+    return [body]</pre></td></tr></table>
 </div>
-</div><p>其它几个Middleware就不再详细介绍了，我们再进一步了解一下个Middleware的模型: <em>洋葱模型</em></p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210602214409.png" alt="onion-model"></p>
+</div>
+<p>其它几个Middleware就不再详细介绍了，我们再进一步了解一下个Middleware的模型: <em>洋葱模型</em></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210602214409.png" alt="onion-model" /></p>
+
 <p>http请求像剥洋葱一样，一层层到达应用程序核心，然后再逐层包装返回响应。换成下面的装饰器调用过程，就很好理解了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -606,9 +635,9 @@ return read()
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 装饰器方式
+<pre class="chroma"># 装饰器方式
 @cache
 @count_calls
 def fibonacci(num):
@@ -617,16 +646,19 @@ def fibonacci(num):
     return fibonacci(num - 1) + fibonacci(num - 2)
 
 # 实际函数调用方式
-cache(count_calls(fibonacci))(num)
-</code></pre></td></tr></table>
+cache(count_calls(fibonacci))(num)</pre></td></tr></table>
 </div>
-</div><p>目标函数被装饰器逐层包裹调用，每个装饰器层都可以对requst和response各进行一次处理。</p>
-<hr>
+</div>
+<p>目标函数被装饰器逐层包裹调用，每个装饰器层都可以对requst和response各进行一次处理。</p>
+
+<hr />
+
 <h2 id="routing">routing</h2>
+
 <p>routring是非常重要的模块，下面是routing的使用示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -647,9 +679,9 @@ cache(count_calls(fibonacci))(num)
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from werkzeug.routing import Map, Rule, NotFound, RequestRedirect
+<pre class="chroma">from werkzeug.routing import Map, Rule, NotFound, RequestRedirect
 
 url_map = Map([
     Rule(&#39;/&#39;, endpoint=&#39;blog/index&#39;),
@@ -669,10 +701,10 @@ def application(environ, start_response):
     except HTTPException, e:
         return e(environ, start_response)
     response =  =getattr(self, f&#34;on_{endpoint}&#34;)(request, **args)
-    return response(environ, start_response)
-</code></pre></td></tr></table>
+    return response(environ, start_response)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>应用程序的所有路由规则都使用一个Map对象管理，Map对象的主要参数是一个Rule数组。</li>
 <li>Rule包括url的规则和端点endpoint。</li>
 <li>每个http请求使用Map对象的bind_to_environ得到一组urls(MapAdapter对象)。</li>
@@ -680,10 +712,11 @@ def application(environ, start_response):
 <li>使用端点endpoint查找对应的handerl函数(Front-Control模式)。</li>
 <li>&hellip;</li>
 </ul>
+
 <p>Rule对象的构造函数和示例一样，主要是rule规则的string定义和监听函数的端点endpoint两个参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -706,9 +739,9 @@ def application(environ, start_response):
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Rule(RuleFactory):
+<pre class="chroma">class Rule(RuleFactory):
     
     def __init__(
         self,
@@ -730,13 +763,13 @@ def application(environ, start_response):
         self.endpoint: str = endpoint  # type: ignore
         ...
         self.arguments = set()
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>继续看Map对象的构造函数:</p>
+</div>
+<p>继续看Map对象的构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -757,9 +790,9 @@ def application(environ, start_response):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Map:
+<pre class="chroma">class Map:
     def __init__(
         self,
         rules: t.Optional[t.Iterable[RuleFactory]] = None,
@@ -779,13 +812,13 @@ def application(environ, start_response):
         self.converters = self.default_converters.copy()
         ...
         for rulefactory in rules or ():
-            self.add(rulefactory)
-</code></pre></td></tr></table>
+            self.add(rulefactory)</pre></td></tr></table>
 </div>
-</div><p>重头戏在Map对象的add方法:</p>
+</div>
+<p>重头戏在Map对象的add方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -796,9 +829,9 @@ def application(environ, start_response):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def add(self, rulefactory: RuleFactory) -&gt; None:
+<pre class="chroma">def add(self, rulefactory: RuleFactory) -&gt; None:
     &#34;&#34;&#34;Add a new rule or factory to the map and bind it.  Requires that the
     rule is not bound to another map.
 
@@ -808,14 +841,15 @@ def application(environ, start_response):
         rule.bind(self)
         self._rules.append(rule)
         self._rules_by_endpoint.setdefault(rule.endpoint, []).append(rule)
-    self._remap = True
-</code></pre></td></tr></table>
+    self._remap = True</pre></td></tr></table>
 </div>
-</div><p>rule.bind主要工作就是对rule进行预先编译，提高查询时候的正则匹配速度, 这一部分比较复杂，我们暂时跳过，知道是将 <code>/&lt;int:year&gt;/&lt;int:month&gt;/&lt;int:day&gt;/</code> 这样的规则，编译生成对应的正则表达式即可。</p>
+</div>
+<p>rule.bind主要工作就是对rule进行预先编译，提高查询时候的正则匹配速度, 这一部分比较复杂，我们暂时跳过，知道是将 <code>/&lt;int:year&gt;/&lt;int:month&gt;/&lt;int:day&gt;/</code> 这样的规则，编译生成对应的正则表达式即可。</p>
+
 <p>请求的rule匹配过程是下面这样，首先从environ中解析出path，method和query_string三个重要的信息，生成一个MapAdapter对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -840,9 +874,9 @@ def application(environ, start_response):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def bind_to_environ(
+<pre class="chroma">def bind_to_environ(
     self,
     environ: &#34;WSGIEnvironment&#34;,
     server_name: t.Optional[str] = None,
@@ -866,13 +900,13 @@ def application(environ, start_response):
         path_info,
         default_method,
         query_args,
-    )
-</code></pre></td></tr></table>
+    )</pre></td></tr></table>
 </div>
-</div><p>然后调用MapAdapter对象的match方法:</p>
+</div>
+<p>然后调用MapAdapter对象的match方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -901,9 +935,9 @@ def application(environ, start_response):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match(
+<pre class="chroma">def match(
     self,
     path_info: t.Optional[str] = None,
     method: t.Optional[str] = None,
@@ -931,13 +965,13 @@ def application(environ, start_response):
         if rv is None:
             continue
        ...
-    return rule.endpoint, rv
-</code></pre></td></tr></table>
+    return rule.endpoint, rv</pre></td></tr></table>
 </div>
-</div><p>match过程比较简单，就是对所有的rule进行循环，使用rule的math方法判断是否和path和method匹配：</p>
+</div>
+<p>match过程比较简单，就是对所有的rule进行循环，使用rule的math方法判断是否和path和method匹配：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -952,9 +986,9 @@ def application(environ, start_response):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def match(
+<pre class="chroma">def match(
     self, path: str, method: t.Optional[str] = None
 ) -&gt; t.Optional[t.MutableMapping[str, t.Any]]:
     m = self._regex.search(path)
@@ -968,14 +1002,16 @@ def application(environ, start_response):
             except ValidationError:
                 return None
             result[str(name)] = value
-        return result
-</code></pre></td></tr></table>
+        return result</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>使用正则表达式搜素path是否匹配</li>
 <li>匹配上的rule将query_string解析出rule参数，这个过程由Converter处理，因为url上都是字符串，需要将字符串转换成具体的类型，比如int。</li>
 </ul>
+
 <p>Converter种类如下表:</p>
+
 <table>
 <thead>
 <tr>
@@ -983,41 +1019,49 @@ def application(environ, start_response):
 <th>名称</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>default</td>
 <td>UnicodeConverter</td>
 </tr>
+
 <tr>
 <td>string</td>
 <td>UnicodeConverter</td>
 </tr>
+
 <tr>
 <td>any</td>
 <td>AnyConverter</td>
 </tr>
+
 <tr>
 <td>path</td>
 <td>PathConverter</td>
 </tr>
+
 <tr>
 <td>int</td>
 <td>IntegerConverter</td>
 </tr>
+
 <tr>
 <td>float</td>
 <td>FloatConverter</td>
 </tr>
+
 <tr>
 <td>uuid</td>
 <td>UUIDConverter</td>
 </tr>
 </tbody>
 </table>
+
 <p>简单介绍一下NumberConverter，主要是其to_python方法, 判断是否符合极限值要求，然后强转成int类型数据:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1031,9 +1075,9 @@ def application(environ, start_response):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class NumberConverter(BaseConverter):
+<pre class="chroma">class NumberConverter(BaseConverter):
     regex = r&#34;\d+&#34;
     num_convert: t.Callable = int
     
@@ -1046,13 +1090,13 @@ def application(environ, start_response):
         ):
             raise ValidationError()
         return value
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>Converter的使用可以配合业务函数理解, 对于 <code>/1001</code> 这样的URL，解析出其中的 <code>short_id=1001</code> 参数:</p>
+</div>
+<p>Converter的使用可以配合业务函数理解, 对于 <code>/1001</code> 这样的URL，解析出其中的 <code>short_id=1001</code> 参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1060,40 +1104,47 @@ def application(environ, start_response):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># /1001
+<pre class="chroma"># /1001
 # Rule(&#34;/&lt;short_id&gt;&#34;, endpoint=&#34;follow_short_link&#34;),
 def on_follow_short_link(self, request, short_id):
     link_target = self.redis.get(f&#34;url-target:{short_id}&#34;)
     if link_target is None:
         raise NotFound()
     self.redis.incr(f&#34;click-count:{short_id}&#34;)
-    return redirect(link_target)
-</code></pre></td></tr></table>
+    return redirect(link_target)</pre></td></tr></table>
 </div>
-</div><p>http的路由处理还有一种使用前缀树实现的方案，比这里使用复杂度为 <strong>N</strong> 的一次循环算法要更高效，等以后讲解gin框架的时候再介绍。</p>
-<hr>
+</div>
+<p>http的路由处理还有一种使用前缀树实现的方案，比这里使用复杂度为 <strong>N</strong> 的一次循环算法要更高效，等以后讲解gin框架的时候再介绍。</p>
+
+<hr />
+
 <h2 id="datastructures">datastructures</h2>
+
 <p>datastructures中的数据结构比较多，我简单整理出下面几个类，其余的类都是以下面的类为基础，组合而来:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210603220627.png" alt="数据结构归类"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210603220627.png" alt="数据结构归类" /></p>
+
 <p>datastructures主要就是处理请求解析后的数据，比如Header，Accept都是不可变的数据，这样保证业务使用的不会被误操作。不可变操作是通过 <code>is_immutabl</code> 函数实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def is_immutable(self):
-    raise TypeError(f&#34;{type(self).__name__!r} objects are immutable&#34;)
-</code></pre></td></tr></table>
+<pre class="chroma">def is_immutable(self):
+    raise TypeError(f&#34;{type(self).__name__!r} objects are immutable&#34;)</pre></td></tr></table>
 </div>
-</div><p>其实也非常简单，就是如果要改变数据，就抛出异常，这样就保证了数据是不可变的。</p>
-<h3 id="immutablelistimmutabledict">ImmutableList&amp;ImmutableDict</h3>
+</div>
+<p>其实也非常简单，就是如果要改变数据，就抛出异常，这样就保证了数据是不可变的。</p>
+
+<h3 id="immutablelist-immutabledict">ImmutableList&amp;ImmutableDict</h3>
+
 <p>不可变列表ImmutableList使用Mixin方式，其中ImmutableListMixin主要代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1111,9 +1162,9 @@ def on_follow_short_link(self, request, short_id):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ImmutableListMixin:
+<pre class="chroma">class ImmutableListMixin:
 
     _hash_cache = None
 
@@ -1130,30 +1181,33 @@ def on_follow_short_link(self, request, short_id):
         is_immutable(self)
     ...
     def sort(self, key=None, reverse=False):
-        is_immutable(self)
-</code></pre></td></tr></table>
+        is_immutable(self)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>ImmutableListMixin的hash方法被覆盖，hash值来自元祖化的对象，元祖是不可变的，这样对象的hash也是确定的。因为不可变，所以只需要计算一次，以后都使用cache。</li>
 <li>所有的改变数据的操作，包括魔法函数，append，甚至是原地排序等都使用is_immutable抛出异常。</li>
 </ul>
+
 <p>ImmutableList只需要组合ImmutableListMixin和list，不需要额外的实现，非常简单:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ImmutableList(ImmutableListMixin, list):
-    ...
-</code></pre></td></tr></table>
+<pre class="chroma">class ImmutableList(ImmutableListMixin, list):
+    ...</pre></td></tr></table>
 </div>
-</div><p>ImmutableDict和ImmutableList类似，只是将list换成dict。</p>
+</div>
+<p>ImmutableDict和ImmutableList类似，只是将list换成dict。</p>
+
 <h3 id="typeconversiondict">TypeConversionDict</h3>
+
 <p>TypeConversionDict主要是对数据类型转换:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1167,9 +1221,9 @@ def on_follow_short_link(self, request, short_id):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TypeConversionDict(dict):
+<pre class="chroma">class TypeConversionDict(dict):
 
     def get(self, key, default=None, type=None):
         try:
@@ -1182,31 +1236,32 @@ def on_follow_short_link(self, request, short_id):
                 rv = type(rv) 
             except ValueError:
                 rv = default
-        return rv
-</code></pre></td></tr></table>
+        return rv</pre></td></tr></table>
 </div>
-</div><p>结合示例，非常容易理解:</p>
+</div>
+<p>结合示例，非常容易理解:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; d = TypeConversionDict(foo=&#39;42&#39;, bar=&#39;blub&#39;)
+<pre class="chroma">&gt;&gt;&gt; d = TypeConversionDict(foo=&#39;42&#39;, bar=&#39;blub&#39;)
 &gt;&gt;&gt; d.get(&#39;foo&#39;, type=int)
 42
 &gt;&gt;&gt; d.get(&#39;bar&#39;, -1, type=int)
--1
-</code></pre></td></tr></table>
+-1</pre></td></tr></table>
 </div>
-</div><h3 id="multidict">MultiDict</h3>
+</div>
+<h3 id="multidict">MultiDict</h3>
+
 <p>MultiDict是一个字典，字典的值使用列表存储。所以一个key可以由多个值，下面是它的构造函数和add方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1231,9 +1286,9 @@ def on_follow_short_link(self, request, short_id):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MultiDict(TypeConversionDict):
+<pre class="chroma">class MultiDict(TypeConversionDict):
     
     def __init__(self, mapping=None):
         if isinstance(mapping, MultiDict):
@@ -1257,13 +1312,13 @@ def on_follow_short_link(self, request, short_id):
     
     def add(self, key, value):
         dict.setdefault(self, key, []).append(value)
-        
-</code></pre></td></tr></table>
+        </pre></td></tr></table>
 </div>
-</div><p>结合MultiDict的示例感受一下:</p>
+</div>
+<p>结合MultiDict的示例感受一下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1272,9 +1327,9 @@ def on_follow_short_link(self, request, short_id):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; d = MultiDict([(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;c&#39;)])
+<pre class="chroma">&gt;&gt;&gt; d = MultiDict([(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;c&#39;)])
 &gt;&gt;&gt; d
 MultiDict([(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;c&#39;)])
 &gt;&gt;&gt; d[&#39;a&#39;]
@@ -1282,32 +1337,38 @@ MultiDict([(&#39;a&#39;, &#39;b&#39;), (&#39;a&#39;, &#39;c&#39;)])
 &gt;&gt;&gt; d.getlist(&#39;a&#39;)
 [&#39;b&#39;, &#39;c&#39;]
 &gt;&gt;&gt; &#39;a&#39; in d
-True
-</code></pre></td></tr></table>
+True</pre></td></tr></table>
 </div>
-</div><p>也许还是有疑惑，这种字典有什么用呢？我贴一个http请求的Request-Headers:</p>
+</div>
+<p>也许还是有疑惑，这种字典有什么用呢？我贴一个http请求的Request-Headers:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+<pre class="chroma">...
 accept-language: en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><p>这里的_accept-language_就是包括多个参数, 需要使用MultiDict这样的数据结构存储。</p>
+</div>
+<p>这里的_accept-language_就是包括多个参数, 需要使用MultiDict这样的数据结构存储。</p>
+
 <p>datastructures中的其它数据结构，大多是使用上面几个类演变组合而来，就不在赘述。</p>
-<hr>
-<h2 id="heading">小结</h2>
+
+<hr />
+
+<h2 id="小结">小结</h2>
+
 <p>本章我们知道“德国锤子”的middleware的核心机制来自装饰器，同时简单了解静态文件，http代理和性能分析三个Middleware的实现；了解路由使用单循环遍历的正则匹配来实现，路由参数如何解析；了解了一些使用特定的数据结构，来处理http头中的一些细节。</p>
-<h2 id="heading-1">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>在datastructures中的iter_multi_items函数对数据进行迭代，有使用 <code>yield</code> 关键字 和 <code>yield from</code> 语句:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1319,9 +1380,9 @@ accept-language: en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def iter_multi_items(mapping):
+<pre class="chroma">def iter_multi_items(mapping):
     if isinstance(mapping, MultiDict):
         yield from mapping.items(multi=True)
     elif isinstance(mapping, dict):
@@ -1332,84 +1393,88 @@ accept-language: en,zh;q=0.9,zh-TW;q=0.8,zh-CN;q=0.7
             else:
                 yield key, value
     else:
-        yield from mapping
-</code></pre></td></tr></table>
+        yield from mapping</pre></td></tr></table>
 </div>
-</div><p>这里简单介绍一下这两点。<code>yield</code> 关键字可以简单理解成一个函数的暂停。通常一个函数执行后通过return返回，中途不可更改。使用 <code>yield</code> 后就有了暂停和外界交互的能力:</p>
+</div>
+<p>这里简单介绍一下这两点。<code>yield</code> 关键字可以简单理解成一个函数的暂停。通常一个函数执行后通过return返回，中途不可更改。使用 <code>yield</code> 后就有了暂停和外界交互的能力:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def unlimit_generator():
+<pre class="chroma">def unlimit_generator():
     i = 0
     while i is not None:
         yield i
-        i+=1
-</code></pre></td></tr></table>
+        i+=1</pre></td></tr></table>
 </div>
-</div><p>比如上面这个无限生成器，可以在函数返回前输出0和任意正整数，这是使用range无法做到的。</p>
+</div>
+<p>比如上面这个无限生成器，可以在函数返回前输出0和任意正整数，这是使用range无法做到的。</p>
+
 <p>同样是生成数据的迭代器，下面是输出0~20，使用2个迭代器分别输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def generator2():
+<pre class="chroma">def generator2():
     for i in range(10):
         yield i
 
 def generator3():
     for j in range(10, 20):
-        yield j
-</code></pre></td></tr></table>
+        yield j</pre></td></tr></table>
 </div>
-</div><p>仅仅使用 <code>yield</code>关键字的话，要这样编写实现:</p>
+</div>
+<p>仅仅使用 <code>yield</code>关键字的话，要这样编写实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def generator():
+<pre class="chroma">def generator():
     for i in generator2():
         yield i
     for j in generator3():
-        yield j
-</code></pre></td></tr></table>
+        yield j</pre></td></tr></table>
 </div>
-</div><p>使用 <code>yield from</code> 语句后代码就非常简洁:</p>
+</div>
+<p>使用 <code>yield from</code> 语句后代码就非常简洁:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def generator():
+<pre class="chroma">def generator():
     yield from generator2()
-    yield from generator3()
-</code></pre></td></tr></table>
+    yield from generator3()</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>yield from 在python3的协程中也有体现，这里大家可以先好好体会一下</p>
 </blockquote>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-2">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>How to Use Generators and yield in Python <a href="https://realpython.com/introduction-to-python-generators/">https://realpython.com/introduction-to-python-generators/</a></li>
 <li>Python 3: Using &ldquo;yield from&rdquo; in Generators <a href="http://simeonvisser.com/posts/python-3-using-yield-from-in-generators-part-1.html">http://simeonvisser.com/posts/python-3-using-yield-from-in-generators-part-1.html</a></li>
@@ -1499,7 +1564,7 @@ def generator3():
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

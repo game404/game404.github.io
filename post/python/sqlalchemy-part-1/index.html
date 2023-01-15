@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/sqlalchemy-part-1/" />
-<meta property="article:published_time" content="2021-04-17T10:05:57+08:00" />
-<meta property="article:modified_time" content="2021-04-17T10:05:57+08:00" />
+<meta property="article:published_time" content="2021-04-17T10:05:57&#43;08:00"/>
+<meta property="article:modified_time" content="2021-04-17T10:05:57&#43;08:00"/>
+
 <meta itemprop="name" content="SQLAlchemy源码阅读-上篇">
 <meta itemprop="description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案">
+
+
 <meta itemprop="datePublished" content="2021-04-17T10:05:57&#43;08:00" />
 <meta itemprop="dateModified" content="2021-04-17T10:05:57&#43;08:00" />
-<meta itemprop="wordCount" content="4418">
+<meta itemprop="wordCount" content="4443">
 
 
 
-<meta itemprop="keywords" content="database,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="database,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SQLAlchemy源码阅读-上篇"/>
 <meta name="twitter:description" content="SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案"/>
 
@@ -137,23 +141,29 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#sqlalchemy">SQLAlchemy项目结构</a></li>
-    <li><a href="#sqlalchemysqlite">用SQLAlchemy操作sqlite数据库</a></li>
-    <li><a href="#engine">Engine代码分析</a></li>
-    <li><a href="#sqlitedialect">SQLiteDialect代码分析</a></li>
-    <li><a href="#connectpool">Connect和Pool代码分析</a></li>
-    <li><a href="#execute-sql">execute-SQL语句</a></li>
-    <li><a href="#result">Result分析</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#sqlalchemy项目结构">SQLAlchemy项目结构</a></li>
+<li><a href="#用sqlalchemy操作sqlite数据库">用SQLAlchemy操作sqlite数据库</a></li>
+<li><a href="#engine代码分析">Engine代码分析</a></li>
+<li><a href="#sqlitedialect代码分析">SQLiteDialect代码分析</a></li>
+<li><a href="#connect和pool代码分析">Connect和Pool代码分析</a></li>
+<li><a href="#execute-sql语句">execute-SQL语句</a></li>
+<li><a href="#result分析">Result分析</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案，旨在高效，高性能地访问数据库，并符合简单的Pythonic哲学。项目代码量比较大，接近200个文件，7万行代码， 我们一起来挑战一下。由于篇幅原因，分成上下两篇，上篇包括如下内容:</p>
+      
+
+<p>SQLAlchemy是Python SQL工具箱和ORM框架，它为应用程序开发人员提供了全面而灵活的SQL功能。它提供了一整套企业级持久化方案，旨在高效，高性能地访问数据库，并符合简单的Pythonic哲学。项目代码量比较大，接近200个文件，7万行代码， 我们一起来挑战一下。由于篇幅原因，分成上下两篇，上篇包括如下内容:</p>
+
 <ul>
 <li>SQLAlchemy项目结构</li>
 <li>使用SQLAlchemy操作sqlite数据库</li>
@@ -165,8 +175,11 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="sqlalchemy">SQLAlchemy项目结构</h2>
+
+<h2 id="sqlalchemy项目结构">SQLAlchemy项目结构</h2>
+
 <p>源码使用的版本是 <code>1.3.0</code>, 对应的commitID是 <code>740bb50c2</code>，和参考链接中官方文档1.3版本一致。项目目录大概包括:</p>
+
 <table>
 <thead>
 <tr>
@@ -174,53 +187,67 @@
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>connectors</td>
 <td>连接</td>
 </tr>
+
 <tr>
 <td>dialects</td>
 <td>方言</td>
 </tr>
+
 <tr>
 <td>engine</td>
 <td>引擎</td>
 </tr>
+
 <tr>
 <td>event</td>
 <td>事件</td>
 </tr>
+
 <tr>
 <td>ext</td>
 <td>扩展功能</td>
 </tr>
+
 <tr>
 <td>orm</td>
 <td>orm</td>
 </tr>
+
 <tr>
 <td>pool</td>
 <td>连接池</td>
 </tr>
+
 <tr>
 <td>sql</td>
 <td>sql处理</td>
 </tr>
+
 <tr>
 <td>util</td>
 <td>工具类</td>
 </tr>
 </tbody>
 </table>
+
 <p>SQLAlchemy的架构图如下:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210415214714.png" alt="architecture"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210415214714.png" alt="architecture" /></p>
+
 <p>整体分成3层，从上到下分别是ORM，core和DBAPI，其中core，又分成左右两个区域。我们先学习其中的引擎，连接池，dialects(仅sqlite)和DBAPI部分，也就是架构图的右半侧。其中DBAPI(sqlite相关)是在python-core-library中提供。</p>
-<h2 id="sqlalchemysqlite">用SQLAlchemy操作sqlite数据库</h2>
+
+<h2 id="用sqlalchemy操作sqlite数据库">用SQLAlchemy操作sqlite数据库</h2>
+
 <p>先从使用DBAPI操作sqlite的API开始:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -243,9 +270,9 @@
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">import sqlite3
+<pre class="chroma">import sqlite3
 con = sqlite3.connect(&#39;example.db&#39;)
 cur = con.cursor()
 
@@ -267,22 +294,21 @@ print(cur.fetchone())
 
 # We can also close the connection if we are done with it.
 # Just be sure any chang
-con.close()
-</code></pre></td></tr></table>
+con.close()</pre></td></tr></table>
 </div>
-</div><p>操作sqlite数据库主要包括了下面几个步骤:</p>
-<ul>
-<li>connect数据库获得连接con</li>
-<li>从连接中获取操作游标cur</li>
-<li>使用cur执行sql语句(statement)</li>
-<li>向连接con提交commit事务</li>
-<li>使用cur的fetchone/fecthmany/fetchall方法获取数据</li>
-<li>完成数据获取后使用close方法关闭连接con</li>
-</ul>
+</div>
+<p>操作sqlite数据库主要包括了下面几个步骤:
+* connect数据库获得连接con
+* 从连接中获取操作游标cur
+* 使用cur执行sql语句(statement)
+* 向连接con提交commit事务
+* 使用cur的fetchone/fecthmany/fetchall方法获取数据
+* 完成数据获取后使用close方法关闭连接con</p>
+
 <p>对比一下使用sqlalchemy进行sqlite操作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -296,9 +322,9 @@ con.close()
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from sqlalchemy import create_engine
+<pre class="chroma">from sqlalchemy import create_engine
 eng = create_engine(&#34;sqlite:///:memory:&#34;, echo=True)
 conn = eng.connect()
 conn.execute(&#34;create table x (a integer, b integer)&#34;)
@@ -311,20 +337,20 @@ result = conn.execute(&#39;&#39;&#39;
     union
     select x.a, x.b from x where a=2
 &#39;&#39;&#39;)
-assert result.keys() == [&#34;a&#34;, &#34;b&#34;]
-</code></pre></td></tr></table>
+assert result.keys() == [&#34;a&#34;, &#34;b&#34;]</pre></td></tr></table>
 </div>
-</div><p>可以看到使用sqlalchemy后操作变的简单，把cursor，commit，fetch和close等操作隐藏到engine内部，简化成3步:</p>
-<ul>
-<li>使用create_engine函数创建引擎eng</li>
-<li>使用引擎的connect方法创建连接conn</li>
-<li>使用conn执行SQL语句并获取返回的执行结果</li>
-</ul>
-<h2 id="engine">Engine代码分析</h2>
+</div>
+<p>可以看到使用sqlalchemy后操作变的简单，把cursor，commit，fetch和close等操作隐藏到engine内部，简化成3步:
+* 使用create_engine函数创建引擎eng
+* 使用引擎的connect方法创建连接conn
+* 使用conn执行SQL语句并获取返回的执行结果</p>
+
+<h2 id="engine代码分析">Engine代码分析</h2>
+
 <p>跟随create_engine的API，可以看到这里使用策略模式去创建不同的engine实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -334,9 +360,9 @@ assert result.keys() == [&#34;a&#34;, &#34;b&#34;]
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># engine/__init__.py
+<pre class="chroma"># engine/__init__.py
 
 from . import strategies
 
@@ -345,13 +371,13 @@ default_strategy = &#34;plain&#34;  # 默认
 def create_engine(*args, **kwargs):
     strategy = kwargs.pop(&#34;strategy&#34;, default_strategy)
     strategy = strategies.strategies[strategy]
-    return strategy.create(*args, **kwargs)
-</code></pre></td></tr></table>
+    return strategy.create(*args, **kwargs)</pre></td></tr></table>
 </div>
-</div><p>默认的engine策略:</p>
+</div>
+<p>默认的engine策略:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -371,9 +397,9 @@ def create_engine(*args, **kwargs):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># engine/strategies.py
+<pre class="chroma"># engine/strategies.py
 
 strategies = {}
 
@@ -392,13 +418,13 @@ class PlainEngineStrategy(DefaultEngineStrategy):
     engine_cls = base.Engine  # 引擎类
 
 
-PlainEngineStrategy()
-</code></pre></td></tr></table>
+PlainEngineStrategy()</pre></td></tr></table>
 </div>
-</div><p>重点就在策略的create方法了, 去掉数据准备和异常处理后核心代码如下:</p>
+</div>
+<p>重点就在策略的create方法了, 去掉数据准备和异常处理后核心代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -417,9 +443,9 @@ PlainEngineStrategy()
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def create(self, name_or_url, **kwargs):
+<pre class="chroma">def create(self, name_or_url, **kwargs):
     ...
     # get dialect class
     u = url.make_url(name_or_url)
@@ -437,19 +463,18 @@ PlainEngineStrategy()
     engineclass = self.engine_cls
     engine = engineclass(pool, dialect, u, **engine_args)
     ...
-    return engine
-</code></pre></td></tr></table>
+    return engine</pre></td></tr></table>
 </div>
-</div><p>create函数可以理解为engine的创建模版，主要是下面3个步骤:</p>
-<ul>
-<li>根据url获取到数据库方言，适配不同数据库sqlite/mysql/postgresql&hellip;</li>
-<li>获取不同方言的连接池实现</li>
-<li>创建engine，持有dialect和pool</li>
-</ul>
+</div>
+<p>create函数可以理解为engine的创建模版，主要是下面3个步骤:
+* 根据url获取到数据库方言，适配不同数据库sqlite/mysql/postgresql&hellip;
+* 获取不同方言的连接池实现
+* 创建engine，持有dialect和pool</p>
+
 <p>Engine的构造函数和connect方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -470,9 +495,9 @@ PlainEngineStrategy()
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Engine(Connectable, log.Identified):
+<pre class="chroma">class Engine(Connectable, log.Identified):
     _connection_cls = Connection
     
     def __init__(
@@ -492,15 +517,17 @@ PlainEngineStrategy()
         ...
     
     def connect(self, **kwargs):
-        return self._connection_cls(self, **kwargs)
-</code></pre></td></tr></table>
+        return self._connection_cls(self, **kwargs)</pre></td></tr></table>
 </div>
-</div><p>engine主要功能就是管理和持有connection，pool和dialect，对外提供API。</p>
-<h2 id="sqlitedialect">SQLiteDialect代码分析</h2>
+</div>
+<p>engine主要功能就是管理和持有connection，pool和dialect，对外提供API。</p>
+
+<h2 id="sqlitedialect代码分析">SQLiteDialect代码分析</h2>
+
 <p>dialect是根据url自动识别，使用PluginLoader进行动态加载:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -517,9 +544,9 @@ PlainEngineStrategy()
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class PluginLoader(object):
+<pre class="chroma">class PluginLoader(object):
     def __init__(self, group, auto_fn=None):
         self.group = group
         self.impls = {}
@@ -535,13 +562,13 @@ PlainEngineStrategy()
             if loader:
                 self.impls[name] = loader
                 return loader()
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>sqlite-dialect使用下面的 <code>__import__</code> 动态加载模块:</p>
+</div>
+<p>sqlite-dialect使用下面的 <code>__import__</code> 动态加载模块:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -565,9 +592,9 @@ PlainEngineStrategy()
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _auto_fn(name):
+<pre class="chroma">def _auto_fn(name):
     if &#34;.&#34; in name:
         dialect, driver = name.split(&#34;.&#34;)
     else:
@@ -590,13 +617,13 @@ PlainEngineStrategy()
     else:
         return None
 
-registry = util.PluginLoader(&#34;sqlalchemy.dialects&#34;, auto_fn=_auto_fn)
-</code></pre></td></tr></table>
+registry = util.PluginLoader(&#34;sqlalchemy.dialects&#34;, auto_fn=_auto_fn)</pre></td></tr></table>
 </div>
-</div><p>不同方言实现需要提供一个dialect对象，在sqlite中是这样的:</p>
+</div>
+<p>不同方言实现需要提供一个dialect对象，在sqlite中是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -607,9 +634,9 @@ registry = util.PluginLoader(&#34;sqlalchemy.dialects&#34;, auto_fn=_auto_fn)
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">## sqlalchemy/dialects/sqlite/__init__.py
+<pre class="chroma">## sqlalchemy/dialects/sqlite/__init__.py
 
 base.dialect = dialect = pysqlite.dialect
 
@@ -619,13 +646,13 @@ base.dialect = dialect = pysqlite.dialect
 class SQLiteDialect_pysqlite(SQLiteDialect):
     pass
     
-dialect = SQLiteDialect_pysqlite
-</code></pre></td></tr></table>
+dialect = SQLiteDialect_pysqlite</pre></td></tr></table>
 </div>
-</div><p>SQLiteDialect功能相简单，一是决定POOL_CLASS的类型: memory实现使用的是SingletonThreadPool；db文件使用NullPool，下面分析Pool时候会用到。</p>
+</div>
+<p>SQLiteDialect功能相简单，一是决定POOL_CLASS的类型: memory实现使用的是SingletonThreadPool；db文件使用NullPool，下面分析Pool时候会用到。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -633,22 +660,22 @@ dialect = SQLiteDialect_pysqlite
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SQLiteDialect_pysqlite(SQLiteDialect):
+<pre class="chroma">class SQLiteDialect_pysqlite(SQLiteDialect):
 
     @classmethod
     def get_pool_class(cls, url):
         if url.database and url.database != &#34;:memory:&#34;:
             return pool.NullPool
         else:
-            return pool.SingletonThreadPool
-</code></pre></td></tr></table>
+            return pool.SingletonThreadPool</pre></td></tr></table>
 </div>
-</div><p>二是提供包装DBAPI得到的connect:</p>
+</div>
+<p>二是提供包装DBAPI得到的connect:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -680,9 +707,9 @@ dialect = SQLiteDialect_pysqlite
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DefaultDialect(interfaces.Dialect):
+<pre class="chroma">class DefaultDialect(interfaces.Dialect):
     ...
     def connect(self, *cargs, **cparams):
         return self.dbapi.connect(*cargs, **cparams)
@@ -713,25 +740,26 @@ class SQLiteDialect_pysqlite(SQLiteDialect):
             if value is not None:
                 conn.execute(&#39;pragma %s=&#34;%s&#34;&#39; % (prag, value))
 
-        return conn
-</code></pre></td></tr></table>
+        return conn</pre></td></tr></table>
 </div>
-</div><p>connect在SQLiteDialect_pysqlite类和父类DefaultDialect之间反复横跳，核心功能就是下面2句代码:</p>
+</div>
+<p>connect在SQLiteDialect_pysqlite类和父类DefaultDialect之间反复横跳，核心功能就是下面2句代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from sqlite3 import dbapi2 as sqlite
-sqlite.connect(*cargs, **cparams)
-</code></pre></td></tr></table>
+<pre class="chroma">from sqlite3 import dbapi2 as sqlite
+sqlite.connect(*cargs, **cparams)</pre></td></tr></table>
 </div>
-</div><h2 id="connectpool">Connect和Pool代码分析</h2>
+</div>
+<h2 id="connect和pool代码分析">Connect和Pool代码分析</h2>
+
 <p>Connection构造函数如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -747,9 +775,9 @@ sqlite.connect(*cargs, **cparams)
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Connection(Connectable):
+<pre class="chroma">class Connection(Connectable):
     
     def __init__(
         self,
@@ -764,13 +792,13 @@ sqlite.connect(*cargs, **cparams)
         self.engine = engine
         self.dialect = engine.dialect
         self.__connection =  engine.raw_connection()
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>connection主要使用engine.raw_connection创建了一个DBAPI连接</p>
+</div>
+<p>connection主要使用engine.raw_connection创建了一个DBAPI连接</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -784,9 +812,9 @@ sqlite.connect(*cargs, **cparams)
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Engine(Connectable, log.Identified):
+<pre class="chroma">class Engine(Connectable, log.Identified):
     
     def raw_connection(self, _connection=None):
         return self._wrap_pool_connect(
@@ -799,13 +827,13 @@ sqlite.connect(*cargs, **cparams)
         try:
             return fn()
         except dialect.dbapi.Error as e:
-            ...
-</code></pre></td></tr></table>
+            ...</pre></td></tr></table>
 </div>
-</div><p>pool.unique_connection负责创建数据库连接，这里的实现过程比较复杂，个人觉得也挺绕的，涉及Pool，ConnectionFairy和ConnectionRecord三个类。我们一点一点的跟踪:</p>
+</div>
+<p>pool.unique_connection负责创建数据库连接，这里的实现过程比较复杂，个人觉得也挺绕的，涉及Pool，ConnectionFairy和ConnectionRecord三个类。我们一点一点的跟踪:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -823,9 +851,9 @@ sqlite.connect(*cargs, **cparams)
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SingletonThreadPool(Pool):
+<pre class="chroma">class SingletonThreadPool(Pool):
     
     def __init__(self, creator, pool_size=5, **kw):
         Pool.__init__(self, creator, **kw)
@@ -842,14 +870,14 @@ sqlite.connect(*cargs, **cparams)
         if len(self._all_conns) &gt;= self.size:
             self._cleanup()
         self._all_conns.add(c)
-        return c
-</code></pre></td></tr></table>
+        return c</pre></td></tr></table>
 </div>
-</div><p>SingletonThreadPool主要在_do_get的实现，创建一个ConnectionRecor对象，然后将其加入到自己管理的集合中后再返回，标准的池操作了。
+</div>
+<p>SingletonThreadPool主要在_do_get的实现，创建一个ConnectionRecor对象，然后将其加入到自己管理的集合中后再返回，标准的池操作了。
 如何通过unique_connection方法去触发_do_get方法并得到实际的db-connect</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -903,9 +931,9 @@ sqlite.connect(*cargs, **cparams)
 </span><span class="lnt">52
 </span><span class="lnt">53
 </span><span class="lnt">54
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _ConnectionFairy(object):
+<pre class="chroma">class _ConnectionFairy(object):
     
     def __init__(self, dbapi_connection, connection_record, echo):
         self.connection = dbapi_connection
@@ -958,22 +986,21 @@ class DefaultEngineStrategy(EngineStrategy):
         creator = pop_kwarg(&#34;creator&#34;, connect)
             
         pool = poolclass(creator, **pool_args)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>整个过程大概是这样的:</p>
-<ol>
-<li>ConnectionFairy.checkout调用ConnectionRecord.checkout方法</li>
-<li>ConnectionRecord再回调SingletonThreadPool的_do_get方法创建rec对象</li>
-<li>rec对象继续调用SingletonThreadPool的creator方法</li>
-<li>creator方法使用dialect.connect获取数据库连接dbapi_connection</li>
-<li>使用rec和dbapi_connection再创建fairy对象</li>
-<li>返回fairy对象</li>
-</ol>
+</div>
+<p>整个过程大概是这样的:
+1. ConnectionFairy.checkout调用ConnectionRecord.checkout方法
+2. ConnectionRecord再回调SingletonThreadPool的_do_get方法创建rec对象
+3. rec对象继续调用SingletonThreadPool的creator方法
+4. creator方法使用dialect.connect获取数据库连接dbapi_connection
+5. 使用rec和dbapi_connection再创建fairy对象
+6. 返回fairy对象</p>
+
 <p>除了执行过程在来回穿插外，还因为ConnectionFairy和ConnectionRecord是循环依赖的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -981,26 +1008,28 @@ class DefaultEngineStrategy(EngineStrategy):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _ConnectionRecord(object):
+<pre class="chroma">class _ConnectionRecord(object):
     fairy_ref = None
 
 ...
 
 class _ConnectionFairy(object):
     def __init__(self, dbapi_connection, connection_record, echo):
-        self._connection_record = connection_record
-</code></pre></td></tr></table>
+        self._connection_record = connection_record</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>循环依赖的安全建立主要使用weakref,想学习的可以翻看之前的博文</p>
 </blockquote>
-<h2 id="execute-sql">execute-SQL语句</h2>
+
+<h2 id="execute-sql语句">execute-SQL语句</h2>
+
 <p>知道connection如何创建后，继续看connection使用execute方法执行sql语句:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1039,9 +1068,9 @@ class _ConnectionFairy(object):
 </span><span class="lnt">37
 </span><span class="lnt">38
 </span><span class="lnt">39
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def execute(self, object_, *multiparams, **params):
+<pre class="chroma">def execute(self, object_, *multiparams, **params):
     if isinstance(object_, util.string_types[0]):
         return self._execute_text(object_, multiparams, params)
     ...
@@ -1079,41 +1108,41 @@ def _execute_context(
                     )
     ...
     result = context._setup_crud_result_proxy()
-    return result
-</code></pre></td></tr></table>
+    return result</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>execute还有一些其它分支，可以适用ORM等场景，本篇只介绍纯文本的sql</p>
 </blockquote>
-<p>函数层层穿透后，主要包括下面三段代码:</p>
-<ul>
-<li>利用dialect创建context上下文</li>
-<li>使用dialect执行sql语句(文本)</li>
-<li>使用context获取执行的结果并返回</li>
-</ul>
+
+<p>函数层层穿透后，主要包括下面三段代码:
+* 利用dialect创建context上下文
+* 使用dialect执行sql语句(文本)
+* 使用context获取执行的结果并返回</p>
+
 <p>dialect涉及的上下文context创建和sql执行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DefaultDialect(interfaces.Dialect):
+<pre class="chroma">class DefaultDialect(interfaces.Dialect):
 
     def do_execute(self, cursor, statement, parameters, context=None):
         cursor.execute(statement, parameters)
 
-DefaultDialect.execution_ctx_cls = DefaultExecutionContext
-</code></pre></td></tr></table>
+DefaultDialect.execution_ctx_cls = DefaultExecutionContext</pre></td></tr></table>
 </div>
-</div><p>可以看到执行语句就是使用cursor对象，和前面直接操作sqlite一致。每条sql执行的上下文context是下面方式构建的:</p>
+</div>
+<p>可以看到执行语句就是使用cursor对象，和前面直接操作sqlite一致。每条sql执行的上下文context是下面方式构建的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1132,9 +1161,9 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class DefaultExecutionContext(interfaces.ExecutionContext):
+<pre class="chroma">class DefaultExecutionContext(interfaces.ExecutionContext):
     @classmethod
     def _init_statement(
         cls, dialect, connection, dbapi_connection, statement, parameters
@@ -1152,14 +1181,15 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
         return self
     
     def create_cursor(self):
-        return self._dbapi_connection.cursor()
-</code></pre></td></tr></table>
+        return self._dbapi_connection.cursor()</pre></td></tr></table>
 </div>
-</div><h2 id="result">Result分析</h2>
+</div>
+<h2 id="result分析">Result分析</h2>
+
 <p>sql执行的结果，在<code>context._setup_crud_result_proxy</code>中返回ResultProxy对象。 ResultProxy是一个可以迭代的对象,可以使用fetchone获取单条记录:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1187,9 +1217,9 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ResultProxy(object):
+<pre class="chroma">class ResultProxy(object):
     
     def __iter__(self):
         while True:
@@ -1216,25 +1246,28 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
         try:
             return self.cursor.fetchone()
         except AttributeError:
-            return self._non_result(None)
-</code></pre></td></tr></table>
+            return self._non_result(None)</pre></td></tr></table>
 </div>
-</div><p>对获取的记录还可以使用process_rows进行数据封装，这个以后再介绍。</p>
-<h2 id="heading">小结</h2>
-<p>我们完整的追逐了使用sqlalchemy执行sql语句的过程，可以简单小结如下:</p>
-<ul>
-<li>使用url语法查找并动态加载数据库方言</li>
-<li>创建引擎对象，管理方言，方言的连接池，提供SQL的API</li>
-<li>使用引擎对象获取到数据库链接connect，获取后的链接使用pool管理</li>
-<li>执行SQL语句并获取执行结果</li>
-</ul>
+</div>
+<p>对获取的记录还可以使用process_rows进行数据封装，这个以后再介绍。</p>
+
+<h2 id="小结">小结</h2>
+
+<p>我们完整的追逐了使用sqlalchemy执行sql语句的过程，可以简单小结如下:
+* 使用url语法查找并动态加载数据库方言
+* 创建引擎对象，管理方言，方言的连接池，提供SQL的API
+* 使用引擎对象获取到数据库链接connect，获取后的链接使用pool管理
+* 执行SQL语句并获取执行结果</p>
+
 <p>下面的类图介绍的更详细, 完整展示了engine/pool/connection/dialect的关系:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210415214756.png" alt="engine"></p>
-<h2 id="heading-1">小技巧</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210415214756.png" alt="engine" /></p>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>deprecated是一个废弃API装饰器, 主要给一些不再支持/推荐的API加上使用警告和更替的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1253,9 +1286,9 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def deprecated(version, message=None, add_deprecation_to_docstring=True):
+<pre class="chroma">def deprecated(version, message=None, add_deprecation_to_docstring=True):
 
     if add_deprecation_to_docstring:
         header = &#34;.. deprecated:: %s %s&#34; % (version, (message or &#34;&#34;))
@@ -1273,13 +1306,13 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
             header,
         )
 
-    return decorate
-</code></pre></td></tr></table>
+    return decorate</pre></td></tr></table>
 </div>
-</div><p>比如Connectable.contextual_connect的API这样使用:</p>
+</div>
+<p>比如Connectable.contextual_connect的API这样使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1291,9 +1324,9 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Connectable(object):
+<pre class="chroma">class Connectable(object):
 
     @util.deprecated(
         &#34;1.3&#34;,
@@ -1304,13 +1337,16 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
         &#34;:class:`.Engine`, use the :meth:`.Engine.connect` method.&#34;,
     )
     def contextual_connect(self, *arg, **kw):
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>这对库/框架的开发者非常有用，API的变动可以这种方式通知使用者，进行平滑的升级替换。</p>
+</div>
+<p>这对库/框架的开发者非常有用，API的变动可以这种方式通知使用者，进行平滑的升级替换。</p>
+
 <p>最后，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-2">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://docs.sqlalchemy.org/en/13/index.html">https://docs.sqlalchemy.org/en/13/index.html</a></li>
 <li><a href="http://aosabook.org/en/sqlalchemy.html">http://aosabook.org/en/sqlalchemy.html</a></li>
@@ -1400,7 +1436,7 @@ DefaultDialect.execution_ctx_cls = DefaultExecutionContext
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="XML-RPC 是一种远程过程调用方法，它使用通过 HTTP 传递的 XML 作为载体。 有了它，客户端可以在远程服务器上调用带参数的服务器方法（服务器以 URI 命名）并获取结构化" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/xmlrpc/" />
-<meta property="article:published_time" content="2021-05-06T21:08:30+08:00" />
-<meta property="article:modified_time" content="2021-05-06T21:08:30+08:00" />
+<meta property="article:published_time" content="2021-05-06T21:08:30&#43;08:00"/>
+<meta property="article:modified_time" content="2021-05-06T21:08:30&#43;08:00"/>
+
 <meta itemprop="name" content="xmlrpc源码阅读">
 <meta itemprop="description" content="XML-RPC 是一种远程过程调用方法，它使用通过 HTTP 传递的 XML 作为载体。 有了它，客户端可以在远程服务器上调用带参数的服务器方法（服务器以 URI 命名）并获取结构化">
+
+
 <meta itemprop="datePublished" content="2021-05-06T21:08:30&#43;08:00" />
 <meta itemprop="dateModified" content="2021-05-06T21:08:30&#43;08:00" />
-<meta itemprop="wordCount" content="4341">
+<meta itemprop="wordCount" content="4365">
 
 
 
-<meta itemprop="keywords" content="rpc,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="rpc,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="xmlrpc源码阅读"/>
 <meta name="twitter:description" content="XML-RPC 是一种远程过程调用方法，它使用通过 HTTP 传递的 XML 作为载体。 有了它，客户端可以在远程服务器上调用带参数的服务器方法（服务器以 URI 命名）并获取结构化"/>
 
@@ -137,34 +141,40 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#xmlrpc">xmlrpc演示</a></li>
-    <li><a href="#xmlrpc-api">xmlrpc-API</a></li>
-    <li><a href="#xmlrpc-server">xmlrpc-server的实现</a>
-      <ul>
-        <li><a href="#http">服务端http协议实现</a></li>
-        <li><a href="#rpc">服务端rpc协议实现</a></li>
-        <li><a href="#multi-call">服务端multi-call实现</a></li>
-      </ul>
-    </li>
-    <li><a href="#xmlrpc-client">xmlrpc-client实现</a>
-      <ul>
-        <li><a href="#http-1">客户端http协议实现</a></li>
-        <li><a href="#rpc-1">客户端rpc协议实现</a></li>
-        <li><a href="#multi-call-1">客户端multi-call实现</a></li>
-      </ul>
-    </li>
-    <li><a href="#xmlrpc-1">xmlrpc序列化/反序列化</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#xmlrpc演示">xmlrpc演示</a></li>
+<li><a href="#xmlrpc-api">xmlrpc-API</a></li>
+<li><a href="#xmlrpc-server的实现">xmlrpc-server的实现</a>
+<ul>
+<li><a href="#服务端http协议实现">服务端http协议实现</a></li>
+<li><a href="#服务端rpc协议实现">服务端rpc协议实现</a></li>
+<li><a href="#服务端multi-call实现">服务端multi-call实现</a></li>
+</ul></li>
+<li><a href="#xmlrpc-client实现">xmlrpc-client实现</a>
+<ul>
+<li><a href="#客户端http协议实现">客户端http协议实现</a></li>
+<li><a href="#客户端rpc协议实现">客户端rpc协议实现</a></li>
+<li><a href="#客户端multi-call实现">客户端multi-call实现</a></li>
+</ul></li>
+<li><a href="#xmlrpc序列化-反序列化">xmlrpc序列化/反序列化</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+      
+
+<!--
+5分钟入门python rpc 实现
+-->
+
 <p>XML-RPC 是一种远程过程调用方法，它使用通过 HTTP 传递的 XML 作为载体。 有了它，客户端可以在远程服务器上调用带参数的服务器方法（服务器以 URI 命名）并获取结构化的数据。python自带xmlrpc实现，学习xmlrpc，可以让我们快速了解rpc的实现及原理，本文包括下面几个部分:</p>
+
 <ul>
 <li>xmlrpc演示</li>
 <li>xmlrpc-API</li>
@@ -173,45 +183,47 @@
 <li>xmlrpc序列化/反序列化</li>
 <li>小结</li>
 </ul>
-<h2 id="xmlrpc">xmlrpc演示</h2>
+
+<h2 id="xmlrpc演示">xmlrpc演示</h2>
+
 <p>xmlrpc可以直接运行，启动rpc服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python3 -m xmlrpc.server
+<pre class="chroma"># python3 -m xmlrpc.server
 Serving XML-RPC on localhost port 8000
 It is advisable to run this example server within a secure, closed network.
 127.0.0.1 - - [05/May/2021 18:03:16] &#34;POST /RPC2 HTTP/1.1&#34; 200 -
-127.0.0.1 - - [05/May/2021 18:03:16] &#34;POST /RPC2 HTTP/1.1&#34; 200 -
-</code></pre></td></tr></table>
+127.0.0.1 - - [05/May/2021 18:03:16] &#34;POST /RPC2 HTTP/1.1&#34; 200 -</pre></td></tr></table>
 </div>
-</div><p>启动rpc客户端:</p>
+</div>
+<p>启动rpc客户端:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python3 -m xmlrpc.client
+<pre class="chroma"># python3 -m xmlrpc.client
 20210505T18:03:16
 42
 512
-3
-</code></pre></td></tr></table>
+3</pre></td></tr></table>
 </div>
-</div><p>从服务端可以看到2个http请求。我们先看抓包得到的第一个http请求报文:</p>
+</div>
+<p>从服务端可以看到2个http请求。我们先看抓包得到的第一个http请求报文:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -219,22 +231,22 @@ It is advisable to run this example server within a secure, closed network.
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">METHOD: POST
+<pre class="chroma">METHOD: POST
 URL: http://localhost:8000/RPC2
 HEADERS
     accept-encoding: gzip
     content-length: 120
     content-type: text/xml
 host: localhost:8000
-user-agent: Python-xmlrpc/3.8
-</code></pre></td></tr></table>
+user-agent: Python-xmlrpc/3.8</pre></td></tr></table>
 </div>
-</div><p>请求的数据是:</p>
+</div>
+<p>请求的数据是:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -242,41 +254,41 @@ user-agent: Python-xmlrpc/3.8
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;?xml version=&#39;1.0&#39;?&gt;
+<pre class="chroma">&lt;?xml version=&#39;1.0&#39;?&gt;
   &lt;methodCall&gt;
     &lt;methodName&gt;
       currentTime.getCurrentTime
     &lt;/methodName&gt;
     &lt;params&gt;
     &lt;/params&gt;
-  &lt;/methodCall&gt;
-</code></pre></td></tr></table>
+  &lt;/methodCall&gt;</pre></td></tr></table>
 </div>
-</div><p>http响应报文:</p>
+</div>
+<p>http响应报文:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">STATUS: 200 OK
+<pre class="chroma">STATUS: 200 OK
 HEADERS
     content-length: 163
     content-type: text/xml
     date: Wed, 05 May 2021 09:40:57 GMT
-server: BaseHTTP/0.6 Python/3.8.5
-</code></pre></td></tr></table>
+server: BaseHTTP/0.6 Python/3.8.5</pre></td></tr></table>
 </div>
-</div><p>响应的数据是:</p>
+</div>
+<p>响应的数据是:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -288,9 +300,9 @@ server: BaseHTTP/0.6 Python/3.8.5
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;?xml version=&#39;1.0&#39;?&gt;
+<pre class="chroma">&lt;?xml version=&#39;1.0&#39;?&gt;
   &lt;methodResponse&gt;
     &lt;params&gt;
       &lt;param&gt;
@@ -301,13 +313,13 @@ server: BaseHTTP/0.6 Python/3.8.5
         &lt;/value&gt;
       &lt;/param&gt;
     &lt;/params&gt;
-  &lt;/methodResponse&gt;
-</code></pre></td></tr></table>
+  &lt;/methodResponse&gt;</pre></td></tr></table>
 </div>
-</div><p>第二个请求的数据报文我就不贴出来了，下面是请求xml:</p>
+</div>
+<p>第二个请求的数据报文我就不贴出来了，下面是请求xml:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre class="chroma"><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -418,9 +430,9 @@ server: BaseHTTP/0.6 Python/3.8.5
 </span><span class="lnt">109
 </span><span class="lnt">110
 </span><span class="lnt">111
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;?xml version=&#39;1.0&#39;?&gt;
+<pre class="chroma">&lt;?xml version=&#39;1.0&#39;?&gt;
   &lt;methodCall&gt;
     &lt;methodName&gt;
       system.multicall
@@ -530,13 +542,13 @@ server: BaseHTTP/0.6 Python/3.8.5
         &lt;/value&gt;
       &lt;/param&gt;
     &lt;/params&gt;
-  &lt;/methodCall&gt;
-</code></pre></td></tr></table>
+  &lt;/methodCall&gt;</pre></td></tr></table>
 </div>
-</div><p>下面是响应xml:</p>
+</div>
+<p>下面是响应xml:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -582,9 +594,9 @@ server: BaseHTTP/0.6 Python/3.8.5
 </span><span class="lnt">44
 </span><span class="lnt">45
 </span><span class="lnt">46
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;?xml version=&#39;1.0&#39;?&gt;
+<pre class="chroma">&lt;?xml version=&#39;1.0&#39;?&gt;
   &lt;methodResponse&gt;
     &lt;params&gt;
       &lt;param&gt;
@@ -629,23 +641,24 @@ server: BaseHTTP/0.6 Python/3.8.5
         &lt;/value&gt;
       &lt;/param&gt;
     &lt;/params&gt;
-  &lt;/methodResponse&gt;
-</code></pre></td></tr></table>
+  &lt;/methodResponse&gt;</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>注: 为了完整展示xmlrpc数据，所以我贴了xml全文，导致内容有点长。</p>
 </blockquote>
-<p>从演示可以看到xmlrpc下面几个特点:</p>
-<ul>
-<li>使用http协议进行数据传输。使用 <code>POST</code> 方法，url是 <code>RPC2</code>，content-type是 <code>text/xml</code>。</li>
-<li>使用xml对请求/响应进行编码。请求使用 <code>methodCall</code> 标签, 响应使用 <code>methodResponse</code> 标签。</li>
-<li>使用xml数据层层嵌套，冗余较多，看起来非常烦琐 (这应该是xmlrpc没流行起来的原因之一)。</li>
-</ul>
+
+<p>从演示可以看到xmlrpc下面几个特点:
+* 使用http协议进行数据传输。使用 <code>POST</code> 方法，url是 <code>RPC2</code>，content-type是 <code>text/xml</code>。
+* 使用xml对请求/响应进行编码。请求使用 <code>methodCall</code> 标签, 响应使用 <code>methodResponse</code> 标签。
+* 使用xml数据层层嵌套，冗余较多，看起来非常烦琐 (这应该是xmlrpc没流行起来的原因之一)。</p>
+
 <h2 id="xmlrpc-api">xmlrpc-API</h2>
+
 <p>继续查看xmlrpc的API使用，服务端代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -666,9 +679,9 @@ server: BaseHTTP/0.6 Python/3.8.5
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ExampleService:
+<pre class="chroma">class ExampleService:
     def getData(self):
         return &#39;42&#39;
 
@@ -688,21 +701,20 @@ with SimpleXMLRPCServer((&#34;localhost&#34;, 8000)) as server:
         server.serve_forever()
     except KeyboardInterrupt:
         print(&#34;\nKeyboard interrupt received, exiting.&#34;)
-        sys.exit(0)
-</code></pre></td></tr></table>
+        sys.exit(0)</pre></td></tr></table>
 </div>
-</div><p>服务端做了下面几件事:</p>
-<ul>
-<li>在8000端口创建SimpleXMLRPCServer的实例server</li>
-<li>向server注册<code>pow</code>和名为<code>add</code>的lambda函数接口</li>
-<li>向server注册服务实例instance(可能叫app更合适)，instance带有2个函数实现: <code>getData</code>和<code>currentTime.getCurrentTime</code></li>
-<li>向server注册system.multicall实现，这个实现支持多个rpc请求合并使用一个http请求</li>
-<li>启动server</li>
-</ul>
+</div>
+<p>服务端做了下面几件事:
+* 在8000端口创建SimpleXMLRPCServer的实例server
+* 向server注册<code>pow</code>和名为<code>add</code>的lambda函数接口
+* 向server注册服务实例instance(可能叫app更合适)，instance带有2个函数实现: <code>getData</code>和<code>currentTime.getCurrentTime</code>
+* 向server注册system.multicall实现，这个实现支持多个rpc请求合并使用一个http请求
+* 启动server</p>
+
 <p>客户端是这样使用的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -715,9 +727,9 @@ with SimpleXMLRPCServer((&#34;localhost&#34;, 8000)) as server:
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">server = ServerProxy(&#34;http://localhost:8000&#34;)
+<pre class="chroma">server = ServerProxy(&#34;http://localhost:8000&#34;)
 
 print(server.currentTime.getCurrentTime())
 
@@ -729,27 +741,30 @@ try:
     for response in multi():
         print(response)
 except Error as v:
-    print(&#34;ERROR&#34;, v)
-</code></pre></td></tr></table>
+    print(&#34;ERROR&#34;, v)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>创建了一个服务代理(可以理解为rpc-client)</li>
 <li>调用服务端的实现 <code>currentTime.getCurrentTime</code></li>
 <li>使用MultiCall的方式调用 <code>getData</code>, <code>pow</code> 和 <code>add</code> 三个rpc接口</li>
 <li>发送multicall请求，并循环打印服务调用结果</li>
 </ul>
-<p>可以很明显的对比出xmlrpc服务和http服务的不同:</p>
-<ul>
-<li>rpc服务接口都是普通的函数，比如pow，getData和getCurrentTime；这些接口和http的request和response是隔离的</li>
-<li>客户端需要额外实现，并不是直接发送的http请求</li>
-</ul>
+
+<p>可以很明显的对比出xmlrpc服务和http服务的不同:
+* rpc服务接口都是普通的函数，比如pow，getData和getCurrentTime；这些接口和http的request和response是隔离的
+* 客户端需要额外实现，并不是直接发送的http请求</p>
+
 <p>同时大家对 <strong>RPC(remote procedure call)</strong> 应该也有直观了解，简单的解释就是远程函数调用。所谓远程：跨机器是远程，我们这里的跨进程也是远程。至于如何实现远程函数调用，就是各个RPC框架的功能了，今天我们先看看xmlrpc的实现。</p>
-<h2 id="xmlrpc-server">xmlrpc-server的实现</h2>
-<h3 id="http">服务端http协议实现</h3>
+
+<h2 id="xmlrpc-server的实现">xmlrpc-server的实现</h2>
+
+<h3 id="服务端http协议实现">服务端http协议实现</h3>
+
 <p>xmlrpc中http协议由SimpleXMLRPCServer和SimpleXMLRPCRequestHandler实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -763,9 +778,9 @@ except Error as v:
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCServer(socketserver.TCPServer,
+<pre class="chroma">class SimpleXMLRPCServer(socketserver.TCPServer,
                          SimpleXMLRPCDispatcher):
 
     allow_reuse_address = True
@@ -778,13 +793,13 @@ except Error as v:
         self.logRequests = logRequests
 
         SimpleXMLRPCDispatcher.__init__(self, allow_none, encoding, use_builtin_types)
-        socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)
-</code></pre></td></tr></table>
+        socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)</pre></td></tr></table>
 </div>
-</div><p>SimpleXMLRPCServer的父类TCPServer在之前的博文中有介绍，提供tcp服务的实现。SimpleXMLRPCRequestHandler负责http协议部分的实现，而xmlrpc规范是必须使用POST请求到 <code>/RPC2</code> 重点就在 <strong>do_POST</strong> 方法：</p>
+</div>
+<p>SimpleXMLRPCServer的父类TCPServer在之前的博文中有介绍，提供tcp服务的实现。SimpleXMLRPCRequestHandler负责http协议部分的实现，而xmlrpc规范是必须使用POST请求到 <code>/RPC2</code> 重点就在 <strong>do_POST</strong> 方法：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -811,9 +826,9 @@ except Error as v:
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
+<pre class="chroma">class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
     # rpc-url
     rpc_paths = (&#39;/&#39;, &#39;/RPC2&#39;)
     
@@ -839,20 +854,20 @@ except Error as v:
         self.send_header(&#34;Content-type&#34;, &#34;text/xml&#34;)
         self.send_header(&#34;Content-length&#34;, str(len(response)))
         self.end_headers()
-        self.wfile.write(response)
-</code></pre></td></tr></table>
+        self.wfile.write(response)</pre></td></tr></table>
 </div>
-</div><p>do_POST方法分三段:</p>
-<ul>
-<li>从http请求上读取请求数据，数据长度由 <strong>content-length</strong> 决定</li>
-<li>使用server的_marshaled_dispatch方法调用rpc接口</li>
-<li>将接口返回值包装成http响应返回</li>
-</ul>
-<h3 id="rpc">服务端rpc协议实现</h3>
+</div>
+<p>do_POST方法分三段:
+* 从http请求上读取请求数据，数据长度由 <strong>content-length</strong> 决定
+* 使用server的_marshaled_dispatch方法调用rpc接口
+* 将接口返回值包装成http响应返回</p>
+
+<h3 id="服务端rpc协议实现">服务端rpc协议实现</h3>
+
 <p>SimpleXMLRPCServer的另外一个父类SimpleXMLRPCDispatcher提供了rpc协议的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -880,9 +895,9 @@ except Error as v:
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCDispatcher:
+<pre class="chroma">class SimpleXMLRPCDispatcher:
     def __init__(self, allow_none=False, encoding=None,
                  use_builtin_types=False):
         # 接口函数字典
@@ -909,13 +924,13 @@ except Error as v:
         &#34;&#34;&#34;Registers the XML-RPC multicall method in the system
         namespace.&#34;&#34;&#34;
         # 复合调用
-        self.funcs.update({&#39;system.multicall&#39; : self.system_multicall})
-</code></pre></td></tr></table>
+        self.funcs.update({&#39;system.multicall&#39; : self.system_multicall})</pre></td></tr></table>
 </div>
-</div><p>instace和function的注册比较简单，我们可以跳过实现会略微复杂一点的multical，先看看注册的接口如何在_marshaled_dispatch中调用:</p>
+</div>
+<p>instace和function的注册比较简单，我们可以跳过实现会略微复杂一点的multical，先看看注册的接口如何在_marshaled_dispatch中调用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -965,9 +980,9 @@ except Error as v:
 </span><span class="lnt">48
 </span><span class="lnt">49
 </span><span class="lnt">50
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _marshaled_dispatch(self, data, dispatch_method = None, path = None):
+<pre class="chroma">def _marshaled_dispatch(self, data, dispatch_method = None, path = None):
 
     try:
         # 解析rpc接口和参数
@@ -1016,30 +1031,30 @@ def _dispatch(self, method, params):
         else:
             if func is not None:
                 return func(*params)
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>代码比较长，主要做了2件事:</p>
-<ul>
-<li>从请求中解析 <strong>params</strong> 和 <strong>method</strong></li>
-<li>根据method从func或者instance中调用方法并返回</li>
-</ul>
-<h3 id="multi-call">服务端multi-call实现</h3>
+</div>
+<p>代码比较长，主要做了2件事:
+* 从请求中解析 <strong>params</strong> 和 <strong>method</strong>
+* 根据method从func或者instance中调用方法并返回</p>
+
+<h3 id="服务端multi-call实现">服务端multi-call实现</h3>
+
 <p>了解 <strong>single-call</strong> 后，再回头看 <strong>multi-call</strong> 的实现，就比较容易。注册接口：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_multicall_functions(self):
-    self.funcs.update({&#39;system.multicall&#39; : self.system_multicall})
-</code></pre></td></tr></table>
+<pre class="chroma">def register_multicall_functions(self):
+    self.funcs.update({&#39;system.multicall&#39; : self.system_multicall})</pre></td></tr></table>
 </div>
-</div><p>funcs字典中会增加一个名为 <strong>system.multicall</strong> ，处理函数为system_multicall的调用:</p>
+</div>
+<p>funcs字典中会增加一个名为 <strong>system.multicall</strong> ，处理函数为system_multicall的调用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1057,32 +1072,32 @@ def _dispatch(self, method, params):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">def</span> <span class="nf">system_multicall</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">call_list</span><span class="p">)</span><span class="p">:</span>
-    <span class="s">&#34;&#34;</span><span class="s">&#34;system.multicall([{&#39;methodName&#39;: &#39;add&#39;, &#39;params&#39;: [2, 2]}, ...]) =&gt; \
+<pre class="chroma"><span class="nx">def</span> <span class="nf">system_multicall</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">call_list</span><span class="p">):</span>
+    <span class="s">&#34;&#34;&#34;system.multicall([{&#39;methodName&#39;: &#39;add&#39;, &#39;params&#39;: [2, 2]}, ...]) =&gt; \
 </span><span class="s">[[4], ...]
 </span><span class="s">
 </span><span class="s">    Allows the caller to package multiple XML-RPC calls into a single
 </span><span class="s">    request.
 </span><span class="s">
 </span><span class="s">    See http://www.xmlrpc.com/discuss/msgReader$1208
-</span><span class="s">    &#34;</span><span class="s">&#34;&#34;</span>
-    <span class="nx">results</span> <span class="p">=</span> <span class="p">[</span><span class="p">]</span>
+</span><span class="s">    &#34;&#34;&#34;</span>
+    <span class="nx">results</span> <span class="p">=</span> <span class="p">[]</span>
     <span class="err">#</span> <span class="nx">顺序执行多个call</span>
     <span class="k">for</span> <span class="nx">call</span> <span class="nx">in</span> <span class="nx">call_list</span><span class="p">:</span>
         <span class="nx">method_name</span> <span class="p">=</span> <span class="nx">call</span><span class="p">[</span><span class="err">&#39;</span><span class="nx">methodName</span><span class="err">&#39;</span><span class="p">]</span>
         <span class="nx">params</span> <span class="p">=</span> <span class="nx">call</span><span class="p">[</span><span class="err">&#39;</span><span class="nx">params</span><span class="err">&#39;</span><span class="p">]</span>
         <span class="o">...</span>
-        <span class="nx">results</span><span class="p">.</span><span class="nb">append</span><span class="p">(</span><span class="p">[</span><span class="nx">self</span><span class="p">.</span><span class="nf">_dispatch</span><span class="p">(</span><span class="nx">method_name</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span><span class="p">]</span><span class="p">)</span>
+        <span class="nx">results</span><span class="p">.</span><span class="nb">append</span><span class="p">([</span><span class="nx">self</span><span class="p">.</span><span class="nf">_dispatch</span><span class="p">(</span><span class="nx">method_name</span><span class="p">,</span> <span class="nx">params</span><span class="p">)])</span>
         <span class="o">...</span>
-    <span class="k">return</span> <span class="nx">results</span>
-</code></pre></td></tr></table>
+    <span class="k">return</span> <span class="nx">results</span></pre></td></tr></table>
 </div>
-</div><p>system_multicall和注释介绍一样，就是从请求中接受多个请求，然后逐一调用执行。<strong>system.multicall</strong>的调用数据示例：</p>
+</div>
+<p>system_multicall和注释介绍一样，就是从请求中接受多个请求，然后逐一调用执行。<strong>system.multicall</strong>的调用数据示例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1099,9 +1114,9 @@ def _dispatch(self, method, params):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;methodName&gt;
+<pre class="chroma">&lt;methodName&gt;
   system.multicall
 &lt;/methodName&gt;
 &lt;params&gt;
@@ -1117,15 +1132,17 @@ def _dispatch(self, method, params):
                 &lt;/value&gt;
               &lt;/member&gt;
     ...
-&lt;params&gt;
-</code></pre></td></tr></table>
+&lt;params&gt;</pre></td></tr></table>
 </div>
-</div><h2 id="xmlrpc-client">xmlrpc-client实现</h2>
-<h3 id="http-1">客户端http协议实现</h3>
+</div>
+<h2 id="xmlrpc-client实现">xmlrpc-client实现</h2>
+
+<h3 id="客户端http协议实现">客户端http协议实现</h3>
+
 <p>客户端也需要实现http协议，主要在ServerProxy和Transport中(SafeTransport实现https)。ServerProxy包装Transport对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1157,9 +1174,9 @@ def _dispatch(self, method, params):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ServerProxy:
+<pre class="chroma">class ServerProxy:
     def __init__(self, uri, transport=None, encoding=None, verbose=False,
                  allow_none=False, use_datetime=False, use_builtin_types=False,
                  *, headers=(), context=None):
@@ -1190,13 +1207,13 @@ def _dispatch(self, method, params):
             verbose=self.__verbose
             )
 
-        return response
-</code></pre></td></tr></table>
+        return response</pre></td></tr></table>
 </div>
-</div><p>Transport实现http细节:</p>
+</div>
+<p>Transport实现http细节:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1248,9 +1265,9 @@ def _dispatch(self, method, params):
 </span><span class="lnt">50
 </span><span class="lnt">51
 </span><span class="lnt">52
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Transport:
+<pre class="chroma">class Transport:
     &#34;&#34;&#34;Handles an HTTP transaction to an XML-RPC server.&#34;&#34;&#34;
     def __init__(self, use_datetime=False, use_builtin_types=False,
                  *, headers=()):
@@ -1301,19 +1318,21 @@ def _dispatch(self, method, params):
             stream.close()
         p.close()
 
-        return u.close()
-</code></pre></td></tr></table>
+        return u.close()</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>使用http.client创建http连接</li>
 <li>使用send_request发送http请求</li>
 <li>使用parse_response解析http请求</li>
 </ul>
-<h3 id="rpc-1">客户端rpc协议实现</h3>
+
+<h3 id="客户端rpc协议实现">客户端rpc协议实现</h3>
+
 <p>在http协议上使用_Method包装请求:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1328,9 +1347,9 @@ def _dispatch(self, method, params):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ServerProxy:
+<pre class="chroma">class ServerProxy:
     def __getattr__(self, name):
         # magic method dispatcher
         return _Method(self.__request, name)
@@ -1344,15 +1363,17 @@ class _Method:
     def __getattr__(self, name):
         return _Method(self.__send, &#34;%s.%s&#34; % (self.__name, name))
     def __call__(self, *args):
-        return self.__send(self.__name, args)
-</code></pre></td></tr></table>
+        return self.__send(self.__name, args)</pre></td></tr></table>
 </div>
-</div><p>可以使用 <code>server.currentTime.getCurrentTime()</code> 发送请求，这是一个链式调用。server.currentTime会调用 <code>ServerProxy.__getattr__</code> 得到一个_Method对象；继续调用getCurrentTime会执行 <code>_Method.__getattr__</code> 又得到一个_Method对象，最后使用 <code>getCurrentTime()</code> 执行这个method对象的call方法，会使用ServerProxy的call方法将请求发送出去。</p>
-<h3 id="multi-call-1">客户端multi-call实现</h3>
+</div>
+<p>可以使用 <code>server.currentTime.getCurrentTime()</code> 发送请求，这是一个链式调用。server.currentTime会调用 <code>ServerProxy.__getattr__</code> 得到一个_Method对象；继续调用getCurrentTime会执行 <code>_Method.__getattr__</code> 又得到一个_Method对象，最后使用 <code>getCurrentTime()</code> 执行这个method对象的call方法，会使用ServerProxy的call方法将请求发送出去。</p>
+
+<h3 id="客户端multi-call实现">客户端multi-call实现</h3>
+
 <p>了解客户端 <strong>single-call</strong> 实现后，继续查看 <strong>multi-call</strong>，主要涉及下面3个类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1391,9 +1412,9 @@ class _Method:
 </span><span class="lnt">37
 </span><span class="lnt">38
 </span><span class="lnt">39
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _MultiCallMethod:
+<pre class="chroma">class _MultiCallMethod:
 
     def __init__(self, call_list, name):
         self.__call_list = call_list
@@ -1431,66 +1452,66 @@ class MultiCall:
         for name, args in self.__call_list:
             marshalled_list.append({&#39;methodName&#39; : name, &#39;params&#39; : args})
         # 最后执行system.multical
-        return MultiCallIterator(self.__server.system.multicall(marshalled_list))
-</code></pre></td></tr></table>
+        return MultiCallIterator(self.__server.system.multicall(marshalled_list))</pre></td></tr></table>
 </div>
-</div><p>代码行数比较多，和Method一样都是使用python的魔法函数：call， getattr和getitem, 可以对比调用示例体会:</p>
+</div>
+<p>代码行数比较多，和Method一样都是使用python的魔法函数：call， getattr和getitem, 可以对比调用示例体会:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">multi = MultiCall(server)
+<pre class="chroma">multi = MultiCall(server)
 multi.getData()
 multi.pow(2,9)
 multi.add(1,2)
 for response in multi():
-    print(response)
-</code></pre></td></tr></table>
+    print(response)</pre></td></tr></table>
 </div>
-</div><h2 id="xmlrpc-1">xmlrpc序列化/反序列化</h2>
+</div>
+<h2 id="xmlrpc序列化-反序列化">xmlrpc序列化/反序列化</h2>
+
 <p>rpc服务需要跨网络传输，server和client之间的数据还需要进行序列化/反序列化。主要由Marshaller和Unmarshaller两个类实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># client.py
+<pre class="chroma"># client.py
 
 class Marshaller:
     ...
 
 class Unmarshaller:
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>xmlrpc支持下面9种数据类型:</p>
-<ul>
-<li>array</li>
-<li>base64</li>
-<li>boolean</li>
-<li>date/time</li>
-<li>double</li>
-<li>integer</li>
-<li>string</li>
-<li>struct</li>
-<li>nil</li>
-</ul>
+</div>
+<p>xmlrpc支持下面9种数据类型:
+* array
+* base64<br />
+* boolean<br />
+* date/time
+* double<br />
+* integer<br />
+* string<br />
+* struct<br />
+* nil</p>
+
 <p>一些数据类型的，比如double和nil在python中是不存在的。这2种数据的编/解码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1517,9 +1538,9 @@ class Unmarshaller:
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Marshaller:
+<pre class="chroma">class Marshaller:
     
     def dump_double(self, value, write):
         write(&#34;&lt;value&gt;&lt;double&gt;&#34;)
@@ -1545,15 +1566,20 @@ class Unmarshaller:
     def end_nil (self, data):
         self.append(None) # None
         self._value = 0
-    dispatch[&#34;nil&#34;] = end_nil
-</code></pre></td></tr></table>
+    dispatch[&#34;nil&#34;] = end_nil</pre></td></tr></table>
 </div>
-</div><h2 id="heading">小结</h2>
+</div>
+<h2 id="小结">小结</h2>
+
 <p>xmlrpc不考虑tcp协议的情况下，主要是2层模型，底层是http协议，上层是xmlrpc协议。http协议负责网络传输；xmlrpc协议负责将rpc请求转换成xml数据，然后再反序列化成请求执行。</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210506205946.png" alt="结构"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210506205946.png" alt="结构" /></p>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-1">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/XML-RPC">https://en.wikipedia.org/wiki/XML-RPC</a></li>
 </ul>
@@ -1641,7 +1667,7 @@ class Unmarshaller:
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

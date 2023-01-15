@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="本章我们从celery的蓝图学习celery的实现细节。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/celery-7/" />
-<meta property="article:published_time" content="2021-12-12T22:55:38+08:00" />
-<meta property="article:modified_time" content="2021-12-12T22:55:38+08:00" />
+<meta property="article:published_time" content="2021-12-12T22:55:38&#43;08:00"/>
+<meta property="article:modified_time" content="2021-12-12T22:55:38&#43;08:00"/>
+
 <meta itemprop="name" content="Celery 源码解析 - 7">
 <meta itemprop="description" content="本章我们从celery的蓝图学习celery的实现细节。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一">
+
+
 <meta itemprop="datePublished" content="2021-12-12T22:55:38&#43;08:00" />
 <meta itemprop="dateModified" content="2021-12-12T22:55:38&#43;08:00" />
-<meta itemprop="wordCount" content="4166">
+<meta itemprop="wordCount" content="4171">
 
 
 
-<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="celery,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 源码解析 - 7"/>
 <meta name="twitter:description" content="本章我们从celery的蓝图学习celery的实现细节。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一"/>
 
@@ -137,23 +141,31 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">蓝图设计</a></li>
-    <li><a href="#connection-stepamqp">Connection-Step实现AMQP协议连接</a></li>
-    <li><a href="#pool-step">Pool-Step实现并发模型</a></li>
-    <li><a href="#evloop-step">Evloop-Step实现事件循环</a></li>
-    <li><a href="#consumer-blueprint">Consumer-Blueprint实现任务调度</a></li>
-    <li><a href="#mingle-stepgossip-stepworker">Mingle-Step和Gossip-Step实现worker分布式协作</a></li>
-    <li><a href="#heading-1">小结</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#蓝图设计">蓝图设计</a></li>
+<li><a href="#connection-step实现amqp协议连接">Connection-Step实现AMQP协议连接</a></li>
+<li><a href="#pool-step实现并发模型">Pool-Step实现并发模型</a></li>
+<li><a href="#evloop-step实现事件循环">Evloop-Step实现事件循环</a></li>
+<li><a href="#consumer-blueprint实现任务调度">Consumer-Blueprint实现任务调度</a></li>
+<li><a href="#mingle-step和gossip-step实现worker分布式协作">Mingle-Step和Gossip-Step实现worker分布式协作</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>本章我们从celery的蓝图学习celery的实现细节。</p>
+      
+
+<p>本章我们从celery的蓝图学习celery的实现细节。</p>
+
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+
 <p>本文是是celery源码解析的第<strong>七</strong>篇，在前六篇里分别介绍了:</p>
+
 <ol>
 <li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
@@ -162,11 +174,13 @@
 <li><a href="https://game404.github.io/post/python/celery-5/">神器 celery 源码解析- celery启动流程分析</a></li>
 <li><a href="https://game404.github.io/post/python/celery-6/">神器 celery 源码解析- celery启动日志跟踪</a></li>
 </ol>
-<h2 id="heading">蓝图设计</h2>
+
+<h2 id="蓝图设计">蓝图设计</h2>
+
 <p>celery的蓝图，官方的解释是 <em>A directed acyclic graph of reusable components</em> ，翻译过来就是 <em>可重用组件的有向无环图</em> 。有WorkController(也叫worker)和Consumer两个蓝图，每个蓝图又由一些step组成，这些step根据依赖关系(requires)组成下面的树结构:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -183,9 +197,9 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">WorkController(Blueprint)
+<pre class="chroma">WorkController(Blueprint)
     |-  StateDB
     |-  Timer
             |- Hub
@@ -201,14 +215,15 @@
                         |- Tasks
                             |- Control
                     |- Heart
-        |- Evloop
-</code></pre></td></tr></table>
+        |- Evloop</pre></td></tr></table>
 </div>
-</div><p>其中Consumer是WorkController的一个step，这个step又启动了一个Consumer的蓝图，形成一个蓝图嵌蓝图的结构。蓝图这个词，可以理解为celery启动的时候需要一些步骤，这些步骤是有依赖顺序的，同级的步骤构成一个蓝图。</p>
+</div>
+<p>其中Consumer是WorkController的一个step，这个step又启动了一个Consumer的蓝图，形成一个蓝图嵌蓝图的结构。蓝图这个词，可以理解为celery启动的时候需要一些步骤，这些步骤是有依赖顺序的，同级的步骤构成一个蓝图。</p>
+
 <p>Worker蓝图包括<code>{StateDB, Timer, Hub, Pool, Autoscaler, Beat, Consumer}</code>七个步骤，一般情况下仅仅启动了其中的三个<code>Hub， Pool， Consumer</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -217,9 +232,9 @@
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-24 15:53:12,984: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+<pre class="chroma">[2021-11-24 15:53:12,984: DEBUG/MainProcess] | Worker: Preparing bootsteps.
 [2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: Building graph...
 [2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Timer, Hub, Pool, Autoscaler, Beat, Consumer}
 ...
@@ -227,13 +242,13 @@
 [2021-11-24 15:53:13,062: DEBUG/MainProcess] ^-- substep ok
 [2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Pool
 [2021-11-24 15:53:13,410: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Worker: Starting Consumer
-</code></pre></td></tr></table>
+[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Worker: Starting Consumer</pre></td></tr></table>
 </div>
-</div><p>这七个蓝图的顺序和配置的顺序是有差异的:</p>
+</div>
+<p>这七个蓝图的顺序和配置的顺序是有差异的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -242,9 +257,9 @@
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">default_steps = {
+<pre class="chroma">default_steps = {
     &#39;celery.worker.components:Hub&#39;,
     &#39;celery.worker.components:Pool&#39;,
     &#39;celery.worker.components:Beat&#39;,
@@ -252,28 +267,28 @@
     &#39;celery.worker.components:StateDB&#39;,
     &#39;celery.worker.components:Consumer&#39;,
     &#39;celery.worker.autoscale:WorkerComponent&#39;,
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>Consumer蓝图包括<code>{Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}</code>十个步骤，一般情况下除了<code>Agent</code>, 其它都会启动。</p>
+</div>
+<p>Consumer蓝图包括<code>{Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}</code>十个步骤，一般情况下除了<code>Agent</code>, 其它都会启动。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+<pre class="chroma">[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
 [2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Building graph...
 [2021-11-24 15:53:13,038: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><p><code>Blueprint</code>主要有2个实现函数：<code>apply</code> 创建各个step，<code>start</code> 启动各个step:</p>
+</div>
+<p><code>Blueprint</code>主要有2个实现函数：<code>apply</code> 创建各个step，<code>start</code> 启动各个step:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -299,9 +314,9 @@
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def apply(self, parent, **kwargs):
+<pre class="chroma">def apply(self, parent, **kwargs):
     # 创建step
     self._debug(&#39;Preparing bootsteps.&#39;)
     order = self.order = []
@@ -326,13 +341,13 @@ def start(self, parent):
         self._debug(&#39;Starting %s&#39;, step.alias)
         self.started = i + 1
         step.start(parent)
-        logger.debug(&#39;^-- substep ok&#39;)
-</code></pre></td></tr></table>
+        logger.debug(&#39;^-- substep ok&#39;)</pre></td></tr></table>
 </div>
-</div><p><code>Step</code>和子类<code>StartStopStep</code>使用enbled属性，决定step步骤的是否启用:</p>
+</div>
+<p><code>Step</code>和子类<code>StartStopStep</code>使用enbled属性，决定step步骤的是否启用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -348,9 +363,9 @@ def start(self, parent):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">enabled = True
+<pre class="chroma">enabled = True
 
 def include_if(self, parent):
     return self.enabled
@@ -365,13 +380,13 @@ def include(self, parent):
     if inc:
         self.obj = ret
         parent.steps.append(self)
-    return inc
-</code></pre></td></tr></table>
+    return inc</pre></td></tr></table>
 </div>
-</div><p>比如默认情况下StateDB会根据参数关闭:</p>
+</div>
+<p>比如默认情况下StateDB会根据参数关闭:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -387,9 +402,9 @@ def include(self, parent):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@click.option(&#39;-S&#39;,
+<pre class="chroma">@click.option(&#39;-S&#39;,
               &#39;--statedb&#39;,
               cls=CeleryOption,
               type=click.Path(),
@@ -404,13 +419,13 @@ class StateDB(bootsteps.Step):
 
     def __init__(self, w, **kwargs):
         self.enabled = w.statedb
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p><code>Step</code>类还有requires和last两个属性，blueprint可以根据这两个属性建立所有步骤的先后顺序:</p>
+</div>
+<p><code>Step</code>类还有requires和last两个属性，blueprint可以根据这两个属性建立所有步骤的先后顺序:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -426,9 +441,9 @@ class StateDB(bootsteps.Step):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _find_last(self):
+<pre class="chroma">def _find_last(self):
     # 查找steps的尾
     return next((C for C in self.steps.values() if C.last), None)
 
@@ -443,13 +458,13 @@ def _firstpass(self, steps):
             node = symbol_by_name(node)
             if node.name not in self.steps:
                 steps[node.name] = node
-            stream.append(node.requires)
-</code></pre></td></tr></table>
+            stream.append(node.requires)</pre></td></tr></table>
 </div>
-</div><p>Consumer这个特殊的Step是这样嵌套启动Consumer蓝图的:</p>
+</div>
+<p>Consumer这个特殊的Step是这样嵌套启动Consumer蓝图的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -470,9 +485,9 @@ def _firstpass(self, steps):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Consumer(bootsteps.StartStopStep):
+<pre class="chroma">class Consumer(bootsteps.StartStopStep):
     &#34;&#34;&#34;Bootstep starting the Consumer blueprint.&#34;&#34;&#34;
 
     def create(self, w):
@@ -492,15 +507,17 @@ def _firstpass(self, steps):
             disable_rate_limits=w.disable_rate_limits,
             prefetch_multiplier=w.prefetch_multiplier,
         )
-        return c
-</code></pre></td></tr></table>
+        return c</pre></td></tr></table>
 </div>
-</div><p>celery将启动过程分成多个step，每个step承担不同的功能，不同的step又组合成多个蓝图，这种方式可以灵活的定义启动流程，并且让业务功能解耦，更易维护。下面我们继续学习其中的一些step。</p>
-<h2 id="connection-stepamqp">Connection-Step实现AMQP协议连接</h2>
+</div>
+<p>celery将启动过程分成多个step，每个step承担不同的功能，不同的step又组合成多个蓝图，这种方式可以灵活的定义启动流程，并且让业务功能解耦，更易维护。下面我们继续学习其中的一些step。</p>
+
+<h2 id="connection-step实现amqp协议连接">Connection-Step实现AMQP协议连接</h2>
+
 <p>Connection-Step主要功能是创建connection连接:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -511,9 +528,9 @@ def _firstpass(self, steps):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Connection(bootsteps.StartStopStep):
+<pre class="chroma">class Connection(bootsteps.StartStopStep):
     &#34;&#34;&#34;Service managing the consumer broker connection.&#34;&#34;&#34;
 
     def __init__(self, c, **kwargs):
@@ -523,14 +540,15 @@ def _firstpass(self, steps):
     def start(self, c):
         # 创建连接
         c.connection = c.connect()
-        info(&#39;Connected to %s&#39;, c.connection.as_uri())
-</code></pre></td></tr></table>
+        info(&#39;Connected to %s&#39;, c.connection.as_uri())</pre></td></tr></table>
 </div>
-</div><h2 id="pool-step">Pool-Step实现并发模型</h2>
+</div>
+<h2 id="pool-step实现并发模型">Pool-Step实现并发模型</h2>
+
 <p>Pool-Step主要功能是启动一个调度池:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -555,9 +573,9 @@ def _firstpass(self, steps):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Initialize bootsteps
+<pre class="chroma"># Initialize bootsteps
 self.pool_cls = _concurrency.get_implementation(self.pool_cls)
         
 def create(self, w):
@@ -581,13 +599,13 @@ def create(self, w):
             app=w.app,
         )
         ...
-    return pool
-</code></pre></td></tr></table>
+    return pool</pre></td></tr></table>
 </div>
-</div><p>并发模型主要包括下面一些实现，比如基于fork的多进程，基于eventlet和gevent的协程和多线程等:</p>
+</div>
+<p>并发模型主要包括下面一些实现，比如基于fork的多进程，基于eventlet和gevent的协程和多线程等:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -599,9 +617,9 @@ def create(self, w):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">ALIASES = {
+<pre class="chroma">ALIASES = {
     &#39;prefork&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,
     &#39;eventlet&#39;: &#39;celery.concurrency.eventlet:TaskPool&#39;,
     &#39;gevent&#39;: &#39;celery.concurrency.gevent:TaskPool&#39;,
@@ -612,32 +630,34 @@ def create(self, w):
 
 def get_implementation(cls):
     &#34;&#34;&#34;Return pool implementation by name.&#34;&#34;&#34;
-    return symbol_by_name(cls, ALIASES)
-</code></pre></td></tr></table>
+    return symbol_by_name(cls, ALIASES)</pre></td></tr></table>
 </div>
-</div><p>在前一篇的日志中，我们知道默认使用的是prefork也就是多线程模式:</p>
+</div>
+<p>在前一篇的日志中，我们知道默认使用的是prefork也就是多线程模式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class TaskPool(BasePool):
+<pre class="chroma">class TaskPool(BasePool):
     &#34;&#34;&#34;Multiprocessing Pool implementation.&#34;&#34;&#34;
     # billiard提供的池模式
     BlockingPool = BlockingPool
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>TaskPool的实现主要依赖billiard库，我们以后再行介绍，这里简单了解一下celery的并发模型都在concurrency模块之下即可。</p>
-<h2 id="evloop-step">Evloop-Step实现事件循环</h2>
+</div>
+<p>TaskPool的实现主要依赖billiard库，我们以后再行介绍，这里简单了解一下celery的并发模型都在concurrency模块之下即可。</p>
+
+<h2 id="evloop-step实现事件循环">Evloop-Step实现事件循环</h2>
+
 <p>Evloop-Step是由Consumer blueprint启动:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -650,9 +670,9 @@ def get_implementation(cls):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Evloop(bootsteps.StartStopStep):
+<pre class="chroma">class Evloop(bootsteps.StartStopStep):
     &#34;&#34;&#34;Event loop service.
 
     Note:
@@ -664,13 +684,13 @@ def get_implementation(cls):
 
     def start(self, c):
         self.patch_all(c)
-        c.loop(*c.loop_args())
-</code></pre></td></tr></table>
+        c.loop(*c.loop_args())</pre></td></tr></table>
 </div>
-</div><p>这里的loop在consumer中定义, 默认使用异步循环(asynloop)和同步循环(synloop)中的同步循环:</p>
+</div>
+<p>这里的loop在consumer中定义, 默认使用异步循环(asynloop)和同步循环(synloop)中的同步循环:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -689,9 +709,9 @@ def get_implementation(cls):
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def synloop(obj, connection, consumer, blueprint, hub, qos,
+<pre class="chroma">def synloop(obj, connection, consumer, blueprint, hub, qos,
             heartbeat, clock, hbrate=2.0, **kwargs):
     &#34;&#34;&#34;Fallback blocking event loop for transports that doesn&#39;t support AIO.&#34;&#34;&#34;
     RUN = bootsteps.RUN
@@ -709,37 +729,39 @@ def get_implementation(cls):
             perform_pending_operations()
             connection.drain_events(timeout=2.0)
         except socket.timeout:
-           ...
-</code></pre></td></tr></table>
+           ...</pre></td></tr></table>
 </div>
-</div><p>循环中主要功能是:</p>
-<ol>
-<li>设定消息的消费函数on_message</li>
-<li>使用while循环阻塞监听</li>
-<li>使用connection.drain_events消费消息(在kombu的文章中有过介绍)</li>
-</ol>
+</div>
+<p>循环中主要功能是:
+1. 设定消息的消费函数on_message
+2. 使用while循环阻塞监听
+3. 使用connection.drain_events消费消息(在kombu的文章中有过介绍)</p>
+
 <p>因为synloop会阻塞，所以需要设置step为<strong>last</strong>，确保在蓝图的最后启动。</p>
-<h2 id="consumer-blueprint">Consumer-Blueprint实现任务调度</h2>
+
+<h2 id="consumer-blueprint实现任务调度">Consumer-Blueprint实现任务调度</h2>
+
 <p>我们再查看celery的任务处理日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
+<pre class="chroma">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
 [2021-11-24 21:33:50,535: DEBUG/MainProcess] TaskPool: Apply &lt;function _trace_task_ret at 0x7fe6086ac280&gt; (args:(&#39;myapp.add&#39;, &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, {&#39;lang&#39;: &#39;py&#39;, &#39;task&#39;: &#39;myapp.add&#39;, &#39;id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;shadow&#39;: None, &#39;eta&#39;: None, &#39;expires&#39;: None, &#39;group&#39;: None, &#39;group_index&#39;: None, &#39;retries&#39;: 0, &#39;timelimit&#39;: [None, None], &#39;root_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;parent_id&#39;: None, &#39;argsrepr&#39;: &#39;(16, 16)&#39;, &#39;kwargsrepr&#39;: &#39;{}&#39;, &#39;origin&#39;: &#39;gen83110@192.168.5.28&#39;, &#39;reply_to&#39;: &#39;63862dbb-9d82-3bdd-b7fb-03580941362a&#39;, &#39;correlation_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;hostname&#39;: &#39;celery@192.168.5.28&#39;, &#39;delivery_info&#39;: {&#39;exchange&#39;: &#39;&#39;, &#39;routing_key&#39;: &#39;celery&#39;, &#39;priority&#39;: 0, &#39;redelivered&#39;: None}, &#39;args&#39;: [16, 16], &#39;kwargs&#39;: {}}, b&#39;[[16, 16], {}, {&#34;callbacks&#34;: null, &#34;errbacks&#34;: null, &#34;chain&#34;: null, &#34;chord&#34;: null}]&#39;, &#39;application/json&#39;, &#39;utf-8&#39;) kwargs:{})
 [2021-11-24 21:33:50,536: DEBUG/MainProcess] Task accepted: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] pid:83086
-[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32
-</code></pre></td></tr></table>
+[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32</pre></td></tr></table>
 </div>
-</div><p>可以发现celery的worker在主进程(MainProcess)中接收到task后，会派发给子进程(ForkPoolWorker-8)执行。</p>
+</div>
+<p>可以发现celery的worker在主进程(MainProcess)中接收到task后，会派发给子进程(ForkPoolWorker-8)执行。</p>
+
 <p>前面synloop的消费函数on_message实际上是Consumer(Blueprint)的create_task_handler:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -759,9 +781,9 @@ def get_implementation(cls):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def create_task_handler(self, promise=promise):
+<pre class="chroma">def create_task_handler(self, promise=promise):
     strategies = self.strategies
     on_unknown_message = self.on_unknown_message
     on_unknown_task = self.on_unknown_task
@@ -780,13 +802,13 @@ def get_implementation(cls):
                         callbacks,
                     )
         ...
-    return on_task_received
-</code></pre></td></tr></table>
+    return on_task_received</pre></td></tr></table>
 </div>
-</div><p>对于消息和任务的处理，celery提供了默认的执行策略:</p>
+</div>
+<p>对于消息和任务的处理，celery提供了默认的执行策略:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -816,9 +838,9 @@ def get_implementation(cls):
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># celery/worker/strategy.py:22
+<pre class="chroma"># celery/worker/strategy.py:22
 def default(task, app, consumer,
             info=logger.info, error=logger.error, task_reserved=task_reserved,
             to_system_tz=timezone.to_system, bytes=bytes,
@@ -847,18 +869,17 @@ def default(task, app, consumer,
         info(&#39;Received task: %s&#39;, req)
         ...
         handle(req)
-    return task_message_handler
-</code></pre></td></tr></table>
+    return task_message_handler</pre></td></tr></table>
 </div>
-</div><p>default策略主要做了下面2件事:</p>
-<ul>
-<li>创建请求对象Request</li>
-<li>使用handle处理request对象</li>
-</ul>
+</div>
+<p>default策略主要做了下面2件事:
+* 创建请求对象Request
+* 使用handle处理request对象</p>
+
 <p>Request对象的执行是调用pool的执行方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -875,9 +896,9 @@ def default(task, app, consumer,
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def execute_using_pool(self, pool, **kwargs):
+<pre class="chroma">def execute_using_pool(self, pool, **kwargs):
     &#34;&#34;&#34;Used by the worker to send this task to the pool.&#34;&#34;&#34;
     result = pool.apply_async(
             trace_task_ret,
@@ -893,30 +914,32 @@ def default(task, app, consumer,
         )
         # cannot create weakref to None
         self._apply_result = maybe(ref, result)
-    return result
-</code></pre></td></tr></table>
+    return result</pre></td></tr></table>
 </div>
-</div><p>这样远程的任务请求就派发给Pool进行执行, pool如何执行task同样以后再介绍。</p>
-<h2 id="mingle-stepgossip-stepworker">Mingle-Step和Gossip-Step实现worker分布式协作</h2>
+</div>
+<p>这样远程的任务请求就派发给Pool进行执行, pool如何执行task同样以后再介绍。</p>
+
+<h2 id="mingle-step和gossip-step实现worker分布式协作">Mingle-Step和Gossip-Step实现worker分布式协作</h2>
+
 <p>celery作为一款分布式任务调度框架，多个worker的协作由Mingle和Gossip两个step提供。我们先看Mingle-Step的日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-12-12 13:37:56,632: DEBUG/MainProcess] | Consumer: Starting Mingle
+<pre class="chroma">[2021-12-12 13:37:56,632: DEBUG/MainProcess] | Consumer: Starting Mingle
 [2021-12-12 13:37:56,632: INFO/MainProcess] mingle: searching for neighbors
 [2021-12-12 13:37:57,674: INFO/MainProcess] mingle: all alone
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><p>Mingle-Step实现多个worker节点的同步通讯:</p>
+</div>
+<p>Mingle-Step实现多个worker节点的同步通讯:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -930,9 +953,9 @@ def default(task, app, consumer,
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def start(self, c):
+<pre class="chroma">def start(self, c):
     self.sync(c)
         
 def sync(self, c):
@@ -945,13 +968,13 @@ def sync(self, c):
          for nodename, reply in replies.items() if reply]
         info(&#39;mingle: sync complete&#39;)
     else:
-        info(&#39;mingle: all alone&#39;)
-</code></pre></td></tr></table>
+        info(&#39;mingle: all alone&#39;)</pre></td></tr></table>
 </div>
-</div><p>可以看到Mingle启动后，发送hello消息，然后对其它节点的回应进行处理。hello的发送是这样的:</p>
+</div>
+<p>可以看到Mingle启动后，发送hello消息，然后对其它节点的回应进行处理。hello的发送是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -961,9 +984,9 @@ def sync(self, c):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def send_hello(self, c):
+<pre class="chroma">def send_hello(self, c):
     inspect = c.app.control.inspect(timeout=1.0, connection=c.connection)
     our_revoked = c.controller.state.revoked
     replies = inspect.hello(c.hostname, our_revoked._data) or {}
@@ -972,48 +995,51 @@ def sync(self, c):
 ...
 # celery/app/control.py
 def hello(self, from_node, revoked=None):
-    return self._request(&#39;hello&#39;, from_node=from_node, revoked=revoked)
-</code></pre></td></tr></table>
+    return self._request(&#39;hello&#39;, from_node=from_node, revoked=revoked)</pre></td></tr></table>
 </div>
-</div><p>对于回应的主要处理就是对当前worker的LamportClock进行校正。:</p>
+</div>
+<p>对于回应的主要处理就是对当前worker的LamportClock进行校正。:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def on_node_reply(self, c, nodename, reply):
+<pre class="chroma">def on_node_reply(self, c, nodename, reply):
     ...
     c.app.clock.adjust(clock) if clock else c.app.clock.forward()
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>Gossip-Step的功能会复杂一些，不像Mingle是一次性的，它是一个持续的过程。下面是它的日志，清晰展示会持续的监听:</p>
+</div>
+<p>Gossip-Step的功能会复杂一些，不像Mingle是一次性的，它是一个持续的过程。下面是它的日志，清晰展示会持续的监听:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party[2021-12-12 13:37:58,096: DEBUG/MainProcess] w2@bogon joined the party
+<pre class="chroma">[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party[2021-12-12 13:37:58,096: DEBUG/MainProcess] w2@bogon joined the party
 [2021-12-12 14:52:49,259: INFO/MainProcess] missed heartbeat from w2@bogon
 [2021-12-12 14:52:49,262: DEBUG/MainProcess] w2@bogon joined the party
 ...
-[2021-12-12 16:10:54,112: DEBUG/MainProcess] w2@bogon left
-</code></pre></td></tr></table>
+[2021-12-12 16:10:54,112: DEBUG/MainProcess] w2@bogon left</pre></td></tr></table>
 </div>
-</div><p>Gossip是一种算法，又称流行病算法，其图示如下:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211212195252.png" alt="gossip"></p>
+</div>
+<p>Gossip是一种算法，又称流行病算法，其图示如下:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211212195252.png" alt="gossip" /></p>
+
 <p>简单的说在Gossip算法中网络节点每次向自己关联的节点广播消息，直到网络中所有节点都收到消息。</p>
+
 <p>celery的gossip处理消息的过程是创建自己的Consumer和定时器:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1025,9 +1051,9 @@ def hello(self, from_node, revoked=None):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_consumers(self, channel):
+<pre class="chroma">def get_consumers(self, channel):
     # 定时处理worker激活事件
     self.register_timer()
     # 消息消费者
@@ -1038,13 +1064,13 @@ def hello(self, from_node, revoked=None):
         queues=[ev.queue],
         on_message=partial(self.on_message, ev.event_from_message),
         no_ack=True
-    )]
-</code></pre></td></tr></table>
+    )]</pre></td></tr></table>
 </div>
-</div><p>定时器负责处理其它节点的活跃状态, 如果节点不活跃，将它标记为脏节点，进行节点丢失处理，然后移除节点:</p>
+</div>
+<p>定时器负责处理其它节点的活跃状态, 如果节点不活跃，将它标记为脏节点，进行节点丢失处理，然后移除节点:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1053,9 +1079,9 @@ def hello(self, from_node, revoked=None):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def periodic(self):
+<pre class="chroma">def periodic(self):
     workers = self.state.workers
     dirty = set()
     for worker in workers.values():
@@ -1063,13 +1089,13 @@ def hello(self, from_node, revoked=None):
             dirty.add(worker)
             self.on_node_lost(worker)
     for worker in dirty:
-        workers.pop(worker.hostname, None)
-</code></pre></td></tr></table>
+        workers.pop(worker.hostname, None)</pre></td></tr></table>
 </div>
-</div><p>消费的消息，又分成2种类型: 选举消息和其它消息。</p>
+</div>
+<p>消费的消息，又分成2种类型: 选举消息和其它消息。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1090,9 +1116,9 @@ def hello(self, from_node, revoked=None):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def on_message(self, prepare, message):
+<pre class="chroma">def on_message(self, prepare, message):
     _type = message.delivery_info[&#39;routing_key&#39;]
     try:
         # 选举事件
@@ -1112,13 +1138,13 @@ def hello(self, from_node, revoked=None):
             self.update_state(event)
         ...
     else:
-        self.clock.forward()
-</code></pre></td></tr></table>
+        self.clock.forward()</pre></td></tr></table>
 </div>
-</div><p>选举类的消息是处理选举消息和选举ack消息:</p>
+</div>
+<p>选举类的消息是处理选举消息和选举ack消息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1128,9 +1154,9 @@ def hello(self, from_node, revoked=None):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">self.event_handlers = {
+<pre class="chroma">self.event_handlers = {
             &#39;worker.elect&#39;: self.on_elect,
             &#39;worker.elect.ack&#39;: self.on_elect_ack,
         }
@@ -1139,13 +1165,13 @@ def on_elect(self, event):
     ...
 
 def on_elect_ack(self, event):
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>其它事件主要是节点的上下线之类:</p>
+</div>
+<p>其它事件主要是节点的上下线之类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1158,9 +1184,9 @@ def on_elect_ack(self, event):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">self.state = c.app.events.State(
+<pre class="chroma">self.state = c.app.events.State(
                 on_node_join=self.on_node_join,
                 on_node_leave=self.on_node_leave,
                 max_tasks_in_memory=1,
@@ -1172,12 +1198,15 @@ def on_node_join(self, worker):
 
 def on_node_leave(self, worker):
     debug(&#39;%s left&#39;, worker.hostname)
-    self._call_handlers(self.on.node_leave, worker)
-</code></pre></td></tr></table>
+    self._call_handlers(self.on.node_leave, worker)</pre></td></tr></table>
 </div>
-</div><h2 id="heading-1">小结</h2>
+</div>
+<h2 id="小结">小结</h2>
+
 <p>我们通过解析celery的两个Blueprint，了解到celery worker的启动流程包括建立和broker之间的AMQP协议连接，使用进程池/线程池/协程池方式处理任务，使用hello消息进行worker节点之间的LamportClock时钟校时，使用Gossip协议进行worker节点之间的通讯协作。在多进程情况下，每次的任务都先被主进程获取，然后分配给进程池中的子进程进行执行。</p>
-<h2 id="heading-2">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://managementfromscratch.wordpress.com/2016/04/01/introduction-to-gossip/">https://managementfromscratch.wordpress.com/2016/04/01/introduction-to-gossip/</a></li>
 </ul>
@@ -1265,7 +1294,7 @@ def on_node_leave(self, worker):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

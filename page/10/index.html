@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -45,9 +45,13 @@
 <meta property="og:description" content="微服务&amp;&amp;游戏技术分享." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://game404.github.io/" />
-<meta property="og:updated_time" content="2022-03-15T23:55:23+08:00" />
+
+<meta property="og:updated_time" content="2021-02-24T20:01:29&#43;08:00"/>
+
 <meta itemprop="name" content="游戏不存在">
-<meta itemprop="description" content="微服务&amp;&amp;游戏技术分享."><meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="微服务&amp;&amp;游戏技术分享.">
+
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="游戏不存在"/>
 <meta name="twitter:description" content="微服务&amp;&amp;游戏技术分享."/>
 
@@ -116,6 +120,90 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/gunicorn/">Gunicorn 源码阅读</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-02-24 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正
+    </div>
+    <div class="read-more">
+      <a href="/post/python/gunicorn/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/tinydb/">python tinydb 源码阅读</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-02-17 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      TinyDB是一个小型，简单易用，面向文档的数据库；代码仅1800行，纯python编写。TinyDB项目大小刚好，学习它可以了解NOSQL
+    </div>
+    <div class="read-more">
+      <a href="/post/python/tinydb/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/argparse/">python argparse 源码阅读</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-02-11 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12
+    </div>
+    <div class="read-more">
+      <a href="/post/python/argparse/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/wsgiref/">python wsgiref 源码阅读</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-02-04 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      python web开发中http请求的处理流程通常是: web-browser &lt;-&gt; web-server &lt;-&gt; wsgi &lt;-&gt; web-application， 我们学习过基于bottle实现的web-applic
+    </div>
+    <div class="read-more">
+      <a href="/post/python/wsgiref/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/python/http/">python http 源码阅读</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2021-01-28 </span>
@@ -131,90 +219,6 @@
     </div>
     <div class="read-more">
       <a href="/post/python/http/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/bottle/">Bottle 源码阅读</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-01-21 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限
-    </div>
-    <div class="read-more">
-      <a href="/post/python/bottle/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/requests/">requests 源码阅读</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-01-17 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      requests是一个简洁易用的http-client库，早期在github的python项目受欢迎程度可以排名TOP10。介绍这个项目，我
-    </div>
-    <div class="read-more">
-      <a href="/post/python/requests/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/redis-py/">Redis-py 源码阅读</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-01-09 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      redis协议规范 redis-py概述 redis-py基础使用 RedisCommand Redis连接 连接池 pipeline LuaScript lock redis协议规范 RESP（Redis Serialization Proto
-    </div>
-    <div class="read-more">
-      <a href="/post/python/redis-py/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python-env-2020/">Python虚拟环境指南2020版</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2020-03-21 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      这是python虚拟环境指南的第二篇，第一篇请见 Python虚拟环境指南2019版 。 合理的python虚拟环境让让开发更有序和高效。关于虚拟
-    </div>
-    <div class="read-more">
-      <a href="/post/python-env-2020/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
@@ -260,7 +264,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

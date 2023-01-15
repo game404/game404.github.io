@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="spf13/cobra 和 urfave/cli 是Go的2个优秀命令行工具： 名称 star 简介 应用项目 spf13/cobra 11571 A Commander for modern Go CLI interactions docker, kubernetes, istio， hugo &hellip; urfave/cli 10501 A simple, fast, and fun package for building command line apps in Go drone, peach, gogs &hellip; 两个项目的简" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/go-cli-command/" />
-<meta property="article:published_time" content="2019-04-22T00:29:00+08:00" />
-<meta property="article:modified_time" content="2019-04-22T00:29:00+08:00" />
+<meta property="article:published_time" content="2019-04-22T00:29:00&#43;08:00"/>
+<meta property="article:modified_time" content="2019-04-22T00:29:00&#43;08:00"/>
+
 <meta itemprop="name" content="Go 优秀库推荐 - 命令行工具 cobra">
 <meta itemprop="description" content="spf13/cobra 和 urfave/cli 是Go的2个优秀命令行工具： 名称 star 简介 应用项目 spf13/cobra 11571 A Commander for modern Go CLI interactions docker, kubernetes, istio， hugo &hellip; urfave/cli 10501 A simple, fast, and fun package for building command line apps in Go drone, peach, gogs &hellip; 两个项目的简">
+
+
 <meta itemprop="datePublished" content="2019-04-22T00:29:00&#43;08:00" />
 <meta itemprop="dateModified" content="2019-04-22T00:29:00&#43;08:00" />
-<meta itemprop="wordCount" content="2993">
+<meta itemprop="wordCount" content="2988">
 
 
 
-<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Go 优秀库推荐 - 命令行工具 cobra"/>
 <meta name="twitter:description" content="spf13/cobra 和 urfave/cli 是Go的2个优秀命令行工具： 名称 star 简介 应用项目 spf13/cobra 11571 A Commander for modern Go CLI interactions docker, kubernetes, istio， hugo &hellip; urfave/cli 10501 A simple, fast, and fun package for building command line apps in Go drone, peach, gogs &hellip; 两个项目的简"/>
 
@@ -137,28 +141,32 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#spf13cobra">spf13/cobra</a>
-      <ul>
-        <li><a href="#docker-help-">docker help 命令</a></li>
-        <li><a href="#docker-">docker 命令注册</a></li>
-        <li><a href="#docker-ps-">docker ps 命令</a></li>
-      </ul>
-    </li>
-    <li><a href="#urfavecli">urfave/cli</a>
-      <ul>
-        <li><a href="#drone-help-">drone help 命令</a></li>
-        <li><a href="#drone-">drone 命令实现</a></li>
-      </ul>
-    </li>
-    <li><a href="#heading">总结</a></li>
-    <li><a href="#heading-1">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#spf13-cobra">spf13/cobra</a>
+<ul>
+<li><a href="#docker-help-命令">docker help 命令</a></li>
+<li><a href="#docker-命令注册">docker 命令注册</a></li>
+<li><a href="#docker-ps-命令">docker ps 命令</a></li>
+</ul></li>
+<li><a href="#urfave-cli">urfave/cli</a>
+<ul>
+<li><a href="#drone-help-命令">drone help 命令</a></li>
+<li><a href="#drone-命令实现">drone 命令实现</a></li>
+</ul></li>
+<li><a href="#总结">总结</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p><code>spf13/cobra</code> 和 <code>urfave/cli</code> 是Go的2个优秀命令行工具：</p>
+      
+
+<p><code>spf13/cobra</code> 和 <code>urfave/cli</code> 是Go的2个优秀命令行工具：</p>
+
 <table>
 <thead>
 <tr>
@@ -168,6 +176,7 @@
 <th>应用项目</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>spf13/cobra</td>
@@ -175,6 +184,7 @@
 <td>A Commander for modern Go CLI interactions</td>
 <td>docker, kubernetes, istio， hugo &hellip;</td>
 </tr>
+
 <tr>
 <td>urfave/cli</td>
 <td>10501</td>
@@ -183,18 +193,25 @@
 </tr>
 </tbody>
 </table>
+
 <p>两个项目的简介都挺有意思，各自的应用项目也很出色。我们一起来学一学，从docker和drone源码出发，了解如何使用。</p>
-<h2 id="spf13cobra">spf13/cobra</h2>
+
+<h2 id="spf13-cobra">spf13/cobra</h2>
+
 <p>spf13这个哥们，感觉是个印度人，但是很优秀的样子，下面是他的简介:</p>
+
 <blockquote>
 <p>spf13 @golang at @google • Author, Speaker, Developer • Creator of Hugo, Cobra &amp; spf13-vim • former Docker &amp; MongoDB</p>
 </blockquote>
+
 <p>吃鸡蛋不用了解母鸡，但是知道母鸡是那个厂的也很重要，开源项目也是如此。google、docker和mongodb，都是不错的技术公司，hugo也是不错博客平台，我的个人博客也是用它，感觉cobra有很棒的背景。闲聊结束，下面进入正题。</p>
-<h3 id="docker-help-">docker help 命令</h3>
+
+<h3 id="docker-help-命令">docker help 命令</h3>
+
 <p>一个好的命令行工具，首先要有一个很方便的<code>help</code>指令，协助用户了解命令，这个最最重要。先看看<code>docker</code>的帮助:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -224,9 +241,9 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ docker
+<pre class="chroma">➜  ~ docker
 
 Usage:	docker [OPTIONS] COMMAND
 
@@ -255,14 +272,15 @@ Commands:
   ps          List containers
   ...
 
-Run &#39;docker COMMAND --help&#39; for more information on a command.
-</code></pre></td></tr></table>
+Run &#39;docker COMMAND --help&#39; for more information on a command.</pre></td></tr></table>
 </div>
-</div><p><code>docker</code>的帮助很详细的，这里为避免篇幅太长，省略了其中部分输出，保留重点分析介绍的命令(下同)，使用过程中非常方便。这种<code>help</code>指令如何实现的呢。</p>
+</div>
+<p><code>docker</code>的帮助很详细的，这里为避免篇幅太长，省略了其中部分输出，保留重点分析介绍的命令(下同)，使用过程中非常方便。这种<code>help</code>指令如何实现的呢。</p>
+
 <p>从<code>docker-ce\components\cli\cmd\docker\docker.go</code>的main函数开始:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -286,9 +304,9 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">func main() {
+<pre class="chroma">func main() {
 	// Set terminal emulation based on platform as required.
 	stdin, stdout, stderr := term.StdStreams()
 	logrus.SetOutput(stderr)
@@ -311,14 +329,15 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 		fmt.Fprintln(stderr, err)
 		os.Exit(1)
 	}
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>代码非常清晰，做了三件事：1）读取命令行输入 2）解析查找命令 3）执行命令。</p>
+</div>
+<p>代码非常清晰，做了三件事：1）读取命令行输入 2）解析查找命令 3）执行命令。</p>
+
 <p>在<code>docker-ce\components\cli\cmd\docker\docker.go</code>的<code>newDockerCommand</code>中，可以知道root命令的实现：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -340,9 +359,9 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">cmd := &amp;cobra.Command{
+<pre class="chroma">cmd := &amp;cobra.Command{
 		Use:              &#34;docker [OPTIONS] COMMAND [ARG...]&#34;,
 		Short:            &#34;A self-sufficient runtime for containers&#34;,
 		SilenceUsage:     true,
@@ -363,14 +382,15 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 		},
 		Version:               fmt.Sprintf(&#34;%s, build %s&#34;, cli.Version, cli.GitCommit),
 		DisableFlagsInUseLine: true,
-	}
-</code></pre></td></tr></table>
+	}</pre></td></tr></table>
 </div>
-</div><p>从代码中可以清晰的把<code>Use</code>和<code>Short</code>命令输出对应起来。</p>
+</div>
+<p>从代码中可以清晰的把<code>Use</code>和<code>Short</code>命令输出对应起来。</p>
+
 <p>顺便在<code>cobra.go</code>查看到 <code>docker help</code> 命令</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -386,9 +406,9 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">var helpCommand = &amp;cobra.Command{
+<pre class="chroma">var helpCommand = &amp;cobra.Command{
 	Use:               &#34;help [command]&#34;,
 	Short:             &#34;Help about the command&#34;,
 	PersistentPreRun:  func(cmd *cobra.Command, args []string) {},
@@ -403,45 +423,45 @@ Run &#39;docker COMMAND --help&#39; for more information on a command.
 		helpFunc(cmd, args)
 		return nil
 	},
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>以及 <code>docker help</code> 的模板输出</p>
+</div>
+<p>以及 <code>docker help</code> 的模板输出</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">var usageTemplate = `Usage:
+<pre class="chroma">var usageTemplate = `Usage:
 
 ....
 
 var helpTemplate = `
-{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`
-
-</code></pre></td></tr></table>
+{{if or .Runnable .HasSubCommands}}{{.UsageString}}{{end}}`</pre></td></tr></table>
 </div>
-</div><p>这样，对<code>docker</code>命令的输出，我们就大概了解了，对<code>cobra</code>如何使用也有一个初略的了解。</p>
-<h3 id="docker-">docker 命令注册</h3>
+</div>
+<p>这样，对<code>docker</code>命令的输出，我们就大概了解了，对<code>cobra</code>如何使用也有一个初略的了解。</p>
+
+<h3 id="docker-命令注册">docker 命令注册</h3>
+
 <p>继续查看docker各个子命令如何注册。 <code>docker.go</code>的第62行，这里注册了所有的命令：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">commands.AddCommands(cmd, dockerCli)
-</code></pre></td></tr></table>
+<pre class="chroma">commands.AddCommands(cmd, dockerCli)</pre></td></tr></table>
 </div>
-</div><p>其对于实现在<code>command\commands\commands.go</code>:</p>
+</div>
+<p>其对于实现在<code>command\commands\commands.go</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -462,9 +482,9 @@ var helpTemplate = `
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// AddCommands adds all the commands from cli/command to the root command
+<pre class="chroma">// AddCommands adds all the commands from cli/command to the root command
 func AddCommands(cmd *cobra.Command, dockerCli command.Cli) {
 	cmd.AddCommand(
 		// checkpoint
@@ -484,13 +504,13 @@ func AddCommands(cmd *cobra.Command, dockerCli command.Cli) {
 		// engine
 		cmd.AddCommand(engine.NewEngineCommand(dockerCli))
 	}
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>一级命令都注册到<code>docker</code>中了，继续查看一下<code>container</code>这样的二级命令注册, 在 <code>docker-ce\components\cli\command\container\cmd.go</code></p>
+</div>
+<p>一级命令都注册到<code>docker</code>中了，继续查看一下<code>container</code>这样的二级命令注册, 在 <code>docker-ce\components\cli\command\container\cmd.go</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -513,9 +533,9 @@ func AddCommands(cmd *cobra.Command, dockerCli command.Cli) {
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NewContainerCommand returns a cobra command for `container` subcommands
+<pre class="chroma">// NewContainerCommand returns a cobra command for `container` subcommands
 func NewContainerCommand(dockerCli command.Cli) *cobra.Command {
 	cmd := &amp;cobra.Command{
 		Use:   &#34;container&#34;,
@@ -537,15 +557,17 @@ func NewContainerCommand(dockerCli command.Cli) *cobra.Command {
 		....
 	)
 	return cmd
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>可以清晰的看到<code>docker contianer</code> 的子命令是一样是通过<code>AddCommand</code>接口注册的。</p>
-<h3 id="docker-ps-">docker ps 命令</h3>
+</div>
+<p>可以清晰的看到<code>docker contianer</code> 的子命令是一样是通过<code>AddCommand</code>接口注册的。</p>
+
+<h3 id="docker-ps-命令">docker ps 命令</h3>
+
 <p><code>docker ps</code>, 这是个使用频率非常高的命令，帮助如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -560,9 +582,9 @@ func NewContainerCommand(dockerCli command.Cli) *cobra.Command {
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ docker ps --help
+<pre class="chroma">➜  ~ docker ps --help
 
 Usage:	docker ps [OPTIONS]
 
@@ -576,13 +598,13 @@ Options:
   -l, --latest          Show the latest created container (includes all states)
       --no-trunc        Don&#39;t truncate output
   -q, --quiet           Only display numeric IDs
-  -s, --size            Display total file sizes
-</code></pre></td></tr></table>
+  -s, --size            Display total file sizes</pre></td></tr></table>
 </div>
-</div><p><code>docker ps</code> 实际上是 <code>docker contianer ls</code> 命令的别名，请看:</p>
+</div>
+<p><code>docker ps</code> 实际上是 <code>docker contianer ls</code> 命令的别名，请看:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -594,9 +616,9 @@ Options:
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ docker container --help
+<pre class="chroma">➜  ~ docker container --help
 
 Usage:	docker container COMMAND
 
@@ -607,13 +629,13 @@ Commands:
   ls          List containers
   ...
 
-Run &#39;docker container COMMAND --help&#39; for more information on a command.
-</code></pre></td></tr></table>
+Run &#39;docker container COMMAND --help&#39; for more information on a command.</pre></td></tr></table>
 </div>
-</div><p>可见 <code>docker ps</code> 和 <code>docker container ls</code> 的作用都是 <code>List containers</code>。知道这个以后，查看代码： <code>docker-ce\components\cli\command\container\ls.go</code> 中有其实现:</p>
+</div>
+<p>可见 <code>docker ps</code> 和 <code>docker container ls</code> 的作用都是 <code>List containers</code>。知道这个以后，查看代码： <code>docker-ce\components\cli\command\container\ls.go</code> 中有其实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -639,12 +661,9 @@ Run &#39;docker container COMMAND --help&#39; for more information on a command.
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">
-// NewPsCommand creates a new cobra.Command for `docker ps`
+<pre class="chroma">// NewPsCommand creates a new cobra.Command for `docker ps`
 func NewPsCommand(dockerCli command.Cli) *cobra.Command {
 	options := psOptions{filter: opts.NewFilterOpt()}
 
@@ -669,74 +688,79 @@ func NewPsCommand(dockerCli command.Cli) *cobra.Command {
 	flags.VarP(&amp;options.filter, &#34;filter&#34;, &#34;f&#34;, &#34;Filter output based on conditions provided&#34;)
 
 	return cmd
-}
-
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>结合 <code>docker ps --help</code> 的输出，可以猜测<code>Options</code>和<code>Flags</code>的对应关系。继续查看<code>BoolVarP</code>的定义，在<code>spf13/pflag/bool.go</code></p>
+</div>
+<p>结合 <code>docker ps --help</code> 的输出，可以猜测<code>Options</code>和<code>Flags</code>的对应关系。继续查看<code>BoolVarP</code>的定义，在<code>spf13/pflag/bool.go</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BoolVarP is like BoolVar, but accepts a shorthand letter that can be used after a single dash.
+<pre class="chroma">// BoolVarP is like BoolVar, but accepts a shorthand letter that can be used after a single dash.
 func (f *FlagSet) BoolVarP(p *bool, name, shorthand string, value bool, usage string) {
 	flag := f.VarPF(newBoolValue(value, p), name, shorthand, usage)
 	flag.NoOptDefVal = &#34;true&#34;
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>配合注释说明，这样就非常清楚了，option名称使用<code>--</code>速记名称使用<code>-</code>。<code>docker ps -a</code> 和 <code>docker ps --all</code> 是一样的。</p>
+</div>
+<p>配合注释说明，这样就非常清楚了，option名称使用<code>--</code>速记名称使用<code>-</code>。<code>docker ps -a</code> 和 <code>docker ps --all</code> 是一样的。</p>
+
 <blockquote>
 <p>spf13/pflag 也是spf13 的一个库，主要处理参数量之类的。因为go是强类型的，所以用户的输入，都要合法的处理成go对应的数据类型。</p>
 </blockquote>
+
 <p>在 <code>ls.go</code> 中还新建了一个命令，命名了 <code>ps</code> 是 <code>container ls</code> 的别名。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">func newListCommand(dockerCli command.Cli) *cobra.Command {
+<pre class="chroma">func newListCommand(dockerCli command.Cli) *cobra.Command {
 	cmd := *NewPsCommand(dockerCli)
 	cmd.Aliases = []string{&#34;ps&#34;, &#34;list&#34;}
 	cmd.Use = &#34;ls [OPTIONS]&#34;
 	return &amp;cmd
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p><code>cobra</code>的简单介绍就到这里，本次实验的<code>docker</code>版本如下:</p>
+</div>
+<p><code>cobra</code>的简单介绍就到这里，本次实验的<code>docker</code>版本如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ docker --version
-Docker version 18.09.2, build 6247962
-</code></pre></td></tr></table>
+<pre class="chroma">➜  ~ docker --version
+Docker version 18.09.2, build 6247962</pre></td></tr></table>
 </div>
-</div><p><strong>简单小结一下cobra使用</strong>:</p>
+</div>
+<p><strong>简单小结一下cobra使用</strong>:</p>
+
 <ul>
 <li>采用命令模式</li>
 <li>完善的帮助command及帮助option</li>
 <li>支持选项及速记选项</li>
 <li>命令支持别名</li>
 </ul>
-<h2 id="urfavecli">urfave/cli</h2>
-<h3 id="drone-help-">drone help 命令</h3>
+
+<h2 id="urfave-cli">urfave/cli</h2>
+
+<h3 id="drone-help-命令">drone help 命令</h3>
+
 <p>先看看<code>drone</code>的帮助信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -757,9 +781,9 @@ Docker version 18.09.2, build 6247962
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ drone --help
+<pre class="chroma">➜  ~ drone --help
 NAME:
    drone - command line utility
 
@@ -779,13 +803,13 @@ GLOBAL OPTIONS:
    -s value, --server value  server address [$DRONE_SERVER]
    --autoscaler value        autoscaler address [$DRONE_AUTOSCALER]
    --help, -h                show help
-   --version, -v             print the version
-</code></pre></td></tr></table>
+   --version, -v             print the version</pre></td></tr></table>
 </div>
-</div><p>然后是<code>drone repo</code>子命令:</p>
+</div>
+<p>然后是<code>drone repo</code>子命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -804,9 +828,9 @@ GLOBAL OPTIONS:
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ drone repo
+<pre class="chroma">➜  ~ drone repo
 NAME:
    drone repo - manage repositories
 
@@ -824,13 +848,13 @@ COMMANDS:
      sync     synchronize the repository list
 
 OPTIONS:
-   --help, -h  show help
-</code></pre></td></tr></table>
+   --help, -h  show help</pre></td></tr></table>
 </div>
-</div><p>再看看<code>drone repo ls</code>二级子命令:</p>
+</div>
+<p>再看看<code>drone repo ls</code>二级子命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -840,10 +864,9 @@ OPTIONS:
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  rone repo ls --help
+<pre class="chroma">➜  rone repo ls --help
 NAME:
    drone repo ls - list all repos
 
@@ -852,15 +875,15 @@ USAGE:
 
 OPTIONS:
    --format value  format output (default: &#34;{{ .Slug }}&#34;)
-   --org value     filter by organization
-
-</code></pre></td></tr></table>
+   --org value     filter by organization</pre></td></tr></table>
 </div>
-</div><h3 id="drone-">drone 命令实现</h3>
+</div>
+<h3 id="drone-命令实现">drone 命令实现</h3>
+
 <p><code>drone-cli\drone\main.go</code>中配置了一级子命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -870,9 +893,9 @@ OPTIONS:
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">app.Commands = []cli.Command{
+<pre class="chroma">app.Commands = []cli.Command{
 		build.Command,
 		cron.Command,
 		log.Command,
@@ -881,28 +904,28 @@ OPTIONS:
 		info.Command,
 		repo.Command,
 	    ...
-	}
-</code></pre></td></tr></table>
+	}</pre></td></tr></table>
 </div>
-</div><p>命令的解析执行:</p>
+</div>
+<p>命令的解析执行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">if err := app.Run(os.Args); err != nil {
+<pre class="chroma">if err := app.Run(os.Args); err != nil {
 	fmt.Fprintln(os.Stderr, err)
 	os.Exit(1)
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>继续查看<code>repo\repo.go</code>中：</p>
+</div>
+<p>继续查看<code>repo\repo.go</code>中：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -917,9 +940,9 @@ OPTIONS:
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// Command exports the repository command.
+<pre class="chroma">// Command exports the repository command.
 var Command = cli.Command{
 	Name:  &#34;repo&#34;,
 	Usage: &#34;manage repositories&#34;,
@@ -933,13 +956,13 @@ var Command = cli.Command{
 		repoChownCmd,
 		repoSyncCmd,
 	},
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>可以看到<code>drone repo</code>的子命令注册。</p>
+</div>
+<p>可以看到<code>drone repo</code>的子命令注册。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -956,9 +979,9 @@ var Command = cli.Command{
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">var repoListCmd = cli.Command{
+<pre class="chroma">var repoListCmd = cli.Command{
 	Name:      &#34;ls&#34;,
 	Usage:     &#34;list all repos&#34;,
 	ArgsUsage: &#34; &#34;,
@@ -974,14 +997,15 @@ var Command = cli.Command{
 			Usage: &#34;filter by organization&#34;,
 		},
 	},
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>最后，再来了解一下命令如何查找，主要是下面2个函数。</p>
+</div>
+<p>最后，再来了解一下命令如何查找，主要是下面2个函数。</p>
+
 <p>根据名称查找命令：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -991,10 +1015,9 @@ var Command = cli.Command{
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// Command returns the named command on App. Returns nil if the command does not exist
+<pre class="chroma">// Command returns the named command on App. Returns nil if the command does not exist
 func (a *App) Command(name string) *Command {
 	for _, c := range a.Commands {
 		if c.HasName(name) {
@@ -1003,14 +1026,13 @@ func (a *App) Command(name string) *Command {
 	}
 
 	return nil
-}
-
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>判断命令名称是否一致:</p>
+</div>
+<p>判断命令名称是否一致:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1019,9 +1041,9 @@ func (a *App) Command(name string) *Command {
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">// HasName returns true if Command.Name or Command.ShortName matches given name
+<pre class="chroma">// HasName returns true if Command.Name or Command.ShortName matches given name
 func (c Command) HasName(name string) bool {
 	for _, n := range c.Names() {
 		if n == name {
@@ -1029,30 +1051,37 @@ func (c Command) HasName(name string) bool {
 		}
 	}
 	return false
-}
-</code></pre></td></tr></table>
+}</pre></td></tr></table>
 </div>
-</div><p>本次实验的drone版本是:</p>
+</div>
+<p>本次实验的drone版本是:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ drone --version
-drone version 1.0.7
-</code></pre></td></tr></table>
+<pre class="chroma">➜  ~ drone --version
+drone version 1.0.7</pre></td></tr></table>
 </div>
-</div><p>简单小结一下cobra使用:</p>
+</div>
+<p>简单小结一下cobra使用:</p>
+
 <ul>
 <li>实现方式看起来更简单</li>
 <li>也有完善的帮助command及帮助option</li>
 </ul>
-<h2 id="heading">总结</h2>
+
+<h2 id="总结">总结</h2>
+
 <p><code>spf13/cobra</code> 和 <code>urfave/cli</code> 都挺棒的， <code>urfave/cli</code> 更简洁一些 ; <code>spf13/cobra</code> 支持 generator，协助生成项目，功能更强大一些。对Go感兴趣的同学，推荐都了解一下。</p>
-<h2 id="heading-1">参考链接</h2>
+
+<h2 id="参考链接">参考链接</h2>
+
 <p><a href="https://www.reddit.com/r/golang/comments/5sdvoh/what_is_the_essential_difference_between/">What is the essential difference between urfave/cli и spf13/cobra?</a></p>
+
 <p><a href="https://o-my-chenjian.com/2017/09/20/Using-Cobra-With-Golang/">Golang之使用Cobra</a></p>
+
 <p><a href="https://game404.github.io/post/blackhole/">python命令行工具</a></p>
 
     </div>
@@ -1137,7 +1166,7 @@ drone version 1.0.7
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

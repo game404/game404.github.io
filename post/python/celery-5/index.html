@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="基本扫清celery的基础库后，我们正式进入celery的源码解析. Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/celery-5/" />
-<meta property="article:published_time" content="2021-11-15T07:36:51+08:00" />
-<meta property="article:modified_time" content="2021-11-15T07:36:51+08:00" />
+<meta property="article:published_time" content="2021-11-15T07:36:51&#43;08:00"/>
+<meta property="article:modified_time" content="2021-11-15T07:36:51&#43;08:00"/>
+
 <meta itemprop="name" content="Celery 源码解析 - 5">
 <meta itemprop="description" content="基本扫清celery的基础库后，我们正式进入celery的源码解析. Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，">
+
+
 <meta itemprop="datePublished" content="2021-11-15T07:36:51&#43;08:00" />
 <meta itemprop="dateModified" content="2021-11-15T07:36:51&#43;08:00" />
-<meta itemprop="wordCount" content="4374">
+<meta itemprop="wordCount" content="4381">
 
 
 
-<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="celery,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 源码解析 - 5"/>
 <meta name="twitter:description" content="基本扫清celery的基础库后，我们正式进入celery的源码解析. Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，"/>
 
@@ -137,31 +141,41 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#celery">celery应用示例</a></li>
-    <li><a href="#celery-1">celery项目概述</a></li>
-    <li><a href="#worker">worker启动流程跟踪</a></li>
-    <li><a href="#client">client启动流程分析</a></li>
-    <li><a href="#celeryapp">celery的app两大功能</a></li>
-    <li><a href="#worker-1">worker模式启动流程</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#celery应用示例">celery应用示例</a></li>
+<li><a href="#celery项目概述">celery项目概述</a></li>
+<li><a href="#worker启动流程跟踪">worker启动流程跟踪</a></li>
+<li><a href="#client启动流程分析">client启动流程分析</a></li>
+<li><a href="#celery的app两大功能">celery的app两大功能</a></li>
+<li><a href="#worker模式启动流程">worker模式启动流程</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>基本扫清celery的基础库后，我们正式进入celery的源码解析.</p>
+      
+
+<p>基本扫清celery的基础库后，我们正式进入celery的源码解析.</p>
+
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+
 <p>本文是是celery源码解析的第<strong>五</strong>篇，在前4篇里分别介绍了vine, py-amqp和kombu:</p>
+
 <ol>
 <li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
 <li><a href="https://game404.github.io/post/python/celery-3/">神器 celery 源码解析- kombu，一个python实现的消息库</a></li>
 <li><a href="https://game404.github.io/post/python/celery-4/">神器 celery 源码解析- kombu的企业级算法</a></li>
 </ol>
+
 <p>本文包括下面几个部分:</p>
+
 <ul>
 <li>celery应用示例</li>
 <li>celery项目概述</li>
@@ -171,39 +185,41 @@
 <li>worker模式启动流程</li>
 <li>小结</li>
 </ul>
-<h2 id="celery">celery应用示例</h2>
+
+<h2 id="celery应用示例">celery应用示例</h2>
+
 <p>启动celery之前，我们先使用docker启动一个redis服务，作为broker:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ docker run -p 6379:6379 --name redis -d redis:6.2.3-alpine
-</code></pre></td></tr></table>
+<pre class="chroma">$ docker run -p 6379:6379 --name redis -d redis:6.2.3-alpine</pre></td></tr></table>
 </div>
-</div><p>使用telnet监控redis服务，观测任务调度情况:</p>
+</div>
+<p>使用telnet监控redis服务，观测任务调度情况:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ telnet 127.0.0.1 6379
+<pre class="chroma">$ telnet 127.0.0.1 6379
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is &#39;^]&#39;.
 monitor
-+OK
-</code></pre></td></tr></table>
++OK</pre></td></tr></table>
 </div>
-</div><p>下面是我们的celery服务代码 <code>myapp.py</code> :</p>
+</div>
+<p>下面是我们的celery服务代码 <code>myapp.py</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -219,9 +235,9 @@ monitor
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># myapp.py
+<pre class="chroma"># myapp.py
 from celery import Celery
 
 app = Celery(
@@ -236,22 +252,22 @@ def add(x, y):
     return x + y
 
 if __name__ == &#39;__main__&#39;:
-    app.start()
-</code></pre></td></tr></table>
+    app.start()</pre></td></tr></table>
 </div>
-</div><p>打开一个新的终端，使用下面的命令启动celery的worker服务:</p>
+</div>
+<p>打开一个新的终端，使用下面的命令启动celery的worker服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python myapp.py worker -l DEBUG
-</code></pre></td></tr></table>
+<pre class="chroma">$ python myapp.py worker -l DEBUG</pre></td></tr></table>
 </div>
-</div><p>正常情况下，可以看到worker正常启动。启动的时候会显示一些banner信息，包括AMQP的实现协议，任务等:</p>
+</div>
+<p>正常情况下，可以看到worker正常启动。启动的时候会显示一些banner信息，包括AMQP的实现协议，任务等:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -275,9 +291,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ celery -A myapp worker -l DEBUG
+<pre class="chroma">$ celery -A myapp worker -l DEBUG
  
  -------------- celery@bogon v5.1.2 (sun-harmonics)
 --- ***** ----- 
@@ -300,76 +316,83 @@ if __name__ == &#39;__main__&#39;:
 [2021-09-08 20:33:46,220: INFO/MainProcess] Connected to redis://localhost:6379/0
 [2021-09-08 20:33:46,234: INFO/MainProcess] mingle: searching for neighbors
 [2021-09-08 20:33:47,279: INFO/MainProcess] mingle: all alone
-[2021-09-08 20:33:47,315: INFO/MainProcess] celery@bogon ready.
-</code></pre></td></tr></table>
+[2021-09-08 20:33:47,315: INFO/MainProcess] celery@bogon ready.</pre></td></tr></table>
 </div>
-</div><p>再开启一个终端窗口，作为client执行下面的代码, 可以看到add函数正确的执行，获取到计算 <em>16+16</em> 的结果 <em>32</em>。注意: 这个过程是远程执行的，使用的是<em>delay</em>方法，函数的打印<code>print(&quot;add&quot;, x, y)</code>并没有输出:</p>
+</div>
+<p>再开启一个终端窗口，作为client执行下面的代码, 可以看到add函数正确的执行，获取到计算 <em>16+16</em> 的结果 *32*。注意: 这个过程是远程执行的，使用的是*delay*方法，函数的打印<code>print(&quot;add&quot;, x, y)</code>并没有输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python
+<pre class="chroma">$ python
 &gt;&gt;&gt; from myapp import add
 &gt;&gt;&gt; task = add.delay(16,16)
 &gt;&gt;&gt; task
 &lt;AsyncResult: 5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&gt;
 &gt;&gt;&gt; task.get()
-32
-</code></pre></td></tr></table>
+32</pre></td></tr></table>
 </div>
-</div><p>在celery的worker服务窗口，可以看到类似下面的输出。收到一个执行任务 <em>myapp.add</em> 的请求, 请求的uuid是 <em>5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b</em> ，参数数组是 <em>[16, 16]</em> 正常执行后返回结果32。</p>
+</div>
+<p>在celery的worker服务窗口，可以看到类似下面的输出。收到一个执行任务 <em>myapp.add</em> 的请求, 请求的uuid是 <em>5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b</em> ，参数数组是 <em>[16, 16]</em> 正常执行后返回结果32。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-11 20:13:48,040: INFO/MainProcess] Task myapp.add[5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b] received
+<pre class="chroma">[2021-11-11 20:13:48,040: INFO/MainProcess] Task myapp.add[5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b] received
 [2021-11-11 20:13:48,040: DEBUG/MainProcess] TaskPool: Apply &lt;function fast_trace_task at 0x7fda086baa60&gt; (args:(&#39;myapp.add&#39;, &#39;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#39;, {&#39;lang&#39;: &#39;py&#39;, &#39;task&#39;: &#39;myapp.add&#39;, &#39;id&#39;: &#39;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#39;, &#39;shadow&#39;: None, &#39;eta&#39;: None, &#39;expires&#39;: None, &#39;group&#39;: None, &#39;group_index&#39;: None, &#39;retries&#39;: 0, &#39;timelimit&#39;: [None, None], &#39;root_id&#39;: &#39;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#39;, &#39;parent_id&#39;: None, &#39;argsrepr&#39;: &#39;(16, 16)&#39;, &#39;kwargsrepr&#39;: &#39;{}&#39;, &#39;origin&#39;: &#39;gen63119@localhost&#39;, &#39;ignore_result&#39;: False, &#39;reply_to&#39;: &#39;97a3e117-c8cf-3d4c-97c0-c0a76aaf9a16&#39;, &#39;correlation_id&#39;: &#39;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#39;, &#39;hostname&#39;: &#39;celery@localhost&#39;, &#39;delivery_info&#39;: {&#39;exchange&#39;: &#39;&#39;, &#39;routing_key&#39;: &#39;celery&#39;, &#39;priority&#39;: 0, &#39;redelivered&#39;: None}, &#39;args&#39;: [16, 16], &#39;kwargs&#39;: {}}, b&#39;[[16, 16], {}, {&#34;callbacks&#34;: null, &#34;errbacks&#34;: null, &#34;chain&#34;: null, &#34;chord&#34;: null}]&#39;, &#39;application/json&#39;, &#39;utf-8&#39;) kwargs:{})
-[2021-11-11 20:13:49,059: INFO/ForkPoolWorker-8] Task myapp.add[5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b] succeeded in 1.0166977809999995s: 32
-</code></pre></td></tr></table>
+[2021-11-11 20:13:49,059: INFO/ForkPoolWorker-8] Task myapp.add[5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b] succeeded in 1.0166977809999995s: 32</pre></td></tr></table>
 </div>
-</div><p>在redis的monitor窗口，也可以可以看到类似的输出，展示了过程中一些对redis的操作命令:</p>
+</div>
+<p>在redis的monitor窗口，也可以可以看到类似的输出，展示了过程中一些对redis的操作命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">+1636632828.304020 [0 172.16.0.117:51127] &#34;SUBSCRIBE&#34; &#34;celery-task-meta-5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#34;
+<pre class="chroma">+1636632828.304020 [0 172.16.0.117:51127] &#34;SUBSCRIBE&#34; &#34;celery-task-meta-5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b&#34;
 +1636632828.304447 [0 172.16.0.117:51129] &#34;PING&#34;
 +1636632828.305448 [0 172.16.0.117:51129] &#34;LPUSH&#34; &#34;celery&#34; &#34;{\&#34;body\&#34;: \&#34;W1sxNiwgMTZdLCB7fSwgeyJjYWxsYmFja3MiOiBudWxsLCAiZXJyYmFja3MiOiBudWxsLCAiY2hhaW4iOiBudWxsLCAiY2hvcmQiOiBudWxsfV0=\&#34;, \&#34;content-encoding\&#34;: \&#34;utf-8\&#34;, \&#34;content-type\&#34;: \&#34;application/json\&#34;, \&#34;headers\&#34;: {\&#34;lang\&#34;: \&#34;py\&#34;, \&#34;task\&#34;: \&#34;myapp.add\&#34;, \&#34;id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;shadow\&#34;: null, \&#34;eta\&#34;: null, \&#34;expires\&#34;: null, \&#34;group\&#34;: null, \&#34;group_index\&#34;: null, \&#34;retries\&#34;: 0, \&#34;timelimit\&#34;: [null, null], \&#34;root_id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;parent_id\&#34;: null, \&#34;argsrepr\&#34;: \&#34;(16, 16)\&#34;, \&#34;kwargsrepr\&#34;: \&#34;{}\&#34;, \&#34;origin\&#34;: \&#34;gen63119@localhost\&#34;, \&#34;ignore_result\&#34;: false}, \&#34;properties\&#34;: {\&#34;correlation_id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;reply_to\&#34;: \&#34;97a3e117-c8cf-3d4c-97c0-c0a76aaf9a16\&#34;, \&#34;delivery_mode\&#34;: 2, \&#34;delivery_info\&#34;: {\&#34;exchange\&#34;: \&#34;\&#34;, \&#34;routing_key\&#34;: \&#34;celery\&#34;}, \&#34;priority\&#34;: 0, \&#34;body_encoding\&#34;: \&#34;base64\&#34;, \&#34;delivery_tag\&#34;: \&#34;20dbd584-b669-4ef0-8a3b-41d19b354690\&#34;}}&#34;
 +1636632828.307040 [0 172.16.0.117:52014] &#34;MULTI&#34;
 +1636632828.307075 [0 172.16.0.117:52014] &#34;ZADD&#34; &#34;unacked_index&#34; &#34;1636632828.038743&#34; &#34;20dbd584-b669-4ef0-8a3b-41d19b354690&#34;
 +1636632828.307088 [0 172.16.0.117:52014] &#34;HSET&#34; &#34;unacked&#34; &#34;20dbd584-b669-4ef0-8a3b-41d19b354690&#34; &#34;[{\&#34;body\&#34;: \&#34;W1sxNiwgMTZdLCB7fSwgeyJjYWxsYmFja3MiOiBudWxsLCAiZXJyYmFja3MiOiBudWxsLCAiY2hhaW4iOiBudWxsLCAiY2hvcmQiOiBudWxsfV0=\&#34;, \&#34;content-encoding\&#34;: \&#34;utf-8\&#34;, \&#34;content-type\&#34;: \&#34;application/json\&#34;, \&#34;headers\&#34;: {\&#34;lang\&#34;: \&#34;py\&#34;, \&#34;task\&#34;: \&#34;myapp.add\&#34;, \&#34;id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;shadow\&#34;: null, \&#34;eta\&#34;: null, \&#34;expires\&#34;: null, \&#34;group\&#34;: null, \&#34;group_index\&#34;: null, \&#34;retries\&#34;: 0, \&#34;timelimit\&#34;: [null, null], \&#34;root_id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;parent_id\&#34;: null, \&#34;argsrepr\&#34;: \&#34;(16, 16)\&#34;, \&#34;kwargsrepr\&#34;: \&#34;{}\&#34;, \&#34;origin\&#34;: \&#34;gen63119@localhost\&#34;, \&#34;ignore_result\&#34;: false}, \&#34;properties\&#34;: {\&#34;correlation_id\&#34;: \&#34;5aabfc0b-04b5-4a51-86b0-6a7263e2ef3b\&#34;, \&#34;reply_to\&#34;: \&#34;97a3e117-c8cf-3d4c-97c0-c0a76aaf9a16\&#34;, \&#34;delivery_mode\&#34;: 2, \&#34;delivery_info\&#34;: {\&#34;exchange\&#34;: \&#34;\&#34;, \&#34;routing_key\&#34;: \&#34;celery\&#34;}, \&#34;priority\&#34;: 0, \&#34;body_encoding\&#34;: \&#34;base64\&#34;, \&#34;delivery_tag\&#34;: \&#34;20dbd584-b669-4ef0-8a3b-41d19b354690\&#34;}}, \&#34;\&#34;, \&#34;celery\&#34;]&#34;
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><p>我们再一次回顾下图，对比一下示例，加强理解：</p>
-<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing"></p>
+</div>
+<p>我们再一次回顾下图，对比一下示例，加强理解：</p>
+
+<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing" /></p>
+
 <ul>
 <li>我们先启动一个celery的worker服务作为消费者</li>
 <li>再启动一个窗口作为生产者执行task</li>
 <li>使用redis作为broker，负责生产者和消费者之间的消息通讯</li>
 <li>最终生成者的task，作为消息发送到远程的消费者上执行，执行的结果又通过网络回传给生产者</li>
 </ul>
+
 <p>上面示例展示了celery作为一个分布式任务调度系统的执行过程，本地的任务调用，通过AMQP协议的包装，作为消息发送到远程的消费者执行。</p>
-<hr>
-<h2 id="celery-1">celery项目概述</h2>
+
+<hr />
+
+<h2 id="celery项目概述">celery项目概述</h2>
+
 <p>解析celery采用的代码版本<code>5.0.5</code>, 主要模块结构:</p>
+
 <table>
 <thead>
 <tr>
@@ -377,60 +400,75 @@ if __name__ == &#39;__main__&#39;:
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>app</td>
 <td>celery的app实现</td>
 </tr>
+
 <tr>
 <td>apps</td>
 <td>celery服务的三种主要模式，worker，beat和multi</td>
 </tr>
+
 <tr>
 <td>backends</td>
 <td>任务结果存储</td>
 </tr>
+
 <tr>
 <td>bin</td>
 <td>命令行工具实现</td>
 </tr>
+
 <tr>
 <td>concurrency</td>
 <td>各种并发实现，包括线程，gevent，asyncpool等</td>
 </tr>
+
 <tr>
 <td>events</td>
 <td>事件实现</td>
 </tr>
+
 <tr>
 <td>worker</td>
 <td>服务启动环节实现</td>
 </tr>
+
 <tr>
 <td>beat.py&amp;&amp;schedules.py</td>
 <td>定时和调度实现</td>
 </tr>
+
 <tr>
 <td>result.py</td>
 <td>任务结果实现</td>
 </tr>
+
 <tr>
 <td>signals.py</td>
 <td>一些信号定义</td>
 </tr>
+
 <tr>
 <td>status.py</td>
 <td>一些状态定义</td>
 </tr>
 </tbody>
 </table>
+
 <p>从项目结构看，模块较多，功能复杂。不过我们已经搞定了vine, py-amqp和kombu三个库，接下来只需要理解worker，beat和multi三种服务模型，就可以较好的了解celery这个分布式系统如何构建。</p>
-<hr>
-<h2 id="worker">worker启动流程跟踪</h2>
+
+<hr />
+
+<h2 id="worker启动流程跟踪">worker启动流程跟踪</h2>
+
 <p>worker的启动命令 <code>celery -A myapp worker -l DEBUG</code> 使celery作为一个模块，入口在main文件的main函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -438,22 +476,22 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/__main__.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/__main__.py
 def main():
     &#34;&#34;&#34;Entrypoint to the ``celery`` umbrella command.&#34;&#34;&#34;
     &#34;&#34;&#34;celery命令入口&#34;&#34;&#34;
     ...
     # 具体执行的main函数
     from celery.bin.celery import main as _main
-    sys.exit(_main())
-</code></pre></td></tr></table>
+    sys.exit(_main())</pre></td></tr></table>
 </div>
-</div><p>celery命令作为主命令，加载celery-app的同时，还会启动worker子命令:</p>
+</div>
+<p>celery命令作为主命令，加载celery-app的同时，还会启动worker子命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -474,9 +512,9 @@ def main():
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/bin/celery.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/bin/celery.py
 def celery(ctx, app, broker, result_backend, loader, config, workdir,
            no_color, quiet, version):
     &#34;&#34;&#34;Celery command entrypoint.&#34;&#34;&#34;
@@ -496,13 +534,13 @@ def main() -&gt; int:
 
     :return: The exit code of the CLI.
     &#34;&#34;&#34;
-    return celery(auto_envvar_prefix=&#34;CELERY&#34;)
-</code></pre></td></tr></table>
+    return celery(auto_envvar_prefix=&#34;CELERY&#34;)</pre></td></tr></table>
 </div>
-</div><p>在worker子命令中创建worker并启动:</p>
+</div>
+<p>在worker子命令中创建worker并启动:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -516,9 +554,9 @@ def main() -&gt; int:
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/bin/worker.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/bin/worker.py
 def worker(ctx, hostname=None, pool_cls=None, app=None, uid=None, gid=None,
            loglevel=None, logfile=None, pidfile=None, statedb=None,
            **kwargs):
@@ -531,28 +569,28 @@ def worker(ctx, hostname=None, pool_cls=None, app=None, uid=None, gid=None,
         no_color=ctx.obj.no_color,
         quiet=ctx.obj.quiet,
         **kwargs)
-    worker.start()
-</code></pre></td></tr></table>
+    worker.start()</pre></td></tr></table>
 </div>
-</div><p>下面是创建worker的方式，创一个 <em>celery.apps.worker:Worker</em> 对象:</p>
+</div>
+<p>下面是创建worker的方式，创一个 <em>celery.apps.worker:Worker</em> 对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/app/base.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/app/base.py
 def Worker(self):
     # 创建worker
-    return self.subclass_with_self(&#39;celery.apps.worker:Worker&#39;)
-</code></pre></td></tr></table>
+    return self.subclass_with_self(&#39;celery.apps.worker:Worker&#39;)</pre></td></tr></table>
 </div>
-</div><p>服务启动过程中，调用链路如下：</p>
+</div>
+<p>服务启动过程中，调用链路如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -561,9 +599,9 @@ def Worker(self):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">                                 +----------+
+<pre class="chroma">                                 +----------+
                              +---&gt;app.celery|
                              |   +----------+
 +---------+   +----------+   |
@@ -571,21 +609,25 @@ def Worker(self):
 +---------+   +----------+   |
                              |   +----------+   +-----------+
                              +---&gt;bin.worker+---&gt;apps.worker|
-                                 +----------+   +-----------+
-</code></pre></td></tr></table>
+                                 +----------+   +-----------+</pre></td></tr></table>
 </div>
-</div><p>在这个服务启动过程中，创建了celery-application和worker-application两个应用程序。至于具体的启动流程，我们暂时跳过，先看看客户端的流程。</p>
-<hr>
-<h2 id="client">client启动流程分析</h2>
+</div>
+<p>在这个服务启动过程中，创建了celery-application和worker-application两个应用程序。至于具体的启动流程，我们暂时跳过，先看看客户端的流程。</p>
+
+<hr />
+
+<h2 id="client启动流程分析">client启动流程分析</h2>
+
 <p>示例client的启动过程包括下面4步:
 1 创建celery-application，
 2 创建task
 3 调用task的delay方法执行任务得到一个异步结果
 4 最后使用异步结果的get方法获取真实结果</p>
+
 <p>task是通过app创建的装饰器创建的Promise对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -601,9 +643,9 @@ def Worker(self):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/app/base.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/app/base.py
 task_cls = &#39;celery.app.task:Task&#39;
 
 def task(self, *args, **opts):
@@ -618,13 +660,13 @@ def task(self, *args, **opts):
             return ret
 
         return _create_task_cls
-    return inner_create_task_cls(**opts)
-</code></pre></td></tr></table>
+    return inner_create_task_cls(**opts)</pre></td></tr></table>
 </div>
-</div><p>task实际上是一个由Task基类动态创建的子类:</p>
+</div>
+<p>task实际上是一个由Task基类动态创建的子类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -642,9 +684,9 @@ def task(self, *args, **opts):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _task_from_fun(self, fun, name=None, base=None, bind=False, **options):
+<pre class="chroma">def _task_from_fun(self, fun, name=None, base=None, bind=False, **options):
     base = base or self.Task
     task = type(fun.__name__, (base,), dict({
                 &#39;app&#39;: self,
@@ -661,13 +703,13 @@ def task(self, *args, **opts):
     self._tasks[task.name] = task
     task.bind(self)  # connects task to this app
     add_autoretry_behaviour(task, **options)
-    return task
-</code></pre></td></tr></table>
+    return task</pre></td></tr></table>
 </div>
-</div><p>任务的执行使用app的send_task方法进行:</p>
+</div>
+<p>任务的执行使用app的send_task方法进行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -676,9 +718,9 @@ def task(self, *args, **opts):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># ch23-celery/celery-5.0.5/celery/app/task.py
+<pre class="chroma"># ch23-celery/celery-5.0.5/celery/app/task.py
 def delay(self, *args, **kwargs):
     ...
     return app.send_task(
@@ -686,16 +728,19 @@ def delay(self, *args, **kwargs):
                 link=link, link_error=link_error, result_cls=self.AsyncResult,
                 shadow=shadow, task_type=self,
                 **options
-            )
-</code></pre></td></tr></table>
+            )</pre></td></tr></table>
 </div>
-</div><p>可以看到，client作为生产者启动任务，也需要创建celery-application，下面我们就先看celery-application的实现。</p>
-<hr>
-<h2 id="celeryapp">celery的app两大功能</h2>
+</div>
+<p>可以看到，client作为生产者启动任务，也需要创建celery-application，下面我们就先看celery-application的实现。</p>
+
+<hr />
+
+<h2 id="celery的app两大功能">celery的app两大功能</h2>
+
 <p>Celery的构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -730,9 +775,9 @@ def delay(self, *args, **kwargs):
 </span><span class="lnt">33
 </span><span class="lnt">34
 </span><span class="lnt">35
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Celery:
+<pre class="chroma">class Celery:
     
     # 协议类
     amqp_cls = &#39;celery.app.amqp:AMQP&#39;
@@ -766,35 +811,36 @@ def delay(self, *args, **kwargs):
         self.__autoset(&#39;result_backend&#39;, backend)
         ...
         self.on_init()
-        _register_app(self)
-</code></pre></td></tr></table>
+        _register_app(self)</pre></td></tr></table>
 </div>
-</div><p>可以看到celery类提供了一些默认模块类的名称，可以根据这些类名动态创建对象。app对象任务的处理使用一个队列作为pending状态的任务容器，使用TaskRegistry来管理任务的注册。</p>
+</div>
+<p>可以看到celery类提供了一些默认模块类的名称，可以根据这些类名动态创建对象。app对象任务的处理使用一个队列作为pending状态的任务容器，使用TaskRegistry来管理任务的注册。</p>
+
 <p>任务通过task装饰器，记录到celery的TaskRegistry中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def task(self, *args, **opts):
+<pre class="chroma">def task(self, *args, **opts):
     ...
     # 增加task
     self._tasks[task.name] = task
     task.bind(self)  # connects task to this app
     add_autoretry_behaviour(task, **options)
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>celery另外一个核心功能是提供到broker的连接:</p>
+</div>
+<p>celery另外一个核心功能是提供到broker的连接:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -826,9 +872,9 @@ def delay(self, *args, **kwargs):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _connection(self, url, userid=None, password=None,
+<pre class="chroma">def _connection(self, url, userid=None, password=None,
                 virtual_host=None, port=None, ssl=None,
                 connect_timeout=None, transport=None,
                 transport_options=None, heartbeat=None,
@@ -859,32 +905,32 @@ broker_connection = connection
 @cached_property
 def amqp(self):
     &#34;&#34;&#34;AMQP related functionality: :class:`~@amqp`.&#34;&#34;&#34;
-    return instantiate(self.amqp_cls, app=self)
-</code></pre></td></tr></table>
+    return instantiate(self.amqp_cls, app=self)</pre></td></tr></table>
 </div>
-</div><p>AMQP的实现，是依赖kombu提供的AMQP协议封装:</p>
+</div>
+<p>AMQP的实现，是依赖kombu提供的AMQP协议封装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from kombu import Connection, Consumer, Exchange, Producer, Queue, pools
+<pre class="chroma">from kombu import Connection, Consumer, Exchange, Producer, Queue, pools
 
 class AMQP:
     &#34;&#34;&#34;App AMQP API: app.amqp.&#34;&#34;&#34;
 
-    Connection = Connection
-</code></pre></td></tr></table>
+    Connection = Connection</pre></td></tr></table>
 </div>
-</div><p>然后使用我们熟悉的Queue，Consumer，Producer进行消息的生成和消费:</p>
+</div>
+<p>然后使用我们熟悉的Queue，Consumer，Producer进行消息的生成和消费:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -914,9 +960,9 @@ class AMQP:
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def Queues(self, queues, create_missing=None,
+<pre class="chroma">def Queues(self, queues, create_missing=None,
            autoexchange=None, max_priority=None):
     ...
     return self.Queues(
@@ -945,16 +991,19 @@ def _create_task_sender(self):
                 headers=headers2,
                 **properties
             )
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>celery-app的两大功能，管理task和管理AMQP连接，我们有一个大概的了解。</p>
-<hr>
-<h2 id="worker-1">worker模式启动流程</h2>
+</div>
+<p>celery-app的两大功能，管理task和管理AMQP连接，我们有一个大概的了解。</p>
+
+<hr />
+
+<h2 id="worker模式启动流程">worker模式启动流程</h2>
+
 <p>worker模式启动在WorkController中，将服务分成不同的阶段，然后将各个阶段组装成一个叫做蓝图(Blueprint)的方式进行管理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -978,9 +1027,9 @@ def _create_task_sender(self):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WorkController:
+<pre class="chroma">class WorkController:
     # 内部类
     class Blueprint(bootsteps.Blueprint):
         &#34;&#34;&#34;Worker bootstep blueprint.&#34;&#34;&#34;
@@ -1003,13 +1052,13 @@ def _create_task_sender(self):
             on_close=self.on_close,
             on_stopped=self.on_stopped,
         )
-        self.blueprint.apply(self, **kwargs)
-</code></pre></td></tr></table>
+        self.blueprint.apply(self, **kwargs)</pre></td></tr></table>
 </div>
-</div><p>启动蓝图:</p>
+</div>
+<p>启动蓝图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1022,9 +1071,9 @@ def _create_task_sender(self):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def start(self):
+<pre class="chroma">def start(self):
     try:
         # 启动worker
         self.blueprint.start(self)
@@ -1036,13 +1085,13 @@ def _create_task_sender(self):
     except SystemExit as exc:
         self.stop(exitcode=exc.code)
     except KeyboardInterrupt:
-        self.stop(exitcode=EX_FAILURE)
-</code></pre></td></tr></table>
+        self.stop(exitcode=EX_FAILURE)</pre></td></tr></table>
 </div>
-</div><p>启动步骤，比较简单，大概代码如下:</p>
+</div>
+<p>启动步骤，比较简单，大概代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1064,9 +1113,9 @@ def _create_task_sender(self):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class StepType(type):
+<pre class="chroma">class StepType(type):
     &#34;&#34;&#34;Meta-class for steps.&#34;&#34;&#34;
 
     name = None
@@ -1087,19 +1136,18 @@ class Step(metaclass=StepType):
         return False, None
 
     def create(self, parent):
-        &#34;&#34;&#34;Create the step.&#34;&#34;&#34;
-</code></pre></td></tr></table>
+        &#34;&#34;&#34;Create the step.&#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>从Step大概可以看出:</p>
-<ul>
-<li>每个步骤，可以有依赖requires</li>
-<li>每个步骤，可以有具体的动作instantiate</li>
-<li>步骤具有树状的父子结构，可以自动创建上级步骤</li>
-</ul>
+</div>
+<p>从Step大概可以看出:
+* 每个步骤，可以有依赖requires
+* 每个步骤，可以有具体的动作instantiate
+* 步骤具有树状的父子结构，可以自动创建上级步骤</p>
+
 <p>比如一个消费者步骤, 依赖Connection步骤。启动的时候对Connection进行消费。两者代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1121,9 +1169,9 @@ class Step(metaclass=StepType):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ConsumerStep(StartStopStep):
+<pre class="chroma">class ConsumerStep(StartStopStep):
     &#34;&#34;&#34;Bootstep that starts a message consumer.&#34;&#34;&#34;
 
     requires = (&#39;celery.worker.consumer:Connection&#39;,)
@@ -1144,13 +1192,13 @@ class Connection(bootsteps.StartStopStep):
 
     def start(self, c):
         c.connection = c.connect()
-        info(&#39;Connected to %s&#39;, c.connection.as_uri())
-</code></pre></td></tr></table>
+        info(&#39;Connected to %s&#39;, c.connection.as_uri())</pre></td></tr></table>
 </div>
-</div><p>在Blueprint中创建和管理这些step:</p>
+</div>
+<p>在Blueprint中创建和管理这些step:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1173,9 +1221,9 @@ class Connection(bootsteps.StartStopStep):
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Blueprint:
+<pre class="chroma">class Blueprint:
     
     def __init__(self, steps=None, name=None,
                  on_start=None, on_close=None, on_stopped=None):
@@ -1197,13 +1245,13 @@ class Connection(bootsteps.StartStopStep):
                     &#39;, &#39;.join(s.alias for s in self.order))
         for step in order:
             step.include(parent)
-        return self
-</code></pre></td></tr></table>
+        return self</pre></td></tr></table>
 </div>
-</div><p>启动Blueprint:</p>
+</div>
+<p>启动Blueprint:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1212,9 +1260,9 @@ class Connection(bootsteps.StartStopStep):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def start(self, parent):
+<pre class="chroma">def start(self, parent):
     self.state = RUN
     if self.on_start:
         self.on_start()
@@ -1222,18 +1270,23 @@ class Connection(bootsteps.StartStopStep):
         self._debug(&#39;Starting %s&#39;, step.alias)
         self.started = i + 1
         step.start(parent)
-        logger.debug(&#39;^-- substep ok&#39;)
-</code></pre></td></tr></table>
+        logger.debug(&#39;^-- substep ok&#39;)</pre></td></tr></table>
 </div>
-</div><p>通过将启动过程拆分成多个step单元，然后组合单元构建成graph，逐一启动。</p>
-<hr>
-<h2 id="heading">小结</h2>
+</div>
+<p>通过将启动过程拆分成多个step单元，然后组合单元构建成graph，逐一启动。</p>
+
+<hr />
+
+<h2 id="小结">小结</h2>
+
 <p>本篇我们正式学习了一下celery的使用流程，了解celery如果使用redis作为broker，利用服务作为消费者，使用客户端作为生成者，完成一次远程任务的执行。简单探索worker服务模式的启动流程，重点分析celery-application的管理task和管理连接两大功能实现。</p>
-<h2 id="heading-1">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>celery中展示了一种动态创建类和对象的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1243,9 +1296,9 @@ class Connection(bootsteps.StartStopStep):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">task = type(fun.__name__, (Task,), dict({
+<pre class="chroma">task = type(fun.__name__, (Task,), dict({
                 &#39;app&#39;: self,
                 &#39;name&#39;: name,
                 &#39;run&#39;: run,
@@ -1254,11 +1307,13 @@ class Connection(bootsteps.StartStopStep):
                 &#39;__module__&#39;: fun.__module__,
                 &#39;__annotations__&#39;: fun.__annotations__,
                 &#39;__header__&#39;: staticmethod(head_from_fun(fun, bound=bind)),
-                &#39;__wrapped__&#39;: run}, **options))()
-</code></pre></td></tr></table>
+                &#39;__wrapped__&#39;: run}, **options))()</pre></td></tr></table>
 </div>
-</div><p>通过type函数创了一个动态的task子类，然后执行 <em>()</em> 实例化一个task子对象。</p>
-<h2 id="heading-2">参考链接</h2>
+</div>
+<p>通过type函数创了一个动态的task子类，然后执行 <em>()</em> 实例化一个task子对象。</p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>以编程方式定义类 <a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c09/p18_define_classes_programmatically.html">https://python3-cookbook.readthedocs.io/zh_CN/latest/c09/p18_define_classes_programmatically.html</a></li>
 </ul>
@@ -1346,7 +1401,7 @@ class Connection(bootsteps.StartStopStep):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

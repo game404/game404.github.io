@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/flask-1/" />
-<meta property="article:published_time" content="2021-07-02T00:03:55+08:00" />
-<meta property="article:modified_time" content="2021-07-02T00:03:55+08:00" />
+<meta property="article:published_time" content="2021-07-02T00:03:55&#43;08:00"/>
+<meta property="article:modified_time" content="2021-07-02T00:03:55&#43;08:00"/>
+
 <meta itemprop="name" content="Flask 源码阅读-正菜">
 <meta itemprop="description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有">
+
+
 <meta itemprop="datePublished" content="2021-07-02T00:03:55&#43;08:00" />
 <meta itemprop="dateModified" content="2021-07-02T00:03:55&#43;08:00" />
-<meta itemprop="wordCount" content="3201">
+<meta itemprop="wordCount" content="3204">
 
 
 
-<meta itemprop="keywords" content="源码,flask," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="源码,flask," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Flask 源码阅读-正菜"/>
 <meta name="twitter:description" content="flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有"/>
 
@@ -137,19 +141,25 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#flask-app">flask-app创建</a></li>
-    <li><a href="#requestcontext--appcontext">RequestContext && AppContext</a></li>
-    <li><a href="#request--response">request && response</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#flask-app创建">flask-app创建</a></li>
+<li><a href="#requestcontext-appcontext">RequestContext &amp;&amp; AppContext</a></li>
+<li><a href="#request-response">request &amp;&amp; response</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有不同的应用场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是第2篇-正菜，主要包括:</p>
+      
+
+<p>flask项目大名鼎鼎，不需要多做介绍。我把它称之为python服务开发的TOP2项目，另外一个就是django。这两个项目各有千秋，各自有不同的应用场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是第2篇-正菜，主要包括:</p>
+
 <ul>
 <li>flask-app创建</li>
 <li>Requestcontext &amp;&amp; AppContext的实现</li>
@@ -157,32 +167,34 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="flask-app">flask-app创建</h2>
+
+<h2 id="flask-app创建">flask-app创建</h2>
+
 <p>还是先从flask-app的示例开始:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from flask import Flask
+<pre class="chroma">from flask import Flask
 
 app = Flask(__name__)
 
 @app.route(&#34;/&#34;)
 def hello_world():
-    return &#34;&lt;p&gt;Hello, World!&lt;/p&gt;&#34;
-</code></pre></td></tr></table>
+    return &#34;&lt;p&gt;Hello, World!&lt;/p&gt;&#34;</pre></td></tr></table>
 </div>
-</div><p>app的启动，在「flask源码阅读-开胃菜」中有过介绍，这里就不再赘述。我们在示例中创建了一个flask-app，然后给这个app注册了一个路由处理函数，返回一段html。跟随这个示例，我们查看flask-app的创建:</p>
+</div>
+<p>app的启动，在「flask源码阅读-开胃菜」中有过介绍，这里就不再赘述。我们在示例中创建了一个flask-app，然后给这个app注册了一个路由处理函数，返回一段html。跟随这个示例，我们查看flask-app的创建:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -206,9 +218,9 @@ def hello_world():
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Flask(_PackageBoundObject):
+<pre class="chroma">class Flask(_PackageBoundObject):
     response_class = Response
     request_class = Request
     app_ctx_globals_class = _AppCtxGlobals
@@ -231,19 +243,18 @@ def hello_world():
         _PackageBoundObject.__init__(
             self, import_name, template_folder=template_folder, root_path=root_path
         )
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>主要有下面三点：</p>
-<ul>
-<li>Flask类继承自_PackageBoundObject类</li>
-<li>response_class、request_class、app_ctx_globals_class和config_class 这几个重要的类都以策略模式提供，方便扩展</li>
-<li>定义默认的静态文件目录 <em>static</em> 和默认的模板目录 <em>templates</em></li>
-</ul>
+</div>
+<p>主要有下面三点：
+* Flask类继承自_PackageBoundObject类
+* response_class、request_class、app_ctx_globals_class和config_class 这几个重要的类都以策略模式提供，方便扩展
+* 定义默认的静态文件目录 <em>static</em> 和默认的模板目录 <em>templates</em></p>
+
 <p>_PackageBoundObject类主要实现当前app根目录获取:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -260,9 +271,9 @@ def hello_world():
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _PackageBoundObject(object):
+<pre class="chroma">class _PackageBoundObject(object):
     import_name = None
 
     template_folder = None
@@ -278,30 +289,30 @@ def hello_world():
 
         self.root_path = root_path
         self._static_folder = None
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>获取根目录后，默认<code>static</code>中的静态文件和<code>templates</code>中的模板文件就可以提供读取，这样flask-app不需要额外使用werkzeug中的StaticMiddleware。比如静态文件目录的提供:</p>
+</div>
+<p>获取根目录后，默认<code>static</code>中的静态文件和<code>templates</code>中的模板文件就可以提供读取，这样flask-app不需要额外使用werkzeug中的StaticMiddleware。比如静态文件目录的提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@property
+<pre class="chroma">@property
 def static_folder(self):
     &#34;&#34;&#34;The absolute path to the configured static folder.&#34;&#34;&#34;
     if self._static_folder is not None:
-        return os.path.join(self.root_path, self._static_folder)
-</code></pre></td></tr></table>
+        return os.path.join(self.root_path, self._static_folder)</pre></td></tr></table>
 </div>
-</div><p>flask-app中实现wsgi-application规范:</p>
+</div>
+<p>flask-app中实现wsgi-application规范:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -317,9 +328,9 @@ def static_folder(self):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def wsgi_app(self, environ, start_response):
+<pre class="chroma">def wsgi_app(self, environ, start_response):
     ctx = self.request_context(environ)
     error = None
     try:
@@ -334,20 +345,22 @@ def static_folder(self):
         ctx.auto_pop(error)
 
 def __call__(self, environ, start_response):
-    return self.wsgi_app(environ, start_response)
-</code></pre></td></tr></table>
+    return self.wsgi_app(environ, start_response)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>创建RequestContext(ctx)对象, 注意这里没有直接处理Request对象,而是使用ctx.push</li>
 <li>通过full_dispatch_request处理请求获取到response对象</li>
 <li>返回response</li>
 <li>使用auto-pop释放RequestContext对象(ctx)</li>
 </ul>
-<h2 id="requestcontext--appcontext">RequestContext &amp;&amp; AppContext</h2>
+
+<h2 id="requestcontext-appcontext">RequestContext &amp;&amp; AppContext</h2>
+
 <p>Request上下文(RequestContext)是flask中最重要的类，下面是它的构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -363,9 +376,9 @@ def __call__(self, environ, start_response):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class RequestContext(object):
+<pre class="chroma">class RequestContext(object):
    
     def __init__(self, app, environ, request=None, session=None):
         self.app = app
@@ -380,17 +393,18 @@ def __call__(self, environ, start_response):
         self.flashes = None
         self.session = session
         self._implicit_app_ctx_stack = []
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>引用flask-app，利用app的request_class创建真正的request对象</li>
 <li>create_url_adapter 主要使用werkzeug的router进行wsgi-environ的处理</li>
 </ul>
+
 <p>push方法中，创建app-context然后入栈，同时创建session:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -410,9 +424,9 @@ def __call__(self, environ, start_response):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def push(self):
+<pre class="chroma">def push(self):
     ...
     app_ctx = _app_ctx_stack.top
     if app_ctx is None or app_ctx.app != self.app:
@@ -431,14 +445,15 @@ def __call__(self, environ, start_response):
         ...
 
     if self.url_adapter is not None:
-        self.match_request()
-</code></pre></td></tr></table>
+        self.match_request()</pre></td></tr></table>
 </div>
-</div><p>match_request是对request的处理，稍后介绍Request部分再详细介绍。_app_ctx_stack和_request_ctx_stack是两个个非常重要的概念，现在我们只需要记住这是2个栈即可，先后push进去app-ctx和request-ctx，以后我会单独介绍这2个概念。</p>
+</div>
+<p>match_request是对request的处理，稍后介绍Request部分再详细介绍。_app_ctx_stack和_request_ctx_stack是两个个非常重要的概念，现在我们只需要记住这是2个栈即可，先后push进去app-ctx和request-ctx，以后我会单独介绍这2个概念。</p>
+
 <p>RequestContext的pop方法进行出栈操作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -478,9 +493,9 @@ def __call__(self, environ, start_response):
 </span><span class="lnt">38
 </span><span class="lnt">39
 </span><span class="lnt">40
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def pop(self, exc=_sentinel):
+<pre class="chroma">def pop(self, exc=_sentinel):
     # 清理本地栈
     app_ctx = self._implicit_app_ctx_stack.pop()
     try:
@@ -519,14 +534,15 @@ def __call__(self, environ, start_response):
 
 def auto_pop(self, exc):
     ...
-    self.pop(exc)
-</code></pre></td></tr></table>
+    self.pop(exc)</pre></td></tr></table>
 </div>
-</div><p>和入栈相反，先进行request_ctx_的出栈，再进行app_ctx的出栈。</p>
+</div>
+<p>和入栈相反，先进行request_ctx_的出栈，再进行app_ctx的出栈。</p>
+
 <p>AppContext包装App和RequestContext包装Request类似:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -558,9 +574,9 @@ def auto_pop(self, exc):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class AppContext(object):
+<pre class="chroma">class AppContext(object):
     
     def __init__(self, app):
         self.app = app
@@ -591,36 +607,38 @@ def auto_pop(self, exc):
             rv = _app_ctx_stack.pop()
         assert rv is self, &#34;Popped wrong app context.  (%r instead of %r)&#34; % (rv, self)
         # appcontext_popped 也是信号
-        appcontext_popped.send(self.app)
-</code></pre></td></tr></table>
+        appcontext_popped.send(self.app)</pre></td></tr></table>
 </div>
-</div><p>可以看到这里的push和pop与之前的RequestContext基本一致。</p>
-<h2 id="request--response">request &amp;&amp; response</h2>
+</div>
+<p>可以看到这里的push和pop与之前的RequestContext基本一致。</p>
+
+<h2 id="request-response">request &amp;&amp; response</h2>
+
 <p>request解析的第1步是从match_request开始，使用url_adapter分离出http协议的url(url_rule)和query参数(view_args):</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># RequestContext
+<pre class="chroma"># RequestContext
 def match_request(self):
     try:
         result = self.url_adapter.match(return_rule=True)
         self.request.url_rule, self.request.view_args = result
     except HTTPException as e:
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>第2步是使用full_dispatch_request，进行分发前的预处理:</p>
+</div>
+<p>第2步是使用full_dispatch_request，进行分发前的预处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -634,9 +652,9 @@ def match_request(self):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Flask
+<pre class="chroma"># Flask
 def full_dispatch_request(self):
     # 触发request请求的前置函数(和信号类似)
     self.try_trigger_before_first_request_functions()
@@ -649,13 +667,13 @@ def full_dispatch_request(self):
             rv = self.dispatch_request()
     except Exception as e:
         ...
-    return self.finalize_request(rv)
-</code></pre></td></tr></table>
+    return self.finalize_request(rv)</pre></td></tr></table>
 </div>
-</div><p>第3步是使用dispatch_request将request的分发请求到路由:</p>
+</div>
+<p>第3步是使用dispatch_request将request的分发请求到路由:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -663,22 +681,22 @@ def full_dispatch_request(self):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Flask
+<pre class="chroma"># Flask
 def dispatch_request(self):
     # 直接从栈中获取request对象
     req = _request_ctx_stack.top.request
     ...
     rule = req.url_rule
     ...
-    return self.view_functions[rule.endpoint](**req.view_args)
-</code></pre></td></tr></table>
+    return self.view_functions[rule.endpoint](**req.view_args)</pre></td></tr></table>
 </div>
-</div><p>view_functions是通过app的router装饰器注册而来:</p>
+</div>
+<p>view_functions是通过app的router装饰器注册而来:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -702,9 +720,9 @@ def dispatch_request(self):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Flask
+<pre class="chroma"># Flask
 @setupmethod
 def add_url_rule(
     self,
@@ -727,13 +745,13 @@ def route(self, rule, **options):
         self.add_url_rule(rule, endpoint, f, **options)
         return f
 
-    return decorator
-</code></pre></td></tr></table>
+    return decorator</pre></td></tr></table>
 </div>
-</div><p>request经过上述主要的3步后，业务完成，开始进入response的处理环节。先是生成response:</p>
+</div>
+<p>request经过上述主要的3步后，业务完成，开始进入response的处理环节。先是生成response:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -743,9 +761,9 @@ def route(self, rule, **options):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Flask
+<pre class="chroma"># Flask
 def finalize_request(self, rv, from_error_handler=False):
     response = self.make_response(rv)
     try:
@@ -754,13 +772,13 @@ def finalize_request(self, rv, from_error_handler=False):
         request_finished.send(self, response=response)
     except Exception:
         ...
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><p>response处理第1步就是构建header的status:</p>
+</div>
+<p>response处理第1步就是构建header的status:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -781,9 +799,9 @@ def finalize_request(self, rv, from_error_handler=False):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def make_response(self, rv):
+<pre class="chroma">def make_response(self, rv):
     status = headers = None
     # unpack tuple returns
     if isinstance(rv, tuple):
@@ -803,13 +821,13 @@ def finalize_request(self, rv, from_error_handler=False):
     rv = self.response_class(rv, status=status, headers=headers)
     status = headers = None
     ...         
-    return rv
-</code></pre></td></tr></table>
+    return rv</pre></td></tr></table>
 </div>
-</div><p>response处理第2步就是将response进行额外处理，类似request的预处理一样，比如包装上session。</p>
+</div>
+<p>response处理第2步就是将response进行额外处理，类似request的预处理一样，比如包装上session。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -822,9 +840,9 @@ def finalize_request(self, rv, from_error_handler=False):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def process_response(self, response):
+<pre class="chroma">def process_response(self, response):
     ctx = _request_ctx_stack.top
     bp = ctx.request.blueprint
     funcs = ctx._after_request_functions
@@ -836,17 +854,21 @@ def finalize_request(self, rv, from_error_handler=False):
         response = handler(response)
     if not self.session_interface.is_null_session(ctx.session):
         self.session_interface.save_session(self, ctx.session, response)
-    return response
-</code></pre></td></tr></table>
+    return response</pre></td></tr></table>
 </div>
-</div><h2 id="heading">小结</h2>
+</div>
+<h2 id="小结">小结</h2>
+
 <p>Flask实现了wsgi-applicaction的规范，对于每一个请求。Flask都会创建RequestCtx和AppCtx对象，保证在请求的生命周期中都可以很方便的获取Request对象和App对象。而对于每个请求，分成request和response两个环节，这也是我们在werkzeug中介绍过的 <em>洋葱模型</em> 。Flask对request的处理分:请求URL分析，request的预处理和路由派发3步；response的处理经过状态码和head/body封装，response后置处理器2步。</p>
+
 <p>以上就是Flask的核心流程了，希望这道正菜大家满意，可以给一个赞或者在看。</p>
-<h2 id="heading-1">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>使用_request_ctx_stack这种全局堆栈，可以减少参数的传递. 观测下面派发request到路由的函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -854,22 +876,25 @@ def finalize_request(self, rv, from_error_handler=False):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Flask
+<pre class="chroma"># Flask
 def dispatch_request(self):
     # 直接从栈中获取request对象
     req = _request_ctx_stack.top.request
     ...
     rule = req.url_rule
     ...
-    return self.view_functions[rule.endpoint](**req.view_args)
-</code></pre></td></tr></table>
+    return self.view_functions[rule.endpoint](**req.view_args)</pre></td></tr></table>
 </div>
-</div><p>这里dispatch_request函数没有request参数，这样避免了Flask-App对request处理的每个函数都要附带上request参数。</p>
+</div>
+<p>这里dispatch_request函数没有request参数，这样避免了Flask-App对request处理的每个函数都要附带上request参数。</p>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-2">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://dormousehole.readthedocs.io/en/latest/">https://dormousehole.readthedocs.io/en/latest/</a></li>
 <li>python-main <a href="https://stackoverflow.com/questions/4042905/what-is-main-py">https://stackoverflow.com/questions/4042905/what-is-main-py</a></li>
@@ -960,7 +985,7 @@ def dispatch_request(self):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

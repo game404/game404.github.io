@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/xmlrpc-server-slow/" />
-<meta property="article:published_time" content="2021-05-20T23:13:57+08:00" />
-<meta property="article:modified_time" content="2021-05-20T23:13:57+08:00" />
+<meta property="article:published_time" content="2021-05-20T23:13:57&#43;08:00"/>
+<meta property="article:modified_time" content="2021-05-20T23:13:57&#43;08:00"/>
+
 <meta itemprop="name" content="再聊我的源码阅读方法-xmlrpc源码慢读">
 <meta itemprop="description" content="之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在">
+
+
 <meta itemprop="datePublished" content="2021-05-20T23:13:57&#43;08:00" />
 <meta itemprop="dateModified" content="2021-05-20T23:13:57&#43;08:00" />
-<meta itemprop="wordCount" content="6191">
+<meta itemprop="wordCount" content="6192">
 
 
 
-<meta itemprop="keywords" content="rpc,源码,阅读方法," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="rpc,源码,阅读方法," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="再聊我的源码阅读方法-xmlrpc源码慢读"/>
 <meta name="twitter:description" content="之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。 在"/>
 
@@ -137,29 +141,39 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">帮助和依赖分析</a></li>
-    <li><a href="#simplexmlrpcdispatcher">SimpleXMLRPCDispatcher分析</a></li>
-    <li><a href="#simplexmlrpcrequesthandler">SimpleXMLRPCRequestHandler分析</a></li>
-    <li><a href="#simplexmlrpcserver-">SimpleXMLRPCServer 分析</a></li>
-    <li><a href="#multipathxmlrpcserver--cgixmlrpcrequesthandler">MultiPathXMLRPCServer && CGIXMLRPCRequestHandler</a></li>
-    <li><a href="#rpc-doc">rpc-doc</a></li>
-    <li><a href="#heading-1">小结</a></li>
-    <li><a href="#heading-2">小技巧</a></li>
-    <li><a href="#heading-3">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#帮助和依赖分析">帮助和依赖分析</a></li>
+<li><a href="#simplexmlrpcdispatcher分析">SimpleXMLRPCDispatcher分析</a></li>
+<li><a href="#simplexmlrpcrequesthandler分析">SimpleXMLRPCRequestHandler分析</a></li>
+<li><a href="#simplexmlrpcserver-分析">SimpleXMLRPCServer 分析</a></li>
+<li><a href="#multipathxmlrpcserver-cgixmlrpcrequesthandler">MultiPathXMLRPCServer &amp;&amp; CGIXMLRPCRequestHandler</a></li>
+<li><a href="#rpc-doc">rpc-doc</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。</p>
+      
+
+<p>之前介绍我的源码阅读方法，有粉丝朋友说很有帮助，认为是授人予鱼。这是过誉了，也让我很受鼓舞，这次带来另外一种阅读方法，希望对大家也有帮助。</p>
+
 <p>在前文中我介绍了两种源码阅读方法：</p>
+
 <ol>
 <li>概读法，对一个项目，跟随API，进行核心功能实现的阅读，跳过异常，分支等功能，快速了解项目底层实现原理</li>
 <li>历史对比法，对比源码的版本修改历史，分析新增功能如何实现和扩展，分析如何修改bug。</li>
 </ol>
+
 <p>如果说概读法可以了解一个项目是what。历史对比可以理解一段代码why这样写。这次我介绍的 <strong>慢读法</strong> 就是how。我们一行一行的去看代码，分析功能实现的所有细节。慢读法，可以学习如何编写代码，提高自己的编码水准。慢读法，需要有点耐性，尽量做到不漏过一行一字。像古代一字之师郑谷把僧人齐己的“前村深雪里，昨夜数枝开” 诗句修改成 “前村深雪里，昨夜一枝开”一样，一点一点去推敲。</p>
+
 <p>本次慢读法使用的是python3.8中的xmlrpc-server部分，全文大概1000行，我们只阅读上半部分600行，大概30分钟内可以读完，时间紧张的朋友欢迎收藏了慢慢看。</p>
+
 <ul>
 <li>帮助和依赖分析</li>
 <li>SimpleXMLRPCDispatcher分析</li>
@@ -169,11 +183,13 @@
 <li>rpc-doc</li>
 <li>小结</li>
 </ul>
-<h2 id="heading">帮助和依赖分析</h2>
+
+<h2 id="帮助和依赖分析">帮助和依赖分析</h2>
+
 <p>我们常说注释是代码的一部分，xmlrpc-server中的注释很详尽，对我们学习具有指导意义。比如头部注释中，很详细的介绍了如何扩展SimpleXMLRPCServer:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-python3" data-lang="python3"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -196,66 +212,69 @@
 <td class="lntd">
 <pre class="chroma"><code class="language-python3" data-lang="python3"><span class="mf">4.</span> <span class="n">Subclass</span> <span class="n">SimpleXMLRPCServer</span><span class="p">:</span>
 
-<span class="k">class</span> <span class="nc">MathServer</span><span class="p">(</span><span class="n">SimpleXMLRPCServer</span><span class="p">)</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">_dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">MathServer</span><span class="p">(</span><span class="n">SimpleXMLRPCServer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># We are forcing the &#39;export_&#39; prefix on methods that are</span>
             <span class="c1"># callable through XML-RPC to prevent potential security</span>
             <span class="c1"># problems</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa"></span><span class="s1">&#39;</span><span class="s1">export_</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">method</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;export_&#39;</span> <span class="o">+</span> <span class="n">method</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa"></span><span class="s1">&#39;</span><span class="s1">method </span><span class="s1">&#34;</span><span class="si">%s</span><span class="s1">&#34;</span><span class="s1"> is not supported</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;method &#34;</span><span class="si">%s</span><span class="s1">&#34; is not supported&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">export_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">export_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="n">MathServer</span><span class="p">(</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">localhost</span><span class="s2">&#34;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span><span class="p">)</span>
-<span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">(</span><span class="p">)</span>
-</code></pre></td></tr></table>
+<span class="n">server</span> <span class="o">=</span> <span class="n">MathServer</span><span class="p">((</span><span class="s2">&#34;localhost&#34;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">))</span>
+<span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span></code></pre></td></tr></table>
 </div>
-</div><p>MathServer方法约定对外暴露的rpc方法使用<code>export_</code>前缀，这个策略对服务程序管理非常有用，可以在语法层级的private和public之上增加business类型的方法。和nodejs中使用export导出函数外部接口类似。</p>
+</div>
+<p>MathServer方法约定对外暴露的rpc方法使用<code>export_</code>前缀，这个策略对服务程序管理非常有用，可以在语法层级的private和public之上增加business类型的方法。和nodejs中使用export导出函数外部接口类似。</p>
+
 <p>模块依赖部分，import的try-except语句可以帮助我们更好的适配依赖：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+<pre class="chroma">...
 try:
     import fcntl
 except ImportError:
-    fcntl = None
-</code></pre></td></tr></table>
+    fcntl = None</pre></td></tr></table>
 </div>
-</div><p>上面的代码还不太说明问题，下面例子会更直观。优先导入速度更快的simplejson, 不存在的情况下再使用默认的json:</p>
+</div>
+<p>上面的代码还不太说明问题，下面例子会更直观。优先导入速度更快的simplejson, 不存在的情况下再使用默认的json:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># requests/compat.py
+<pre class="chroma"># requests/compat.py
 try:
     import simplejson as json
 except ImportError:
-    import json
-</code></pre></td></tr></table>
+    import json</pre></td></tr></table>
 </div>
-</div><p>模块依赖还有一个源码阅读的小技巧：依赖越少的模块，相对容易阅读，应该最先阅读。比如下面的sqlalchemy的sql模块构成，是一个金字塔结构，阅读时候从最顶端的visitors开始更容易上手：</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/packages.png" alt="sqlalchmy金字塔结构图"></p>
+</div>
+<p>模块依赖还有一个源码阅读的小技巧：依赖越少的模块，相对容易阅读，应该最先阅读。比如下面的sqlalchemy的sql模块构成，是一个金字塔结构，阅读时候从最顶端的visitors开始更容易上手：</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/packages.png" alt="sqlalchmy金字塔结构图" /></p>
+
 <p>resolve_dotted_attribute函数链式查找对象的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -278,9 +297,9 @@ except ImportError:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def resolve_dotted_attribute(obj, attr, allow_dotted_names=True):
+<pre class="chroma">def resolve_dotted_attribute(obj, attr, allow_dotted_names=True):
     &#34;&#34;&#34;resolve_dotted_attribute(a, &#39;b.c.d&#39;) =&gt; a.b.c.d
 
     Resolves a dotted attribute name to an object.  Raises
@@ -302,43 +321,46 @@ except ImportError:
                 )
         else:
             obj = getattr(obj,i)
-    return obj
-</code></pre></td></tr></table>
+    return obj</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>函数注释很清晰的介绍了功能:(a, &lsquo;b.c.d&rsquo;) =&gt; a.b.c.d, 查找a的b属性的c属性的d属性，这是一个链式调用</li>
 <li>这里使用列表循环来实现递归查找，如果用递归肯定是查找a的b属性，然后把b当做参数对象再查找c&hellip;,列表循环显然更优</li>
 <li>将attr处理成attrs数组，让后面的代码逻辑更清晰</li>
 <li>属性查找时候遵循对象的私有属性使用<code>_</code>的约定</li>
 <li>异常处理，程序可以抛出 <code>AttributeError('attempt to access private attribute &quot;%s&quot;' % i)</code> 这样有自定义消息的message，帮助问题排查</li>
 </ul>
+
 <p>list_public_methods查找对象的所有公开方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def list_public_methods(obj):
+<pre class="chroma">def list_public_methods(obj):
 
     return [member for member in dir(obj)
                 if not member.startswith(&#39;_&#39;) and
-                    callable(getattr(obj, member))]
-</code></pre></td></tr></table>
+                    callable(getattr(obj, member))]</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>魔法函数<code>dir</code>可以列出对象所有的属性和方法；魔法函数<code>getattr</code>可以根据字符串名称动态获取对象的方法/属性</li>
 <li><code>callable</code>方法可以判断一个对象是不是一个方法，因为python中没有<code>isinstance(x,function)</code>的方法</li>
 <li><code>for in if</code>语句可以对生成式根据指定条件进行过滤</li>
 </ul>
-<h2 id="simplexmlrpcdispatcher">SimpleXMLRPCDispatcher分析</h2>
+
+<h2 id="simplexmlrpcdispatcher分析">SimpleXMLRPCDispatcher分析</h2>
+
 <p>SimpleXMLRPCDispatcher负责和xmlrpc服务的核心逻辑之一：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -347,9 +369,9 @@ except ImportError:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCDispatcher:
+<pre class="chroma">class SimpleXMLRPCDispatcher:
 
     def __init__(self, allow_none=False, encoding=None,
                  use_builtin_types=False):
@@ -357,28 +379,30 @@ except ImportError:
         self.instance = None
         self.allow_none = allow_none
         self.encoding = encoding or &#39;utf-8&#39;
-        self.use_builtin_types = use_builtin_types
-</code></pre></td></tr></table>
+        self.use_builtin_types = use_builtin_types</pre></td></tr></table>
 </div>
-</div><p>类定义除上面的写法外，还有一种是 <code>class SimpleXMLRPCDispatcher(object)</code>, 我一般喜欢用这种。如果大家考古，可以发现在python2中还有新式类和旧式类的说法。在python3中都是新式类，不管使用哪种写法。</p>
+</div>
+<p>类定义除上面的写法外，还有一种是 <code>class SimpleXMLRPCDispatcher(object)</code>, 我一般喜欢用这种。如果大家考古，可以发现在python2中还有新式类和旧式类的说法。在python3中都是新式类，不管使用哪种写法。</p>
+
 <p>SimpleXMLRPCDispatcher的构造函数，我们可以思考下面写法的差异:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __init__(self, allow_none=False, encoding=&#34;utf-8&#34;,
+<pre class="chroma">def __init__(self, allow_none=False, encoding=&#34;utf-8&#34;,
                  use_builtin_types=False):
-    self.encoding = encoding
-</code></pre></td></tr></table>
+    self.encoding = encoding</pre></td></tr></table>
 </div>
-</div><p>encoding关键字参数，默认值是<strong>utf-8</strong>。相对来说，没有源码健壮。比如错误的传入 <code>encoding=None</code> 参数的时候，默认的encoding就丢失了，源码就不会存在这个问题。</p>
+</div>
+<p>encoding关键字参数，默认值是<strong>utf-8</strong>。相对来说，没有源码健壮。比如错误的传入 <code>encoding=None</code> 参数的时候，默认的encoding就丢失了，源码就不会存在这个问题。</p>
+
 <p>构造函数中字典<code>self.funcs = {}</code> or <code>self.funcs = dict()</code> 那种更优呢？先看测试数据, 用数据说话:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -387,9 +411,9 @@ except ImportError:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python3 -m timeit -n 1000000 -r 5 -v &#39;dict()&#39;
+<pre class="chroma"># python3 -m timeit -n 1000000 -r 5 -v &#39;dict()&#39;
 raw times: 115 msec, 98.4 msec, 99.8 msec, 99.3 msec, 98.7 msec
 
 1000000 loops, best of 5: 98.4 nsec per loop
@@ -397,13 +421,13 @@ raw times: 115 msec, 98.4 msec, 99.8 msec, 99.3 msec, 98.7 msec
 # python3 -m timeit -n 1000000 -r 5 -v &#39;{}&#39;
 raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 
-1000000 loops, best of 5: 18.6 nsec per loop
-</code></pre></td></tr></table>
+1000000 loops, best of 5: 18.6 nsec per loop</pre></td></tr></table>
 </div>
-</div><p>测试可见，使用 <code>{}</code> 效率更高。为什么呢，我们可以查看二者的字节码对比:</p>
+</div>
+<p>测试可见，使用 <code>{}</code> 效率更高。为什么呢，我们可以查看二者的字节码对比:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -411,41 +435,45 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">  1           0 LOAD_NAME                0 (dict)
+<pre class="chroma">  1           0 LOAD_NAME                0 (dict)
               2 CALL_FUNCTION            0
               4 POP_TOP
 
   3           6 BUILD_MAP                0
               8 POP_TOP
              10 LOAD_CONST               0 (None)
-             12 RETURN_VALUE
-</code></pre></td></tr></table>
+             12 RETURN_VALUE</pre></td></tr></table>
 </div>
-</div><p><code>dict()</code>实际上是一次函数调用，相对资源消耗更大。类似的还有<code>list() vs []</code>，所以大家初始化字典和列表都推荐使用<code>{}</code>和<code>[]</code>关键字语法。</p>
+</div>
+<p><code>dict()</code>实际上是一次函数调用，相对资源消耗更大。类似的还有<code>list() vs []</code>，所以大家初始化字典和列表都推荐使用<code>{}</code>和<code>[]</code>关键字语法。</p>
+
 <p>register_instance函数用于dispatcher接受外部注册的服务对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_instance(self, instance, allow_dotted_names=False):
+<pre class="chroma">def register_instance(self, instance, allow_dotted_names=False):
     self.instance = instance
-    self.allow_dotted_names = allow_dotted_names
-</code></pre></td></tr></table>
+    self.allow_dotted_names = allow_dotted_names</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>属性 allow_dotted_names 没有在构造函数中初始化，这个其实是不符合规范。如果我们自己的代码，IDE会有智能提示，如下图：</li>
 </ul>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210517140046.png" alt="属性初始化"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210517140046.png" alt="属性初始化" /></p>
+
 <p>额外提一点，代码整洁就是在IDE中不出现黄色的<code>warnings</code>和<code>weak warnings</code>，绿色的<code>typos</code>， 当然红色的 <code>error</code> 更不应该出现。</p>
+
 <p>register_function函数用于dispatcher接受外部注册的服务函数。和服务对象注册不一样，对象可以理解为一组函数的集合，这里是单个函数：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -455,9 +483,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_function(self, function=None, name=None):
+<pre class="chroma">def register_function(self, function=None, name=None):
     # decorator factory
     if function is None:
         return partial(self.register_function, name=name)
@@ -466,35 +494,37 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
         name = function.__name__
     self.funcs[name] = function
 
-    return function
-</code></pre></td></tr></table>
+    return function</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>functools.partial函数非常有用，可以帮助我们固定某个函数的参数，减少重复代码。</li>
 <li>参数function和name先后顺序也是有讲究的。name在后，这样可以不用传name参数，使用 <code>register_function(some_func)</code> 把function参数当做位置参数使用。如果name在前面，则无法这样使用。</li>
 </ul>
+
 <p>register_introspection_functions方法注册了xmlrpc-server的一些帮助信息：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def register_introspection_functions(self):
+<pre class="chroma">def register_introspection_functions(self):
     self.funcs.update({&#39;system.listMethods&#39; : self.system_listMethods,
                   &#39;system.methodSignature&#39; : self.system_methodSignature,
-                  &#39;system.methodHelp&#39; : self.system_methodHelp})
-</code></pre></td></tr></table>
+                  &#39;system.methodHelp&#39; : self.system_methodHelp})</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>注意字典的update方法，同样还有setdefault，这些都是相对其它语言比较少见的，学会了代码更pythonic</li>
 </ul>
+
 <p>现在先跳跃一下，查看注册的几个帮助方法，先看system_listMethods：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -507,9 +537,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def system_listMethods(self):
+<pre class="chroma">def system_listMethods(self):
     methods = set(self.funcs.keys())
     if self.instance is not None:
         # Instance can implement _listMethod to return a list of
@@ -521,33 +551,34 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
         # of methods
         elif not hasattr(self.instance, &#39;_dispatch&#39;):
             methods |= set(list_public_methods(self.instance))
-    return sorted(methods)
-</code></pre></td></tr></table>
+    return sorted(methods)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>将funcs字典的key返回的可迭代对象（类型是dict_keys）转换成set，方便进行集合的集合处理</li>
 <li>None判断推荐<code>is not None</code>而不是 <code>if not self.instance:</code></li>
 <li>集合求交集赋值可以使用 <code>|=</code>, 类似<code>+=1</code></li>
 <li>集合没有sort方法，不像列表有<code>sorted(list)</code>和<code>list.sort()</code>两种方法。后者是原地排序，但是返回None；前者会重新生成一个列表。</li>
 <li>动态获取属性这里使用<code>self.instance._listMethods()</code>，对比一下<code>getattr(instance, &quot;listMethods&quot;)()</code> , 前者更直观。</li>
 </ul>
+
 <p>系统帮助函数使用pydoc模块获取函数的帮助文档：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def system_methodHelp(self, method_name):
+<pre class="chroma">def system_methodHelp(self, method_name):
     ...
-    return pydoc.getdoc(method)
-</code></pre></td></tr></table>
+    return pydoc.getdoc(method)</pre></td></tr></table>
 </div>
-</div><p>下面是一个函数的文档实例：</p>
+</div>
+<p>下面是一个函数的文档实例：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -556,9 +587,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def incr(self, age):
+<pre class="chroma">def incr(self, age):
     &#34;&#34;&#34;
     长一岁
     :type age: int
@@ -566,28 +597,28 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
     :return 年龄+1
     &#34;&#34;&#34;
     self.age = age
-    return self.age
-</code></pre></td></tr></table>
+    return self.age</pre></td></tr></table>
 </div>
-</div><p>通过pydoc.getdoc得到的帮助信息如下，这是自动生成api文档的基础。</p>
+</div>
+<p>通过pydoc.getdoc得到的帮助信息如下，这是自动生成api文档的基础。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">长一岁
+<pre class="chroma">长一岁
 :type age: int
 :rtype: int
-:return 年龄+1
-</code></pre></td></tr></table>
+:return 年龄+1</pre></td></tr></table>
 </div>
-</div><p>_methodHelp展示了如何提供额外的rpc使用示例，帮助client理解API:</p>
+</div>
+<p>_methodHelp展示了如何提供额外的rpc使用示例，帮助client理解API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -598,9 +629,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"> def _methodHelp(self, method):
+<pre class="chroma"> def _methodHelp(self, method):
         # this method must be present for system.methodHelp
         # to work
         if method == &#39;add&#39;:
@@ -610,13 +641,13 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
         else:
             # By convention, return empty
             # string if no help is available
-            return &#34;&#34;
-</code></pre></td></tr></table>
+            return &#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>_marshaled_dispatch处理最关键的rpc实现:</p>
+</div>
+<p>_marshaled_dispatch处理最关键的rpc实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -627,9 +658,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _marshaled_dispatch(self, data, dispatch_method = None, path = None):
+<pre class="chroma">def _marshaled_dispatch(self, data, dispatch_method = None, path = None):
     try:
         ...
     except:
@@ -639,13 +670,13 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
             ...
         finally:
             # Break reference cycle
-            exc_type = exc_value = exc_tb = None
-</code></pre></td></tr></table>
+            exc_type = exc_value = exc_tb = None</pre></td></tr></table>
 </div>
-</div><p>这一部分在之前的文章[xmlrpc源码阅读]中有过介绍，就不再重复介绍。这次我们重点关注一下异常处理部分。请看示例:</p>
+</div>
+<p>这一部分在之前的文章[xmlrpc源码阅读]中有过介绍，就不再重复介绍。这次我们重点关注一下异常处理部分。请看示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -655,9 +686,9 @@ raw times: 23.8 msec, 20.8 msec, 19.2 msec, 18.8 msec, 18.6 msec
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def some(x, y):
+<pre class="chroma">def some(x, y):
     z = x / y
     return z
 
@@ -666,13 +697,13 @@ try:
 except:
     exc_type, exc_value, exc_tb = sys.exc_info()
     print(exc_type, exc_value)
-    print(repr(traceback.extract_tb(exc_tb)))
-</code></pre></td></tr></table>
+    print(repr(traceback.extract_tb(exc_tb)))</pre></td></tr></table>
 </div>
-</div><p>从下面的日志输出可以看到，使用traceback可以得到异常的调用堆栈信息，这对定位bug非常有帮助：</p>
+</div>
+<p>从下面的日志输出可以看到，使用traceback可以得到异常的调用堆栈信息，这对定位bug非常有帮助：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -680,35 +711,35 @@ except:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;class &#39;ZeroDivisionError&#39;&gt; division by zero
+<pre class="chroma">&lt;class &#39;ZeroDivisionError&#39;&gt; division by zero
 [&lt;FrameSummary file /Users/*/work/yuanmahui/python/ch18-rpc/sample.py, line 59 in test_exec&gt;, &lt;FrameSummary file /Users/*/work/yuanmahui/python/ch18-rpc/sample.py, line 55 in some&gt;]
 Traceback (most recent call last):
   File &#34;/Users/yoo/work/yuanmahui/python/ch18-rpc/sample.py&#34;, line 59, in test_exec
     some(1, 0)
   File &#34;/Users/yoo/work/yuanmahui/python/ch18-rpc/sample.py&#34;, line 55, in some
     z = x / y
-ZeroDivisionError: division by zero
-</code></pre></td></tr></table>
+ZeroDivisionError: division by zero</pre></td></tr></table>
 </div>
-</div><p>_dispatch同样在之前的文章[xmlrpc源码阅读]中有过详细介绍，这次关注一下函数参数的自动封箱与拆箱:</p>
+</div>
+<p>_dispatch同样在之前的文章[xmlrpc源码阅读]中有过详细介绍，这次关注一下函数参数的自动封箱与拆箱:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def _dispatch(self, method, params):
+<pre class="chroma">def _dispatch(self, method, params):
     ...
-    return func(*params)
-</code></pre></td></tr></table>
+    return func(*params)</pre></td></tr></table>
 </div>
-</div><p>下面代码显示了如何使用args传递参数:</p>
+</div>
+<p>下面代码显示了如何使用args传递参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -724,9 +755,9 @@ ZeroDivisionError: division by zero
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def some(a, b, c=2):
+<pre class="chroma">def some(a, b, c=2):
     print(a, b, c)
 
 def f(args):
@@ -741,17 +772,19 @@ f((1, 2, 3))
 # a b c # 这样竟然也可以...
 f({&#34;a&#34;: 4, &#34;b&#34;: 5, &#34;c&#34;: 6})
 f2(*(1, 2, 3))
-f2(1, 2, 3)
-</code></pre></td></tr></table>
+f2(1, 2, 3)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>总结 <code>*args</code>在函数定义中，会自动把位置参数进行封箱(多个参数合并成一个元祖参数，就像用箱子封装一样)成元祖； <code>*args</code>在函数调用的时候，又自动把元祖参数拆箱成多个参数。</li>
 </ul>
-<h2 id="simplexmlrpcrequesthandler">SimpleXMLRPCRequestHandler分析</h2>
+
+<h2 id="simplexmlrpcrequesthandler分析">SimpleXMLRPCRequestHandler分析</h2>
+
 <p>SimpleXMLRPCRequestHandler继承自BaseHTTPRequestHandler。 encode_threshold定义了一个MTU推荐值，就是一个tcp包的在网络传输过程中的上限大小。如果超过则会拆分成多个IP包进行传输，这样会有多次网络传输，效率会变低。解决的办法就是超过MTU值的数据使用gzip压缩算法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -763,9 +796,9 @@ f2(1, 2, 3)
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">#if not None, encode responses larger than this, if possible
+<pre class="chroma">#if not None, encode responses larger than this, if possible
 encode_threshold = 1400 #a common MTU
 
 ...
@@ -776,30 +809,30 @@ if self.encode_threshold is not None:
         if q:
             try:
                 response = gzip_encode(response)
-                self.send_header(&#34;Content-Encoding&#34;, &#34;gzip&#34;)
-</code></pre></td></tr></table>
+                self.send_header(&#34;Content-Encoding&#34;, &#34;gzip&#34;)</pre></td></tr></table>
 </div>
-</div><p>SimpleXMLRPCRequestHandler有多个类属性:</p>
+</div>
+<p>SimpleXMLRPCRequestHandler有多个类属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
+<pre class="chroma">class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
     ...
     wbufsize = -1
     disable_nagle_algorithm = True
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>类属性如果希望被扩展，可以使用小写；如果不推荐扩展，可以使用大写，类似常量定义：</p>
+</div>
+<p>类属性如果希望被扩展，可以使用小写；如果不推荐扩展，可以使用大写，类似常量定义：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -807,22 +840,22 @@ if self.encode_threshold is not None:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># bottle
+<pre class="chroma"># bottle
 
 class BaseRequest(object):
 
     #: Maximum size of memory buffer for :attr:`body` in bytes.
     MEMFILE_MAX = 102400
     #: Maximum number pr GET or POST parameters per request
-    MAX_PARAMS  = 100
-</code></pre></td></tr></table>
+    MAX_PARAMS  = 100</pre></td></tr></table>
 </div>
-</div><p>如果希望提供常量值，又可以被扩展，可以参考下面的写法:</p>
+</div>
+<p>如果希望提供常量值，又可以被扩展，可以参考下面的写法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -837,9 +870,9 @@ class BaseRequest(object):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># http.server
+<pre class="chroma"># http.server
 
 DEFAULT_ERROR_CONTENT_TYPE = &#34;text/html;charset=utf-8&#34;
 DEFAULT_ERROR_MESSAGE = &#34;&#34;&#34;...&#34;&#34;&#34;
@@ -853,13 +886,13 @@ class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
     error_message_format = DEFAULT_ERROR_MESSAGE
     error_content_type = DEFAULT_ERROR_CONTENT_TYPE
 
-    default_request_version = &#34;HTTP/0.9&#34;
-</code></pre></td></tr></table>
+    default_request_version = &#34;HTTP/0.9&#34;</pre></td></tr></table>
 </div>
-</div><p>http头上的Accept-Encoding可以使用下面的正则进行解析:</p>
+</div>
+<p>http头上的Accept-Encoding可以使用下面的正则进行解析:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -875,9 +908,9 @@ class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># a re to match a gzip Accept-Encoding
+<pre class="chroma"># a re to match a gzip Accept-Encoding
 aepattern = re.compile(r&#34;&#34;&#34;
                         \s* ([^\s;]+) \s*            #content-coding
                         (;\s* q \s*=\s* ([0-9\.]+))? #q
@@ -892,32 +925,32 @@ def accept_encodings(self):
             v = match.group(3)
             v = float(v) if v else 1.0
             r[match.group(1)] = v
-    return r
-</code></pre></td></tr></table>
+    return r</pre></td></tr></table>
 </div>
-</div><p>下面是一些常见的Accept-Encoding举例:</p>
+</div>
+<p>下面是一些常见的Accept-Encoding举例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">Accept-Encoding: gzip
+<pre class="chroma">Accept-Encoding: gzip
 
 Accept-Encoding: gzip, compress, br
 
 Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1
-# q 介于0和1之间，不存在则为1，数值表示优先级
-</code></pre></td></tr></table>
+# q 介于0和1之间，不存在则为1，数值表示优先级</pre></td></tr></table>
 </div>
-</div><p>do_POST函数一样，查看一下500状态的处理:</p>
+</div>
+<p>do_POST函数一样，查看一下500状态的处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -927,9 +960,9 @@ Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">except Exception as e: # This should only happen if the module is buggy
+<pre class="chroma">except Exception as e: # This should only happen if the module is buggy
     self.send_response(500)
 
     # Send information about the exception if requested
@@ -938,16 +971,17 @@ Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1
         self.send_header(&#34;X-exception&#34;, str(e))
         trace = traceback.format_exc()
         trace = str(trace.encode(&#39;ASCII&#39;, &#39;backslashreplace&#39;), &#39;ASCII&#39;)
-        self.send_header(&#34;X-traceback&#34;, trace)
-</code></pre></td></tr></table>
+        self.send_header(&#34;X-traceback&#34;, trace)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>这里定义了<strong>X-exception</strong>和<strong>X-traceback</strong>两个特别的http头，一般来说使用<code>X-</code>前缀表示自定义的头，在django中会看到这种方式。</li>
 </ul>
+
 <p>decode_request_content函数处理请求数据，下面是调用方法和函数实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -973,9 +1007,9 @@ Accept-Encoding: br;q=1.0, gzip;q=0.8, *;q=0.1
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def do_POST(self):
+<pre class="chroma">def do_POST(self):
     data = self.decode_request_content(data)
     if data is None:
         return #response has been sent
@@ -1000,13 +1034,13 @@ def decode_request_content(self, data):
     else:
         self.send_response(501, &#34;encoding %r not supported&#34; % encoding)
     self.send_header(&#34;Content-length&#34;, &#34;0&#34;)
-    self.end_headers()
-</code></pre></td></tr></table>
+    self.end_headers()</pre></td></tr></table>
 </div>
-</div><p>个人觉得，这个函数实现不太好。如果解析请求失败，异常处理header在另外的地方，导致逻辑结构不对等。我尝试修改一下：</p>
+</div>
+<p>个人觉得，这个函数实现不太好。如果解析请求失败，异常处理header在另外的地方，导致逻辑结构不对等。我尝试修改一下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1019,9 +1053,9 @@ def decode_request_content(self, data):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">error_code, error_info = None, None
+<pre class="chroma">error_code, error_info = None, None
 if encoding == &#34;identity&#34;:
         return 0, data
 if encoding == &#34;gzip&#34;:
@@ -1033,14 +1067,15 @@ if encoding == &#34;gzip&#34;:
         error_code, error_info = 400, &#34;error decoding gzip content&#34;
 else:
     error_code, error_info = 501, &#34;encoding %r not supported&#34; % encoding
-return error_code, error_info
-</code></pre></td></tr></table>
+return error_code, error_info</pre></td></tr></table>
 </div>
-</div><p>这样关于header解析失败的逻辑在do_POST中实现，更统一。这里的error_code参考了golang的语法实现。大家觉得呢?欢迎在评论区留言点评。</p>
+</div>
+<p>这样关于header解析失败的逻辑在do_POST中实现，更统一。这里的error_code参考了golang的语法实现。大家觉得呢?欢迎在评论区留言点评。</p>
+
 <p>log_request中使用了比较老式的调用父类方法的语法，而不是使用<code>super</code>关键字:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1059,9 +1094,9 @@ return error_code, error_info
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
+<pre class="chroma">class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):
     def log_request(self, code=&#39;-&#39;, size=&#39;-&#39;):
         &#34;&#34;&#34;Log an accepted request.
 
@@ -1079,14 +1114,15 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
         &#34;&#34;&#34;Selectively log an accepted request.&#34;&#34;&#34;
 
         if self.server.logRequests:
-            BaseHTTPRequestHandler.log_request(self, code, size)
-</code></pre></td></tr></table>
+            BaseHTTPRequestHandler.log_request(self, code, size)</pre></td></tr></table>
 </div>
-</div><h2 id="simplexmlrpcserver-">SimpleXMLRPCServer 分析</h2>
+</div>
+<h2 id="simplexmlrpcserver-分析">SimpleXMLRPCServer 分析</h2>
+
 <p>SimpleXMLRPCServer展示多类继承时候的父类初始化方法，不同的父类的初始化参数不一样:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1094,23 +1130,24 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class SimpleXMLRPCServer(socketserver.TCPServer,
+<pre class="chroma">class SimpleXMLRPCServer(socketserver.TCPServer,
                          SimpleXMLRPCDispatcher):
      def __init__(self, addr, requestHandler=SimpleXMLRPCRequestHandler,
                  logRequests=True, allow_none=False, encoding=None,
                  bind_and_activate=True, use_builtin_types=False):
 
         SimpleXMLRPCDispatcher.__init__(self, allow_none, encoding, use_builtin_types)
-        socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)
-</code></pre></td></tr></table>
+        socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)</pre></td></tr></table>
 </div>
-</div><h2 id="multipathxmlrpcserver--cgixmlrpcrequesthandler">MultiPathXMLRPCServer &amp;&amp; CGIXMLRPCRequestHandler</h2>
+</div>
+<h2 id="multipathxmlrpcserver-cgixmlrpcrequesthandler">MultiPathXMLRPCServer &amp;&amp; CGIXMLRPCRequestHandler</h2>
+
 <p>MultiPathXMLRPCServer支持注册多个dispatcher实现，每个dispatcher支持不同的rpc路径，不像SimpleXMLRPCServer仅支持<code>/RPC2</code>，功能更强劲:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1123,9 +1160,9 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class MultiPathXMLRPCServer(SimpleXMLRPCServer):
+<pre class="chroma">class MultiPathXMLRPCServer(SimpleXMLRPCServer):
     def __init__(...):
         self.dispatchers = {}
    
@@ -1137,13 +1174,13 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
         ...
         response = self.dispatchers[path]._marshaled_dispatch(
                data, dispatch_method, path)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>CGIXMLRPCRequestHandler提供了一种CGI实现。CGI在之前的[python http 源码阅读]有过介绍，特点就是输入输出使用标准流，CGI现在用的较少，简单了解即可。</p>
+</div>
+<p>CGIXMLRPCRequestHandler提供了一种CGI实现。CGI在之前的[python http 源码阅读]有过介绍，特点就是输入输出使用标准流，CGI现在用的较少，简单了解即可。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1153,9 +1190,9 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">CGIXMLRPCRequestHandler(SimpleXMLRPCDispatcher)
+<pre class="chroma">CGIXMLRPCRequestHandler(SimpleXMLRPCDispatcher)
     def handle_xmlrpc(self, request_text):
         ...
         sys.stdout.buffer.write(response)
@@ -1164,20 +1201,29 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
     def handle_request(self, request_text=None):
         ...
         request_text = sys.stdin.read(length)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><h2 id="rpc-doc">rpc-doc</h2>
+</div>
+<h2 id="rpc-doc">rpc-doc</h2>
+
 <p>ServerHTMLDoc, XMLRPCDocGenerator, DocXMLRPCRequestHandler和DocXMLRPCServer提供了更详细的RPC文档实现。文档对RPC服务来说非常重要，是RPC-client和RPC-server之间的重要规范，所以xmlrpc-server中用了大量篇幅来实现。不过，由于篇幅和时间原因，本文就不再进行详细分析其实现。</p>
-<h2 id="heading-1">小结</h2>
+
+<h2 id="小结">小结</h2>
+
 <p>xmlrpc-server核心由SimpleXMLRPCDispatcher，SimpleXMLRPCRequestHandler 和SimpleXMLRPCServer三个类实现，分工非常明确。 SimpleXMLRPCServer实现一个http服务，SimpleXMLRPCRequestHandler用于处理http请求和响应，SimpleXMLRPCDispatcher实现xml-rpc服务。当然其中还有一个核心的地方是<code>dumps</code>和<code>loads</code>方法，负责在http请求和rpc请求之间互换，这部分在client中，也先略过了。分拆类后，扩展性也很强，MultiPathXMLRPCServer扩展SimpleXMLRPCServer，实现多路径支持；CGIXMLRPCRequestHandler扩展SimpleXMLRPCDispatcher实现cgi支持；DocXMLRPCRequestHandler扩展SimpleXMLRPCRequestHandler实现文档支持。</p>
+
 <p>MultiPathXMLRPCServer是前端控制器模式的实现，MultiPathXMLRPCServer充当了Front Controller的角色，支持多个dispatcher；SimpleXMLRPCDispatcher是Dispatcher的角色；而业务注册RPC函数，比如ExampleService.getData函数就是View了。这样就不是只会单例模式这一种设计模式，或者是设计模式一看就懂，一用就抓瞎。</p>
-<h2 id="heading-2">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>大家可以猜猜看，下图中的字符是什么?
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210518134431.png" alt="!="></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210518134431.png" alt="!=" /></p>
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-3">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://stackoverflow.com/questions/54867/what-is-the-difference-between-old-style-and-new-style-classes-in-python">https://stackoverflow.com/questions/54867/what-is-the-difference-between-old-style-and-new-style-classes-in-python</a></li>
 <li><a href="https://stackoverflow.com/questions/664118/whats-the-difference-between-dict-and">https://stackoverflow.com/questions/664118/whats-the-difference-between-dict-and</a></li>
@@ -1269,7 +1315,7 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

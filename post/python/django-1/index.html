@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="Django是一款经典的Python Web开发框架，也是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/django-1/" />
-<meta property="article:published_time" content="2022-03-06T21:59:43+08:00" />
-<meta property="article:modified_time" content="2022-03-06T21:59:43+08:00" />
+<meta property="article:published_time" content="2022-03-06T21:59:43&#43;08:00"/>
+<meta property="article:modified_time" content="2022-03-06T21:59:43&#43;08:00"/>
+
 <meta itemprop="name" content="Django 源码解析 - 1 创建和启动">
 <meta itemprop="description" content="Django是一款经典的Python Web开发框架，也是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，">
+
+
 <meta itemprop="datePublished" content="2022-03-06T21:59:43&#43;08:00" />
 <meta itemprop="dateModified" content="2022-03-06T21:59:43&#43;08:00" />
 <meta itemprop="wordCount" content="6013">
 
 
 
-<meta itemprop="keywords" content="django,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="django,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Django 源码解析 - 1 创建和启动"/>
 <meta name="twitter:description" content="Django是一款经典的Python Web开发框架，也是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，"/>
 
@@ -137,22 +141,28 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#django">django简单回顾</a></li>
-    <li><a href="#django-1">django项目概况</a></li>
-    <li><a href="#django-2">django命令脚手架</a></li>
-    <li><a href="#startproject--startapp-">startproject && startapp 命令实现</a></li>
-    <li><a href="#runserver-">runserver 命令实现</a></li>
-    <li><a href="#appsetup">app的setup过程</a></li>
-    <li><a href="#heading">小结</a></li>
-    <li><a href="#heading-1">小技巧</a></li>
-    <li><a href="#heading-2">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#django简单回顾">django简单回顾</a></li>
+<li><a href="#django项目概况">django项目概况</a></li>
+<li><a href="#django命令脚手架">django命令脚手架</a></li>
+<li><a href="#startproject-startapp-命令实现">startproject &amp;&amp; startapp 命令实现</a></li>
+<li><a href="#runserver-命令实现">runserver 命令实现</a></li>
+<li><a href="#app的setup过程">app的setup过程</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>Django是一款经典的Python Web开发框架，也是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可以帮助开发者快速搭建一个Web项目。 从本周开始，我们一起进入Djaong项目的源码解析，加深对django的理解，熟练掌握python web开发。django采用的源码版本是: <code>4.0.0</code>，我们首先采用概读法，大概了解django项目的创建和启动过程，包括下面几个部分:</p>
+      
+
+<p>Django是一款经典的Python Web开发框架，也是最受欢迎的Python开源项目之一。不同于Flask框架，Django是高度集成的，可以帮助开发者快速搭建一个Web项目。 从本周开始，我们一起进入Djaong项目的源码解析，加深对django的理解，熟练掌握python web开发。django采用的源码版本是: <code>4.0.0</code>，我们首先采用概读法，大概了解django项目的创建和启动过程，包括下面几个部分:</p>
+
 <ul>
 <li>django简单回顾</li>
 <li>django项目概况</li>
@@ -163,31 +173,33 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="django">django简单回顾</h2>
+
+<h2 id="django简单回顾">django简单回顾</h2>
+
 <p>创建好虚拟环境，安装django的 <code>4.0.0</code> 版本。这个版本和官方的最新文档一致，而且有完整的中文翻译版本。我们可以跟随「快速安装指南」创建一个django项目，感受一下其魅力。首先使用 <em>startproject</em> 命令创建一个名叫 <em>hello</em> 的项目，django会在本地搭建一个基础的项目结构，进入hello项目后，可以直接使用 <em>runserver</em> 命令启动项目。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 -m django startproject hello
-cd hello  &amp;&amp; python3 manage.py runserver
-</code></pre></td></tr></table>
+<pre class="chroma">python3 -m django startproject hello
+cd hello  &amp;&amp; python3 manage.py runserver</pre></td></tr></table>
 </div>
-</div><p>django提供很好的模块化支持，可以利用它做大型web项目的开发。在project下的模块称为app，一个project可以包括多个app模块, 和flask的blue-print类似。我们继续使用 <em>startapp</em> 命令来创建一个叫做 <em>api</em> 的app。</p>
+</div>
+<p>django提供很好的模块化支持，可以利用它做大型web项目的开发。在project下的模块称为app，一个project可以包括多个app模块, 和flask的blue-print类似。我们继续使用 <em>startapp</em> 命令来创建一个叫做 <em>api</em> 的app。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 -m django startapp api
-</code></pre></td></tr></table>
+<pre class="chroma">python3 -m django startapp api</pre></td></tr></table>
 </div>
-</div><p>对api-app的 <code>views.py</code>，我们需要完善一下，增加下面内容：</p>
+</div>
+<p>对api-app的 <code>views.py</code>，我们需要完善一下，增加下面内容：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -196,9 +208,9 @@ cd hello  &amp;&amp; python3 manage.py runserver
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.shortcuts import render
+<pre class="chroma">from django.shortcuts import render
 
 # Create your views here.
 
@@ -206,34 +218,34 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse(&#34;Hello, Game404. You&#39;re at the index.&#34;)
-</code></pre></td></tr></table>
+    return HttpResponse(&#34;Hello, Game404. You&#39;re at the index.&#34;)</pre></td></tr></table>
 </div>
-</div><p>然后再创建一个urls.py的模块文件，定义url和view的映射关系，填写:</p>
+</div>
+<p>然后再创建一个urls.py的模块文件，定义url和view的映射关系，填写:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.urls import path
+<pre class="chroma">from django.urls import path
 
 from . import views
 
 urlpatterns = [
     path(&#39;&#39;, views.index, name=&#39;index&#39;),
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>完成api-app的实现后，我们需要在project中添加上自定义的api模块。这需要两步，先是在hello-project的setting.py中配置这个api-app:</p>
+</div>
+<p>完成api-app的实现后，我们需要在project中添加上自定义的api模块。这需要两步，先是在hello-project的setting.py中配置这个api-app:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -242,9 +254,9 @@ urlpatterns = [
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">INSTALLED_APPS = [
+<pre class="chroma">INSTALLED_APPS = [
     &#39;django.contrib.admin&#39;,
     &#39;django.contrib.auth&#39;,
     &#39;django.contrib.contenttypes&#39;,
@@ -252,44 +264,47 @@ urlpatterns = [
     &#39;django.contrib.messages&#39;,
     &#39;django.contrib.staticfiles&#39;,
     &#39;api&#39;,
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>再在hello-project的urls.py导入api-app中定义的url和视图:</p>
+</div>
+<p>再在hello-project的urls.py导入api-app中定义的url和视图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.contrib import admin
+<pre class="chroma">from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path(&#39;admin/&#39;, admin.site.urls),
     path(&#39;api/&#39;, include(&#39;api.urls&#39;)),
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>剩下的内容，都可以使用模版的标准实现。然后我们再次启动项目，访问下面路径:</p>
+</div>
+<p>剩下的内容，都可以使用模版的标准实现。然后我们再次启动项目，访问下面路径:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ curl http://127.0.0.1:8000/api/
-Hello, Game404. You&#39;re at the index.%
-</code></pre></td></tr></table>
+<pre class="chroma">➜  ~ curl http://127.0.0.1:8000/api/
+Hello, Game404. You&#39;re at the index.%</pre></td></tr></table>
 </div>
-</div><p>我们基本完成了一个最简单的django项目创建和启动，接下来我们一起了解这个流程是如何实现的。</p>
-<h2 id="django-1">django项目概况</h2>
+</div>
+<p>我们基本完成了一个最简单的django项目创建和启动，接下来我们一起了解这个流程是如何实现的。</p>
+
+<h2 id="django项目概况">django项目概况</h2>
+
 <p>django项目源码大概包括下面一些包:</p>
+
 <table>
 <thead>
 <tr>
@@ -297,88 +312,105 @@ Hello, Game404. You&#39;re at the index.%
 <th>功能描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>apps</td>
 <td>django的app管理器</td>
 </tr>
+
 <tr>
 <td>conf</td>
 <td>配置信息，主要有项目模版和app模版等</td>
 </tr>
+
 <tr>
 <td>contrib</td>
 <td>django默认提供的标准app</td>
 </tr>
+
 <tr>
 <td>core</td>
 <td>django核心功能</td>
 </tr>
+
 <tr>
 <td>db</td>
 <td>数据库模型实现</td>
 </tr>
+
 <tr>
 <td>dispatch</td>
 <td>信号，用于模块解耦</td>
 </tr>
+
 <tr>
 <td>forms</td>
 <td>表单实现</td>
 </tr>
+
 <tr>
 <td>http</td>
 <td>http协议和服务相关实现</td>
 </tr>
+
 <tr>
 <td>middleware</td>
 <td>django提供的标准中间件</td>
 </tr>
+
 <tr>
 <td>template &amp;&amp; templatetags</td>
 <td>模版功能</td>
 </tr>
+
 <tr>
 <td>test</td>
 <td>单元测试的支持</td>
 </tr>
+
 <tr>
 <td>urls</td>
 <td>一些url的处理类</td>
 </tr>
+
 <tr>
 <td>utils</td>
 <td>工具类</td>
 </tr>
+
 <tr>
 <td>views</td>
 <td>视图相关的实现</td>
 </tr>
 </tbody>
 </table>
+
 <p>我也简单对比了一下django和flask的代码情况:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">-------------------------------------------------------------------------------
+<pre class="chroma">-------------------------------------------------------------------------------
 Project                      files          blank        comment           code
 -------------------------------------------------------------------------------
 django                         716          19001          25416          87825
-flask                           20           1611           3158           3587
-</code></pre></td></tr></table>
+flask                           20           1611           3158           3587</pre></td></tr></table>
 </div>
-</div><p>仅从文件数量和代码行数可以看到，django是一个庞大的框架，不同于flask是一个简易框架，有700多个模块文件和近9万行代码。在阅读flask源码前，我们还需要先了解sqlalchemy，werkzeug等依赖框架，从pyproject.toml中的依赖项可发现，django默认就没有其它依赖，可以直接开始。这有点类似ios和Android系统，flask需要各种插件的支持，更为开放；django则是全部集成，使用默认的框架就已经可以处理绝大部分web开放需求了。</p>
-<h2 id="django-2">django命令脚手架</h2>
+</div>
+<p>仅从文件数量和代码行数可以看到，django是一个庞大的框架，不同于flask是一个简易框架，有700多个模块文件和近9万行代码。在阅读flask源码前，我们还需要先了解sqlalchemy，werkzeug等依赖框架，从pyproject.toml中的依赖项可发现，django默认就没有其它依赖，可以直接开始。这有点类似ios和Android系统，flask需要各种插件的支持，更为开放；django则是全部集成，使用默认的框架就已经可以处理绝大部分web开放需求了。</p>
+
+<h2 id="django命令脚手架">django命令脚手架</h2>
+
 <p>django提供了一系列脚手架命令，协助开发者创建和管理django项目。可以使用 <em>help</em> 参数查看命令清单:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -409,9 +441,9 @@ flask                           20           1611           3158           3587
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">python3 -m django --help
+<pre class="chroma">python3 -m django --help
 
 Type &#39;python -m django help &lt;subcommand&gt;&#39; for help on a specific subcommand.
 
@@ -441,14 +473,15 @@ Available subcommands:
     startapp
     startproject
     test
-    testserver
-</code></pre></td></tr></table>
+    testserver</pre></td></tr></table>
 </div>
-</div><p>前面使用到的 <em>startproject</em> ， <em>startapp</em> 和 <em>runserver</em> 三个命令是本篇重点介绍的命令，其它的二十多个命令我们在使用到的时候再行介绍。这是 <em>概读法</em> 的精髓，只关注主干，先建立全局视野，再逐步深入。</p>
+</div>
+<p>前面使用到的 <em>startproject</em> ， <em>startapp</em> 和 <em>runserver</em> 三个命令是本篇重点介绍的命令，其它的二十多个命令我们在使用到的时候再行介绍。这是 <em>概读法</em> 的精髓，只关注主干，先建立全局视野，再逐步深入。</p>
+
 <p>django模块的main函数在 <code>__main__.py</code> 中提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -457,9 +490,9 @@ Available subcommands:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&#34;&#34;&#34;
+<pre class="chroma">&#34;&#34;&#34;
 Invokes django-admin when the django module is run as a script.
 
 Example: python -m django check
@@ -467,13 +500,13 @@ Example: python -m django check
 from django.core import management
 
 if __name__ == &#34;__main__&#34;:
-    management.execute_from_command_line()
-</code></pre></td></tr></table>
+    management.execute_from_command_line()</pre></td></tr></table>
 </div>
-</div><p>可以看到 <em>django.core.management</em> 模块提供脚手架的功能实现。同样在project的 <code>manager.py</code> 中也是通过调用management模块来实现项目启动:</p>
+</div>
+<p>可以看到 <em>django.core.management</em> 模块提供脚手架的功能实现。同样在project的 <code>manager.py</code> 中也是通过调用management模块来实现项目启动:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -489,9 +522,9 @@ if __name__ == &#34;__main__&#34;:
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python
+<pre class="chroma">#!/usr/bin/env python
 &#34;&#34;&#34;Django&#39;s command-line utility for administrative tasks.&#34;&#34;&#34;
 import os
 import sys
@@ -506,13 +539,13 @@ def main():
     execute_from_command_line(sys.argv)
 
 if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre></td></tr></table>
+    main()</pre></td></tr></table>
 </div>
-</div><p>ManagementUtility的主要结构如下:</p>
+</div>
+<p>ManagementUtility的主要结构如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -544,9 +577,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ManagementUtility:
+<pre class="chroma">class ManagementUtility:
     &#34;&#34;&#34;
     Encapsulate the logic of the django-admin and manage.py utilities.
     &#34;&#34;&#34;
@@ -577,19 +610,20 @@ if __name__ == &#39;__main__&#39;:
         Given the command-line arguments, figure out which subcommand is being
         run, create a parser appropriate to that command, and run it.
         &#34;&#34;&#34;
-        pass
-</code></pre></td></tr></table>
+        pass</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>init函数解析argv的命令行参数</li>
 <li>main_help_text 输出命令的帮助信息</li>
 <li>fetch_command 查找django模块的子命令</li>
 <li>execute 执行子命令</li>
 </ul>
+
 <p>一个好的命令行工具，离不开清晰的帮助输出。默认的帮助信息是调用main_help_text函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -615,9 +649,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def main_help_text(self, commands_only=False):
+<pre class="chroma">def main_help_text(self, commands_only=False):
     &#34;&#34;&#34;Return the script&#39;s main help text, as a string.&#34;&#34;&#34;
 
     usage = [
@@ -642,13 +676,13 @@ if __name__ == &#39;__main__&#39;:
             &#34;as settings are not properly configured (error: %s).&#34;
             % self.settings_exception))
 
-    return &#39;\n&#39;.join(usage)
-</code></pre></td></tr></table>
+    return &#39;\n&#39;.join(usage)</pre></td></tr></table>
 </div>
-</div><p>main_help_text主要利用了下面4个函数去查找命令清单:</p>
+</div>
+<p>main_help_text主要利用了下面4个函数去查找命令清单:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -680,9 +714,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def find_commands(management_dir):
+<pre class="chroma">def find_commands(management_dir):
     &#34;&#34;&#34;
     Given a path to a management directory, return a list of all the command
     names that are available.
@@ -713,14 +747,15 @@ def get_commands():
     return commands
 
 def call_command(command_name, *args, **options):
-    pass
-</code></pre></td></tr></table>
+    pass</pre></td></tr></table>
 </div>
-</div><p>find_commands查找management/commands下的命令文件，load_command_class使用 <em>import_module</em> 这个动态加载模块的方法导入命令。</p>
+</div>
+<p>find_commands查找management/commands下的命令文件，load_command_class使用 <em>import_module</em> 这个动态加载模块的方法导入命令。</p>
+
 <p>子命令的执行是通过fetch_command找到子命令，然后执行子命令的run_from_argv方法。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -742,9 +777,9 @@ def call_command(command_name, *args, **options):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def execute(self):
+<pre class="chroma">def execute(self):
     ...
     self.fetch_command(subcommand).run_from_argv(self.argv)
 
@@ -765,17 +800,21 @@ def fetch_command(self, subcommand):
         klass = app_name
     else:
         klass = load_command_class(app_name, subcommand)
-    return klass
-</code></pre></td></tr></table>
+    return klass</pre></td></tr></table>
 </div>
-</div><p>在django的core中包含了下面这些命令，多数都直接继承自BaseCommand:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305122457.png" alt=""></p>
+</div>
+<p>在django的core中包含了下面这些命令，多数都直接继承自BaseCommand:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305122457.png" alt="" /></p>
+
 <p>BaseCommand的主要代码结构:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305112904.png" alt=""></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305112904.png" alt="" /></p>
+
 <p>最重要的run_from_argv和execute方法都是命令的执行入口:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -792,9 +831,9 @@ def fetch_command(self, subcommand):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run_from_argv(self, argv):
+<pre class="chroma">def run_from_argv(self, argv):
     ...
     parser = self.create_parser(argv[0], argv[1])
 
@@ -810,33 +849,34 @@ def fetch_command(self, subcommand):
 
 def execute(self, *args, **options):
     output = self.handle(*args, **options)
-    return output
-</code></pre></td></tr></table>
+    return output</pre></td></tr></table>
 </div>
-</div><p>handler方法则留给子类覆盖实现:</p>
+</div>
+<p>handler方法则留给子类覆盖实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def handle(self, *args, **options):
+<pre class="chroma">def handle(self, *args, **options):
     &#34;&#34;&#34;
     The actual logic of the command. Subclasses must implement
     this method.
     &#34;&#34;&#34;
-    raise NotImplementedError(&#39;subclasses of BaseCommand must provide a handle() method&#39;)
-</code></pre></td></tr></table>
+    raise NotImplementedError(&#39;subclasses of BaseCommand must provide a handle() method&#39;)</pre></td></tr></table>
 </div>
-</div><h2 id="startproject--startapp-">startproject &amp;&amp; startapp 命令实现</h2>
+</div>
+<h2 id="startproject-startapp-命令实现">startproject &amp;&amp; startapp 命令实现</h2>
+
 <p><code>startproject</code>和<code>startapp</code>两个命令分别创建项目和app，都派生自TemplateCommand。主要功能实现都在TemplateCommand中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -851,9 +891,9 @@ def execute(self, *args, **options):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># startproject
+<pre class="chroma"># startproject
 def handle(self, **options):
     project_name = options.pop(&#39;name&#39;)
     target = options.pop(&#39;directory&#39;)
@@ -867,34 +907,34 @@ def handle(self, **options):
 def handle(self, **options):
     app_name = options.pop(&#39;name&#39;)
     target = options.pop(&#39;directory&#39;)
-    super().handle(&#39;app&#39;, app_name, target, **options)
-</code></pre></td></tr></table>
+    super().handle(&#39;app&#39;, app_name, target, **options)</pre></td></tr></table>
 </div>
-</div><p>我们使用startproject命令后的项目结构大概如下:</p>
+</div>
+<p>我们使用startproject命令后的项目结构大概如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">├── hello
+<pre class="chroma">├── hello
 │   ├── __init__.py
 │   ├── asgi.py
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-└── manage.py
-</code></pre></td></tr></table>
+└── manage.py</pre></td></tr></table>
 </div>
-</div><p>这和conf下的project_template目录中的模版文件一致：</p>
+</div>
+<p>这和conf下的project_template目录中的模版文件一致：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -902,22 +942,22 @@ def handle(self, **options):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">.
+<pre class="chroma">.
 ├── manage.py-tpl
 └── project_name
     ├── __init__.py-tpl
     ├── asgi.py-tpl
     ├── settings.py-tpl
     ├── urls.py-tpl
-    └── wsgi.py-tpl
-</code></pre></td></tr></table>
+    └── wsgi.py-tpl</pre></td></tr></table>
 </div>
-</div><p>manage.py-tpl模版文件内容:</p>
+</div>
+<p>manage.py-tpl模版文件内容:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -932,9 +972,9 @@ def handle(self, **options):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python
+<pre class="chroma">#!/usr/bin/env python
 &#34;&#34;&#34;Django&#39;s command-line utility for administrative tasks.&#34;&#34;&#34;
 import os
 import sys
@@ -948,14 +988,15 @@ def main():
         ....
 
 if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre></td></tr></table>
+    main()</pre></td></tr></table>
 </div>
-</div><p>可见startproject命令的功能是接收开发者输入的project_name，然后渲染到模版文件中，再生成项目文件。</p>
+</div>
+<p>可见startproject命令的功能是接收开发者输入的project_name，然后渲染到模版文件中，再生成项目文件。</p>
+
 <p>TemplateCommand中模版处理的函数主要内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -986,9 +1027,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.template import Context, Engine
+<pre class="chroma">from django.template import Context, Engine
 
 def handle(self, app_or_project, name, target=None, **options):
     ...
@@ -1018,21 +1059,24 @@ def handle(self, app_or_project, name, target=None, **options):
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, &#39;w&#39;, encoding=&#39;utf-8&#39;) as new_file:
-                        new_file.write(content)
-</code></pre></td></tr></table>
+                        new_file.write(content)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>构建模版参数使用的Context上下文</li>
 <li>遍历模版文件目录</li>
 <li>使用django的模版引擎Engine渲染内容</li>
 <li>用渲染的结果生成项目脚手架文件</li>
 </ul>
+
 <p>django.template.Engine如何工作，和模版引擎mako有什么区别，以后再行介绍，本章我们只需要了解即可。</p>
-<h2 id="runserver-">runserver 命令实现</h2>
+
+<h2 id="runserver-命令实现">runserver 命令实现</h2>
+
 <p>runserver提供了一个开发测试的http服务，帮助启动django项目，也是django使用频率最高的命令。django项目遵循wsgi规范，执行启动之前需要先查找wsgi-application。(如果对wsgi规范不了解的同学，欢迎翻看之前的文章)</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1054,9 +1098,9 @@ def handle(self, app_or_project, name, target=None, **options):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def get_internal_wsgi_application():
+<pre class="chroma">def get_internal_wsgi_application():
     &#34;&#34;&#34;
     Load and return the WSGI application as configured by the user in
     ``settings.WSGI_APPLICATION``. With the default ``startproject`` layout,
@@ -1077,43 +1121,43 @@ def handle(self, app_or_project, name, target=None, **options):
     try:
         return import_string(app_path)
     except ImportError as err:
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>结合注释可以知道这里会载入开发者在project的settings中定义的application:</p>
+</div>
+<p>结合注释可以知道这里会载入开发者在project的settings中定义的application:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">WSGI_APPLICATION = &#39;hello.wsgi.application&#39;
-</code></pre></td></tr></table>
+<pre class="chroma">WSGI_APPLICATION = &#39;hello.wsgi.application&#39;</pre></td></tr></table>
 </div>
-</div><p>默认情况下，自定义的wsgi-application是这样的:</p>
+</div>
+<p>默认情况下，自定义的wsgi-application是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">import os
+<pre class="chroma">import os
 
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault(&#39;DJANGO_SETTINGS_MODULE&#39;, &#39;hello.settings&#39;)
 
-application = get_wsgi_application()
-</code></pre></td></tr></table>
+application = get_wsgi_application()</pre></td></tr></table>
 </div>
-</div><p>继续查看runserver的执行, 主要是 <em>inner_run</em> 函数:</p>
+</div>
+<p>继续查看runserver的执行, 主要是 <em>inner_run</em> 函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1127,9 +1171,9 @@ application = get_wsgi_application()
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from django.core.servers.basehttp import run
+<pre class="chroma">from django.core.servers.basehttp import run
     
 def inner_run(self, *args, **options):
     try:
@@ -1142,15 +1186,17 @@ def inner_run(self, *args, **options):
         os._exit(1)
     except KeyboardInterrupt:
         ..
-        sys.exit(0)
-</code></pre></td></tr></table>
+        sys.exit(0)</pre></td></tr></table>
 </div>
-</div><p>http服务的功能实现由 <code>django.core.servers.basehttp</code> 提供，完成http服务和wsgi之间的衔接，其架构图如下:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305165705.png" alt=""></p>
+</div>
+<p>http服务的功能实现由 <code>django.core.servers.basehttp</code> 提供，完成http服务和wsgi之间的衔接，其架构图如下:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220305165705.png" alt="" /></p>
+
 <p>run函数的代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1167,9 +1213,9 @@ def inner_run(self, *args, **options):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run(addr, port, wsgi_handler, ipv6=False, threading=False, server_cls=WSGIServer):
+<pre class="chroma">def run(addr, port, wsgi_handler, ipv6=False, threading=False, server_cls=WSGIServer):
     server_address = (addr, port)
     if threading:
         httpd_cls = type(&#39;WSGIServer&#39;, (socketserver.ThreadingMixIn, server_cls), {})
@@ -1185,18 +1231,20 @@ def inner_run(self, *args, **options):
         # isn&#39;t terminating correctly.
         httpd.daemon_threads = True
     httpd.set_app(wsgi_handler)
-    httpd.serve_forever()
-</code></pre></td></tr></table>
+    httpd.serve_forever()</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>如果支持多线程，则创建一个WSGIServer和ThreadingMixIn的新类</li>
 <li>创建http服务并启动</li>
 </ul>
+
 <p>django的wsgi-application实现, http协议的实现，下一章再行详细介绍，我们也暂时跳过。在runserver中还有一个非常重要的功能: <em>自动重启服务</em> 。 如果我们修改了项目的代码，服务会自动重启，可以提高开发效率。</p>
+
 <p>比如我们修改api的视图功能，随便增加几个字符，可以在控制台看到大概下面的输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1214,9 +1262,9 @@ def inner_run(self, *args, **options):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># python manage.py runserver
+<pre class="chroma"># python manage.py runserver
 Watching for file changes with StatReloader
 Performing system checks...
 
@@ -1233,14 +1281,15 @@ System check identified no issues (0 silenced).
 March 05, 2022 - 09:12:59
 Django version 4.0, using settings &#39;hello.settings&#39;
 Starting development server at http://127.0.0.1:8000/
-Quit the server with CONTROL-C.
-</code></pre></td></tr></table>
+Quit the server with CONTROL-C.</pre></td></tr></table>
 </div>
-</div><p>runserver命令检测到 <em>/hello/api/views.py</em> 有修改，然后自动使用StatReloader重启服务。</p>
+</div>
+<p>runserver命令检测到 <em>/hello/api/views.py</em> 有修改，然后自动使用StatReloader重启服务。</p>
+
 <p>inner_run有下面2中启动方式, 默认情况下使用autoreload启动:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1249,9 +1298,9 @@ Quit the server with CONTROL-C.
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run(self, **options):
+<pre class="chroma">def run(self, **options):
     &#34;&#34;&#34;Run the server, using the autoreloader if needed.&#34;&#34;&#34;
     ...
     use_reloader = options[&#39;use_reloader&#39;]
@@ -1259,13 +1308,13 @@ Quit the server with CONTROL-C.
     if use_reloader:
         autoreload.run_with_reloader(self.inner_run, **options)
     else:
-        self.inner_run(None, **options)
-</code></pre></td></tr></table>
+        self.inner_run(None, **options)</pre></td></tr></table>
 </div>
-</div><p>autoreload的继承关系如下:</p>
+</div>
+<p>autoreload的继承关系如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1281,9 +1330,9 @@ Quit the server with CONTROL-C.
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseReloader:
+<pre class="chroma">class BaseReloader:
     pass
     
 class StatReloader(BaseReloader):
@@ -1298,13 +1347,13 @@ def get_reloader():
         WatchmanReloader.check_availability()
     except WatchmanUnavailable:
         return StatReloader()
-    return WatchmanReloader()
-</code></pre></td></tr></table>
+    return WatchmanReloader()</pre></td></tr></table>
 </div>
-</div><p>当前版本优先使用WatchmanReloader实现，这依赖于pywatchman库，需要额外安装。否则使用StatReloader的实现，这个实现在之前介绍werkzeug中也有过介绍，本质上都是持续的监听文件的状态变化。</p>
+</div>
+<p>当前版本优先使用WatchmanReloader实现，这依赖于pywatchman库，需要额外安装。否则使用StatReloader的实现，这个实现在之前介绍werkzeug中也有过介绍，本质上都是持续的监听文件的状态变化。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1322,9 +1371,9 @@ def get_reloader():
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class StatReloader(BaseReloader):
+<pre class="chroma">class StatReloader(BaseReloader):
     SLEEP_TIME = 1  # Check for changes once per second.
 
     def tick(self):
@@ -1341,17 +1390,18 @@ def get_reloader():
                     self.notify_file_changed(filepath)
 
             time.sleep(self.SLEEP_TIME)
-            yield
-</code></pre></td></tr></table>
+            yield</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>StatReloader 以1s为间隔检查文件的时间戳变化。</li>
 <li>tick是生成器模式，可以使用next持续调用</li>
 </ul>
+
 <p>当文件有变化后，退出当前进程，并使用subprocess启动新的进程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1362,9 +1412,9 @@ def get_reloader():
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def trigger_reload(filename):
+<pre class="chroma">def trigger_reload(filename):
     logger.info(&#39;%s changed, reloading.&#39;, filename)
     sys.exit(3)
 
@@ -1374,14 +1424,15 @@ def restart_with_reloader():
     while True:
         p = subprocess.run(args, env=new_environ, close_fds=False)
         if p.returncode != 3:
-            return p.returncode
-</code></pre></td></tr></table>
+            return p.returncode</pre></td></tr></table>
 </div>
-</div><h2 id="appsetup">app的setup过程</h2>
+</div>
+<h2 id="app的setup过程">app的setup过程</h2>
+
 <p>runserver命令在执行之前还有很重要的一步就是setup: 加载和初始化开发者自定义的app内容。这是在ManagementUtility的execute函数中开始的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1390,9 +1441,9 @@ def restart_with_reloader():
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def execute(self):
+<pre class="chroma">def execute(self):
     ...
     try:
         settings.INSTALLED_APPS
@@ -1400,13 +1451,13 @@ def restart_with_reloader():
         self.settings_exception = exc
     except ImportError as exc:
         self.settings_exception = exc
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>Settings中会载下面的一些模块，主要是INSTALLED_APPS:</p>
+</div>
+<p>Settings中会载下面的一些模块，主要是INSTALLED_APPS:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1422,9 +1473,9 @@ def restart_with_reloader():
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Settings:
+<pre class="chroma">class Settings:
     def __init__(self, settings_module):
         ...
         # store the settings module in case someone later cares
@@ -1439,13 +1490,13 @@ def restart_with_reloader():
             &#34;LOCALE_PATHS&#34;,
         )
         self._explicit_settings = set()
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>INSTALLED_APPS在项目的setting中定义:</p>
+</div>
+<p>INSTALLED_APPS在项目的setting中定义:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1456,9 +1507,9 @@ def restart_with_reloader():
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Application definition
+<pre class="chroma"># Application definition
 
 INSTALLED_APPS = [
     &#39;django.contrib.admin&#39;,
@@ -1468,82 +1519,87 @@ INSTALLED_APPS = [
     &#39;django.contrib.messages&#39;,
     &#39;django.contrib.staticfiles&#39;,
     &#39;api&#39;,
-]
-</code></pre></td></tr></table>
+]</pre></td></tr></table>
 </div>
-</div><p>这样django框架就完成了开发者自定义的内容动态加载。</p>
-<h2 id="heading">小结</h2>
+</div>
+<p>这样django框架就完成了开发者自定义的内容动态加载。</p>
+
+<h2 id="小结">小结</h2>
+
 <p>Django是一个高度集成的python web开发框架，支持模块化开发。django还提供了一系列脚手架命令，比如使用startproject和startapp协助创建项目和模块模版；使用runserver辅助测试和开发项目。django项目也符合wsgi规范，其http服务的启动中创建了WSGIServer，并且支持多线程模式。django作为一个框架，可以通过约定的配置文件setting动态加载开发者的业务实现。</p>
-<h2 id="heading-1">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>django命令支持智能提示。比如我们 <em>runserver</em> 命令时，不小心输入错误的把字母 <code>u</code> 打成了 <code>i</code>。命令会自动提醒我们，是不是想使用 <em>runserver</em> 命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">python -m django rinserver
+<pre class="chroma">python -m django rinserver
 No Django settings specified.
 Unknown command: &#39;rinserver&#39;. Did you mean runserver?
-Type &#39;python -m django help&#39; for usage.
-</code></pre></td></tr></table>
+Type &#39;python -m django help&#39; for usage.</pre></td></tr></table>
 </div>
-</div><p>智能提示的功能对命令行工具很有帮助，一般的实现就是比较用户输入和已知命令的重合度，从而找到最接近的命令。这是「字符串编辑距离」算法的实际应用。个人认为理解场景，这会比死刷算法更有用，我偶尔会在面试的时候使用这个例子来观测面试人的算法水准。django这里直接使用python标准库difflib提供的实现:</p>
+</div>
+<p>智能提示的功能对命令行工具很有帮助，一般的实现就是比较用户输入和已知命令的重合度，从而找到最接近的命令。这是「字符串编辑距离」算法的实际应用。个人认为理解场景，这会比死刷算法更有用，我偶尔会在面试的时候使用这个例子来观测面试人的算法水准。django这里直接使用python标准库difflib提供的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from difflib import get_close_matches
+<pre class="chroma">from difflib import get_close_matches
 
 possible_matches = get_close_matches(subcommand, commands)
 sys.stderr.write(&#39;Unknown command: %r&#39; % subcommand)
 if possible_matches:
-    sys.stderr.write(&#39;. Did you mean %s?&#39; % possible_matches[0])
-</code></pre></td></tr></table>
+    sys.stderr.write(&#39;. Did you mean %s?&#39; % possible_matches[0])</pre></td></tr></table>
 </div>
-</div><p>get_close_matches的使用示例:</p>
+</div>
+<p>get_close_matches的使用示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; get_close_matches(&#34;appel&#34;, [&#34;ape&#34;, &#34;apple&#34;, &#34;peach&#34;, &#34;puppy&#34;])
-[&#39;apple&#39;, &#39;ape&#39;]
-</code></pre></td></tr></table>
+<pre class="chroma">&gt;&gt;&gt; get_close_matches(&#34;appel&#34;, [&#34;ape&#34;, &#34;apple&#34;, &#34;peach&#34;, &#34;puppy&#34;])
+[&#39;apple&#39;, &#39;ape&#39;]</pre></td></tr></table>
 </div>
-</div><p>对算法感兴趣的同学，可以自己进一步了解其实现细节。</p>
+</div>
+<p>对算法感兴趣的同学，可以自己进一步了解其实现细节。</p>
+
 <p>另外一个小技巧是一个命名的异化细节。<em>class</em> 一般在很多开发语言中都是关键字，如果我们要定义一个class类型的变量名时候，避免关键字冲突。一种方法是使用 <em>klass</em> 替代:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 
+<pre class="chroma"># 
 if isinstance(app_name, BaseCommand):
     # If the command is already loaded, use it directly.
     klass = app_name
 else:
-    klass = load_command_class(app_name, subcommand)
-</code></pre></td></tr></table>
+    klass = load_command_class(app_name, subcommand)</pre></td></tr></table>
 </div>
-</div><p>另一种是使用 <em>clazz</em> 替代:</p>
+</div>
+<p>另一种是使用 <em>clazz</em> 替代:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1560,29 +1616,31 @@ else:
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">if ( classes.length ) {
-	while ( ( elem = this[ i++ ] ) ) {
-		curValue = getClass( elem );
-		...
-		if ( cur ) {
-			j = 0;
-			while ( ( clazz = classes[ j++ ] ) ) {
+<pre class="chroma">if ( classes.length ) {
+    while ( ( elem = this[ i++ ] ) ) {
+        curValue = getClass( elem );
+        ...
+        if ( cur ) {
+            j = 0;
+            while ( ( clazz = classes[ j++ ] ) ) {
 
-				// Remove *all* instances
-				while ( cur.indexOf( &#34; &#34; + clazz + &#34; &#34; ) &gt; -1 ) {
-					cur = cur.replace( &#34; &#34; + clazz + &#34; &#34;, &#34; &#34; );
-				}
-			}
-		    ...
-		}
-	}
-}
-</code></pre></td></tr></table>
+                // Remove *all* instances
+                while ( cur.indexOf( &#34; &#34; + clazz + &#34; &#34; ) &gt; -1 ) {
+                    cur = cur.replace( &#34; &#34; + clazz + &#34; &#34;, &#34; &#34; );
+                }
+            }
+            ...
+        }
+    }
+}</pre></td></tr></table>
 </div>
-</div><p>大家一般都用哪一种呢?</p>
-<h2 id="heading-2">参考链接</h2>
+</div>
+<p>大家一般都用哪一种呢?</p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://docs.djangoproject.com/zh-hans/4.0/intro/tutorial01/">https://docs.djangoproject.com/zh-hans/4.0/intro/tutorial01/</a></li>
 <li><a href="https://docs.python.org/zh-cn/3/library/difflib.html">https://docs.python.org/zh-cn/3/library/difflib.html</a></li>
@@ -1672,7 +1730,7 @@ else:
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

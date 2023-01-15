@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/docker-timezone/" />
-<meta property="article:published_time" content="2019-03-17T18:25:24+08:00" />
-<meta property="article:modified_time" content="2019-03-17T18:25:24+08:00" />
+<meta property="article:published_time" content="2019-03-17T18:25:24&#43;08:00"/>
+<meta property="article:modified_time" content="2019-03-17T18:25:24&#43;08:00"/>
+
 <meta itemprop="name" content="Docker镜像时区设置">
 <meta itemprop="description" content="alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到">
+
+
 <meta itemprop="datePublished" content="2019-03-17T18:25:24&#43;08:00" />
 <meta itemprop="dateModified" content="2019-03-17T18:25:24&#43;08:00" />
 <meta itemprop="wordCount" content="1046">
 
 
 
-<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Docker镜像时区设置"/>
 <meta name="twitter:description" content="alpine系统时区设置 我们先使用docker run -it --name alpine_test --rm alpine:3.9 sh命令启动一个alpine系统。 查看系统时间: 1 2 3 4 # echo $TZ # date Mon Mar 11 10:47:20 UTC 2019 看到"/>
 
@@ -137,138 +141,151 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#alpine">alpine系统时区设置</a></li>
-        <li><a href="#alpine-1">alpine镜像扩展</a></li>
-        <li><a href="#heading">应用程序时间示例</a></li>
-      </ul>
-    </li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#alpine系统时区设置">alpine系统时区设置</a></li>
+<li><a href="#alpine镜像扩展">alpine镜像扩展</a></li>
+<li><a href="#应用程序时间示例">应用程序时间示例</a></li>
+</ul></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <h3 id="alpine">alpine系统时区设置</h3>
+      
+
+<h3 id="alpine系统时区设置">alpine系统时区设置</h3>
+
 <p>我们先使用<code>docker run -it --name alpine_test --rm alpine:3.9 sh</code>命令启动一个<strong>alpine</strong>系统。</p>
+
 <p>查看系统时间:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># echo $TZ
+<pre class="chroma"># echo $TZ
 
 # date
-Mon Mar 11 10:47:20 UTC 2019
-</code></pre></td></tr></table>
+Mon Mar 11 10:47:20 UTC 2019</pre></td></tr></table>
 </div>
-</div><p>看到默认时间为<strong>UTC</strong>时间，比北京时间晚8个小时。</p>
+</div>
+<p>看到默认时间为<strong>UTC</strong>时间，比北京时间晚8个小时。</p>
+
 <p>先安装**tzdata*包：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">apk add --no-cache tzdata
-</code></pre></td></tr></table>
+<pre class="chroma">apk add --no-cache tzdata</pre></td></tr></table>
 </div>
-</div><p>然后有下面2种方式设置时区:</p>
+</div>
+<p>然后有下面2种方式设置时区:</p>
+
 <ol>
-<li>设置<code>TZ</code>环境变量</li>
-</ol>
+<li><p>设置<code>TZ</code>环境变量</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">export TZ=&#34;Asia/Shanghai&#34;
+<pre class="chroma">export TZ=&#34;Asia/Shanghai&#34;
 # echo $TZ
 Asia/Shanghai
 # date
-Mon Mar 11 18:48:30 CST 2019
-</code></pre></td></tr></table>
+Mon Mar 11 18:48:30 CST 2019</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>注意，这种方式只对当前终端有效。可以使用docker exec进行检查。</p>
-</blockquote>
-<ol start="2">
-<li>修改本地时间</li>
-</ol>
+</blockquote></li>
+
+<li><p>修改本地时间</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># date
+<pre class="chroma"># date
 Mon Mar 11 11:48:56 UTC 2019
 # ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # date
-Mon Mar 11 18:49:02 CST 2019
-</code></pre></td></tr></table>
+Mon Mar 11 18:49:02 CST 2019</pre></td></tr></table>
 </div>
-</div><p>从nginx-alpine镜像的<a href="https://github.com/nginxinc/docker-nginx/blob/7890fc2342613e6669ad83ceead9c81136d2cc0a/mainline/alpine/Dockerfile">dockerfile</a>也可以看到这种处理方式:</p>
+</div></li>
+</ol>
+
+<p>从nginx-alpine镜像的<a href="https://github.com/nginxinc/docker-nginx/blob/7890fc2342613e6669ad83ceead9c81136d2cc0a/mainline/alpine/Dockerfile">dockerfile</a>也可以看到这种处理方式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Bring in tzdata so users could set the timezones through the environment
+<pre class="chroma"># Bring in tzdata so users could set the timezones through the environment
 # variables
-&amp;&amp; apk add --no-cache tzdata
-</code></pre></td></tr></table>
+&amp;&amp; apk add --no-cache tzdata</pre></td></tr></table>
 </div>
-</div><h3 id="alpine-1">alpine镜像扩展</h3>
+</div>
+<h3 id="alpine镜像扩展">alpine镜像扩展</h3>
+
 <p>既然知道如何设置<strong>alpine</strong>系统时间，我们可以这样编写镜像文件<code>dockerfile</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">FROM alpine:3.9
-RUN apk add --no-cache tzdata
-</code></pre></td></tr></table>
+<pre class="chroma">FROM alpine:3.9
+RUN apk add --no-cache tzdata</pre></td></tr></table>
 </div>
-</div><p>然后编译镜像<code>docker build . -f Dockerfile -t alpine-ext:0.0.1</code>。</p>
+</div>
+<p>然后编译镜像<code>docker build . -f Dockerfile -t alpine-ext:0.0.1</code>。</p>
+
 <p>使用<code>docker run -it --rm -e TZ=Asia/Shanghai alpine-ext:0.0.1 sh</code>命令，然后执行<code>date</code>结果为<code>Mon Mar 11 20:11:16 CST 2019</code>；使用<code>docker run -it --rm -e TZ=Asia/Bangkok alpine-ext:0.0.1 sh</code>命令，然后执行<code>date</code>结果为<code>Mon Mar 11 19:12:16 +07 2019</code>。曼谷时间比北京时间晚1个小时，这样可以看到2个时间都正确。</p>
+
 <p>这种方式还展示了可以在运行时指定时区。</p>
+
 <p>另外如果确认代码不存在国际化需求，也可以直接将时区定义固定为<strong>CST</strong>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">FROM alpine
+<pre class="chroma">FROM alpine
 RUN apk add --no-cache tzdata \
     &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     &amp;&amp; echo &#34;Asia/Shanghai&#34; &gt; /etc/timezone
-ENV TZ Asia/Shanghai
-</code></pre></td></tr></table>
+ENV TZ Asia/Shanghai</pre></td></tr></table>
 </div>
-</div><h3 id="heading">应用程序时间示例</h3>
+</div>
+<h3 id="应用程序时间示例">应用程序时间示例</h3>
+
 <p>我们选择go语言实现:<code>gotime.go</code>,代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -287,37 +304,39 @@ ENV TZ Asia/Shanghai
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<pre class="chroma"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;fmt&#34;</span>
-	<span class="s">&#34;time&#34;</span>
+    <span class="s">&#34;fmt&#34;</span>
+    <span class="s">&#34;time&#34;</span>
 <span class="p">)</span>
 
-<span class="kd">func</span> <span class="nf">main</span><span class="p">(</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">currentTime</span><span class="o">:=</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">(</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span> <span class="s">&#34;currentTime&#34;</span><span class="p">,</span><span class="nx">currentTime</span><span class="p">)</span>
-	<span class="nx">curNow</span><span class="o">:=</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">Local</span><span class="p">(</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span> <span class="s">&#34;localTime&#34;</span><span class="p">,</span><span class="nx">curNow</span><span class="p">)</span>
-	<span class="nx">name</span><span class="p">,</span> <span class="nx">offset</span> <span class="o">:=</span> <span class="nx">currentTime</span><span class="p">.</span><span class="nf">Zone</span><span class="p">(</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span><span class="s">&#34;timeZone&#34;</span><span class="p">,</span><span class="nx">name</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %d\n&#34;</span><span class="p">,</span><span class="s">&#34;offset&#34;</span><span class="p">,</span><span class="nx">offset</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span><span class="s">&#34;UTCTime&#34;</span><span class="p">,</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">UTC</span><span class="p">(</span><span class="p">)</span><span class="p">)</span>
-	<span class="nx">timeUnix</span><span class="o">:=</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="p">)</span>
-	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %d\n&#34;</span><span class="p">,</span><span class="s">&#34;unixTime&#34;</span><span class="p">,</span><span class="nx">timeUnix</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">currentTime</span><span class="o">:=</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span> <span class="s">&#34;currentTime&#34;</span><span class="p">,</span><span class="nx">currentTime</span><span class="p">)</span>
+    <span class="nx">curNow</span><span class="o">:=</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">Local</span><span class="p">()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span> <span class="s">&#34;localTime&#34;</span><span class="p">,</span><span class="nx">curNow</span><span class="p">)</span>
+    <span class="nx">name</span><span class="p">,</span> <span class="nx">offset</span> <span class="o">:=</span> <span class="nx">currentTime</span><span class="p">.</span><span class="nf">Zone</span><span class="p">()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span><span class="s">&#34;timeZone&#34;</span><span class="p">,</span><span class="nx">name</span><span class="p">)</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %d\n&#34;</span><span class="p">,</span><span class="s">&#34;offset&#34;</span><span class="p">,</span><span class="nx">offset</span><span class="p">)</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %s\n&#34;</span><span class="p">,</span><span class="s">&#34;UTCTime&#34;</span><span class="p">,</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">UTC</span><span class="p">())</span>
+    <span class="nx">timeUnix</span><span class="o">:=</span><span class="nx">currentTime</span><span class="p">.</span><span class="nf">Unix</span><span class="p">()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%12s: %d\n&#34;</span><span class="p">,</span><span class="s">&#34;unixTime&#34;</span><span class="p">,</span><span class="nx">timeUnix</span><span class="p">)</span>
+<span class="p">}</span></pre></td></tr></table>
 </div>
-</div><p>使用<code>go build gotime.go</code>命令得到<code>gotime</code></p>
+</div>
+<p>使用<code>go build gotime.go</code>命令得到<code>gotime</code></p>
+
 <blockquote>
 <p>如果是在mac上编译，编译命令需要调整成: <code>GOOS=linux GOARCH=amd64 go build gotime.go</code>，即编译为linux 64位程序。</p>
 </blockquote>
+
 <p>先使用<code>docker run -it --rm -e TZ=Asia/Shanghai --name=alpine_test alpine-ext:0.0.1 sh</code>命令启动容器。然后通过<code>docker cp go/src/gotime alpine_test:/</code>复制<strong>gotime</strong>到容器中，校验:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -326,9 +345,9 @@ ENV TZ Asia/Shanghai
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># date 
+<pre class="chroma"># date 
 Mon Mar 11 18:12:05 CST 2019
 # ./gotime 
  currentTime: 2019-03-11 18:12:19.131226991 +0800 CST m=+0.000535254
@@ -336,17 +355,21 @@ Mon Mar 11 18:12:05 CST 2019
     timeZone: CST
       offset: 28800
      UTCTime: 2019-03-11 10:12:19.131226991 +0000 UTC
-    unixTime: 1552299139
-</code></pre></td></tr></table>
+    unixTime: 1552299139</pre></td></tr></table>
 </div>
-</div><p>从结果看，应用程序获取到正确时间。</p>
+</div>
+<p>从结果看，应用程序获取到正确时间。</p>
+
 <blockquote>
 <p>插句题外话，go适合云计算的特性在这里完美展现出来。其它语言比如python，只能够换成python:3.7-alpine这样的镜像，而go可以独立运行，编译后copy到alpine镜像即可运行，所以镜像会非常小。</p>
 </blockquote>
+
 <p>最后我们可以得到下面结论：</p>
+
 <p><strong>安装了<code>tzdata</code>包的docker镜像，都可以使用环境变量<code>TZ=Asia/Shanghai</code>方式调整时区。</strong></p>
+
 <p>最后，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
 
     </div>
 
@@ -426,7 +449,7 @@ Mon Mar 11 18:12:05 CST 2019
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是: Python虚拟环境指南2020版 P" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python-env-2021/" />
-<meta property="article:published_time" content="2021-04-11T07:28:50+08:00" />
-<meta property="article:modified_time" content="2021-04-11T07:28:50+08:00" />
+<meta property="article:published_time" content="2021-04-11T07:28:50&#43;08:00"/>
+<meta property="article:modified_time" content="2021-04-11T07:28:50&#43;08:00"/>
+
 <meta itemprop="name" content="Python虚拟环境指南2021版本">
 <meta itemprop="description" content="又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是: Python虚拟环境指南2020版 P">
+
+
 <meta itemprop="datePublished" content="2021-04-11T07:28:50&#43;08:00" />
 <meta itemprop="dateModified" content="2021-04-11T07:28:50&#43;08:00" />
 <meta itemprop="wordCount" content="1000">
 
 
 
-<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="指南," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Python虚拟环境指南2021版本"/>
 <meta name="twitter:description" content="又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是: Python虚拟环境指南2020版 P"/>
 
@@ -137,93 +141,114 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">导读</a></li>
-    <li><a href="#vscodewsl">使用vscode连接远程WSL工作区</a></li>
-    <li><a href="#vscodessh">使用vscode连接远程SSH工作区</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#导读">导读</a></li>
+<li><a href="#使用vscode连接远程wsl工作区">使用vscode连接远程WSL工作区</a></li>
+<li><a href="#使用vscode连接远程ssh工作区">使用vscode连接远程SSH工作区</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p><img src="https://user-gold-cdn.xitu.io/2019/4/6/169ef055b80d8a61?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1" alt="env"></p>
+      
+
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/6/169ef055b80d8a61?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1" alt="env" /></p>
+
 <p>又到了一年一度的python虚拟环境指南发布的时刻。这是python虚拟环境指南的第三篇，之前的两篇是:</p>
+
 <ul>
 <li><a href="https://game404.github.io/post/python-env-2020/">Python虚拟环境指南2020版</a></li>
 <li><a href="https://game404.github.io/post/python-env-2019/">Python虚拟环境指南2019版</a></li>
 </ul>
+
 <p>2019年我介绍使用虚拟环境可以避免个各种python版本冲突，提高工作效率；在2020年，我比较和推荐了venv，pipenv和poetry三种虚拟环境的使用场景(目前看之前的内容，还是有效，没看过的朋友欢迎去查看)。本文则主要面向windows用户，如何屏蔽开发环境和运行环境的差异，减少心智障碍，包括下面三个部分:</p>
+
 <ul>
 <li>导读</li>
 <li>使用vscode连接远程WSL工作区</li>
 <li>使用vscode连接远程SSH工作区</li>
 </ul>
-<h2 id="heading">导读</h2>
+
+<h2 id="导读">导读</h2>
+
 <p>程序员的电脑，大家都推荐的是mac吧。主要在于mac对开发比较友好，同时开发环境(macOS)和运行环境(Linux)切换也比较丝滑。但是mac和win的价格对比也很感人，比如下面差不多的机器，确有小一半的价格差异:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/price.png" alt="price"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/price.png" alt="price" /></p>
+
 <p>如果你有一个win的电脑，要学python开发的，我建议你使用我下面推荐的省钱大法。</p>
-<h2 id="vscodewsl">使用vscode连接远程WSL工作区</h2>
+
+<h2 id="使用vscode连接远程wsl工作区">使用vscode连接远程WSL工作区</h2>
+
 <p>首先在win10机器上安装好wsl，完成后的wsl是这样的:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/ubuntu-wsl.png" alt="ubuntu-wsl"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/ubuntu-wsl.png" alt="ubuntu-wsl" /></p>
+
 <p>wsl和主机之间的磁盘可以共享，在<code>/mnt/</code>目录:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ll /mnt/
+<pre class="chroma">$ ll /mnt/
 total 0
 drwxr-xr-x 1 root  root  4096 Mar 30  2019 ./
 drwxr-xr-x 1 root  root  4096 Mar 30  2019 ../
 drwxrwxrwx 1 shawn shawn 4096 Apr  3 08:48 c/
-drwxrwxrwx 1 shawn shawn 4096 Mar 22 22:48 d/
-</code></pre></td></tr></table>
+drwxrwxrwx 1 shawn shawn 4096 Mar 22 22:48 d/</pre></td></tr></table>
 </div>
-</div><p>一样可以使用venv创建python虚拟环境:</p>
+</div>
+<p>一样可以使用venv创建python虚拟环境:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">shawn@DESKTOP-I60LPM9:~/opensource$ python3 -m venv .venv
+<pre class="chroma">shawn@DESKTOP-I60LPM9:~/opensource$ python3 -m venv .venv
 shawn@DESKTOP-I60LPM9:~/opensource$ source .venv/bin/activate
-(.venv) shawn@DESKTOP-I60LPM9:~/opensource$ 
-</code></pre></td></tr></table>
+(.venv) shawn@DESKTOP-I60LPM9:~/opensource$ </pre></td></tr></table>
 </div>
-</div><p>下面我们就一步一步学习如何使用vscode连接到远程WSL工作区。首先点击下图中左下角的[⚡]
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs.png" alt="vs">
+</div>
+<p>下面我们就一步一步学习如何使用vscode连接到远程WSL工作区。首先点击下图中左下角的[⚡]
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs.png" alt="vs" />
 这时候会弹出选择工作区的菜单，我们可以选择[Remote-WSL: New Window]:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl.png" alt="vs-wsl">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl.png" alt="vs-wsl" />
 vscode会打开新窗口,显示正在连接WSL(Ubuntu)：
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl2.png" alt="vs-wsl2">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl2.png" alt="vs-wsl2" />
 成功连接后, 左下角显示出wsl的名称。还可以进入terminal验证设备信息和前面直接使用wsl一致:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl3.png" alt="vs-wsl3">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl3.png" alt="vs-wsl3" />
 给远程的WSL安装vscode的python扩展：
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl-p.png" alt="vs-wsl-p">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl-p.png" alt="vs-wsl-p" />
 在setting中搜索python，然后设置evn为 <code>${workspaceFolder}/.venv</code> 使用我们创建好的虚拟环境:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/python-env.png" alt="vs-env">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/python-env.png" alt="vs-env" />
 编写测试代码进行测试:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl-p2.png" alt="vs-wsl-p2"></p>
-<h2 id="vscodessh">使用vscode连接远程SSH工作区</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-wsl-p2.png" alt="vs-wsl-p2" /></p>
+
+<h2 id="使用vscode连接远程ssh工作区">使用vscode连接远程SSH工作区</h2>
+
 <p>先使用vitualbox创建一个centos的虚拟机:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/centos-vm.png" alt="centos-vm"></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/centos-vm.png" alt="centos-vm" /></p>
+
 <p>同样是点击左下角的[⚡]这次在菜单中选择Remote-ssh:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh.png" alt="vs-ssh">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh.png" alt="vs-ssh" />
 输入虚拟机的ip和密码:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh2.png" alt="vs-ssh2">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh2.png" alt="vs-ssh2" />
 左小角同样位置会显示远程主机连接成功，然后安装vscode的python扩展
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh3.png" alt="vs-ssh3">
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh3.png" alt="vs-ssh3" />
 和wsl同样设置后，编写代码进行测试:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh-p.png" alt="vs-ssh-p"></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/Image/vs-ssh-p.png" alt="vs-ssh-p" /></p>
+
 <p>最后，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
 
     </div>
 
@@ -307,7 +332,7 @@ vscode会打开新窗口,显示正在连接WSL(Ubuntu)：
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

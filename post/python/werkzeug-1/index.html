@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/werkzeug-1/" />
-<meta property="article:published_time" content="2021-05-28T00:35:13+08:00" />
-<meta property="article:modified_time" content="2021-05-28T00:35:13+08:00" />
+<meta property="article:published_time" content="2021-05-28T00:35:13&#43;08:00"/>
+<meta property="article:modified_time" content="2021-05-28T00:35:13&#43;08:00"/>
+
 <meta itemprop="name" content="Werkzeug 源码阅读-上">
 <meta itemprop="description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是">
+
+
 <meta itemprop="datePublished" content="2021-05-28T00:35:13&#43;08:00" />
 <meta itemprop="dateModified" content="2021-05-28T00:35:13&#43;08:00" />
-<meta itemprop="wordCount" content="4947">
+<meta itemprop="wordCount" content="4949">
 
 
 
-<meta itemprop="keywords" content="http,开源项目,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="http,开源项目,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Werkzeug 源码阅读-上"/>
 <meta name="twitter:description" content="Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是"/>
 
@@ -137,32 +141,40 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">概要</a></li>
-    <li><a href="#serving">serving</a></li>
-    <li><a href="#request--response">request && response</a>
-      <ul>
-        <li><a href="#sansiorequest--sansio-response">sansio.Request && sansio-Response</a></li>
-        <li><a href="#wrappersrequest">wrappers.Request</a></li>
-        <li><a href="#wrappersresponse">wrappers.Response</a></li>
-      </ul>
-    </li>
-    <li><a href="#local">local实现</a></li>
-    <li><a href="#heading-1">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#概要">概要</a></li>
+<li><a href="#serving">serving</a></li>
+<li><a href="#request-response">request &amp;&amp; response</a>
+<ul>
+<li><a href="#sansio-request-sansio-response">sansio.Request &amp;&amp; sansio-Response</a></li>
+<li><a href="#wrappers-request">wrappers.Request</a></li>
+<li><a href="#wrappers-response">wrappers.Response</a></li>
+</ul></li>
+<li><a href="#local实现">local实现</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。对<code>Werkzeug</code>正确发音这块有兴趣的朋友，可以查看底部的参考链接。本文分下面几个部分:</p>
+      
+
+<p>Werkzeug是一个全面的WSGI Web应用程序库。它最初是WSGI实用程序各种工具的简单集合，现已成为最高级的WSGI实用程序库之一，是Flask背后的项目。<code>Werkzeug</code> 是一个德语单词，工具的意思。这个单词发音对我来说，有点困难（可能也是它知名度不高的重要因素之一），刚好官方logo是个锤子，我就简称“德国锤子”。对<code>Werkzeug</code>正确发音这块有兴趣的朋友，可以查看底部的参考链接。本文分下面几个部分:</p>
+
 <ul>
 <li>概要</li>
 <li>serving &amp;&amp; wsgi</li>
 <li>request &amp;&amp; response</li>
 <li>local实现</li>
 </ul>
-<h2 id="heading">概要</h2>
+
+<h2 id="概要">概要</h2>
+
 <p>本次代码采用的版本是 <code>2.0.0</code>, 项目主要结构如下:</p>
+
 <table>
 <thead>
 <tr>
@@ -170,39 +182,48 @@
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>serving</td>
 <td>http服务和wsgi规范的实现</td>
 </tr>
+
 <tr>
 <td>request &amp;&amp; response</td>
 <td>请求和响应处理</td>
 </tr>
+
 <tr>
 <td>local</td>
 <td>多线程部分实现</td>
 </tr>
+
 <tr>
 <td>middleware</td>
 <td>中间件部分实现</td>
 </tr>
+
 <tr>
 <td>routing &amp;&amp; urls</td>
 <td>路由和URL的处理</td>
 </tr>
+
 <tr>
 <td>datastuctures</td>
 <td>数据结构</td>
 </tr>
 </tbody>
 </table>
+
 <p>“德国锤子”项目比较重要，我会使用概读法和慢读法把项目尽量读透。文章计划分为上下两篇，本文是上篇，介绍前3个部分。</p>
+
 <p>正式开始之前，我们先回顾一下http服务和wsgi-application。</p>
+
 <p>http服务简单回顾:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -220,9 +241,9 @@
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># http/server.py
+<pre class="chroma"># http/server.py
 def test(HandlerClass=SimpleHTTPRequestHandler,
          ServerClass=HTTPServer, protocol=&#34;HTTP/1.0&#34;, port=8000, bind=&#34;&#34;):
     server_address = (bind, port)
@@ -239,18 +260,19 @@ def test(HandlerClass=SimpleHTTPRequestHandler,
             sys.exit(0)
 
 # self.rfile.readline(65537)
-# self.wfile.write(body)
-</code></pre></td></tr></table>
+# self.wfile.write(body)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>HTTPServer负责实现http服务。</li>
 <li>SimpleHTTPRequestHandler处理http请求。</li>
 <li>请求和响应在rfile和wfile这2个IO上。</li>
 </ul>
+
 <p>wsgi-application简单回顾:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -277,9 +299,9 @@ def test(HandlerClass=SimpleHTTPRequestHandler,
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># wsgiref/simple_server.py
+<pre class="chroma"># wsgiref/simple_server.py
 def demo_app(environ,start_response):
     from io import StringIO
     stdout = StringIO()
@@ -305,21 +327,24 @@ if __name__ == &#39;__main__&#39;:
         print(&#34;Serving HTTP on&#34;, sa[0], &#34;port&#34;, sa[1], &#34;...&#34;)
         import webbrowser
         webbrowser.open(&#39;http://localhost:8000/xyz?abc&#39;)
-        httpd.handle_request()  # serve one request, then exit
-</code></pre></td></tr></table>
+        httpd.handle_request()  # serve one request, then exit</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>WSGIServer实现符合wsgi规范的http服务</li>
 <li>WSGIRequestHandler实现wsgi的请求</li>
 <li>wsgi-application负责实现wsgi应用程序</li>
 <li>应用程序从environ中获取请求数据，使用start_response回调函数处理http响应头，使用返回值返回请求数据</li>
 </ul>
-<hr>
+
+<hr />
+
 <h2 id="serving">serving</h2>
+
 <p>serving模块提供服务入口，使用 <code>argparse</code> 处理命令行工具:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -330,9 +355,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def main() -&gt; None:
+<pre class="chroma">def main() -&gt; None:
     &#34;&#34;&#34;A simple command-line interface for :py:func:`run_simple`.&#34;&#34;&#34;
     import argparse
     ...
@@ -342,16 +367,17 @@ if __name__ == &#39;__main__&#39;:
         application=import_string(args.application),
         use_reloader=args.reload,
         use_debugger=args.debug,
-    )
-</code></pre></td></tr></table>
+    )</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>主要就3个参数，服务器IP和端口不用说了，重点是application，可以是外部模块名，自动加载。</li>
 </ul>
+
 <p>负责创建服务的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -374,9 +400,9 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def make_server(
+<pre class="chroma">def make_server(
     host: str,
     port: int,
     app: &#34;WSGIApplication&#34;,
@@ -398,35 +424,36 @@ if __name__ == &#39;__main__&#39;:
     else:
         return BaseWSGIServer(
             host, port, app, request_handler, passthrough_errors, ssl_context, fd=fd
-        )
-</code></pre></td></tr></table>
+        )</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>根据参数选择是创建多线程，多进程还是普通的服务</li>
 </ul>
+
 <p>多线程和多进程服务使用MixIn方式组合而来：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ThreadedWSGIServer(socketserver.ThreadingMixIn, BaseWSGIServer):
+<pre class="chroma">class ThreadedWSGIServer(socketserver.ThreadingMixIn, BaseWSGIServer):
     multithread = True
     daemon_threads = True
 
 class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
-    multiprocess = True
-</code></pre></td></tr></table>
+    multiprocess = True</pre></td></tr></table>
 </div>
-</div><p>WSGIServer的基础实现:</p>
+</div>
+<p>WSGIServer的基础实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -439,9 +466,9 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseWSGIServer(HTTPServer):
+<pre class="chroma">class BaseWSGIServer(HTTPServer):
     request_queue_size = LISTEN_QUEUE
     def __init__(
         self,
@@ -453,16 +480,17 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
         ssl_context: t.Optional[_TSSLContextArg] = None,
         fd: t.Optional[int] = None,
     ) -&gt; None:
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>注意BaseWSGIServer是继承自 <em>HTTPServer</em> 没有使用wsgiref模块</li>
 </ul>
+
 <p>重点实现在 <em>WSGIRequestHandler</em> 处理请求部分:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -471,9 +499,9 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WSGIRequestHandler(BaseHTTPRequestHandler):
+<pre class="chroma">class WSGIRequestHandler(BaseHTTPRequestHandler):
     &#34;&#34;&#34;A request handler that implements WSGI dispatching.&#34;&#34;&#34;
     
     def handle_one_request(self) -&gt; None:
@@ -481,13 +509,13 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
         self.raw_requestline = self.rfile.readline()
         ...
         self.parse_request():
-            self.run_wsgi()
-</code></pre></td></tr></table>
+            self.run_wsgi()</pre></td></tr></table>
 </div>
-</div><p>每个请求都执行对应的WSGI实现:</p>
+</div>
+<p>每个请求都执行对应的WSGI实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -515,9 +543,9 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def run_wsgi(self) -&gt; None:
+<pre class="chroma">def run_wsgi(self) -&gt; None:
     self.environ = environ = self.make_environ()
     status_set: t.Optional[str] = None
     headers_set: t.Optional[t.List[t.Tuple[str, str]]] = None
@@ -544,18 +572,19 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
             if hasattr(application_iter, &#34;close&#34;):
                 application_iter.close()  # type: ignore
     
-    execute(self.server.app)
-</code></pre></td></tr></table>
+    execute(self.server.app)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>生成wsgi的environ</li>
 <li>生成start_response回调方法</li>
 <li>执行app，传入env和start_response回调，然后遍历执行结果，写入到wfile</li>
 </ul>
+
 <p>make_environ主要就是将请求的数据读取转换成env:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -582,9 +611,9 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"> def make_environ(self) -&gt; &#34;WSGIEnvironment&#34;:
+<pre class="chroma"> def make_environ(self) -&gt; &#34;WSGIEnvironment&#34;:
         environ: &#34;WSGIEnvironment&#34; = {
             &#34;wsgi.version&#34;: (1, 0),
             &#34;wsgi.url_scheme&#34;: url_scheme,
@@ -610,17 +639,21 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
             &#34;SERVER_PORT&#34;: str(self.server.server_address[1]),
             &#34;SERVER_PROTOCOL&#34;: self.request_version,
         }
-        return environ
-</code></pre></td></tr></table>
+        return environ</pre></td></tr></table>
 </div>
-</div><hr>
-<h2 id="request--response">request &amp;&amp; response</h2>
+</div>
+<hr />
+
+<h2 id="request-response">request &amp;&amp; response</h2>
+
 <p>request&amp;&amp;response分两层实现，底层在sansio包中，是纯粹的逻辑结构；上层在wrappers包中，包含了一下wsgi的实现。</p>
-<h3 id="sansiorequest--sansio-response">sansio.Request &amp;&amp; sansio-Response</h3>
+
+<h3 id="sansio-request-sansio-response">sansio.Request &amp;&amp; sansio-Response</h3>
+
 <p>sansio.Request的构造函数，这个类的注释比较重要，我张贴了原文:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -640,9 +673,9 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Request:
+<pre class="chroma">class Request:
     &#34;&#34;&#34;Represents the non-IO parts of a HTTP request, including the
     method, URL info, and headers.
 
@@ -661,33 +694,36 @@ class ForkingWSGIServer(ForkingMixIn, BaseWSGIServer):
         headers: Headers,
         remote_addr: t.Optional[str],
     ) -&gt; None:
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>sansio.Request是non-IO理念的HTTP request实现，希望IO和逻辑像三明治(sandwich)一样，分层in-IO/业务逻辑/out-IO三层。这种方式实现的Request对象比较抽象，不涉及io和aio具体实现，比较通用，而且可以 <strong>快速测试</strong> 。如果wsgi的实现，推荐使用上层的 <code>werkzeug.wrappers.Request</code>。</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210528002305.png" alt="sansio"></p>
+</div>
+<p>sansio.Request是non-IO理念的HTTP request实现，希望IO和逻辑像三明治(sandwich)一样，分层in-IO/业务逻辑/out-IO三层。这种方式实现的Request对象比较抽象，不涉及io和aio具体实现，比较通用，而且可以 <strong>快速测试</strong> 。如果wsgi的实现，推荐使用上层的 <code>werkzeug.wrappers.Request</code>。</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210528002305.png" alt="sansio" /></p>
+
 <blockquote>
 <p>对non-IO感兴趣的，可以查看参考链接。</p>
 </blockquote>
+
 <p>sansio.Request的实现就比较简单数据模型，都是字段熟悉的取值和赋值。比较有特色的是3个实现。先是使用 <em>cached_property</em> 装饰器包装的属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@cached_property
+<pre class="chroma">@cached_property
 def full_path(self) -&gt; str:
     &#34;&#34;&#34;Requested path, including the query string.&#34;&#34;&#34;
-    return f&#34;{self.path}?{_to_str(self.query_string, self.url_charset)}&#34;
-</code></pre></td></tr></table>
+    return f&#34;{self.path}?{_to_str(self.query_string, self.url_charset)}&#34;</pre></td></tr></table>
 </div>
-</div><p>结合装饰器名称和函数实现可以知道，这种属性为了提高性能，只进行一次计算后就cache住。然后是header_property方式定义的属性:</p>
+</div>
+<p>结合装饰器名称和函数实现可以知道，这种属性为了提高性能，只进行一次计算后就cache住。然后是header_property方式定义的属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -695,22 +731,22 @@ def full_path(self) -&gt; str:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">content_type = header_property[str](
+<pre class="chroma">content_type = header_property[str](
     &#34;Content-Type&#34;,
     doc=&#34;&#34;&#34;The Content-Type entity-header field indicates the media
     type of the entity-body sent to the recipient or, in the case of
     the HEAD method, the media type that would have been sent had
     the request been a GET.&#34;&#34;&#34;,
     read_only=True,
-)
-</code></pre></td></tr></table>
+)</pre></td></tr></table>
 </div>
-</div><p>最后是 <em>args</em> 这个非常重要的属性，在web应用程序中一般都是使用 <code>request.args.get(&quot;old&quot;, type=int)</code> 获取http请求参数:</p>
+</div>
+<p>最后是 <em>args</em> 这个非常重要的属性，在web应用程序中一般都是使用 <code>request.args.get(&quot;old&quot;, type=int)</code> 获取http请求参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -729,9 +765,9 @@ def full_path(self) -&gt; str:
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">parameter_storage_class: t.Type[MultiDict] = ImmutableMultiDict
+<pre class="chroma">parameter_storage_class: t.Type[MultiDict] = ImmutableMultiDict
 
 @cached_property
 def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
@@ -749,14 +785,15 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
         self.url_charset,
         errors=self.encoding_errors,
         cls=self.parameter_storage_class,
-    )
-</code></pre></td></tr></table>
+    )</pre></td></tr></table>
 </div>
-</div><p>request数据需要是不可变的，主要依赖ImmutableMultiDict的数据结构，下一篇会详细介绍一下其实现。</p>
+</div>
+<p>request数据需要是不可变的，主要依赖ImmutableMultiDict的数据结构，下一篇会详细介绍一下其实现。</p>
+
 <p>sansio-Response和sansio-Response比较类似:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -779,9 +816,9 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Response:
+<pre class="chroma">class Response:
     def __init__(
         self,
         status: t.Optional[t.Union[int, str, HTTPStatus]] = None,
@@ -803,34 +840,36 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
 
     @status_code.setter
     def status_code(self, code: int) -&gt; None:
-        self.status = code  # type: ignore
-</code></pre></td></tr></table>
+        self.status = code  # type: ignore</pre></td></tr></table>
 </div>
-</div><h3 id="wrappersrequest">wrappers.Request</h3>
+</div>
+<h3 id="wrappers-request">wrappers.Request</h3>
+
 <p>wrappers部分的Request和Response相对复杂一些，我们分开来读，先看wrappers.Request:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Request(_SansIORequest):
+<pre class="chroma">class Request(_SansIORequest):
     &#34;&#34;&#34;Represents an incoming WSGI HTTP request, with headers and body
     taken from the WSGI environment. Has properties and methods for
     using the functionality defined by various HTTP specs. The data in
     requests object is read-only.
-    &#34;&#34;&#34;
-</code></pre></td></tr></table>
+    &#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>Request继承自sansio.Request, 注释也详细描述了其功能和特性(read-only)。</p>
+</div>
+<p>Request继承自sansio.Request, 注释也详细描述了其功能和特性(read-only)。</p>
+
 <p>构造函数可以看到使用env构建，包括了http请求中的method，scheme，query_sring等熟悉的属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -852,9 +891,9 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __init__(
+<pre class="chroma">def __init__(
         self,
         environ: &#34;WSGIEnvironment&#34;,
         populate_request: bool = True,
@@ -875,32 +914,32 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
             remote_addr=environ.get(&#34;REMOTE_ADDR&#34;),
         )
         self.environ = environ
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>纯粹的query比较简单，我们一起看看相对复杂的form实现。业务中的form部分API大概是这样使用的:</p>
+</div>
+<p>纯粹的query比较简单，我们一起看看相对复杂的form实现。业务中的form部分API大概是这样使用的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def on_new_url(self, request):
+<pre class="chroma">def on_new_url(self, request):
     error = None
     url = &#34;&#34;
     if request.method == &#34;POST&#34;:
         url = request.form[&#34;url&#34;]
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>wrappers.Request的form也是cached_property，可以提高效率，同时form使用FormDataParser进行解析:</p>
+</div>
+<p>wrappers.Request的form也是cached_property，可以提高效率，同时form使用FormDataParser进行解析:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -928,9 +967,9 @@ def args(self) -&gt; &#34;MultiDict[str, str]&#34;:
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">form_data_parser_class: t.Type[FormDataParser] = FormDataParser
+<pre class="chroma">form_data_parser_class: t.Type[FormDataParser] = FormDataParser
 
 @cached_property
 def form(self) -&gt; &#34;ImmutableMultiDict[str, str]&#34;:
@@ -957,13 +996,13 @@ def _load_form_data(self) -&gt; None:
     )
 
     d = self.__dict__
-    d[&#34;stream&#34;], d[&#34;form&#34;], d[&#34;files&#34;] = data
-</code></pre></td></tr></table>
+    d[&#34;stream&#34;], d[&#34;form&#34;], d[&#34;files&#34;] = data</pre></td></tr></table>
 </div>
-</div><p>下面是FormDataParser的大概实现:</p>
+</div>
+<p>下面是FormDataParser的大概实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -976,9 +1015,9 @@ def _load_form_data(self) -&gt; None:
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># formparser.py
+<pre class="chroma"># formparser.py
 
 class FormDataParser
     def parse_from_environ(self, environ: &#34;WSGIEnvironment&#34;) -&gt; &#34;t_parse_result&#34;:
@@ -990,14 +1029,15 @@ class FormDataParser
         content_type = environ.get(&#34;CONTENT_TYPE&#34;, &#34;&#34;)
         content_length = get_content_length(environ)
         mimetype, options = parse_options_header(content_type)
-        return self.parse(get_input_stream(environ), mimetype, content_length, options）
-</code></pre></td></tr></table>
+        return self.parse(get_input_stream(environ), mimetype, content_length, options）</pre></td></tr></table>
 </div>
-</div><h3 id="wrappersresponse">wrappers.Response</h3>
+</div>
+<h3 id="wrappers-response">wrappers.Response</h3>
+
 <p>wrappers.Response和wrappers.Request类似，继承自sansio.Response:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1006,9 +1046,9 @@ class FormDataParser
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Response(_SansIOResponse):
+<pre class="chroma">class Response(_SansIOResponse):
     &#34;&#34;&#34;Represents an outgoing WSGI HTTP response with body, status, and
     headers. Has properties and methods for using the functionality
     defined by various HTTP specs.
@@ -1016,13 +1056,13 @@ class FormDataParser
     The response object is itself a WSGI application callable. When
     called (:meth:`__call__`) with ``environ`` and ``start_response``,
     it will pass its status and headers to ``start_response`` then
-    return its body as an iterable&#34;&#34;&#34;
-</code></pre></td></tr></table>
+    return its body as an iterable&#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>wrappers.Response注释里也重点介绍了response的使用方法。我们通过下面的示例来了解:</p>
+</div>
+<p>wrappers.Response注释里也重点介绍了response的使用方法。我们通过下面的示例来了解:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1036,9 +1076,9 @@ class FormDataParser
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from werkzeug.wrappers.response import Response
+<pre class="chroma">from werkzeug.wrappers.response import Response
 
 def index():
     return Response(&#34;Hello, World!&#34;)
@@ -1051,14 +1091,15 @@ def application(environ, start_response):
     else:
         response = Response(&#34;Not Found&#34;, status=404)
 
-    return response(environ, start_response)
-</code></pre></td></tr></table>
+    return response(environ, start_response)</pre></td></tr></table>
 </div>
-</div><p>示例可以看到，每个请求生成一个Response对象，然使用environ和start_response参数执行这个对象的call方法并返回。</p>
+</div>
+<p>示例可以看到，每个请求生成一个Response对象，然使用environ和start_response参数执行这个对象的call方法并返回。</p>
+
 <p>wrappers.Response的构造方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1087,9 +1128,9 @@ def application(environ, start_response):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __init__(
+<pre class="chroma">def __init__(
         self,
         response: t.Optional[
             t.Union[t.Iterable[bytes], bytes, t.Iterable[str], str]
@@ -1117,13 +1158,13 @@ def application(environ, start_response):
         elif isinstance(response, (str, bytes, bytearray)):
             self.set_data(response)
         else:
-            self.response = response
-</code></pre></td></tr></table>
+            self.response = response</pre></td></tr></table>
 </div>
-</div><p>重点的call方法和相关的处理函数:</p>
+</div>
+<p>重点的call方法和相关的处理函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1157,9 +1198,9 @@ def application(environ, start_response):
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def __call__(
+<pre class="chroma">def __call__(
     self, environ: &#34;WSGIEnvironment&#34;, start_response: &#34;StartResponse&#34;
 ) -&gt; t.Iterable[bytes]:
     &#34;&#34;&#34;Process this response as WSGI application.
@@ -1192,16 +1233,19 @@ def get_wsgi_response(
 ) -&gt; t.Tuple[t.Iterable[bytes], str, t.List[t.Tuple[str, str]]]:
     headers = self.get_wsgi_headers(environ)
     app_iter = self.get_app_iter(environ)
-    return app_iter, self.status, headers.to_wsgi_list()
-</code></pre></td></tr></table>
+    return app_iter, self.status, headers.to_wsgi_list()</pre></td></tr></table>
 </div>
-</div><p>主要就是将wsgi的Response转换成status，header和结果的迭代器给wsgi-server。</p>
-<hr>
-<h2 id="local">local实现</h2>
+</div>
+<p>主要就是将wsgi的Response转换成status，header和结果的迭代器给wsgi-server。</p>
+
+<hr />
+
+<h2 id="local实现">local实现</h2>
+
 <p>local是“德国锤子”非常重要的模块。先看看标准的 <em>threading.local</em> 实现示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1230,9 +1274,9 @@ def get_wsgi_response(
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">import threading
+<pre class="chroma">import threading
 import logging
 import random
 
@@ -1260,58 +1304,60 @@ if __name__ == &#39;__main__&#39;:
 
     for i in range(2):
         t = threading.Thread(target=f, args=(d,))
-        t.start()
-</code></pre></td></tr></table>
+        t.start()</pre></td></tr></table>
 </div>
-</div><p>测试结果可以看到不同的线程，同一个变量d的值是不一样的:</p>
+</div>
+<p>测试结果可以看到不同的线程，同一个变量d的值是不一样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">(MainThread) No value yet
+<pre class="chroma">(MainThread) No value yet
 (MainThread) value=999
 (Thread-1) No value yet
 (Thread-1) value=56
 (Thread-2) No value yet
-(Thread-2) value=38
-</code></pre></td></tr></table>
+(Thread-2) value=38</pre></td></tr></table>
 </div>
-</div><p><em>threading.local</em> 主要是解决2个问题：</p>
-<ul>
-<li>线程之间数据隔离</li>
-<li>代码书写的简单，只需要定义一个变量</li>
-</ul>
+</div>
+<p><em>threading.local</em> 主要是解决2个问题：
+* 线程之间数据隔离
+* 代码书写的简单，只需要定义一个变量</p>
+
 <p>实际上要做到线程隔离，自己用一个字典就可以，比如每个线程的值加上线程ID作为key去区分。“德国锤子”的local正是使用这个思路。同时还为了支持 <code>greenlet</code> 也就是协程的实现，所以实现了一个新的local，没有直接使用 <em>threading.local</em> 。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">try:
+<pre class="chroma">try:
     from greenlet import getcurrent as _get_ident
 except ImportError:
-    from threading import get_ident as _get_ident
-</code></pre></td></tr></table>
+    from threading import get_ident as _get_ident</pre></td></tr></table>
 </div>
-</div><p>其中threading.get_ident的官方文档如下:</p>
+</div>
+<p>其中threading.get_ident的官方文档如下:</p>
+
 <blockquote>
 <p>threading.get_ident()
 返回当前线程的 “线程标识符”。它是一个非零的整数。它的值没有直接含义，主要是用作 magic cookie，比如作为含有线程相关数据的字典的索引。线程标识符可能会在线程退出，新线程创建时被复用。</p>
+
 <p>3.3 新版功能.</p>
 </blockquote>
+
 <p>local的基础是ContextVar类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1325,9 +1371,9 @@ except ImportError:
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ContextVar:  # type: ignore
+<pre class="chroma">class ContextVar:  # type: ignore
     &#34;&#34;&#34;A fake ContextVar based on the previous greenlet/threading
     ident function. Used on Python 3.6, eventlet, and old versions
     of gevent.
@@ -1340,16 +1386,17 @@ except ImportError:
         return self.storage.get(_get_ident(), default)
 
     def set(self, value: t.Dict[str, t.Any]) -&gt; None:
-        self.storage[_get_ident()] = value
-</code></pre></td></tr></table>
+        self.storage[_get_ident()] = value</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>ContextVar 定义了一个二级结构的字典，其中一级key是线程/协程的标识，这样就做到线程/协程的数据隔离。</li>
 </ul>
+
 <p>Local的实现主要是一个 <em>_storage</em> 属性使用ContextVar对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1366,9 +1413,9 @@ except ImportError:
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Local:
+<pre class="chroma">class Local:
     __slots__ = (&#34;_storage&#34;,)
 
     def __init__(self) -&gt; None:
@@ -1384,18 +1431,21 @@ except ImportError:
     def __setattr__(self, name: str, value: t.Any) -&gt; None:
         values = self._storage.get({}).copy()
         values[name] = value
-        self._storage.set(values)
-</code></pre></td></tr></table>
+        self._storage.set(values)</pre></td></tr></table>
 </div>
-</div><ul>
+</div>
+<ul>
 <li>需要注意的是这里每次设置值的时候是copy后再修改(why?欢迎互动探讨)。</li>
 </ul>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+
+<!--
+为什么有一次copy？并发安全，原子性
+-->
+
 <p>使用Local实现了一个简单的栈:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1418,9 +1468,9 @@ except ImportError:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class LocalStack
+<pre class="chroma">class LocalStack
     def __init__(self) -&gt; None:
         self._local = Local()
     
@@ -1442,13 +1492,13 @@ except ImportError:
             release_local(self._local)
             return stack[-1]
         else:
-            return stack.pop()
-</code></pre></td></tr></table>
+            return stack.pop()</pre></td></tr></table>
 </div>
-</div><p>LocalManager用来管理所有的local数据，重点就是清理数据:</p>
+</div>
+<p>LocalManager用来管理所有的local数据，重点就是清理数据:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1475,9 +1525,9 @@ except ImportError:
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class LocalManager:
+<pre class="chroma">class LocalManager:
     &#34;&#34;&#34;Local objects cannot manage themselves. For that you need a local
     manager. You can pass a local manager multiple locals or add them
     later y appending them to `manager.locals`. Every time the manager
@@ -1503,30 +1553,35 @@ except ImportError:
         this at the end of the request or use `make_middleware()`.
         &#34;&#34;&#34;
         for local in self.locals:
-            release_local(local)
-</code></pre></td></tr></table>
+            release_local(local)</pre></td></tr></table>
 </div>
-</div><p>local怎么使用呢？使用单例，下面是flask中的示例:</p>
+</div>
+<p>local怎么使用呢？使用单例，下面是flask中的示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># flask-globals
+<pre class="chroma"># flask-globals
 # context locals
 _request_ctx_stack = LocalStack()
-_app_ctx_stack = LocalStack()
-</code></pre></td></tr></table>
+_app_ctx_stack = LocalStack()</pre></td></tr></table>
 </div>
-</div><p>_request_ctx_stack就是一个线程安全的全局变量，在业务处理中随处可以读取，不用将数据传来传去。</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</div>
+<p>_request_ctx_stack就是一个线程安全的全局变量，在业务处理中随处可以读取，不用将数据传来传去。</p>
+
+<!--
+http://fanchunke.me/Flask/Werkzeug%E5%BA%93%E2%80%94%E2%80%94local%E6%A8%A1%E5%9D%97/
+-->
+
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
-<h2 id="heading-1">参考链接</h2>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li>werkzeug文档 <a href="https://werkzeug.palletsprojects.com/en/2.0.x/">https://werkzeug.palletsprojects.com/en/2.0.x/</a></li>
 <li>Python 技术名词发音指南(PyCon China 2020 演讲) <a href="https://zhuanlan.zhihu.com/p/320457692">https://zhuanlan.zhihu.com/p/320457692</a></li>
@@ -1617,7 +1672,7 @@ _app_ctx_stack = LocalStack()
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

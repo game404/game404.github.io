@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="本次代码阅读的项目来自 500lines 的子项目 web-server。 500 Lines or Less不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/web-serv/" />
-<meta property="article:published_time" content="2021-04-01T22:12:37+08:00" />
-<meta property="article:modified_time" content="2021-04-01T22:12:37+08:00" />
+<meta property="article:published_time" content="2021-04-01T22:12:37&#43;08:00"/>
+<meta property="article:modified_time" content="2021-04-01T22:12:37&#43;08:00"/>
+
 <meta itemprop="name" content="一步一步实现web服务器">
 <meta itemprop="description" content="本次代码阅读的项目来自 500lines 的子项目 web-server。 500 Lines or Less不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立">
+
+
 <meta itemprop="datePublished" content="2021-04-01T22:12:37&#43;08:00" />
 <meta itemprop="dateModified" content="2021-04-01T22:12:37&#43;08:00" />
-<meta itemprop="wordCount" content="3855">
+<meta itemprop="wordCount" content="3869">
 
 
 
-<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="一步一步实现web服务器"/>
 <meta name="twitter:description" content="本次代码阅读的项目来自 500lines 的子项目 web-server。 500 Lines or Less不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立"/>
 
@@ -137,23 +141,29 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#heading">导读</a></li>
-    <li><a href="#heading-1">项目结构</a></li>
-    <li><a href="#http">简易HTTP服务</a></li>
-    <li><a href="#echo">echo服务</a></li>
-    <li><a href="#heading-2">文件服务</a></li>
-    <li><a href="#cgi">文件目录服务和CGI服务</a></li>
-    <li><a href="#heading-3">服务重构</a></li>
-    <li><a href="#heading-4">小结</a></li>
-    <li><a href="#heading-5">小技巧</a></li>
-    <li><a href="#heading-6">参考链接</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#导读">导读</a></li>
+<li><a href="#项目结构">项目结构</a></li>
+<li><a href="#简易http服务">简易HTTP服务</a></li>
+<li><a href="#echo服务">echo服务</a></li>
+<li><a href="#文件服务">文件服务</a></li>
+<li><a href="#文件目录服务和cgi服务">文件目录服务和CGI服务</a></li>
+<li><a href="#服务重构">服务重构</a></li>
+<li><a href="#小结">小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>本次代码阅读的项目来自 <code>500lines</code> 的子项目 <code>web-server</code>。 <code>500 Lines or Less</code>不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立的章节组成，每个章节由领域大牛试图用 500 行或者更少(500 or less)的代码，让读者了解一个功能或需求的简单实现。本文包括下面几个部分:</p>
+      
+
+<p>本次代码阅读的项目来自 <code>500lines</code> 的子项目 <code>web-server</code>。 <code>500 Lines or Less</code>不仅是一个项目，也是一本同名书，有源码，也有文字介绍。这个项目由多个独立的章节组成，每个章节由领域大牛试图用 500 行或者更少(500 or less)的代码，让读者了解一个功能或需求的简单实现。本文包括下面几个部分:</p>
+
 <ul>
 <li>导读</li>
 <li>项目结构介绍</li>
@@ -165,23 +175,31 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="heading">导读</h2>
+
+<h2 id="导读">导读</h2>
+
 <p>我们之前已经埋头阅读了十二个项目的源码，是时候空谈一下如何阅读源码了。</p>
+
 <p>python项目很多，优秀的也不少。学习这些项目的源码，可以让我们更深入的理解API，了解项目的实现原理和细节。仅仅会用项目API，并不符合有进阶之心的你我。个人觉得看书，做题和重复照轮子，都不如源码阅读。我们学习的过程，就是从模仿到创造的过程，看优秀的源码，模仿它，从而超越它。</p>
-<p>选择合适项目也需要一定的技巧，这里讲讲我的方法：</p>
-<ol>
-<li>项目小巧一点，刚开始的时候功力有限，代码量小的项目，更容易读下去。初期阶段的项目，建议尽量在5000行以下。</li>
-<li>项目纵向贯穿某个方向，逐步的打通整个链条。比如围绕http服务的不同阶段，我们阅读了gunicorn，wsgi，http-server，bottle，mako。从服务到WSGI规范，从web框架到模版引擎。</li>
-<li>项目横行可以对比，比如CLI部分，对比getopt和argparse；比如blinker和flask/django-signal的差别。</li>
-</ol>
+
+<p>选择合适项目也需要一定的技巧，这里讲讲我的方法：
+1. 项目小巧一点，刚开始的时候功力有限，代码量小的项目，更容易读下去。初期阶段的项目，建议尽量在5000行以下。
+2. 项目纵向贯穿某个方向，逐步的打通整个链条。比如围绕http服务的不同阶段，我们阅读了gunicorn，wsgi，http-server，bottle，mako。从服务到WSGI规范，从web框架到模版引擎。
+3. 项目横行可以对比，比如CLI部分，对比getopt和argparse；比如blinker和flask/django-signal的差别。</p>
+
 <p>选择好项目后，就是如何阅读源码了。我们之前的代码阅读方法我称之为：<strong>概读法</strong> 。具体的讲就是根据项目的主要功能，仅分析其核心实现，对于辅助的功能，增强的功能可以暂时不用理会，避免陷入太多细节。简单举个例子: “研表究明，汉字的序顺并不定一影阅响读，比如你看完这句话后才发现这里的字全是乱的”，我们了解项目主要的功能，就可以初步达到目的。</p>
+
 <blockquote>
 <p>哈哈，愚人节快乐</p>
 </blockquote>
+
 <p>概读法，有一个弊端：我们知道代码是这样实现的，但是无法解读为什么这样实现？所以是时候介绍一下另外一种代码阅读方法：<strong>历史对比法</strong>。历史对比法主要是对比代码的需求变化和版本历史，从而学习需求如何被实现。一般项目中，使用gitlog种的commit
 -message来展现历史和需求。本篇的500lines-webserver项目中直接提供了演化示例，用来演示历史对比法再适合不过。</p>
-<h2 id="heading-1">项目结构</h2>
+
+<h2 id="项目结构">项目结构</h2>
+
 <p>本次代码阅读是用的版本是 <code>fba689d1</code> , 项目目录结构如下表:</p>
+
 <table>
 <thead>
 <tr>
@@ -189,51 +207,59 @@
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>00-hello-web</td>
 <td>简易http服务</td>
 </tr>
+
 <tr>
 <td>01-echo-request-info</td>
 <td>可以显示请求的http服务</td>
 </tr>
+
 <tr>
 <td>02-serve-static</td>
 <td>静态文件服务</td>
 </tr>
+
 <tr>
 <td>03-handlers</td>
 <td>支持目录展现的http文件服务</td>
 </tr>
+
 <tr>
 <td>04-cgi</td>
 <td>cgi实现</td>
 </tr>
+
 <tr>
 <td>05-refactored</td>
 <td>重构http服务</td>
 </tr>
 </tbody>
 </table>
-<h2 id="http">简易HTTP服务</h2>
+
+<h2 id="简易http服务">简易HTTP服务</h2>
+
 <p>http服务非常简单，这样启动服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">serverAddress = (&#39;&#39;, 8080)
+<pre class="chroma">serverAddress = (&#39;&#39;, 8080)
 server = BaseHTTPServer.HTTPServer(serverAddress, RequestHandler)
-server.serve_forever()
-</code></pre></td></tr></table>
+server.serve_forever()</pre></td></tr></table>
 </div>
-</div><p>只响应get请求的Handler:</p>
+</div>
+<p>只响应get请求的Handler:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -243,9 +269,9 @@ server.serve_forever()
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+<pre class="chroma">class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     
     ...
     
@@ -254,13 +280,13 @@ server.serve_forever()
         self.send_header(&#34;Content-type&#34;, &#34;text/html&#34;)
         self.send_header(&#34;Content-Length&#34;, str(len(self.Page)))
         self.end_headers()
-        self.wfile.write(self.Page)
-</code></pre></td></tr></table>
+        self.wfile.write(self.Page)</pre></td></tr></table>
 </div>
-</div><p>服务的效果，可以配合下面的请求示例:</p>
+</div>
+<p>服务的效果，可以配合下面的请求示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -282,9 +308,9 @@ server.serve_forever()
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># curl -v http://127.0.0.1:8080
+<pre class="chroma"># curl -v http://127.0.0.1:8080
 *   Trying 127.0.0.1...
 * TCP_NODELAY set
 * Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
@@ -305,19 +331,23 @@ server.serve_forever()
 &lt;p&gt;Hello, web!&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-* Closing connection 0
-</code></pre></td></tr></table>
+* Closing connection 0</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>本文不打算详细介绍http协议细节的实现，如果想了解http协议细节的请看第2篇博文，或者我之前的[python http 源码阅读]</p>
 </blockquote>
-<h2 id="echo">echo服务</h2>
+
+<h2 id="echo服务">echo服务</h2>
+
 <p>echo服务是在简易http服务上演进的，支持对用户的请求回声。所以我们对比一下2个文件，就知道更改了哪些内容:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331201453.png" alt="vim-diff"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331201453.png" alt="vim-diff" /></p>
+
 <p>更改的重点在 <strong>do_GET</strong> 的实现，图片可能不太清晰，我把代码贴在下面:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -327,9 +357,9 @@ server.serve_forever()
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># hello
+<pre class="chroma"># hello
 def do_GET(self):
     self.send_response(200)
     ...
@@ -338,13 +368,13 @@ def do_GET(self):
 # echo        
 def do_GET(self):
     page = self.create_page()
-    self.send_page(page)
-</code></pre></td></tr></table>
+    self.send_page(page)</pre></td></tr></table>
 </div>
-</div><p>可以看到echo的 <strong>do_GET</strong> 中调用了 <strong>create_page</strong> 和 <strong>send_page</strong> 2个方法 。短短两行代码，非常清晰的显示了echo和hello的差异。因为echo要获取客户端请求并原样输出，固定的页面肯定部满足需求。需要先使用模版创建页面，再发送页面给用户。hello的 <strong>do_GET</strong> 方法的实现重构成send_page函数的主体，新增的create_page就非常简单：</p>
+</div>
+<p>可以看到echo的 <strong>do_GET</strong> 中调用了 <strong>create_page</strong> 和 <strong>send_page</strong> 2个方法 。短短两行代码，非常清晰的显示了echo和hello的差异。因为echo要获取客户端请求并原样输出，固定的页面肯定部满足需求。需要先使用模版创建页面，再发送页面给用户。hello的 <strong>do_GET</strong> 方法的实现重构成send_page函数的主体，新增的create_page就非常简单：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -354,9 +384,9 @@ def do_GET(self):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def create_page(self):
+<pre class="chroma">def create_page(self):
     values = {
         &#39;date_time&#39;   : self.date_time_string(),
         &#39;client_host&#39; : self.client_address[0],
@@ -365,23 +395,24 @@ def do_GET(self):
         &#39;path&#39;        : self.path
     }
     page = self.Page.format(**values)
-    return page
-</code></pre></td></tr></table>
+    return page</pre></td></tr></table>
 </div>
-</div><p>单看echo的代码，会觉得平淡无奇。对比了hello和echo的差异，才能够感受到大师的手艺。代码展示了如何写出可读的代码和如何实现新增需求：</p>
-<ul>
-<li>create-page和send-page函数名称清晰可读，可以望文生义。</li>
-<li>create和send的逻辑自然平等。举个反例：更改成函数名称为create_page和_do_GET,功能不变，大家就会觉得别扭。</li>
-<li>hello中的do_GET函数的5行实现代码完全没变，只是重构成新的send_page函数。这样从测试角度，只需要对变化的部分(create_page)增加测试用例。</li>
-</ul>
+</div>
+<p>单看echo的代码，会觉得平淡无奇。对比了hello和echo的差异，才能够感受到大师的手艺。代码展示了如何写出可读的代码和如何实现新增需求：
+* create-page和send-page函数名称清晰可读，可以望文生义。
+* create和send的逻辑自然平等。举个反例：更改成函数名称为create_page和_do_GET,功能不变，大家就会觉得别扭。
+* hello中的do_GET函数的5行实现代码完全没变，只是重构成新的send_page函数。这样从测试角度，只需要对变化的部分(create_page)增加测试用例。</p>
+
 <blockquote>
 <p>对比是用的命令是 <code>vimdiff 00-hello-web/server.py 01-echo-request-info/server.py</code> 也可以是用ide提供的对比工具。</p>
 </blockquote>
-<h2 id="heading-2">文件服务</h2>
+
+<h2 id="文件服务">文件服务</h2>
+
 <p>文件服务可以展示服务本地html页面:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -401,9 +432,9 @@ def do_GET(self):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"> # Classify and handle request.
+<pre class="chroma"> # Classify and handle request.
 def do_GET(self):
     try:
 
@@ -422,13 +453,13 @@ def do_GET(self):
 
     # 处理异常
     except Exception as msg:
-        self.handle_error(msg)
-</code></pre></td></tr></table>
+        self.handle_error(msg)</pre></td></tr></table>
 </div>
-</div><p>文件和异常的处理:</p>
+</div>
+<p>文件和异常的处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -440,9 +471,9 @@ def do_GET(self):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def handle_file(self, full_path):
+<pre class="chroma">def handle_file(self, full_path):
     try:
         with open(full_path, &#39;rb&#39;) as reader:
             content = reader.read()
@@ -453,41 +484,48 @@ def do_GET(self):
 
 def handle_error(self, msg):
     content = self.Error_Page.format(path=self.path, msg=msg)
-    self.send_content(content)
-</code></pre></td></tr></table>
+    self.send_content(content)</pre></td></tr></table>
 </div>
-</div><p>目录下还提供了一个status-code的版本，一样对比一下:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331202057.png" alt="status-code"></p>
+</div>
+<p>目录下还提供了一个status-code的版本，一样对比一下:</p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331202057.png" alt="status-code" /></p>
+
 <p>如果文件不存在，按照http协议规范，应该报404错误:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def handle_error(self, msg):
+<pre class="chroma">def handle_error(self, msg):
     content = ...
     self.send_content(content, 404)
 
 def send_content(self, content, status=200):
     self.send_response(status)
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>这里利用了python函数参数支持默认值的特性，让send_content函数稳定下来，即使后续有30x/50x错误，也不用修改send_content函数。</p>
-<h2 id="cgi">文件目录服务和CGI服务</h2>
+</div>
+<p>这里利用了python函数参数支持默认值的特性，让send_content函数稳定下来，即使后续有30x/50x错误，也不用修改send_content函数。</p>
+
+<h2 id="文件目录服务和cgi服务">文件目录服务和CGI服务</h2>
+
 <p>文件服务需要升级支持文件目录。通常如果一个目录下有<code>index.html</code>就展示该文件；没有该文件，就显示目录列表，方便使用者查看，不用手工输入文件名称。</p>
+
 <p>同样我把版本的迭代对比成下图，主要展示RequestHandler的变化:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331202839.png" alt="目录服务"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331202839.png" alt="目录服务" /></p>
+
 <p>do_GET要处理三种逻辑:html文件，目录和错误。如果继续用if-else方式就会让代码丑陋，也不易扩展，所以这里使用策略模式进行了扩展:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -509,9 +547,9 @@ def send_content(self, content, status=200):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 有序的策略
+<pre class="chroma"># 有序的策略
 Cases = [case_no_file(),
          case_existing_file(),
          case_always_fail()]
@@ -532,13 +570,13 @@ def do_GET(self):
 
     # Handle errors.
     except Exception as msg:
-        self.handle_error(msg)
-</code></pre></td></tr></table>
+        self.handle_error(msg)</pre></td></tr></table>
 </div>
-</div><p>html，文件不存在和异常的3种策略实现:</p>
+</div>
+<p>html，文件不存在和异常的3种策略实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -564,9 +602,9 @@ def do_GET(self):
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class case_no_file(object):
+<pre class="chroma">class case_no_file(object):
     &#39;&#39;&#39;File or directory does not exist.&#39;&#39;&#39;
 
     def test(self, handler):
@@ -591,13 +629,13 @@ class case_always_fail(object):
         return True
 
     def act(self, handler):
-        raise ServerException(&#34;Unknown object &#39;{0}&#39;&#34;.format(handler.path))
-</code></pre></td></tr></table>
+        raise ServerException(&#34;Unknown object &#39;{0}&#39;&#34;.format(handler.path))</pre></td></tr></table>
 </div>
-</div><p>目录的实现就很简单了，再扩展一下 <strong>case_directory_index_file</strong> 和 <strong>case_directory_no_index_file</strong> 策略即可; cgi 的支持也一样，增加一个 <strong>case_cgi_file</strong> 策略。</p>
+</div>
+<p>目录的实现就很简单了，再扩展一下 <strong>case_directory_index_file</strong> 和 <strong>case_directory_no_index_file</strong> 策略即可; cgi 的支持也一样，增加一个 <strong>case_cgi_file</strong> 策略。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -605,25 +643,28 @@ class case_always_fail(object):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class case_directory_index_file(object):
+<pre class="chroma">class case_directory_index_file(object):
     ...
 
 class case_directory_no_index_file(object):
     ...
 
 class case_cgi_file(object):
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><h2 id="heading-3">服务重构</h2>
+</div>
+<h2 id="服务重构">服务重构</h2>
+
 <p>实现功能后，作者对代码进行了一次重构:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331203831.png" alt="refactored"></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210331203831.png" alt="refactored" /></p>
+
 <p>重构后RequestHandler代码简洁了很多，只包含http协议细节的处理。handle_error处理异常，返回404错误；send_content生成http的响应。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -654,9 +695,9 @@ class case_cgi_file(object):
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+<pre class="chroma">class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     
     # Classify and handle request.
     def do_GET(self):
@@ -686,13 +727,13 @@ class case_cgi_file(object):
         self.send_header(&#34;Content-type&#34;, &#34;text/html&#34;)
         self.send_header(&#34;Content-Length&#34;, str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
-</code></pre></td></tr></table>
+        self.wfile.write(content)</pre></td></tr></table>
 </div>
-</div><p>请求处理策略也进行了重构，构建了base_case父类，约定了处理的模版和步骤，并且默认提供了html文件的读取办法。</p>
+</div>
+<p>请求处理策略也进行了重构，构建了base_case父类，约定了处理的模版和步骤，并且默认提供了html文件的读取办法。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -712,9 +753,9 @@ class case_cgi_file(object):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class base_case(object):
+<pre class="chroma">class base_case(object):
     &#39;&#39;&#39;Parent for case handlers.&#39;&#39;&#39;
 
     def handle_file(self, handler, full_path):
@@ -733,13 +774,13 @@ class case_cgi_file(object):
         assert False, &#39;Not implemented.&#39;
 
     def act(self, handler):
-        assert False, &#39;Not implemented.&#39;
-</code></pre></td></tr></table>
+        assert False, &#39;Not implemented.&#39;</pre></td></tr></table>
 </div>
-</div><p>html文件的处理函数就很简单，实现判断函数和执行函数，其中执行函数还是还复用父类的html处理函数。</p>
+</div>
+<p>html文件的处理函数就很简单，实现判断函数和执行函数，其中执行函数还是还复用父类的html处理函数。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -747,22 +788,22 @@ class case_cgi_file(object):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class case_existing_file(base_case):
+<pre class="chroma">class case_existing_file(base_case):
     &#39;&#39;&#39;File exists.&#39;&#39;&#39;
 
     def test(self, handler):
         return os.path.isfile(handler.full_path)
 
     def act(self, handler):
-        self.handle_file(handler, handler.full_path)
-</code></pre></td></tr></table>
+        self.handle_file(handler, handler.full_path)</pre></td></tr></table>
 </div>
-</div><p>策略最长就是不存在index.html页面的目录:</p>
+</div>
+<p>策略最长就是不存在index.html页面的目录:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -792,9 +833,9 @@ class case_cgi_file(object):
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class case_directory_no_index_file(base_case):
+<pre class="chroma">class case_directory_no_index_file(base_case):
     &#39;&#39;&#39;Serve listing for a directory without an index.html page.&#39;&#39;&#39;
 
     # How to display a directory listing.
@@ -823,25 +864,28 @@ class case_cgi_file(object):
                not os.path.isfile(self.index_path(handler))
 
     def act(self, handler):
-        self.list_dir(handler, handler.full_path)
-</code></pre></td></tr></table>
+        self.list_dir(handler, handler.full_path)</pre></td></tr></table>
 </div>
-</div><p>list_dir动态生成一个文件目录列表的html文件。</p>
-<h2 id="heading-4">小结</h2>
-<p>我们一起使用历史对比法，阅读了500lines-webserver的代码演进过程，清晰的了解如何一步一步的实现一个文件目录服务。</p>
-<ul>
-<li>RequestHandler的do_GET方法处理http请求</li>
-<li>使用send_content输出response，包括状态码，响应头和body。</li>
-<li>读取html文件展示html页面</li>
-<li>展示目录</li>
-<li>支持cgi</li>
-</ul>
+</div>
+<p>list_dir动态生成一个文件目录列表的html文件。</p>
+
+<h2 id="小结">小结</h2>
+
+<p>我们一起使用历史对比法，阅读了500lines-webserver的代码演进过程，清晰的了解如何一步一步的实现一个文件目录服务。
+* RequestHandler的do_GET方法处理http请求
+* 使用send_content输出response，包括状态码，响应头和body。
+* 读取html文件展示html页面
+* 展示目录
+* 支持cgi</p>
+
 <p>在学习过程中，我们还额外获得了如何扩充代码，编写可维护代码和重构代码示例，希望大家和我一样有所收获。</p>
-<h2 id="heading-5">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>前面介绍了，请求的处理使用策略模式。可以先看看来自python-patterns项目的策略模式实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -877,9 +921,9 @@ class case_cgi_file(object):
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Order:
+<pre class="chroma">class Order:
     def __init__(self, price, discount_strategy=None):
         self.price = price
         self.discount_strategy = discount_strategy
@@ -914,13 +958,13 @@ def main():
 
     &gt;&gt;&gt; Order(1000, discount_strategy=on_sale_discount)
     &lt;Price: 1000, price after discount: 730.0&gt;
-    &#34;&#34;&#34;
-</code></pre></td></tr></table>
+    &#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>ten_percent_discount提供9折，on_sale_discount提供75折再减20的优惠。不同的订单可以使用不同的折扣模式，比如示例调整成下面:</p>
+</div>
+<p>ten_percent_discount提供9折，on_sale_discount提供75折再减20的优惠。不同的订单可以使用不同的折扣模式，比如示例调整成下面:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -929,9 +973,9 @@ def main():
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">order_amount_list = [80, 100, 1000]
+<pre class="chroma">order_amount_list = [80, 100, 1000]
 for amount in order_amount_list:
     if amount &lt; 100:
         Order(amount)
@@ -939,19 +983,17 @@ for amount in order_amount_list:
     if amount &lt; 1000:
         Order(amount, discount_strategy=ten_percent_discount)
         break;
-    Order(amount, discount_strategy=on_sale_discount)
-</code></pre></td></tr></table>
+    Order(amount, discount_strategy=on_sale_discount)</pre></td></tr></table>
 </div>
-</div><p>对应的业务逻辑是:</p>
-<ul>
-<li>订单金额小于100不打折</li>
-<li>订单金额小于1000打9折</li>
-<li>订单金额大于等于1000打75折并优惠20
-如果我们把打折的条件和折扣方式实现在一个类中，那就和web-server类似:</li>
-</ul>
+</div>
+<p>对应的业务逻辑是:
+* 订单金额小于100不打折
+* 订单金额小于1000打9折
+* 订单金额大于等于1000打75折并优惠20
+如果我们把打折的条件和折扣方式实现在一个类中，那就和web-server类似:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -960,9 +1002,9 @@ for amount in order_amount_list:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class case_discount(object):
+<pre class="chroma">class case_discount(object):
 
     def test(self, handler):
         # 打折条件 
@@ -970,10 +1012,11 @@ for amount in order_amount_list:
 
     def act(self, handler):
         # 计算折扣
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><h2 id="heading-6">参考链接</h2>
+</div>
+<h2 id="参考链接">参考链接</h2>
+
 <ul>
 <li><a href="https://github.com/aosabook/500lines">https://github.com/aosabook/500lines</a></li>
 <li><a href="https://github.com/HT524/500LineorLess_CN">https://github.com/HT524/500LineorLess_CN</a></li>
@@ -1060,7 +1103,7 @@ for amount in order_amount_list:
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

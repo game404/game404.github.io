@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/blinker/" />
-<meta property="article:published_time" content="2021-03-18T22:34:49+08:00" />
-<meta property="article:modified_time" content="2021-03-18T22:34:49+08:00" />
+<meta property="article:published_time" content="2021-03-18T22:34:49&#43;08:00"/>
+<meta property="article:modified_time" content="2021-03-18T22:34:49&#43;08:00"/>
+
 <meta itemprop="name" content="一文打尽python-web开发的signal机制">
 <meta itemprop="description" content="signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很">
+
+
 <meta itemprop="datePublished" content="2021-03-18T22:34:49&#43;08:00" />
 <meta itemprop="dateModified" content="2021-03-18T22:34:49&#43;08:00" />
-<meta itemprop="wordCount" content="3017">
+<meta itemprop="wordCount" content="3020">
 
 
 
-<meta itemprop="keywords" content="signal,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="signal,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="一文打尽python-web开发的signal机制"/>
 <meta name="twitter:description" content="signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很"/>
 
@@ -137,22 +141,28 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#blinker">blinker简介</a></li>
-    <li><a href="#blinkerapi">blinker的API</a></li>
-    <li><a href="#signal">signal的实现</a></li>
-    <li><a href="#flask-signal">flask-signal的实现</a></li>
-    <li><a href="#django-signal">django-signal的实现</a></li>
-    <li><a href="#weakref-">weakref 介绍</a></li>
-    <li><a href="#signal-">signal 小结</a></li>
-    <li><a href="#heading">小技巧</a></li>
-    <li><a href="#heading-1">参考链接:</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#blinker简介">blinker简介</a></li>
+<li><a href="#blinker的api">blinker的API</a></li>
+<li><a href="#signal的实现">signal的实现</a></li>
+<li><a href="#flask-signal的实现">flask-signal的实现</a></li>
+<li><a href="#django-signal的实现">django-signal的实现</a></li>
+<li><a href="#weakref-介绍">weakref 介绍</a></li>
+<li><a href="#signal-小结">signal 小结</a></li>
+<li><a href="#小技巧">小技巧</a></li>
+<li><a href="#参考链接">参考链接:</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很类似。blinker库是纯python实现的代码简单，功能强大的signal库。本文我们从blinker开始，一起了解python-web开发的signal机制：</p>
+      
+
+<p>signal在flask/django中都是很重要的解耦手段。flask的signal依赖blinker实现，django的signal也很类似。blinker库是纯python实现的代码简单，功能强大的signal库。本文我们从blinker开始，一起了解python-web开发的signal机制：</p>
+
 <ul>
 <li>blinker的api</li>
 <li>blinker-signal的实现</li>
@@ -162,8 +172,11 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-<h2 id="blinker">blinker简介</h2>
+
+<h2 id="blinker简介">blinker简介</h2>
+
 <p>blinker源码使用 <code>1.4</code> 版本, 项目结构如下:</p>
+
 <table>
 <thead>
 <tr>
@@ -171,26 +184,31 @@
 <th>描述</th>
 </tr>
 </thead>
+
 <tbody>
 <tr>
 <td>base.py</td>
 <td>核心逻辑</td>
 </tr>
+
 <tr>
 <td>_saferef.py</td>
 <td>安全引用相关逻辑</td>
 </tr>
+
 <tr>
 <td>_utilities.py</td>
 <td>工具类</td>
 </tr>
 </tbody>
 </table>
-<h2 id="blinkerapi">blinker的API</h2>
+
+<h2 id="blinker的api">blinker的API</h2>
+
 <p>blinker的api使用示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -203,9 +221,9 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">from blinker import signal
+<pre class="chroma">from blinker import signal
 
 def subscriber1(sender):
     print(&#34;1 Got a signal sent by %r&#34; % sender)
@@ -217,33 +235,33 @@ ready = signal(&#39;ready&#39;)
 print(ready)
 ready.connect(subscriber1)
 ready.connect(subscriber2)
-ready.send(&#34;go&#34;)
-</code></pre></td></tr></table>
+ready.send(&#34;go&#34;)</pre></td></tr></table>
 </div>
-</div><p>示例的日志输出:</p>
+</div>
+<p>示例的日志输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;blinker.base.NamedSignal object at 0x7f93a805ad00; &#39;ready&#39;&gt;
+<pre class="chroma">&lt;blinker.base.NamedSignal object at 0x7f93a805ad00; &#39;ready&#39;&gt;
 1 Got a signal sent by &#39;go&#39;
-2 Got a signal sent by &#39;go&#39;
-</code></pre></td></tr></table>
+2 Got a signal sent by &#39;go&#39;</pre></td></tr></table>
 </div>
-</div><p>可以看到signal是发布/订阅模式。或者换个更常见的说法，事件中心：</p>
-<ul>
-<li><code>ready = signal('ready')</code> 创建名为ready的事件中心</li>
-<li><code>ready.connect(subscriber1)</code> 给ready事件中心添加事件监听器</li>
-<li><code>ready.send(&quot;go&quot;)</code> 向ready事件中心派发事件，这样事件监听器会收到事件并进行处理</li>
-</ul>
-<h2 id="signal">signal的实现</h2>
+</div>
+<p>可以看到signal是发布/订阅模式。或者换个更常见的说法，事件中心：
+* <code>ready = signal('ready')</code> 创建名为ready的事件中心
+* <code>ready.connect(subscriber1)</code> 给ready事件中心添加事件监听器
+* <code>ready.send(&quot;go&quot;)</code> 向ready事件中心派发事件，这样事件监听器会收到事件并进行处理</p>
+
+<h2 id="signal的实现">signal的实现</h2>
+
 <p>signal默认单例，提供开箱即用的API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -259,9 +277,9 @@ ready.send(&#34;go&#34;)
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class NamedSignal(Signal):
+<pre class="chroma">class NamedSignal(Signal):
     &#34;&#34;&#34;A named generic notification emitter.&#34;&#34;&#34;
 
     def __init__(self, name, doc=None):
@@ -276,14 +294,15 @@ class Namespace(dict):
         except KeyError:
             return self.setdefault(name, NamedSignal(name, doc))
 
-signal = Namespace().signal
-</code></pre></td></tr></table>
+signal = Namespace().signal</pre></td></tr></table>
 </div>
-</div><p>需要说明一下的是，signal的单例是和name绑定的。同一个名称得到同一个NamedSignal对象，不同名称得到的NamedSignal对象不一样。</p>
+</div>
+<p>需要说明一下的是，signal的单例是和name绑定的。同一个名称得到同一个NamedSignal对象，不同名称得到的NamedSignal对象不一样。</p>
+
 <p>NamedSignal的父类Signal的构造方法，包括1）事件接收器字典receivers：以事件接收器id为key和事件接收器为value；2）接收器ID-发送器ID的字典：以接收器ID为key和发送器ID集合为value；3）和2类似的字典，只不过是反向的，key为发送器ID，value为接收器集合。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -294,9 +313,9 @@ signal = Namespace().signal
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">ANY = symbol(&#39;ANY&#39;)
+<pre class="chroma">ANY = symbol(&#39;ANY&#39;)
 
 class Signal(object):
 
@@ -306,13 +325,13 @@ class Signal(object):
         self.receivers = {}
         self._by_receiver = defaultdict(set)
         self._by_sender = defaultdict(set)
-        ...
-</code></pre></td></tr></table>
+        ...</pre></td></tr></table>
 </div>
-</div><p>Signal的connect函数添加消息接收器，可以看到sender和receiver是多对多的关系。</p>
+</div>
+<p>Signal的connect函数添加消息接收器，可以看到sender和receiver是多对多的关系。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -323,9 +342,9 @@ class Signal(object):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def connect(self, receiver, sender=ANY, weak=True):
+<pre class="chroma">def connect(self, receiver, sender=ANY, weak=True):
     receiver_id = hashable_identity(receiver)
     receiver_ref = receiver
     sender_id = ANY_ID
@@ -335,13 +354,13 @@ class Signal(object):
     self._by_receiver[receiver_id].add(sender_id)
     del receiver_ref
 
-    return receiver
-</code></pre></td></tr></table>
+    return receiver</pre></td></tr></table>
 </div>
-</div><p>Signal的send函数将消息发送给所有关注该sender的接收器：</p>
+</div>
+<p>Signal的send函数将消息发送给所有关注该sender的接收器：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -362,9 +381,9 @@ class Signal(object):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def send(self, *sender, **kwargs):
+<pre class="chroma">def send(self, *sender, **kwargs):
     sender = sender[0]
     # 循环执行所有的receiver
     return [(receiver, receiver(sender, **kwargs))
@@ -384,13 +403,13 @@ def receivers_for(self, sender):
         if receiver is None:
             continue
         # 迭代器
-        yield receiver
-</code></pre></td></tr></table>
+        yield receiver</pre></td></tr></table>
 </div>
-</div><p>有始有终，Signal使用disconnect函数注销消息的接收器：</p>
+</div>
+<p>有始有终，Signal使用disconnect函数注销消息的接收器：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -404,9 +423,9 @@ def receivers_for(self, sender):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def disconnect(self, receiver, sender=ANY):
+<pre class="chroma">def disconnect(self, receiver, sender=ANY):
     sender_id = ANY_ID
     receiver_id = hashable_identity(receiver)
     self._disconnect(receiver_id, sender_id)
@@ -419,17 +438,19 @@ def _disconnect(self, receiver_id, sender_id):
         self.receivers.pop(receiver_id, None)
     else:
         self._by_sender[sender_id].discard(receiver_id)
-        self._by_receiver[receiver_id].discard(sender_id)
-</code></pre></td></tr></table>
+        self._by_receiver[receiver_id].discard(sender_id)</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>为了便于理解signal机制，我们暂时忽略了weakref相关的代码，稍后再进行介绍。</p>
 </blockquote>
-<h2 id="flask-signal">flask-signal的实现</h2>
+
+<h2 id="flask-signal的实现">flask-signal的实现</h2>
+
 <p>flask-signal依赖blinker的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -445,9 +466,9 @@ def _disconnect(self, receiver_id, sender_id):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># flask.signals.py
+<pre class="chroma"># flask.signals.py
 
 from blinker import Namespace
 
@@ -462,13 +483,13 @@ got_request_exception = _signals.signal(&#34;got-request-exception&#34;)
 appcontext_tearing_down = _signals.signal(&#34;appcontext-tearing-down&#34;)
 appcontext_pushed = _signals.signal(&#34;appcontext-pushed&#34;)
 appcontext_popped = _signals.signal(&#34;appcontext-popped&#34;)
-message_flashed = _signals.signal(&#34;message-flashed&#34;)
-</code></pre></td></tr></table>
+message_flashed = _signals.signal(&#34;message-flashed&#34;)</pre></td></tr></table>
 </div>
-</div><p>从上面代码可以看到flask使用blinker预制了多个signal。以request_started为例, flask在处理request时候会向request_started派发事件:</p>
+</div>
+<p>从上面代码可以看到flask使用blinker预制了多个signal。以request_started为例, flask在处理request时候会向request_started派发事件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -476,41 +497,43 @@ message_flashed = _signals.signal(&#34;message-flashed&#34;)
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># flask.app.py
+<pre class="chroma"># flask.app.py
 
 from .signals import request_started
 
 def full_dispatch_request(self):
     ...
     request_started.send(self)
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>我们可以在自己的代码中，这样注册事件监听:</p>
+</div>
+<p>我们可以在自己的代码中，这样注册事件监听:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def log_request(sender, **extra):
+<pre class="chroma">def log_request(sender, **extra):
     sender.logger.debug(&#39;Request context is set up&#39;)
 
 from flask import request_started
-request_started.connect(log_request, app)
-</code></pre></td></tr></table>
+request_started.connect(log_request, app)</pre></td></tr></table>
 </div>
-</div><p>这样就可以很方便的使用signal获取到flask在各个阶段的数据。</p>
-<h2 id="django-signal">django-signal的实现</h2>
+</div>
+<p>这样就可以很方便的使用signal获取到flask在各个阶段的数据。</p>
+
+<h2 id="django-signal的实现">django-signal的实现</h2>
+
 <p>django-signal虽然是独立实现，但是模式和blinker非常类似。Signal构造函数创建了一个对象，充当事件中心。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -533,9 +556,9 @@ request_started.connect(log_request, app)
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># django/dispatch/dispatcher.py
+<pre class="chroma"># django/dispatch/dispatcher.py
 
 def _make_id(target):
     if hasattr(target, &#39;__func__&#39;):
@@ -557,13 +580,13 @@ class Signal:
         self.lock = threading.Lock()
         self.use_caching = use_caching
         self.sender_receivers_cache = weakref.WeakKeyDictionary() if use_caching else {}
-        self._dead_receivers = False
-</code></pre></td></tr></table>
+        self._dead_receivers = False</pre></td></tr></table>
 </div>
-</div><p>connect核心功能就是为事件监听器构建唯一标识(receiver_id,sender_id),然后加入<strong>receivers</strong>数组。</p>
+</div>
+<p>connect核心功能就是为事件监听器构建唯一标识(receiver_id,sender_id),然后加入<strong>receivers</strong>数组。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -575,9 +598,9 @@ class Signal:
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
+<pre class="chroma">def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
     from django.conf import settings
 
     lookup_key = (_make_id(receiver), _make_id(sender))
@@ -588,13 +611,13 @@ class Signal:
 
     with self.lock:
         if not any(r_key == lookup_key for r_key, _ in self.receivers):
-            self.receivers.append((lookup_key, receiver))
-</code></pre></td></tr></table>
+            self.receivers.append((lookup_key, receiver))</pre></td></tr></table>
 </div>
-</div><p>send函数和blinker的send类似：</p>
+</div>
+<p>send函数和blinker的send类似：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -612,9 +635,9 @@ class Signal:
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def send(self, sender, **named):
+<pre class="chroma">def send(self, sender, **named):
     return [
         (receiver, receiver(signal=self, sender=sender, **named))
         for receiver in self._live_receivers(sender)
@@ -631,13 +654,13 @@ def _live_receivers(self, sender):
     non_weak_receivers = []
     for receiver in receivers:
         non_weak_receivers.append(receiver)
-    return non_weak_receivers
-</code></pre></td></tr></table>
+    return non_weak_receivers</pre></td></tr></table>
 </div>
-</div><p>django-signal额外提供了一个receiver装饰器，方便业务使用:</p>
+</div>
+<p>django-signal额外提供了一个receiver装饰器，方便业务使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -647,9 +670,9 @@ def _live_receivers(self, sender):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def receiver(signal, **kwargs):
+<pre class="chroma">def receiver(signal, **kwargs):
     
     def _decorator(func):
         if isinstance(signal, (list, tuple)):
@@ -658,13 +681,13 @@ def _live_receivers(self, sender):
         else:
             signal.connect(func, **kwargs)
         return func
-    return _decorator
-</code></pre></td></tr></table>
+    return _decorator</pre></td></tr></table>
 </div>
-</div><p>django的model中额外包装了ModelSignal类并且预制了一些signal:</p>
+</div>
+<p>django的model中额外包装了ModelSignal类并且预制了一些signal:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -697,9 +720,9 @@ def _live_receivers(self, sender):
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class ModelSignal(Signal):
+<pre class="chroma">class ModelSignal(Signal):
 
     def _lazy_method(self, method, apps, receiver, sender, **kwargs):
         from django.db.models.options import Options
@@ -731,13 +754,13 @@ post_delete = ModelSignal(use_caching=True)
 
 m2m_changed = ModelSignal(use_caching=True)
 
-pre_migrate = Signal()
-</code></pre></td></tr></table>
+pre_migrate = Signal()</pre></td></tr></table>
 </div>
-</div><p>signal的使用方式在receiver装饰器的注释中有介绍:</p>
+</div>
+<p>signal的使用方式在receiver装饰器的注释中有介绍:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -749,9 +772,9 @@ pre_migrate = Signal()
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">&#34;&#34;&#34;
+<pre class="chroma">&#34;&#34;&#34;
 A decorator for connecting receivers to signals. Used by passing in the
 signal (or list of signals) and keyword arguments to connect::
 
@@ -762,15 +785,17 @@ signal (or list of signals) and keyword arguments to connect::
     @receiver([post_save, post_delete], sender=MyModel)
     def signals_receiver(sender, **kwargs):
         ...
-&#34;&#34;&#34;
-</code></pre></td></tr></table>
+&#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>这样利用signal机制，可以对MyModel进行一些额外的逻辑处理，又避免了代码的硬耦合。</p>
-<h2 id="weakref-">weakref 介绍</h2>
+</div>
+<p>这样利用signal机制，可以对MyModel进行一些额外的逻辑处理，又避免了代码的硬耦合。</p>
+
+<h2 id="weakref-介绍">weakref 介绍</h2>
+
 <p>了解了signal的各种实现和使用后，我们再回头学习blinker-signal中另外一个环节weakref。weakref可以显著提高signal的性能, 请看下面示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -801,9 +826,9 @@ signal (or list of signals) and keyword arguments to connect::
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def test_weak_value_dict(cache):
+<pre class="chroma">def test_weak_value_dict(cache):
     c_list = []
 
     class C:
@@ -833,13 +858,13 @@ signal (or list of signals) and keyword arguments to connect::
 
 test_weak_value_dict({})
 print(&#34;==&#34; * 10)
-test_weak_value_dict(weakref.WeakValueDictionary())
-</code></pre></td></tr></table>
+test_weak_value_dict(weakref.WeakValueDictionary())</pre></td></tr></table>
 </div>
-</div><p>在test_weak_value_dict函数中，创建了3个对象，将对象放到一个列表和cache中，完成后再删除对象和对象列表并进行gc。如果cache的实现是set，那么gc后cache中任然存在3个对象，也就是对象不会回收；如果是使用WeakValueDictionary实现的cache，则部分对象进行了回收。在一个事件中心，如果监听函数取消后却无法释放回收，内存会持续增长。</p>
+</div>
+<p>在test_weak_value_dict函数中，创建了3个对象，将对象放到一个列表和cache中，完成后再删除对象和对象列表并进行gc。如果cache的实现是set，那么gc后cache中任然存在3个对象，也就是对象不会回收；如果是使用WeakValueDictionary实现的cache，则部分对象进行了回收。在一个事件中心，如果监听函数取消后却无法释放回收，内存会持续增长。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -850,9 +875,9 @@ test_weak_value_dict(weakref.WeakValueDictionary())
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">before 0 (&#39;method called!&#39;, 140431874960640)
+<pre class="chroma">before 0 (&#39;method called!&#39;, 140431874960640)
 before 1 (&#39;method called!&#39;, 140431874959440)
 before 2 (&#39;method called!&#39;, 140431874959968)
 after 0 (&#39;method called!&#39;, 140431874960640)
@@ -862,24 +887,29 @@ after 2 (&#39;method called!&#39;, 140431874959968)
 before 0 (&#39;method called!&#39;, 140431875860416)
 before 1 (&#39;method called!&#39;, 140431875860128)
 before 2 (&#39;method called!&#39;, 140431876163136)
-after 2 (&#39;method called!&#39;, 140431876163136)
-</code></pre></td></tr></table>
+after 2 (&#39;method called!&#39;, 140431876163136)</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>为什么WeakValueDictionary还保留最后一个数据呢？ 欢迎大家评论区交流</p>
 </blockquote>
-<h2 id="signal-">signal 小结</h2>
+
+<h2 id="signal-小结">signal 小结</h2>
+
 <p>到这里我们可以知道blinker/flask/django的signal都是单纯的python消息中心，和我们之前在gunicorn中使用的系统 <code>signal</code> 完全不一样。消息中心，可以用来进行业务逻辑的解耦，一般就包括三步:</p>
+
 <ul>
 <li>注册监听器</li>
 <li>派发事件</li>
 <li>注销监听器</li>
 </ul>
-<h2 id="heading">小技巧</h2>
+
+<h2 id="小技巧">小技巧</h2>
+
 <p>blinker中提供了一种 <strong>单例模式</strong> 的实现参考，我把它叫做 <strong>分组单例</strong> , 组名相同会得到同一个对象实例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -911,9 +941,9 @@ after 2 (&#39;method called!&#39;, 140431876163136)
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class _symbol(object):
+<pre class="chroma">class _symbol(object):
 
     def __init__(self, group):
         &#34;&#34;&#34;Construct a new group symbol.&#34;&#34;&#34;
@@ -944,10 +974,11 @@ class symbol(object):
         except KeyError:
             return cls.symbols.setdefault(group, _symbol(group))
 
-ANY = symbol(&#39;ANY&#39;)  # 单例
-</code></pre></td></tr></table>
+ANY = symbol(&#39;ANY&#39;)  # 单例</pre></td></tr></table>
 </div>
-</div><h2 id="heading-1">参考链接:</h2>
+</div>
+<h2 id="参考链接">参考链接:</h2>
+
 <ul>
 <li><a href="https://pythonhosted.org/blinker/">https://pythonhosted.org/blinker/</a></li>
 <li><a href="https://stackify.com/python-garbage-collection/">https://stackify.com/python-garbage-collection/</a></li>
@@ -1039,7 +1070,7 @@ ANY = symbol(&#39;ANY&#39;)  # 单例
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

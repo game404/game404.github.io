@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -45,9 +45,13 @@
 <meta property="og:description" content="微服务&amp;&amp;游戏技术分享." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://game404.github.io/" />
-<meta property="og:updated_time" content="2022-03-15T23:55:23+08:00" />
+
+<meta property="og:updated_time" content="2021-12-31T23:19:25&#43;08:00"/>
+
 <meta itemprop="name" content="游戏不存在">
-<meta itemprop="description" content="微服务&amp;&amp;游戏技术分享."><meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="微服务&amp;&amp;游戏技术分享.">
+
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="游戏不存在"/>
 <meta name="twitter:description" content="微服务&amp;&amp;游戏技术分享."/>
 
@@ -116,6 +120,90 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/2021/">2021年终总结</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-12-31 </span>
+      <div class="post-category">
+          <a href="/categories/%E6%9D%82/"> 杂 </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      大家好，我是肖恩。坚持在「游戏不存在」分享开源项目源码解析已经一年，其中酸甜苦辣也是尝了个够。在这21年的尾巴上，回味一下过去的时光，总结一
+    </div>
+    <div class="read-more">
+      <a href="/post/2021/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/celery-8/">Celery 源码解析 - 8</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-12-26 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      本章我们从celery的设计工作流程来了解分布式任务的实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供
+    </div>
+    <div class="read-more">
+      <a href="/post/python/celery-8/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/docker/uid_gosu/">容器安全漏洞实验</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-12-19 </span>
+      <div class="post-category">
+          <a href="/categories/docker/"> Docker </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容
+    </div>
+    <div class="read-more">
+      <a href="/post/docker/uid_gosu/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/python/celery-7/">Celery 源码解析 - 7</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-12-12 </span>
+      <div class="post-category">
+          <a href="/categories/python/"> python </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      本章我们从celery的蓝图学习celery的实现细节。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一
+    </div>
+    <div class="read-more">
+      <a href="/post/python/celery-7/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/python/celery-6/">Celery 源码解析 - 6</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2021-12-05 </span>
@@ -131,90 +219,6 @@
     </div>
     <div class="read-more">
       <a href="/post/python/celery-6/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/service-lang-2/">谁是虽好的语言 ？- 语言选型闲聊（下）</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-11-20 </span>
-      <div class="post-category">
-          <a href="/categories/go/"> go </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      大家好，我是肖恩，源码解析每周见 近期我们公司做架构升级，调研了一下各种语言, 包括TypeScript，c#，rust, 还有java和go。这
-    </div>
-    <div class="read-more">
-      <a href="/post/service-lang-2/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/celery-5/">Celery 源码解析 - 5</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-11-15 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      基本扫清celery的基础库后，我们正式进入celery的源码解析. Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，
-    </div>
-    <div class="read-more">
-      <a href="/post/python/celery-5/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/celery-4/">Celery 源码解析 - 4</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-11-07 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大
-    </div>
-    <div class="read-more">
-      <a href="/post/python/celery-4/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/service-lang/">谁是虽好的语言 ？- 语言选型闲聊（上）</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-11-07 </span>
-      <div class="post-category">
-          <a href="/categories/go/"> go </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      大家好，我是肖恩，源码解析每周见 谁是最好的语言？当然是php了 :) 先说一声抱歉，最近工作上有个里程碑要交付，比较忙, 本周的celery源码系列
-    </div>
-    <div class="read-more">
-      <a href="/post/service-lang/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
@@ -260,7 +264,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>

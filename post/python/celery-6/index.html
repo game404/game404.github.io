@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.1 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
 <meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
 
 
@@ -43,17 +43,21 @@
 <meta property="og:description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://game404.github.io/post/python/celery-6/" />
-<meta property="article:published_time" content="2021-12-05T19:54:18+08:00" />
-<meta property="article:modified_time" content="2021-12-05T19:54:18+08:00" />
+<meta property="article:published_time" content="2021-12-05T19:54:18&#43;08:00"/>
+<meta property="article:modified_time" content="2021-12-05T19:54:18&#43;08:00"/>
+
 <meta itemprop="name" content="Celery 源码解析 - 6">
 <meta itemprop="description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的">
+
+
 <meta itemprop="datePublished" content="2021-12-05T19:54:18&#43;08:00" />
 <meta itemprop="dateModified" content="2021-12-05T19:54:18&#43;08:00" />
 <meta itemprop="wordCount" content="3858">
 
 
 
-<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="celery,源码," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 源码解析 - 6"/>
 <meta name="twitter:description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的"/>
 
@@ -137,20 +141,28 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-  <ul>
-    <li><a href="#worker">worker模式启动流程</a></li>
-    <li><a href="#beat">beat模式启动流程</a></li>
-    <li><a href="#multi">multi模式启动流程</a></li>
-    <li><a href="#worker-1">worker接收任务流程</a></li>
-    <li><a href="#heading">小结</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li><a href="#worker模式启动流程">worker模式启动流程</a></li>
+<li><a href="#beat模式启动流程">beat模式启动流程</a></li>
+<li><a href="#multi模式启动流程">multi模式启动流程</a></li>
+<li><a href="#worker接收任务流程">worker接收任务流程</a></li>
+<li><a href="#小结">小结</a></li>
+</ul></li>
+</ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      <p>本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。</p>
+      
+
+<p>本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。</p>
+
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
+
 <p>本文是是celery源码解析的第<strong>六</strong>篇，在前五篇里分别介绍了:</p>
+
 <ol>
 <li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
@@ -158,32 +170,34 @@
 <li><a href="https://game404.github.io/post/python/celery-4/">神器 celery 源码解析- kombu的企业级算法</a></li>
 <li><a href="https://game404.github.io/post/python/celery-5/">神器 celery 源码解析- celery启动流程分析</a></li>
 </ol>
-<h2 id="worker">worker模式启动流程</h2>
+
+<h2 id="worker模式启动流程">worker模式启动流程</h2>
+
 <p>我们启动celery的worker, 启动大概分成3个阶段，先看第一阶段创建蓝图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ celery -A myapp worker -l DEBUG
+<pre class="chroma">✗ celery -A myapp worker -l DEBUG
 [2021-11-24 15:53:12,984: DEBUG/MainProcess] | Worker: Preparing bootsteps.
 [2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: Building graph...
 [2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Timer, Hub, Pool, Autoscaler, Beat, Consumer}
 [2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
 [2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Building graph...
-[2021-11-24 15:53:13,038: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}
-</code></pre></td></tr></table>
+[2021-11-24 15:53:13,038: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}</pre></td></tr></table>
 </div>
-</div><p>这一阶段主要启动了worker和consumer2个蓝图, 下面是蓝图的创建和日志可以完整对应:</p>
+</div>
+<p>这一阶段主要启动了worker和consumer2个蓝图, 下面是蓝图的创建和日志可以完整对应:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -200,9 +214,9 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Blueprint:
+<pre class="chroma">class Blueprint:
     def apply(self, parent, **kwargs):
         # 创建蓝图
         self._debug(&#39;Preparing bootsteps.&#39;)
@@ -218,13 +232,13 @@
                     &#39;, &#39;.join(s.alias for s in self.order))
         for step in order:
             step.include(parent)
-        return self
-</code></pre></td></tr></table>
+        return self</pre></td></tr></table>
 </div>
-</div><p>第一个Worker蓝图在WorkController中，包括了下面一些步骤:</p>
+</div>
+<p>第一个Worker蓝图在WorkController中，包括了下面一些步骤:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -239,9 +253,9 @@
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class WorkController:
+<pre class="chroma">class WorkController:
 
     class Blueprint(bootsteps.Blueprint):
     &#34;&#34;&#34;Worker bootstep blueprint.&#34;&#34;&#34;
@@ -255,13 +269,13 @@
         &#39;celery.worker.components:StateDB&#39;,
         &#39;celery.worker.components:Consumer&#39;,
         &#39;celery.worker.autoscale:WorkerComponent&#39;,
-    }
-</code></pre></td></tr></table>
+    }</pre></td></tr></table>
 </div>
-</div><p>第二个Consumer蓝图在Consumer中，包括了下面一些步骤:</p>
+</div>
+<p>第二个Consumer蓝图在Consumer中，包括了下面一些步骤:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -278,9 +292,9 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Consumer:
+<pre class="chroma">class Consumer:
     &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
     class Blueprint(bootsteps.Blueprint):
     &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
@@ -296,13 +310,13 @@
         &#39;celery.worker.consumer.tasks:Tasks&#39;,
         &#39;celery.worker.consumer.consumer:Evloop&#39;,
         &#39;celery.worker.consumer.agent:Agent&#39;,
-    ]
-</code></pre></td></tr></table>
+    ]</pre></td></tr></table>
 </div>
-</div><p>创建完2个蓝图后，并没有立即启动蓝图，转而进入第二阶段创建启动worker，日志输出如下:</p>
+</div>
+<p>创建完2个蓝图后，并没有立即启动蓝图，转而进入第二阶段创建启动worker，日志输出如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -331,9 +345,9 @@
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">...
+<pre class="chroma">...
 celery@192.168.5.28 v5.1.2 (sun-harmonics)
 
 macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
@@ -361,13 +375,13 @@ macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
   . celery.starmap
   . myapp.add
 
-...
-</code></pre></td></tr></table>
+...</pre></td></tr></table>
 </div>
-</div><p>这个过程app创建完成，把当前的配置信息，task列表都展示出来。 展示信息的模版:</p>
+</div>
+<p>这个过程app创建完成，把当前的配置信息，task列表都展示出来。 展示信息的模版:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -387,9 +401,9 @@ macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">BANNER = &#34;&#34;&#34;\
+<pre class="chroma">BANNER = &#34;&#34;&#34;\
 {hostname} v{version}
 
 {platform} {timestamp}
@@ -408,13 +422,13 @@ macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
 EXTRA_INFO_FMT = &#34;&#34;&#34;
 [tasks]
 {tasks}
-&#34;&#34;&#34;
-</code></pre></td></tr></table>
+&#34;&#34;&#34;</pre></td></tr></table>
 </div>
-</div><p>task信息来自app的tasks，在上篇我们介绍过，其实就是TaskRegistry；并发模式默认使用的<code>prefork</code>，多进程模式；然后是AMQP的消费者，queue，exchange等信息:</p>
+</div>
+<p>task信息来自app的tasks，在上篇我们介绍过，其实就是TaskRegistry；并发模式默认使用的<code>prefork</code>，多进程模式；然后是AMQP的消费者，queue，exchange等信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -441,9 +455,9 @@ EXTRA_INFO_FMT = &#34;&#34;&#34;
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def extra_info(self):
+<pre class="chroma">def extra_info(self):
     if self.loglevel &lt;= logging.INFO:
         include_builtins = self.loglevel &lt;= logging.DEBUG
         tasklist = sep.join(
@@ -469,30 +483,30 @@ def startup_info(self, artlines=True):
         events=events,
         queues=app.amqp.queues.format(indent=0, indent_first=False),
     ).splitlines()
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>我们可以查看celery的进程数，确认总共创建了12个进程(进程数是通过cpu核数计算出来):</p>
+</div>
+<p>我们可以查看celery的进程数，确认总共创建了12个进程(进程数是通过cpu核数计算出来):</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">➜  ~ ps -ef | grep celery
+<pre class="chroma">➜  ~ ps -ef | grep celery
   501 72465 68316   0  3:53下午 ttys003    0:10.17 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
   ...
   501 72479 72465   0  3:53下午 ttys003    0:00.01 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
-  501 80540 71485   0  5:33下午 ttys005    0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn celery
-</code></pre></td></tr></table>
+  501 80540 71485   0  5:33下午 ttys005    0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn celery</pre></td></tr></table>
 </div>
-</div><p>除了默认的多进程方式，celery还支持下面这些并发模式:</p>
+</div>
+<p>除了默认的多进程方式，celery还支持下面这些并发模式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -504,9 +518,9 @@ def startup_info(self, artlines=True):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">ALIASES = {
+<pre class="chroma">ALIASES = {
     &#39;prefork&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,
     &#39;eventlet&#39;: &#39;celery.concurrency.eventlet:TaskPool&#39;,
     &#39;gevent&#39;: &#39;celery.concurrency.gevent:TaskPool&#39;,
@@ -517,16 +531,17 @@ def startup_info(self, artlines=True):
 
 def get_implementation(cls):
     &#34;&#34;&#34;Return pool implementation by name.&#34;&#34;&#34;
-    return symbol_by_name(cls, ALIASES)
-</code></pre></td></tr></table>
+    return symbol_by_name(cls, ALIASES)</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>threads 需要concurrent.futures支持，也就是python3.2版本以上</p>
 </blockquote>
+
 <p>worker启动的第3阶段就是启动蓝图，日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -552,9 +567,9 @@ def get_implementation(cls):
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Hub
+<pre class="chroma">[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Hub
 [2021-11-24 15:53:13,062: DEBUG/MainProcess] ^-- substep ok
 [2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Pool
 [2021-11-24 15:53:13,410: DEBUG/MainProcess] ^-- substep ok
@@ -579,15 +594,17 @@ def get_implementation(cls):
 [2021-11-24 15:53:17,008: DEBUG/MainProcess] | Consumer: Starting event loop
 [2021-11-24 15:53:17,008: DEBUG/MainProcess] | Worker: Hub.register Pool...
 [2021-11-24 15:53:17,009: INFO/MainProcess] celery@192.168.5.28 ready.
-[2021-11-24 15:53:17,010: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
-</code></pre></td></tr></table>
+[2021-11-24 15:53:17,010: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48</pre></td></tr></table>
 </div>
-</div><p>在worker启动中，我们需要关注worker蓝图的hub，pool二步(step)，consumer蓝图的connection，events，mingle，task，control，gossip，heart和Evloop七步(step)。</p>
-<h2 id="beat">beat模式启动流程</h2>
+</div>
+<p>在worker启动中，我们需要关注worker蓝图的hub，pool二步(step)，consumer蓝图的connection，events，mingle，task，control，gossip，heart和Evloop七步(step)。</p>
+
+<h2 id="beat模式启动流程">beat模式启动流程</h2>
+
 <p>beat模式的启动和worker模式不一样。beat模式主要是定时处理，并且beat模式不执行具体的任务，只是负责触发定时任务。其启动日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -606,9 +623,9 @@ def get_implementation(cls):
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ celery -A myapp beat -l DEBUG
+<pre class="chroma">✗ celery -A myapp beat -l DEBUG
 celery beat v5.0.5 (singularity) is starting.
 __    -    ... __   -        _
 LocalTime -&gt; 2021-12-05 15:40:39
@@ -626,13 +643,13 @@ Configuration -&gt;
 [2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Ticking with max interval-&gt;5.00 minutes
 [2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
 [2021-12-05 15:45:39,608: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2021-12-05 15:45:39,609: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-</code></pre></td></tr></table>
+[2021-12-05 15:45:39,609: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.</pre></td></tr></table>
 </div>
-</div><p>从日志可以看到beat模式启动也大概可以分成2个阶段。第一个阶段就是创建和启动任务调度器，由beat命令提供:</p>
+</div>
+<p>从日志可以看到beat模式启动也大概可以分成2个阶段。第一个阶段就是创建和启动任务调度器，由beat命令提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -641,9 +658,9 @@ Configuration -&gt;
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Beat:
+<pre class="chroma">class Beat:
     &#34;&#34;&#34;Beat as a service.&#34;&#34;&#34;
     
     def run(self):
@@ -651,13 +668,13 @@ Configuration -&gt;
             f&#39;celery beat v{VERSION_BANNER} is starting.&#39;)))
         self.init_loader()
         self.set_process_title()
-        self.start_scheduler()
-</code></pre></td></tr></table>
+        self.start_scheduler()</pre></td></tr></table>
 </div>
-</div><p>第二个阶段，任务调度器开始时间循环:</p>
+</div>
+<p>第二个阶段，任务调度器开始时间循环:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -687,9 +704,9 @@ Configuration -&gt;
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># celery/beat.py
+<pre class="chroma"># celery/beat.py
 
 class Service:
     &#34;&#34;&#34;Celery periodic task service.&#34;&#34;&#34;
@@ -718,14 +735,15 @@ class Service:
         except (KeyboardInterrupt, SystemExit):
             self._is_shutdown.set()
         finally:
-            self.sync()
-</code></pre></td></tr></table>
+            self.sync()</pre></td></tr></table>
 </div>
-</div><p>这里的时间循环使用一个while循环去完成，每次tick都会检查是否有需要执行的任务，默认5分钟检查一次。</p>
+</div>
+<p>这里的时间循环使用一个while循环去完成，每次tick都会检查是否有需要执行的任务，默认5分钟检查一次。</p>
+
 <p>如果到达任务执行的时刻，则是通过下面的apply_async发送到worker(远程)去执行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -738,9 +756,9 @@ class Service:
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">def apply_async(self, entry, producer=None, advance=True, **kwargs):
+<pre class="chroma">def apply_async(self, entry, producer=None, advance=True, **kwargs):
     # Update time-stamps and run counts before we actually execute,
     # so we have that done if an exception is raised (doesn&#39;t schedule
     # forever.)
@@ -752,51 +770,53 @@ class Service:
         entry_kwargs = {k: v() if isinstance(v, BeatLazyFunc) else v for k, v in entry.kwargs.items()}
         return task.apply_async(entry_args, entry_kwargs,
                                     producer=producer,
-                                    **entry.options)
-</code></pre></td></tr></table>
+                                    **entry.options)</pre></td></tr></table>
 </div>
-</div><h2 id="multi">multi模式启动流程</h2>
+</div>
+<h2 id="multi模式启动流程">multi模式启动流程</h2>
+
 <p>使用multi模式启动celery，可以让celery以服务的形式在background执行任务，并且可以启动更多的celery的执行进程。使用下面命令启动2个node ，w1和w2。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ celery multi start w1 w2 -A myapp -l DEBUG
+<pre class="chroma">✗ celery multi start w1 w2 -A myapp -l DEBUG
 celery multi v5.0.5 (singularity)
 &gt; Starting nodes...
-	&gt; w1@bogon: OK
-	&gt; w2@bogon: OK
-</code></pre></td></tr></table>
+    &gt; w1@bogon: OK
+    &gt; w2@bogon: OK</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>注意这个命令需要sudo权限</p>
 </blockquote>
+
 <p>使用下面命令监测celery服务的状态。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ celery -A myapp status
+<pre class="chroma">✗ celery -A myapp status
 -&gt;  w1@bogon: OK
 -&gt;  w2@bogon: OK
 
-2 nodes online.
-</code></pre></td></tr></table>
+2 nodes online.</pre></td></tr></table>
 </div>
-</div><p>w1的启动流程会写入到日志，日志内容如下:</p>
+</div>
+<p>w1的启动流程会写入到日志，日志内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -832,9 +852,9 @@ celery multi v5.0.5 (singularity)
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ cat /var/log/celery/w1.log
+<pre class="chroma">✗ cat /var/log/celery/w1.log
 [2021-12-05 15:59:11,161: DEBUG/MainProcess] | Worker: Preparing bootsteps.
 [2021-12-05 15:59:11,162: DEBUG/MainProcess] | Worker: Building graph...
 [2021-12-05 15:59:11,163: DEBUG/MainProcess] | Worker: New boot order: {Beat, StateDB, Timer, Hub, Pool, Autoscaler, Consumer}
@@ -869,30 +889,30 @@ celery multi v5.0.5 (singularity)
 [2021-12-05 15:59:12,639: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
 [2021-12-05 15:59:18,039: DEBUG/MainProcess] pidbox received method hello(from_node=&#39;w2@bogon&#39;, revoked={}) [reply_to:{&#39;exchange&#39;: &#39;reply.celery.pidbox&#39;, &#39;routing_key&#39;: &#39;196c0b68-a329-3e09-a1cf-54abb5e057db&#39;} ticket:e640e757-9514-436c-8548-0ddcbe15f9a4]
 [2021-12-05 15:59:18,040: INFO/MainProcess] sync with w2@bogon
-[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party
-</code></pre></td></tr></table>
+[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party</pre></td></tr></table>
 </div>
-</div><p>w1的启动方式和worker模式基本一致，特别的地方在日志的最后部分显示w2启动完成后，w1和w2进行了互联。对应可以在w2的日志中看到w1的连接信息:</p>
+</div>
+<p>w1的启动方式和worker模式基本一致，特别的地方在日志的最后部分显示w2启动完成后，w1和w2进行了互联。对应可以在w2的日志中看到w1的连接信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">✗ cat /var/log/celery/w2.log
+<pre class="chroma">✗ cat /var/log/celery/w2.log
 ...
 [2021-12-05 15:59:19,089: INFO/MainProcess] w2@bogon ready.
 [2021-12-05 15:59:19,089: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
-[2021-12-05 15:59:20,663: DEBUG/MainProcess] w1@bogon joined the party
-</code></pre></td></tr></table>
+[2021-12-05 15:59:20,663: DEBUG/MainProcess] w1@bogon joined the party</pre></td></tr></table>
 </div>
-</div><p>所以multi模式的特点就是新增加了Cluster和Node的概念，用来管理所有的worker，主要代码如下:</p>
+</div>
+<p>所以multi模式的特点就是新增加了Cluster和Node的概念，用来管理所有的worker，主要代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -911,9 +931,9 @@ celery multi v5.0.5 (singularity)
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">@splash
+<pre class="chroma">@splash
 @using_cluster
 def start(self, cluster):
     self.note(&#39;&gt; Starting nodes...&#39;)
@@ -931,50 +951,53 @@ def start_node(self, node):
             on_failure=self.on_child_failure,
         )
     maybe_call(self.on_node_status, node, retcode)
-    return retcode
-</code></pre></td></tr></table>
+    return retcode</pre></td></tr></table>
 </div>
-</div><p>Node直接同步是在Gossip的step中:</p>
+</div>
+<p>Node直接同步是在Gossip的step中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">class Gossip(bootsteps.ConsumerStep):
+<pre class="chroma">class Gossip(bootsteps.ConsumerStep):
     ...
     def on_node_join(self, worker):
         debug(&#39;%s joined the party&#39;, worker.hostname)
-        self._call_handlers(self.on.node_join, worker)
-</code></pre></td></tr></table>
+        self._call_handlers(self.on.node_join, worker)</pre></td></tr></table>
 </div>
-</div><blockquote>
+</div>
+<blockquote>
 <p>完成测试后，可以使用命令 <code>celery multi stop w1 w2</code> 关闭node</p>
 </blockquote>
-<h2 id="worker-1">worker接收任务流程</h2>
+
+<h2 id="worker接收任务流程">worker接收任务流程</h2>
+
 <p>worker接收任务并执行的日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
+<pre class="chroma">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
 [2021-11-24 21:33:50,535: DEBUG/MainProcess] TaskPool: Apply &lt;function _trace_task_ret at 0x7fe6086ac280&gt; (args:(&#39;myapp.add&#39;, &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, {&#39;lang&#39;: &#39;py&#39;, &#39;task&#39;: &#39;myapp.add&#39;, &#39;id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;shadow&#39;: None, &#39;eta&#39;: None, &#39;expires&#39;: None, &#39;group&#39;: None, &#39;group_index&#39;: None, &#39;retries&#39;: 0, &#39;timelimit&#39;: [None, None], &#39;root_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;parent_id&#39;: None, &#39;argsrepr&#39;: &#39;(16, 16)&#39;, &#39;kwargsrepr&#39;: &#39;{}&#39;, &#39;origin&#39;: &#39;gen83110@192.168.5.28&#39;, &#39;reply_to&#39;: &#39;63862dbb-9d82-3bdd-b7fb-03580941362a&#39;, &#39;correlation_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;hostname&#39;: &#39;celery@192.168.5.28&#39;, &#39;delivery_info&#39;: {&#39;exchange&#39;: &#39;&#39;, &#39;routing_key&#39;: &#39;celery&#39;, &#39;priority&#39;: 0, &#39;redelivered&#39;: None}, &#39;args&#39;: [16, 16], &#39;kwargs&#39;: {}}, b&#39;[[16, 16], {}, {&#34;callbacks&#34;: null, &#34;errbacks&#34;: null, &#34;chain&#34;: null, &#34;chord&#34;: null}]&#39;, &#39;application/json&#39;, &#39;utf-8&#39;) kwargs:{})
 [2021-11-24 21:33:50,536: DEBUG/MainProcess] Task accepted: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] pid:83086
-[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32
-</code></pre></td></tr></table>
+[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32</pre></td></tr></table>
 </div>
-</div><p>从日志信息可以看到，主进程MainProcess收到task执行的请求，然后从任务池中获取到任务，然后调度任务到一个子进程ForkPoolWorker-9中执行。</p>
+</div>
+<p>从日志信息可以看到，主进程MainProcess收到task执行的请求，然后从任务池中获取到任务，然后调度任务到一个子进程ForkPoolWorker-9中执行。</p>
+
 <p>任务的接收是在默认的策略函数中开始:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -989,9 +1012,9 @@ def start_node(self, node):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># celery/worker/strategy.py
+<pre class="chroma"># celery/worker/strategy.py
 
 def default(task, app, consumer,
             info=logger.info, error=logger.error, task_reserved=task_reserved,
@@ -1005,13 +1028,13 @@ def default(task, app, consumer,
     &#34;&#34;&#34;
     ...
     info(&#39;Received task: %s&#39;, req)
-    ...
-</code></pre></td></tr></table>
+    ...</pre></td></tr></table>
 </div>
-</div><p>任务池是由并发模型提供:</p>
+</div>
+<p>任务池是由并发模型提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1030,9 +1053,9 @@ def default(task, app, consumer,
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></code></pre></td>
+</span></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># celery/concurrency/base.py
+<pre class="chroma"># celery/concurrency/base.py
 
 def apply_async(self, target, args=None, kwargs=None, **options):
     &#34;&#34;&#34;Equivalent of the :func:`apply` built-in function.
@@ -1050,12 +1073,15 @@ def apply_async(self, target, args=None, kwargs=None, **options):
     return self.on_apply(target, args, kwargs,
                          waitforslot=self.putlocks,
                          callbacks_propagate=self.callbacks_propagate,
-                         **options)
-</code></pre></td></tr></table>
+                         **options)</pre></td></tr></table>
 </div>
-</div><h2 id="heading">小结</h2>
+</div>
+<h2 id="小结">小结</h2>
+
 <p>我们通过对worker，beat和multi三种启动模式的日志跟踪分析，对celery的启动流程和模块功能有更进一步的了解。三个模式都需要创建app，所以启动时候通过参数<code>-A myapp</code>参数，由app创建/查找各种task。不同的地方首先是beat和worker/multi不同，beat实际上就是一个生产者，通过配置定时的产生任务，然后发送给worker/multi具体执行。其次不同的是worker和multi的运作方式，multi以服务方式运行，并且可以跨机器。在worker模式下，本机创建多个工作进程，是一个多进程模型。multi则是多个机器Node形成一个Cluster集群，任务在集群内部进行调度。celery的分布式模型大概可以如下图:</p>
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/celery-model.png" alt=""></p>
+
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/celery-model.png" alt="" /></p>
+
 <p>同时通过运行日志分析，我们可以知道celery的启动过程通过不同的Blueprint的不同Step过程实现；定时功能主要在beat和schedule模块实现；而分布式功能主要在concurrency模块，这样对各个模块的主体功能分工会有更清晰的认知。</p>
 
     </div>
@@ -1141,7 +1167,7 @@ def apply_async(self, target, args=None, kwargs=None, **options):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2022
+    2023
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>
