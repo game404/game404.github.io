@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/docker2istio-docker/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="从docker到istio之一 - 使用Docker将应用容器化" />
 <meta property="og:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/docker2istio-docker/" />
-<meta property="article:published_time" content="2019-05-17T22:39:33&#43;08:00"/>
-<meta property="article:modified_time" content="2019-05-17T22:39:33&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/docker2istio-docker/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-05-17T22:39:33+08:00" />
+<meta property="article:modified_time" content="2019-05-17T22:39:33+08:00" />
 
 <meta itemprop="name" content="从docker到istio之一 - 使用Docker将应用容器化">
-<meta itemprop="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包">
-
-
-<meta itemprop="datePublished" content="2019-05-17T22:39:33&#43;08:00" />
-<meta itemprop="dateModified" content="2019-05-17T22:39:33&#43;08:00" />
-<meta itemprop="wordCount" content="2087">
-
-
-
-<meta itemprop="keywords" content="系列," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包"><meta itemprop="datePublished" content="2019-05-17T22:39:33+08:00" />
+<meta itemprop="dateModified" content="2019-05-17T22:39:33+08:00" />
+<meta itemprop="wordCount" content="2097">
+<meta itemprop="keywords" content="系列," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="从docker到istio之一 - 使用Docker将应用容器化"/>
 <meta name="twitter:description" content="前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,79 +144,60 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#前言">前言</a></li>
-<li><a href="#docker">docker</a></li>
-<li><a href="#应用容器化实践">应用容器化实践</a>
-<ul>
-<li><a href="#应用准备">应用准备</a></li>
-<li><a href="#制作镜像">制作镜像</a></li>
-<li><a href="#启动容器">启动容器</a></li>
-<li><a href="#测试应用">测试应用</a></li>
-</ul></li>
-<li><a href="#容器和原生的比较">容器和原生的比较</a>
-<ul>
-<li><a href="#安装">安装</a></li>
-<li><a href="#扩容">扩容</a></li>
-<li><a href="#清理">清理</a></li>
-</ul></li>
-<li><a href="#总结">总结</a></li>
-<li><a href="#相关组件">相关组件</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#docker">docker</a></li>
+    <li><a href="#应用容器化实践">应用容器化实践</a>
+      <ul>
+        <li><a href="#应用准备">应用准备</a></li>
+        <li><a href="#制作镜像">制作镜像</a></li>
+        <li><a href="#启动容器">启动容器</a></li>
+        <li><a href="#测试应用">测试应用</a></li>
+      </ul>
+    </li>
+    <li><a href="#容器和原生的比较">容器和原生的比较</a>
+      <ul>
+        <li><a href="#安装">安装</a></li>
+        <li><a href="#扩容">扩容</a></li>
+        <li><a href="#清理">清理</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#相关组件">相关组件</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="前言">前言</h2>
-
+      <h2 id="前言">前言</h2>
 <p>容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包括下面四篇文章。</p>
-
 <ul>
 <li><a href="https://game404.github.io/post/docker2istio-docker/">从docker到istio之一 - 使用Docker将应用容器化</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-compose/">从docker到istio之二 - 使用compose部署应用</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-kubernetes/">从docker到istio之三 - kubernetes编排应用</a></li>
 <li><a href="https://game404.github.io/post/docker2istio-istio/">从docker到istio之四 - istio管理应用</a></li>
 </ul>
-
 <p>这是第一篇，容器化应用。当然作为入门教程，只尝试介绍清楚为什么用它，它能够解决什么的问题，它是怎么操作的一条线。至于如何由点及面，深入理解，则内容繁杂，个人能力有限，容后再谈。</p>
-
 <p>开始之前，先看看相关概念/组件词云，体会一下头大的感觉：</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/WordArt.png" alt="words" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/WordArt.png" alt="words"></p>
 <h2 id="docker">docker</h2>
-
 <p>docker是什么？docker能够做什么？</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/virtualization.png" alt="VirtualMachines" /></p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/docker.png" alt="Docker" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/virtualization.png" alt="VirtualMachines"></p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/docker.png" alt="Docker"></p>
 <p>Docker这种轻量级的虚拟方案，每台机器节省一点资源，海量的机器会节省巨大的资源，所以云计算厂商都在大力的推动容器化云平台。大厂的推动，又必然促进研发体系的变更。</p>
-
 <blockquote>
 <p>个人认为，docker还有一个特性:跨语言的沟通桥梁。程序开发分工越来越细，不同语言之间鸿沟也在扩大。一个前端想部署后端服务作为本地调试，一个php程序员部署一个Java后端中间件，都是非常困难的事情。docker却可以便捷的担起这种沟通桥梁，简单的下载镜像和启动容器两步，上手毫无压力。</p>
 </blockquote>
-
 <h2 id="应用容器化实践">应用容器化实践</h2>
-
 <h3 id="应用准备">应用准备</h3>
-
 <p>创建和进入目录 <code>mkdir docker2istio/app &amp;&amp; cd docker2istio</code></p>
-
 <blockquote>
 <p>如无特殊说明，下文演示都在docker2istio目录</p>
 </blockquote>
-
 <p><strong>app/app.py</strong> 是一个基于 <strong>flask</strong> 的网页app。功能很简单，收到访问请求，响应页面访问次数，页面访问次数数据存储在redis中。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -249,48 +233,47 @@
 </span><span class="lnt">34
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#-*- coding:utf-8 -*-</span>
-<span class="kn">import</span> <span class="nn">socket</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span><span class="n">request</span>
-<span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
-
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">redis</span> <span class="o">=</span> <span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">get_host_ip</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;8.8.8.8&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
-        <span class="n">ip</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">ip</span> <span class="o">=</span> <span class="s2">&#34;127.0.0.1&#34;</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">ip</span>
-
-
-<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;hello in&#39;</span><span class="p">)</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s1">&#39;hits&#39;</span><span class="p">)</span>
-    <span class="n">host_ip</span> <span class="o">=</span> <span class="n">get_host_ip</span><span class="p">()</span>
-    <span class="n">client_ip</span><span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Real-Ip&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;X-Real-Ip&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span> <span class="k">else</span> <span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span> 
-    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&#34;Hello out {} {} {}:&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="p">,</span><span class="n">client_ip</span><span class="p">,</span><span class="n">count</span><span class="p">))</span>
-    <span class="k">return</span> <span class="s1">&#39;Hello World by {} from {} ! 该页面已被访问 {} 次。</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="p">,</span><span class="n">client_ip</span><span class="p">,</span><span class="n">count</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&#34;0.0.0.0&#34;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#-*- coding:utf-8 -*-</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span><span class="n">request</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">redis</span> <span class="o">=</span> <span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_host_ip</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;8.8.8.8&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ip</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ip</span> <span class="o">=</span> <span class="s2">&#34;127.0.0.1&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ip</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;hello in&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">count</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s1">&#39;hits&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">host_ip</span> <span class="o">=</span> <span class="n">get_host_ip</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_ip</span><span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Real-Ip&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;X-Real-Ip&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span> <span class="k">else</span> <span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&#34;Hello out </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">:&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="p">,</span><span class="n">client_ip</span><span class="p">,</span><span class="n">count</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s1">&#39;Hello World by </span><span class="si">{}</span><span class="s1"> from </span><span class="si">{}</span><span class="s1"> ! 该页面已被访问 </span><span class="si">{}</span><span class="s1"> 次。</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host_ip</span><span class="p">,</span><span class="n">client_ip</span><span class="p">,</span><span class="n">count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&#34;0.0.0.0&#34;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="制作镜像">制作镜像</h3>
-
+</div><h3 id="制作镜像">制作镜像</h3>
 <p>使用 <code>app/Dockerfile</code> 文件制作镜像</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -298,36 +281,34 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="k">FROM</span><span class="s"> python:3.7-alpine</span><span class="err">
-</span><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /code</span><span class="err">
-</span><span class="err"></span><span class="k">RUN</span> pip install redis flask<span class="err">
-</span><span class="err"></span><span class="k">ADD</span><span class="s"> . /code</span><span class="err">
-</span><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 5000</span><span class="err">
-</span><span class="err"></span><span class="k">CMD</span><span class="s"> [&#34;python&#34;, &#34;app.py&#34;]</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> python:3.7-alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /code</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> pip install redis flask<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ADD</span> . /code<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 5000</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;python&#34;</span><span class="p">,</span> <span class="s2">&#34;app.py&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>docker build -f app/Dockerfile -t flaskapp:0.0.1 app</code> 编译镜像文件</p>
-
+</div><p>使用 <code>docker build -f app/Dockerfile -t flaskapp:0.0.1 app</code> 编译镜像文件</p>
 <h3 id="启动容器">启动容器</h3>
-
 <p>启动容器前先使用 <code>docker network create -d bridge flaskapp-net</code> 创建一下docker内部的app网络。</p>
-
 <p>创建docker内部网络，可以让docker的container直接直接连通，不用通过端口暴露本地网络再连通。</p>
-
 <p>然后依次：</p>
-
 <ol>
-<li><p>启动redis <code>docker run -d --rm --name redis --network flaskapp-net redis:4-alpine3.8</code></p></li>
-
-<li><p>启动app <code>docker run -d --rm --name flaskapp --network flaskapp-net flaskapp:0.0.1</code></p></li>
-
-<li><p>启动nginx <code>docker run -d --rm --name nginx --network flaskapp-net -p 80:80 -v $PWD/nginx:/etc/nginx/conf.d nginx:1.15.8-alpine</code></p></li>
+<li>
+<p>启动redis <code>docker run -d --rm --name redis --network flaskapp-net redis:4-alpine3.8</code></p>
+</li>
+<li>
+<p>启动app <code>docker run -d --rm --name flaskapp --network flaskapp-net flaskapp:0.0.1</code></p>
+</li>
+<li>
+<p>启动nginx <code>docker run -d --rm --name nginx --network flaskapp-net -p 80:80 -v $PWD/nginx:/etc/nginx/conf.d nginx:1.15.8-alpine</code></p>
+</li>
 </ol>
-
 <p>其中nginx的 <code>nginx/default.conf</code> 文件内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -345,66 +326,61 @@
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">upstream flaskapp {
-    server flaskapp:5000;
-}
-server {
-    listen       80;
-    server_name  localhost;
-
-    root /usr/share/nginx/html;
-
-    location / {
-        proxy_pass http://flaskapp;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $host;
-        proxy_redirect off;
-    }
-
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">upstream flaskapp {
+</span></span><span class="line"><span class="cl">    server flaskapp:5000;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">server {
+</span></span><span class="line"><span class="cl">    listen       80;
+</span></span><span class="line"><span class="cl">    server_name  localhost;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    root /usr/share/nginx/html;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    location / {
+</span></span><span class="line"><span class="cl">        proxy_pass http://flaskapp;
+</span></span><span class="line"><span class="cl">        proxy_set_header X-Real-IP $remote_addr;
+</span></span><span class="line"><span class="cl">        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+</span></span><span class="line"><span class="cl">        proxy_set_header Host $host;
+</span></span><span class="line"><span class="cl">        proxy_redirect off;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到<code>server flaskapp:5000;</code> 实际上就是访问的 <strong>app</strong> 的容器名称, 由<code>--name flaskapp</code>定义；5000是flask默认端口。同样app.py中<code>redis = Redis(host='redis', port=6379)</code> 也是如此。</p>
-
+</div><p>可以看到<code>server flaskapp:5000;</code> 实际上就是访问的 <strong>app</strong> 的容器名称, 由<code>--name flaskapp</code>定义；5000是flask默认端口。同样app.py中<code>redis = Redis(host='redis', port=6379)</code> 也是如此。</p>
 <h3 id="测试应用">测试应用</h3>
-
 <p>先检查一下容器, <code>docker ps</code> 可以看到三个容器 :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS              PORTS                NAMES
-5df459a7cc1a        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     About a minute ago   Up About a minute                        flaskapp
-c07580c66c91        nginx:1.15.8-alpine   &#34;nginx -g &#39;daemon of…&#34;   22 minutes ago       Up 21 minutes       0.0.0.0:80-&gt;80/tcp   nginx
-b9e66471d87e        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   40 minutes ago       Up 40 minutes       6379/tcp             redis</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">CONTAINER ID        IMAGE                 COMMAND                  CREATED              STATUS              PORTS                NAMES
+</span></span><span class="line"><span class="cl">5df459a7cc1a        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     About a minute ago   Up About a minute                        flaskapp
+</span></span><span class="line"><span class="cl">c07580c66c91        nginx:1.15.8-alpine   &#34;nginx -g &#39;daemon of…&#34;   22 minutes ago       Up 21 minutes       0.0.0.0:80-&gt;80/tcp   nginx
+</span></span><span class="line"><span class="cl">b9e66471d87e        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   40 minutes ago       Up 40 minutes       6379/tcp             redis
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后访问服务 <code>curl http://127.0.0.1</code></p>
+</div><p>然后访问服务 <code>curl http://127.0.0.1</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Hello World by 172.18.0.3 from 172.18.0.1 ! 该页面已被访问 1 次。</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Hello World by 172.18.0.3 from 172.18.0.1 ! 该页面已被访问 1 次。
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>应用部署完成，服务正常使用。</p>
-
+</div><p>应用部署完成，服务正常使用。</p>
 <h2 id="容器和原生的比较">容器和原生的比较</h2>
-
 <h3 id="安装">安装</h3>
-
 <p>以redis为例，简单对比一下原生和容器的安装。下面内容是来自 <a href="https://www.linode.com/docs/databases/redis/install-and-configure-redis-on-centos-7/">install-and-configure-redis-on-centos-7</a> 的 redis安装指南</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -417,144 +393,125 @@ b9e66471d87e        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   40 
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">1 . Add the EPEL repository, and update YUM to confirm your change:
-
-sudo yum install epel-release
-sudo yum update
-2. Install Redis:
-
-sudo yum install redis
-3. Start Redis:
-
-sudo systemctl start redis
-Optional: To automatically start Redis on boot:
-
-sudo systemctl enable redis</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">1 . Add the EPEL repository, and update YUM to confirm your change:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo yum install epel-release
+</span></span><span class="line"><span class="cl">sudo yum update
+</span></span><span class="line"><span class="cl">2. Install Redis:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo yum install redis
+</span></span><span class="line"><span class="cl">3. Start Redis:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo systemctl start redis
+</span></span><span class="line"><span class="cl">Optional: To automatically start Redis on boot:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo systemctl enable redis
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>需要3步，还不涉及权限，账号，冲突之类的问题。</p>
-
+</div><p>需要3步，还不涉及权限，账号，冲突之类的问题。</p>
 <p>而容器化的redis，则只需要1步:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run -d --rm --name redis --network flaskapp-net redis:4-alpine3.8</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker run -d --rm --name redis --network flaskapp-net redis:4-alpine3.8
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可见一个应用，使用容器化方式部署是非常容易的。</p>
-
+</div><p>可见一个应用，使用容器化方式部署是非常容易的。</p>
 <h3 id="扩容">扩容</h3>
-
 <p>对应用进行扩容，增加一个app:
 <code>docker run -d --rm --name flaskapp1 --network flaskapp-net flaskapp:0.0.1</code></p>
-
 <p>然后调整 <code>default.conf</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">upstream flaskapp {
-    server flaskapp:5000;
-    server flaskapp1:5000;
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">upstream flaskapp {
+</span></span><span class="line"><span class="cl">    server flaskapp:5000;
+</span></span><span class="line"><span class="cl">    server flaskapp1:5000;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>重启nginx容器 <code>docker restart nginx</code> ，检查容器启动情况，变成4个容器了:</p>
+</div><p>重启nginx容器 <code>docker restart nginx</code> ，检查容器启动情况，变成4个容器了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜ docker2istio docker ps
-CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                NAMES
-779b87e95905        nginx:1.15.8-alpine   &#34;nginx -g &#39;daemon of…&#34;   4 seconds ago       Up 2 seconds        0.0.0.0:80-&gt;80/tcp   nginx
-2b7a14c42aed        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     8 seconds ago       Up 7 seconds                             flaskapp1
-5df459a7cc1a        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     25 minutes ago      Up 25 minutes                            flaskapp
-b9e66471d87e        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   About an hour ago   Up About an hour    6379/tcp             redis</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">➜ docker2istio docker ps
+</span></span><span class="line"><span class="cl">CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                NAMES
+</span></span><span class="line"><span class="cl">779b87e95905        nginx:1.15.8-alpine   &#34;nginx -g &#39;daemon of…&#34;   4 seconds ago       Up 2 seconds        0.0.0.0:80-&gt;80/tcp   nginx
+</span></span><span class="line"><span class="cl">2b7a14c42aed        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     8 seconds ago       Up 7 seconds                             flaskapp1
+</span></span><span class="line"><span class="cl">5df459a7cc1a        flaskapp:0.0.1        &#34;python flaskapp.py&#34;     25 minutes ago      Up 25 minutes                            flaskapp
+</span></span><span class="line"><span class="cl">b9e66471d87e        redis:4-alpine3.8     &#34;docker-entrypoint.s…&#34;   About an hour ago   Up About an hour    6379/tcp             redis
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>访问服务，测试扩容结果:</p>
+</div><p>访问服务，测试扩容结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  docker2istio curl http://127.0.0.1
-Hello World by 172.18.0.3 from 172.18.0.1 ! 该页面已被访问 10 次。
-➜  docker2istio curl http://127.0.0.1
-Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">➜  docker2istio curl http://127.0.0.1
+</span></span><span class="line"><span class="cl">Hello World by 172.18.0.3 from 172.18.0.1 ! 该页面已被访问 10 次。
+</span></span><span class="line"><span class="cl">➜  docker2istio curl http://127.0.0.1
+</span></span><span class="line"><span class="cl">Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="清理">清理</h3>
-
+</div><h3 id="清理">清理</h3>
 <p>测试完成后，清理容器 <code>docker stop nginx flaskapp1 flaskapp redis</code> ，清理网络 <code>docker network rm flaskapp-net</code> 。容器启动时候 <code>--rm</code> option，会在容器完成(stop)后，自动清理释放。</p>
-
 <h2 id="总结">总结</h2>
-
 <p>对比整个过程可见，容器相对于原生:</p>
-
 <ol>
 <li>命令通用。不同的服务，都是使用<code>docker run 镜像名称</code>， 跨平台centos/ubuntu/windows。</li>
 <li>可维护性上升。<code>Dockerfile</code>描述镜像，封装完成后的镜像文件push/pull。</li>
 <li>扩容方便。</li>
 <li>清理方便。</li>
 </ol>
-
 <p>当然，<code>Docker</code> 也有一些问题:</p>
-
 <ol>
 <li>手动挡。手动控制容器启动顺序，手动控制容器名称，步骤多。手工扩容。</li>
 </ol>
-
 <p>将容器从手动挡升级到自动挡，需要使用 <code>compose</code>, 也是docker家的。</p>
-
 <h2 id="相关组件">相关组件</h2>
-
 <ol>
 <li>CRI</li>
 </ol>
-
 <blockquote>
 <p>Container Runtime Interface 容器运行时接口，Docker的容器只是其中实现之一。</p>
-
+</blockquote>
+<blockquote>
 <p>Kata Containers is an open source container runtime, building lightweight virtual machines that seamlessly plug into the containers ecosystem 。</p>
 </blockquote>
-
-<ol>
+<ol start="2">
 <li>Harbor</li>
 </ol>
-
 <blockquote>
 <p>Harbor is an open source cloud native registry that stores, signs, and scans container images for vulnerabilities. 开源的镜像仓库。</p>
 </blockquote>
-
-<ol>
+<ol start="3">
 <li>Containerd</li>
 </ol>
-
 <blockquote>
 <p>containerd is available as a daemon for Linux and Windows.</p>
 </blockquote>
-
 <p>附一张架构图</p>
-
-<p><img src="https://containerd.io/img/architecture.png" alt="架构图" /></p>
+<p><img src="https://containerd.io/img/architecture.png" alt="架构图"></p>
 
     </div>
 
@@ -578,9 +535,9 @@ Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre
           <a href="/tags/%E7%B3%BB%E5%88%97/">系列</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/docker2istio-compose/">
+        <a class="prev" href="/post/docker2istio-kubernetes/">
             <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">从docker到istio之二 - 使用compose部署应用</span>
+            <span class="prev-text nav-default">从docker到istio之三 - kubernetes集群编排</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
         <a class="next" href="/post/docker-syslog/">
@@ -593,11 +550,11 @@ Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2019-05-17 22:39:33 \x2b0800 CST',
+        id: '2019-05-17 22:39:33 \u002b0800 CST',
         title: '从docker到istio之一 - 使用Docker将应用容器化',
         link: decodeURI(location.href),
         desc: '前言 容器化，云原生越演越烈，新概念非常之多。信息爆炸的同时，带来层层迷雾。我尝试从扩容出发理解其脉路，经过实践探索，整理形成一个入门教程，包',
@@ -611,6 +568,10 @@ Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -638,13 +599,10 @@ Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -655,7 +613,10 @@ Hello World by 172.18.0.4 from 172.18.0.1 ! 该页面已被访问 11 次。</pre
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

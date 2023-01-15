@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/flask-website/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="flask-website源码解析" />
 <meta property="og:description" content="flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/flask-website/" />
-<meta property="article:published_time" content="2022-01-16T21:34:41&#43;08:00"/>
-<meta property="article:modified_time" content="2022-01-16T21:34:41&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/flask-website/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-01-16T21:34:41+08:00" />
+<meta property="article:modified_time" content="2022-01-16T21:34:41+08:00" />
 
 <meta itemprop="name" content="flask-website源码解析">
-<meta itemprop="description" content="flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于">
-
-
-<meta itemprop="datePublished" content="2022-01-16T21:34:41&#43;08:00" />
-<meta itemprop="dateModified" content="2022-01-16T21:34:41&#43;08:00" />
-<meta itemprop="wordCount" content="4242">
-
-
-
-<meta itemprop="keywords" content="flask,http," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于"><meta itemprop="datePublished" content="2022-01-16T21:34:41+08:00" />
+<meta itemprop="dateModified" content="2022-01-16T21:34:41+08:00" />
+<meta itemprop="wordCount" content="4237">
+<meta itemprop="keywords" content="flask,http," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="flask-website源码解析"/>
 <meta name="twitter:description" content="flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,32 +144,24 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#项目结构">项目结构</a></li>
-<li><a href="#网站入口">网站入口</a></li>
-<li><a href="#模版渲染">模版渲染</a></li>
-<li><a href="#数据库操作">数据库操作</a></li>
-<li><a href="#openid认证">openID认证</a></li>
-<li><a href="#全文检索">全文检索</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#项目结构">项目结构</a></li>
+    <li><a href="#网站入口">网站入口</a></li>
+    <li><a href="#模版渲染">模版渲染</a></li>
+    <li><a href="#数据库操作">数据库操作</a></li>
+    <li><a href="#openid认证">openID认证</a></li>
+    <li><a href="#全文检索">全文检索</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于学习如何使用flask制作一个完备的web站点，很有参考价值，我们一起来学习它。</p>
-
+      <p>flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于学习如何使用flask制作一个完备的web站点，很有参考价值，我们一起来学习它。</p>
 <h2 id="项目结构">项目结构</h2>
-
 <p>flask-website已经归档封存，我们使用最后的版本<code>8b08</code>，包括如下几个模块:</p>
-
 <table>
 <thead>
 <tr>
@@ -174,74 +169,61 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>run.py</td>
 <td>启动脚本</td>
 </tr>
-
 <tr>
 <td>websiteconfig.py</td>
 <td>设置脚本</td>
 </tr>
-
 <tr>
 <td>update-doc-searchindex.py</td>
 <td>更新索引脚本</td>
 </tr>
-
 <tr>
 <td>database.py</td>
 <td>数据库模块</td>
 </tr>
-
 <tr>
 <td>docs.py</td>
 <td>索引文档模块</td>
 </tr>
-
 <tr>
 <td>openid_auth.py</td>
 <td>oauth认证</td>
 </tr>
-
 <tr>
 <td>search.py</td>
 <td>搜素模块</td>
 </tr>
-
 <tr>
 <td>utils.py</td>
 <td>工具类</td>
 </tr>
-
 <tr>
 <td>listings</td>
 <td>一些展示栏</td>
 </tr>
-
 <tr>
 <td>views</td>
 <td>蓝图模块，包括社区，扩展，邮件列表，代码片段等</td>
 </tr>
-
 <tr>
 <td>static</td>
 <td>网站的静态资源</td>
 </tr>
-
 <tr>
 <td>templates</td>
 <td>网站的模版资源</td>
 </tr>
 </tbody>
 </table>
-
 <p>flask-website的项目结构，可以作为flask的脚手架，按照这个目录规划构建自己的站点:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -261,64 +243,62 @@
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">.
-├── LICENSE
-├── Makefile
-├── README
-├── flask_website
-│   ├── __init__.py
-│   ├── database.py
-│   ├── docs.py
-│   ├── flaskystyle.py
-│   ├── listings
-│   ├── openid_auth.py
-│   ├── search.py
-│   ├── static
-│   ├── templates
-│   ├── utils.py
-│   └── views
-├── requirements.txt
-├── run.py
-├── update-doc-searchindex.py
-└── websiteconfig.py</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── LICENSE
+</span></span><span class="line"><span class="cl">├── Makefile
+</span></span><span class="line"><span class="cl">├── README
+</span></span><span class="line"><span class="cl">├── flask_website
+</span></span><span class="line"><span class="cl">│   ├── __init__.py
+</span></span><span class="line"><span class="cl">│   ├── database.py
+</span></span><span class="line"><span class="cl">│   ├── docs.py
+</span></span><span class="line"><span class="cl">│   ├── flaskystyle.py
+</span></span><span class="line"><span class="cl">│   ├── listings
+</span></span><span class="line"><span class="cl">│   ├── openid_auth.py
+</span></span><span class="line"><span class="cl">│   ├── search.py
+</span></span><span class="line"><span class="cl">│   ├── static
+</span></span><span class="line"><span class="cl">│   ├── templates
+</span></span><span class="line"><span class="cl">│   ├── utils.py
+</span></span><span class="line"><span class="cl">│   └── views
+</span></span><span class="line"><span class="cl">├── requirements.txt
+</span></span><span class="line"><span class="cl">├── run.py
+</span></span><span class="line"><span class="cl">├── update-doc-searchindex.py
+</span></span><span class="line"><span class="cl">└── websiteconfig.py
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>run.py作为项目的启动入口</li>
 <li>requirements.txt描述项目的依赖包</li>
 <li>flask_website是项目的主模块，里面包括:存放静态资源的static目录; 存放模版文件的templates目录;存放一些蓝图模块的views模块，使用这些蓝图构建网站的不同页面。</li>
 </ul>
-
 <h2 id="网站入口">网站入口</h2>
-
 <p>网站的入口run.py代码很简单，导入app并运行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from flask_website import app
-app.run(debug=True)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from flask_website import app
+</span></span><span class="line"><span class="cl">app.run(debug=True)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>app是基于flask，使用<code>websiteconfig</code>中的配置进行初始化</p>
+</div><p>app是基于flask，使用<code>websiteconfig</code>中的配置进行初始化</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">app = Flask(__name__)
-app.config.from_object(&#39;websiteconfig&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">app = Flask(__name__)
+</span></span><span class="line"><span class="cl">app.config.from_object(&#39;websiteconfig&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>app中设置了一些全局实现，比如404页面定义，全局用户，关闭db连接，和模版时间:</p>
+</div><p>app中设置了一些全局实现，比如404页面定义，全局用户，关闭db连接，和模版时间:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -334,47 +314,47 @@ app.config.from_object(&#39;websiteconfig&#39;)</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@app.errorhandler(404)
-def not_found(error):
-    return render_template(&#39;404.html&#39;), 404
-
-@app.before_request
-def load_current_user():
-    g.user = User.query.filter_by(openid=session[&#39;openid&#39;]).first() \
-        if &#39;openid&#39; in session else None
-
-@app.teardown_request
-def remove_db_session(exception):
-    db_session.remove()
-
-@app.context_processor
-def current_year():
-    return {&#39;current_year&#39;: datetime.utcnow().year}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@app.errorhandler(404)
+</span></span><span class="line"><span class="cl">def not_found(error):
+</span></span><span class="line"><span class="cl">    return render_template(&#39;404.html&#39;), 404
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@app.before_request
+</span></span><span class="line"><span class="cl">def load_current_user():
+</span></span><span class="line"><span class="cl">    g.user = User.query.filter_by(openid=session[&#39;openid&#39;]).first() \
+</span></span><span class="line"><span class="cl">        if &#39;openid&#39; in session else None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@app.teardown_request
+</span></span><span class="line"><span class="cl">def remove_db_session(exception):
+</span></span><span class="line"><span class="cl">    db_session.remove()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@app.context_processor
+</span></span><span class="line"><span class="cl">def current_year():
+</span></span><span class="line"><span class="cl">    return {&#39;current_year&#39;: datetime.utcnow().year}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>加载view部分使用了两种方式，第一种是使用flask的add_url_rule函数，设置了文档的搜索实现，这些url执行docs模块:</p>
+</div><p>加载view部分使用了两种方式，第一种是使用flask的add_url_rule函数，设置了文档的搜索实现，这些url执行docs模块:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">app.add_url_rule(&#39;/docs/&#39;, endpoint=&#39;docs.index&#39;, build_only=True)
-app.add_url_rule(&#39;/docs/&lt;path:page&gt;/&#39;, endpoint=&#39;docs.show&#39;,
-                 build_only=True)
-app.add_url_rule(&#39;/docs/&lt;version&gt;/.latex/Flask.pdf&#39;, endpoint=&#39;docs.pdf&#39;,
-                 build_only=True)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">app.add_url_rule(&#39;/docs/&#39;, endpoint=&#39;docs.index&#39;, build_only=True)
+</span></span><span class="line"><span class="cl">app.add_url_rule(&#39;/docs/&lt;path:page&gt;/&#39;, endpoint=&#39;docs.show&#39;,
+</span></span><span class="line"><span class="cl">                 build_only=True)
+</span></span><span class="line"><span class="cl">app.add_url_rule(&#39;/docs/&lt;version&gt;/.latex/Flask.pdf&#39;, endpoint=&#39;docs.pdf&#39;,
+</span></span><span class="line"><span class="cl">                 build_only=True)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第二种是使用flask的蓝图功能:</p>
+</div><p>第二种是使用flask的蓝图功能:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -384,43 +364,41 @@ app.add_url_rule(&#39;/docs/&lt;version&gt;/.latex/Flask.pdf&#39;, endpoint=&#39
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from flask_website.views import general
-from flask_website.views import community
-from flask_website.views import mailinglist
-from flask_website.views import snippets
-from flask_website.views import extensions
-app.register_blueprint(general.mod)
-app.register_blueprint(community.mod)
-app.register_blueprint(mailinglist.mod)
-app.register_blueprint(snippets.mod)
-app.register_blueprint(extensions.mod)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from flask_website.views import general
+</span></span><span class="line"><span class="cl">from flask_website.views import community
+</span></span><span class="line"><span class="cl">from flask_website.views import mailinglist
+</span></span><span class="line"><span class="cl">from flask_website.views import snippets
+</span></span><span class="line"><span class="cl">from flask_website.views import extensions
+</span></span><span class="line"><span class="cl">app.register_blueprint(general.mod)
+</span></span><span class="line"><span class="cl">app.register_blueprint(community.mod)
+</span></span><span class="line"><span class="cl">app.register_blueprint(mailinglist.mod)
+</span></span><span class="line"><span class="cl">app.register_blueprint(snippets.mod)
+</span></span><span class="line"><span class="cl">app.register_blueprint(extensions.mod)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>最后app还定义了一些jinja模版的工具函数:</p>
+</div><p>最后app还定义了一些jinja模版的工具函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">app.jinja_env.filters[&#39;datetimeformat&#39;] = utils.format_datetime
-app.jinja_env.filters[&#39;dateformat&#39;] = utils.format_date
-app.jinja_env.filters[&#39;timedeltaformat&#39;] = utils.format_timedelta
-app.jinja_env.filters[&#39;displayopenid&#39;] = utils.display_openid</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">app.jinja_env.filters[&#39;datetimeformat&#39;] = utils.format_datetime
+</span></span><span class="line"><span class="cl">app.jinja_env.filters[&#39;dateformat&#39;] = utils.format_date
+</span></span><span class="line"><span class="cl">app.jinja_env.filters[&#39;timedeltaformat&#39;] = utils.format_timedelta
+</span></span><span class="line"><span class="cl">app.jinja_env.filters[&#39;displayopenid&#39;] = utils.display_openid
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="模版渲染">模版渲染</h2>
-
+</div><h2 id="模版渲染">模版渲染</h2>
 <p>现在主流的站点都是采用前后端分离的结构，后端提供存粹的API，前端使用vue等构建。这种结构对于构建小型站点，会比较复杂，有牛刀杀鸡的感觉。对个人开发者，还需要学习更多的前端知识。而使用后端的模版渲染方式构建页面，是比较传统的方式，对小型站点比较实用。</p>
-
 <p>本项目就是使用模版构建，在general蓝图中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -434,37 +412,37 @@ app.jinja_env.filters[&#39;displayopenid&#39;] = utils.display_openid</pre></td>
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">mod = Blueprint(&#39;general&#39;, __name__)
-
-@mod.route(&#39;/&#39;)
-def index():
-    if request_wants_json():
-        return jsonify(releases=[r.to_json() for r in releases])
-
-    return render_template(
-        &#39;general/index.html&#39;,
-        latest_release=releases[-1],
-        # pdf link does not redirect, needs version
-        # docs version only includes major.minor
-        docs_pdf_version=&#39;.&#39;.join(releases[-1].version.split(&#39;.&#39;, 2)[:2])
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mod = Blueprint(&#39;general&#39;, __name__)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@mod.route(&#39;/&#39;)
+</span></span><span class="line"><span class="cl">def index():
+</span></span><span class="line"><span class="cl">    if request_wants_json():
+</span></span><span class="line"><span class="cl">        return jsonify(releases=[r.to_json() for r in releases])
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return render_template(
+</span></span><span class="line"><span class="cl">        &#39;general/index.html&#39;,
+</span></span><span class="line"><span class="cl">        latest_release=releases[-1],
+</span></span><span class="line"><span class="cl">        # pdf link does not redirect, needs version
+</span></span><span class="line"><span class="cl">        # docs version only includes major.minor
+</span></span><span class="line"><span class="cl">        docs_pdf_version=&#39;.&#39;.join(releases[-1].version.split(&#39;.&#39;, 2)[:2])
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到首页有2种输出方式，一种是json化的输出，另一种是html方式输出，我们重点看看第二种方式。函数render_template传递了模版路径，latest_release和docs_pdf_version两个变量值。</p>
-
-<p>模版也是模块化的，一般是根据页面布局而来。比如分成左右两栏的结构，或者上下结构，布局定义的模版一般叫做layout。比如本项目的模版就从上至下定义成下面5块:
-* head 一般定义html页面标题(浏览器栏)，css样式/js-script的按需加载等
-* body_title 定义页面的标题
-* message 定义一些统一的通知，提示类的展示空间
-* body 页面的正文部分
-* footer 统一的页脚</p>
-
+</div><p>可以看到首页有2种输出方式，一种是json化的输出，另一种是html方式输出，我们重点看看第二种方式。函数render_template传递了模版路径，latest_release和docs_pdf_version两个变量值。</p>
+<p>模版也是模块化的，一般是根据页面布局而来。比如分成左右两栏的结构，或者上下结构，布局定义的模版一般叫做layout。比如本项目的模版就从上至下定义成下面5块:</p>
+<ul>
+<li>head 一般定义html页面标题(浏览器栏)，css样式/js-script的按需加载等</li>
+<li>body_title 定义页面的标题</li>
+<li>message 定义一些统一的通知，提示类的展示空间</li>
+<li>body 页面的正文部分</li>
+<li>footer 统一的页脚</li>
+</ul>
 <p>使用layout模版定义，将网站的展示风格统一下来，各个页面可以继承和扩展。下面是head快和message块的定义细节:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -485,35 +463,35 @@ def index():
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&lt;!doctype html&gt;
-{% block head %}
-&lt;title&gt;{% block title %}Welcome{% endblock %} | Flask (A Python Microframework)&lt;/title&gt;
-&lt;meta charset=utf-8&gt;
-&lt;link rel=stylesheet type=text/css href=&#34;{{ url_for(&#39;static&#39;, filename=&#39;style.css&#39;) }}&#34;&gt;
-&lt;link rel=&#34;shortcut icon&#34; href=&#34;{{ url_for(&#39;static&#39;, filename=&#39;favicon.ico&#39;) }}&#34;&gt;
-&lt;script type=text/javascript
-  src=&#34;http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js&#34;&gt;&lt;/script&gt;
-{% endblock %}
-&lt;div class=box&gt;
-  ...
-  &lt;p class=nav&gt;
-    &lt;a href=&#34;{{ url_for(&#39;general.index&#39;) }}&#34;&gt;overview&lt;/a&gt; //
-    &lt;a href=&#34;{{ url_for(&#39;docs.index&#39;) }}&#34;&gt;docs&lt;/a&gt; //
-    &lt;a href=&#34;{{ url_for(&#39;community.index&#39;) }}&#34;&gt;community&lt;/a&gt; //
-    &lt;a href=&#34;{{ url_for(&#39;extensions.index&#39;) }}&#34;&gt;extensions&lt;/a&gt; //
-    &lt;a href=&#34;https://psfmember.org/civicrm/contribute/transact?reset=1&amp;id=20&#34;&gt;donate&lt;/a&gt;
-  {% for message in get_flashed_messages() %}
-    &lt;p class=message&gt;{{ message }}
-  {% endfor %}
-  ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;!doctype html&gt;
+</span></span><span class="line"><span class="cl">{% block head %}
+</span></span><span class="line"><span class="cl">&lt;title&gt;{% block title %}Welcome{% endblock %} | Flask (A Python Microframework)&lt;/title&gt;
+</span></span><span class="line"><span class="cl">&lt;meta charset=utf-8&gt;
+</span></span><span class="line"><span class="cl">&lt;link rel=stylesheet type=text/css href=&#34;{{ url_for(&#39;static&#39;, filename=&#39;style.css&#39;) }}&#34;&gt;
+</span></span><span class="line"><span class="cl">&lt;link rel=&#34;shortcut icon&#34; href=&#34;{{ url_for(&#39;static&#39;, filename=&#39;favicon.ico&#39;) }}&#34;&gt;
+</span></span><span class="line"><span class="cl">&lt;script type=text/javascript
+</span></span><span class="line"><span class="cl">  src=&#34;http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js&#34;&gt;&lt;/script&gt;
+</span></span><span class="line"><span class="cl">{% endblock %}
+</span></span><span class="line"><span class="cl">&lt;div class=box&gt;
+</span></span><span class="line"><span class="cl">  ...
+</span></span><span class="line"><span class="cl">  &lt;p class=nav&gt;
+</span></span><span class="line"><span class="cl">    &lt;a href=&#34;{{ url_for(&#39;general.index&#39;) }}&#34;&gt;overview&lt;/a&gt; //
+</span></span><span class="line"><span class="cl">    &lt;a href=&#34;{{ url_for(&#39;docs.index&#39;) }}&#34;&gt;docs&lt;/a&gt; //
+</span></span><span class="line"><span class="cl">    &lt;a href=&#34;{{ url_for(&#39;community.index&#39;) }}&#34;&gt;community&lt;/a&gt; //
+</span></span><span class="line"><span class="cl">    &lt;a href=&#34;{{ url_for(&#39;extensions.index&#39;) }}&#34;&gt;extensions&lt;/a&gt; //
+</span></span><span class="line"><span class="cl">    &lt;a href=&#34;https://psfmember.org/civicrm/contribute/transact?reset=1&amp;id=20&#34;&gt;donate&lt;/a&gt;
+</span></span><span class="line"><span class="cl">  {% for message in get_flashed_messages() %}
+</span></span><span class="line"><span class="cl">    &lt;p class=message&gt;{{ message }}
+</span></span><span class="line"><span class="cl">  {% endfor %}
+</span></span><span class="line"><span class="cl">  ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>本项目首页的general/index继承自全局的layout，并对其中的body部分进行覆盖，使用自己的配置:</p>
+</div><p>本项目首页的general/index继承自全局的layout，并对其中的body部分进行覆盖，使用自己的配置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -524,31 +502,29 @@ def index():
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{% extends &#34;layout.html&#34; %}
-    ....
-{% block body %}
-  &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&#34;{{ latest_release.detail_url }}&#34;&gt;Download latest release&lt;/a&gt; ({{ latest_release.version }})
-    &lt;li&gt;&lt;a href=&#34;{{ url_for(&#39;docs.index&#39;) }}&#34;&gt;Read the documentation&lt;/a&gt;
-    &lt;li&gt;&lt;a href=&#34;{{ url_for(&#39;mailinglist.index&#39;) }}&#34;&gt;Join the mailinglist&lt;/a&gt;
-    &lt;li&gt;&lt;a href=https://github.com/pallets/flask&gt;Fork it on github&lt;/a&gt;
-    &lt;li&gt;&lt;a href=https://github.com/pallets/flask/issues&gt;Add issues and feature requests&lt;/a&gt;
-  &lt;/ul&gt;
-  ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{% extends &#34;layout.html&#34; %}
+</span></span><span class="line"><span class="cl">    ....
+</span></span><span class="line"><span class="cl">{% block body %}
+</span></span><span class="line"><span class="cl">  &lt;ul&gt;
+</span></span><span class="line"><span class="cl">    &lt;li&gt;&lt;a href=&#34;{{ latest_release.detail_url }}&#34;&gt;Download latest release&lt;/a&gt; ({{ latest_release.version }})
+</span></span><span class="line"><span class="cl">    &lt;li&gt;&lt;a href=&#34;{{ url_for(&#39;docs.index&#39;) }}&#34;&gt;Read the documentation&lt;/a&gt;
+</span></span><span class="line"><span class="cl">    &lt;li&gt;&lt;a href=&#34;{{ url_for(&#39;mailinglist.index&#39;) }}&#34;&gt;Join the mailinglist&lt;/a&gt;
+</span></span><span class="line"><span class="cl">    &lt;li&gt;&lt;a href=https://github.com/pallets/flask&gt;Fork it on github&lt;/a&gt;
+</span></span><span class="line"><span class="cl">    &lt;li&gt;&lt;a href=https://github.com/pallets/flask/issues&gt;Add issues and feature requests&lt;/a&gt;
+</span></span><span class="line"><span class="cl">  &lt;/ul&gt;
+</span></span><span class="line"><span class="cl">  ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>这个列表主要使用了蓝图中传入的latest_release变量，展示最新文档(pdf)的url</li>
 </ul>
-
 <h2 id="数据库操作">数据库操作</h2>
-
 <p>网站有交互，必定要持久化数据。本项目使用的sqlite的数据库，比较轻量级。数据库使用sqlalchemy封装的ORM实现。下面的代码展示了如何创建一个评论:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -565,39 +541,38 @@ def index():
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@mod.route(&#39;/comments/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
-@requires_admin
-def edit_comment(id):
-    comment = Comment.query.get(id)
-    snippet = comment.snippet
-    form = dict(title=comment.title, text=comment.text)
-    if request.method == &#39;POST&#39;:
-        ...
-        form[&#39;title&#39;] = request.form[&#39;title&#39;]
-        form[&#39;text&#39;] = request.form[&#39;text&#39;]
-        ..
-        comment.title = form[&#39;title&#39;]
-        comment.text = form[&#39;text&#39;]
-        db_session.commit()
-        flash(u&#39;Comment was updated.&#39;)
-        return redirect(snippet.url)
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@mod.route(&#39;/comments/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+</span></span><span class="line"><span class="cl">@requires_admin
+</span></span><span class="line"><span class="cl">def edit_comment(id):
+</span></span><span class="line"><span class="cl">    comment = Comment.query.get(id)
+</span></span><span class="line"><span class="cl">    snippet = comment.snippet
+</span></span><span class="line"><span class="cl">    form = dict(title=comment.title, text=comment.text)
+</span></span><span class="line"><span class="cl">    if request.method == &#39;POST&#39;:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        form[&#39;title&#39;] = request.form[&#39;title&#39;]
+</span></span><span class="line"><span class="cl">        form[&#39;text&#39;] = request.form[&#39;text&#39;]
+</span></span><span class="line"><span class="cl">        ..
+</span></span><span class="line"><span class="cl">        comment.title = form[&#39;title&#39;]
+</span></span><span class="line"><span class="cl">        comment.text = form[&#39;text&#39;]
+</span></span><span class="line"><span class="cl">        db_session.commit()
+</span></span><span class="line"><span class="cl">        flash(u&#39;Comment was updated.&#39;)
+</span></span><span class="line"><span class="cl">        return redirect(snippet.url)
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>创建comment对象</li>
 <li>从html的form表单中获取用户提交的title和text</li>
 <li>对comment对象进行赋值和提交</li>
 <li>刷新页面的提示信息(在模版的message部分展示)</li>
 <li>返回到新的url</li>
 </ul>
-
 <p>借助sqlalchemy，数据模型的操作API简单易懂。要使用数据库，需要先创建数据库连接，构建模型等, 主要在database模块:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -613,30 +588,30 @@ def edit_comment(id):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">DATABASE_URI = &#39;sqlite:///&#39; + os.path.join(_basedir, &#39;flask-website.db&#39;)
-# 创建引擎
-engine = create_engine(app.config[&#39;DATABASE_URI&#39;],
-                       convert_unicode=True,
-                       **app.config[&#39;DATABASE_CONNECT_OPTIONS&#39;])
-# 创建session(连接)                
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-# 初始化
-def init_db():
-    Model.metadata.create_all(bind=engine)
-
-# 定义基础模型
-Model = declarative_base(name=&#39;Model&#39;)
-Model.query = db_session.query_property()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DATABASE_URI = &#39;sqlite:///&#39; + os.path.join(_basedir, &#39;flask-website.db&#39;)
+</span></span><span class="line"><span class="cl"># 创建引擎
+</span></span><span class="line"><span class="cl">engine = create_engine(app.config[&#39;DATABASE_URI&#39;],
+</span></span><span class="line"><span class="cl">                       convert_unicode=True,
+</span></span><span class="line"><span class="cl">                       **app.config[&#39;DATABASE_CONNECT_OPTIONS&#39;])
+</span></span><span class="line"><span class="cl"># 创建session(连接)                
+</span></span><span class="line"><span class="cl">db_session = scoped_session(sessionmaker(autocommit=False,
+</span></span><span class="line"><span class="cl">                                         autoflush=False,
+</span></span><span class="line"><span class="cl">                                         bind=engine))
+</span></span><span class="line"><span class="cl"># 初始化
+</span></span><span class="line"><span class="cl">def init_db():
+</span></span><span class="line"><span class="cl">    Model.metadata.create_all(bind=engine)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 定义基础模型
+</span></span><span class="line"><span class="cl">Model = declarative_base(name=&#39;Model&#39;)
+</span></span><span class="line"><span class="cl">Model.query = db_session.query_property()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Comment数据模型定义:</p>
+</div><p>Comment数据模型定义:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -665,51 +640,47 @@ Model.query = db_session.query_property()</pre></td></tr></table>
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Comment(Model):
-    __tablename__ = &#39;comments&#39;
-    id = Column(&#39;comment_id&#39;, Integer, primary_key=True)
-    snippet_id = Column(Integer, ForeignKey(&#39;snippets.snippet_id&#39;))
-    author_id = Column(Integer, ForeignKey(&#39;users.user_id&#39;))
-    title = Column(String(200))
-    text = Column(String)
-    pub_date = Column(DateTime)
-
-    snippet = relation(Snippet, backref=backref(&#39;comments&#39;, lazy=True))
-    author = relation(User, backref=backref(&#39;comments&#39;, lazy=&#39;dynamic&#39;))
-
-    def __init__(self, snippet, author, title, text):
-        self.snippet = snippet
-        self.author = author
-        self.title = title
-        self.text = text
-        self.pub_date = datetime.utcnow()
-
-    def to_json(self):
-        return dict(author=self.author.to_json(),
-                    title=self.title,
-                    pub_date=http_date(self.pub_date),
-                    text=unicode(self.rendered_text))
-
-    @property
-    def rendered_text(self):
-        from flask_website.utils import format_creole
-        return format_creole(self.text)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Comment(Model):
+</span></span><span class="line"><span class="cl">    __tablename__ = &#39;comments&#39;
+</span></span><span class="line"><span class="cl">    id = Column(&#39;comment_id&#39;, Integer, primary_key=True)
+</span></span><span class="line"><span class="cl">    snippet_id = Column(Integer, ForeignKey(&#39;snippets.snippet_id&#39;))
+</span></span><span class="line"><span class="cl">    author_id = Column(Integer, ForeignKey(&#39;users.user_id&#39;))
+</span></span><span class="line"><span class="cl">    title = Column(String(200))
+</span></span><span class="line"><span class="cl">    text = Column(String)
+</span></span><span class="line"><span class="cl">    pub_date = Column(DateTime)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    snippet = relation(Snippet, backref=backref(&#39;comments&#39;, lazy=True))
+</span></span><span class="line"><span class="cl">    author = relation(User, backref=backref(&#39;comments&#39;, lazy=&#39;dynamic&#39;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, snippet, author, title, text):
+</span></span><span class="line"><span class="cl">        self.snippet = snippet
+</span></span><span class="line"><span class="cl">        self.author = author
+</span></span><span class="line"><span class="cl">        self.title = title
+</span></span><span class="line"><span class="cl">        self.text = text
+</span></span><span class="line"><span class="cl">        self.pub_date = datetime.utcnow()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def to_json(self):
+</span></span><span class="line"><span class="cl">        return dict(author=self.author.to_json(),
+</span></span><span class="line"><span class="cl">                    title=self.title,
+</span></span><span class="line"><span class="cl">                    pub_date=http_date(self.pub_date),
+</span></span><span class="line"><span class="cl">                    text=unicode(self.rendered_text))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @property
+</span></span><span class="line"><span class="cl">    def rendered_text(self):
+</span></span><span class="line"><span class="cl">        from flask_website.utils import format_creole
+</span></span><span class="line"><span class="cl">        return format_creole(self.text)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Comment模型按照结构化的方式定义了表名，6个字段，2个关联关系和json化和文本化的展示方法。</p>
-
+</div><p>Comment模型按照结构化的方式定义了表名，6个字段，2个关联关系和json化和文本化的展示方法。</p>
 <p>sqlalchemy的使用，在之前的文章中有过介绍，本文就不再赘述。</p>
-
 <h2 id="openid认证">openID认证</h2>
-
 <p>一个小众的网站，构建自己的账号即麻烦也不安全，使用第三方的用户体系会比较合适。本项目使用的是Flask-OpenID这个库提供的optnID登录认证。</p>
-
 <p>用户登录的时候，会根据用户选择的三方登录站点，跳转到对应的网站进行认证:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -719,24 +690,24 @@ Model.query = db_session.query_property()</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@mod.route(&#39;/login/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
-@oid.loginhandler
-def login():
-    ..
-    openid = request.values.get(&#39;openid&#39;)
-    if not openid:
-        openid = COMMON_PROVIDERS.get(request.args.get(&#39;provider&#39;))
-    if openid:
-        return oid.try_login(openid, ask_for=[&#39;fullname&#39;, &#39;nickname&#39;])
-    ..</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@mod.route(&#39;/login/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+</span></span><span class="line"><span class="cl">@oid.loginhandler
+</span></span><span class="line"><span class="cl">def login():
+</span></span><span class="line"><span class="cl">    ..
+</span></span><span class="line"><span class="cl">    openid = request.values.get(&#39;openid&#39;)
+</span></span><span class="line"><span class="cl">    if not openid:
+</span></span><span class="line"><span class="cl">        openid = COMMON_PROVIDERS.get(request.args.get(&#39;provider&#39;))
+</span></span><span class="line"><span class="cl">    if openid:
+</span></span><span class="line"><span class="cl">        return oid.try_login(openid, ask_for=[&#39;fullname&#39;, &#39;nickname&#39;])
+</span></span><span class="line"><span class="cl">    ..
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从对应的模版上更容易理解这个过程, 可以看到默认支持AOL/Google/Yahoo三个账号体系认证:</p>
+</div><p>从对应的模版上更容易理解这个过程, 可以看到默认支持AOL/Google/Yahoo三个账号体系认证:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -758,67 +729,63 @@ def login():
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{% block body %}
-  &lt;form action=&#34;&#34; method=post&gt;
-    &lt;p&gt;
-      For some of the features on this site (such as creating snippets
-      or adding comments) you have to be signed in.  You don&#39;t need to
-      create an account on this website, just sign in with an existing
-      &lt;a href=http://openid.net/&gt;OpenID&lt;/a&gt; account.
-    &lt;p&gt;
-      OpenID URL:
-      &lt;input type=text name=openid class=openid size=30&gt;
-      &lt;input type=hidden name=next value=&#34;{{ next }}&#34;&gt;
-      &lt;input type=submit value=Login&gt;
-    &lt;p&gt;
-      Alternatively you can directly sign in by clicking on one of
-      the providers here in case you don&#39;t know the identity URL:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=?provider=aol&gt;AOL&lt;/a&gt;
-      &lt;li&gt;&lt;a href=?provider=google&gt;Google&lt;/a&gt;
-      &lt;li&gt;&lt;a href=?provider=yahoo&gt;Yahoo&lt;/a&gt;
-    &lt;/ul&gt;
-  &lt;/form&gt;
-{% endblock %}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{% block body %}
+</span></span><span class="line"><span class="cl">  &lt;form action=&#34;&#34; method=post&gt;
+</span></span><span class="line"><span class="cl">    &lt;p&gt;
+</span></span><span class="line"><span class="cl">      For some of the features on this site (such as creating snippets
+</span></span><span class="line"><span class="cl">      or adding comments) you have to be signed in.  You don&#39;t need to
+</span></span><span class="line"><span class="cl">      create an account on this website, just sign in with an existing
+</span></span><span class="line"><span class="cl">      &lt;a href=http://openid.net/&gt;OpenID&lt;/a&gt; account.
+</span></span><span class="line"><span class="cl">    &lt;p&gt;
+</span></span><span class="line"><span class="cl">      OpenID URL:
+</span></span><span class="line"><span class="cl">      &lt;input type=text name=openid class=openid size=30&gt;
+</span></span><span class="line"><span class="cl">      &lt;input type=hidden name=next value=&#34;{{ next }}&#34;&gt;
+</span></span><span class="line"><span class="cl">      &lt;input type=submit value=Login&gt;
+</span></span><span class="line"><span class="cl">    &lt;p&gt;
+</span></span><span class="line"><span class="cl">      Alternatively you can directly sign in by clicking on one of
+</span></span><span class="line"><span class="cl">      the providers here in case you don&#39;t know the identity URL:
+</span></span><span class="line"><span class="cl">    &lt;ul&gt;
+</span></span><span class="line"><span class="cl">      &lt;li&gt;&lt;a href=?provider=aol&gt;AOL&lt;/a&gt;
+</span></span><span class="line"><span class="cl">      &lt;li&gt;&lt;a href=?provider=google&gt;Google&lt;/a&gt;
+</span></span><span class="line"><span class="cl">      &lt;li&gt;&lt;a href=?provider=yahoo&gt;Yahoo&lt;/a&gt;
+</span></span><span class="line"><span class="cl">    &lt;/ul&gt;
+</span></span><span class="line"><span class="cl">  &lt;/form&gt;
+</span></span><span class="line"><span class="cl">{% endblock %}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在三方站点认证完成后，会建立本站点的用户和openid的绑定关系:</p>
+</div><p>在三方站点认证完成后，会建立本站点的用户和openid的绑定关系:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@mod.route(&#39;/first-login/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
-def first_login():
-    ...
-        db_session.add(User(request.form[&#39;name&#39;], session[&#39;openid&#39;]))
-        db_session.commit()
-        flash(u&#39;Successfully created profile and logged in&#39;)
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@mod.route(&#39;/first-login/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+</span></span><span class="line"><span class="cl">def first_login():
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">        db_session.add(User(request.form[&#39;name&#39;], session[&#39;openid&#39;]))
+</span></span><span class="line"><span class="cl">        db_session.commit()
+</span></span><span class="line"><span class="cl">        flash(u&#39;Successfully created profile and logged in&#39;)
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>session中的openid是第三方登录成功后写入session</li>
 </ul>
-
 <p>三方登录的逻辑过程大概就如上所示，先去三方平台登录，然后和本地站点的账号进行关联。其具体的实现，主要依赖Flask-OpenID这个模块， 我们大概了解即可。</p>
-
 <h2 id="全文检索">全文检索</h2>
-
 <p>全文检索对于一个站点非常重要，可以帮助用户在网站上快速找到适合的内容。本项目展示了使用whoosh这个纯python实现的全文检索工具，构建网站内容检索，和使用ElasticSearch这样大型的检索库不一样。总之，本项目使用的都是小型工具，纯python实现。</p>
-
 <p>全文检索从<code>/search/</code>入口进入:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -828,30 +795,29 @@ def first_login():
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@mod.route(&#39;/search/&#39;)
-def search():
-    q = request.args.get(&#39;q&#39;) or &#39;&#39;
-    page = request.args.get(&#39;page&#39;, type=int) or 1
-    results = None
-    if q:
-        results = perform_search(q, page=page)
-        if results is None:
-            abort(404)
-    return render_template(&#39;general/search.html&#39;, results=results, q=q)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@mod.route(&#39;/search/&#39;)
+</span></span><span class="line"><span class="cl">def search():
+</span></span><span class="line"><span class="cl">    q = request.args.get(&#39;q&#39;) or &#39;&#39;
+</span></span><span class="line"><span class="cl">    page = request.args.get(&#39;page&#39;, type=int) or 1
+</span></span><span class="line"><span class="cl">    results = None
+</span></span><span class="line"><span class="cl">    if q:
+</span></span><span class="line"><span class="cl">        results = perform_search(q, page=page)
+</span></span><span class="line"><span class="cl">        if results is None:
+</span></span><span class="line"><span class="cl">            abort(404)
+</span></span><span class="line"><span class="cl">    return render_template(&#39;general/search.html&#39;, results=results, q=q)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>q是搜素的关键字，page是翻页的页数</li>
 <li>使用perform_search方法对索引进行查询</li>
 <li>如果找不到内容展示404；如果找到内容，展示结果</li>
 </ul>
-
 <p>在search模块中提供了search方法，前面调用的perform_search函数是其别名:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -868,37 +834,36 @@ def search():
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def search(query, page=1, per_page=20):
-    with index.searcher() as s:
-        qp = qparser.MultifieldParser([&#39;title&#39;, &#39;content&#39;], index.schema)
-        q = qp.parse(unicode(query))
-        try:
-            result_page = s.search_page(q, page, pagelen=per_page)
-        except ValueError:
-            if page == 1:
-                return SearchResultPage(None, page)
-            return None
-        results = result_page.results
-        results.highlighter.fragmenter.maxchars = 512
-        results.highlighter.fragmenter.surround = 40
-        results.highlighter.formatter = highlight.HtmlFormatter(&#39;em&#39;,
-            classname=&#39;search-match&#39;, termclass=&#39;search-term&#39;,
-            between=u&#39;&lt;span class=ellipsis&gt; … &lt;/span&gt;&#39;)
-        return SearchResultPage(result_page, page)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def search(query, page=1, per_page=20):
+</span></span><span class="line"><span class="cl">    with index.searcher() as s:
+</span></span><span class="line"><span class="cl">        qp = qparser.MultifieldParser([&#39;title&#39;, &#39;content&#39;], index.schema)
+</span></span><span class="line"><span class="cl">        q = qp.parse(unicode(query))
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            result_page = s.search_page(q, page, pagelen=per_page)
+</span></span><span class="line"><span class="cl">        except ValueError:
+</span></span><span class="line"><span class="cl">            if page == 1:
+</span></span><span class="line"><span class="cl">                return SearchResultPage(None, page)
+</span></span><span class="line"><span class="cl">            return None
+</span></span><span class="line"><span class="cl">        results = result_page.results
+</span></span><span class="line"><span class="cl">        results.highlighter.fragmenter.maxchars = 512
+</span></span><span class="line"><span class="cl">        results.highlighter.fragmenter.surround = 40
+</span></span><span class="line"><span class="cl">        results.highlighter.formatter = highlight.HtmlFormatter(&#39;em&#39;,
+</span></span><span class="line"><span class="cl">            classname=&#39;search-match&#39;, termclass=&#39;search-term&#39;,
+</span></span><span class="line"><span class="cl">            between=u&#39;&lt;span class=ellipsis&gt; … &lt;/span&gt;&#39;)
+</span></span><span class="line"><span class="cl">        return SearchResultPage(result_page, page)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>从ttile和content中搜素关键字q</li>
 <li>设置使用unicode编码</li>
 <li>将检索结果封装成SearchResultPage</li>
 </ul>
-
 <p>重点在<code>index.searcher()</code>这个索引, 它使用下面方法构建:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -918,61 +883,60 @@ def search():
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from whoosh import highlight, analysis, qparser
-from whoosh.support.charset import accent_map
-...
-def open_index():
-    from whoosh import index, fields as f
-    if os.path.isdir(app.config[&#39;WHOOSH_INDEX&#39;]):
-        return index.open_dir(app.config[&#39;WHOOSH_INDEX&#39;])
-    os.mkdir(app.config[&#39;WHOOSH_INDEX&#39;])
-    analyzer = analysis.StemmingAnalyzer() | analysis.CharsetFilter(accent_map)
-    schema = f.Schema(
-        url=f.ID(stored=True, unique=True),
-        id=f.ID(stored=True),
-        title=f.TEXT(stored=True, field_boost=2.0, analyzer=analyzer),
-        type=f.ID(stored=True),
-        keywords=f.KEYWORD(commas=True),
-        content=f.TEXT(analyzer=analyzer)
-    )
-    return index.create_in(app.config[&#39;WHOOSH_INDEX&#39;], schema)
-
-index = open_index()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from whoosh import highlight, analysis, qparser
+</span></span><span class="line"><span class="cl">from whoosh.support.charset import accent_map
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">def open_index():
+</span></span><span class="line"><span class="cl">    from whoosh import index, fields as f
+</span></span><span class="line"><span class="cl">    if os.path.isdir(app.config[&#39;WHOOSH_INDEX&#39;]):
+</span></span><span class="line"><span class="cl">        return index.open_dir(app.config[&#39;WHOOSH_INDEX&#39;])
+</span></span><span class="line"><span class="cl">    os.mkdir(app.config[&#39;WHOOSH_INDEX&#39;])
+</span></span><span class="line"><span class="cl">    analyzer = analysis.StemmingAnalyzer() | analysis.CharsetFilter(accent_map)
+</span></span><span class="line"><span class="cl">    schema = f.Schema(
+</span></span><span class="line"><span class="cl">        url=f.ID(stored=True, unique=True),
+</span></span><span class="line"><span class="cl">        id=f.ID(stored=True),
+</span></span><span class="line"><span class="cl">        title=f.TEXT(stored=True, field_boost=2.0, analyzer=analyzer),
+</span></span><span class="line"><span class="cl">        type=f.ID(stored=True),
+</span></span><span class="line"><span class="cl">        keywords=f.KEYWORD(commas=True),
+</span></span><span class="line"><span class="cl">        content=f.TEXT(analyzer=analyzer)
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    return index.create_in(app.config[&#39;WHOOSH_INDEX&#39;], schema)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">index = open_index()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>whoosh创建本地的索引文件</li>
 <li>whoosh构建搜素的数据结构，包括url，title，，关键字和内容</li>
 <li>关键字和内容参与检索</li>
 </ul>
-
 <p>索引需要构建和刷新:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def update_documentation_index():
-    from flask_website.docs import DocumentationPage
-    writer = index.writer()
-    for page in DocumentationPage.iter_pages():
-        page.remove_from_search_index(writer)
-        page.add_to_search_index(writer)
-    writer.commit()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def update_documentation_index():
+</span></span><span class="line"><span class="cl">    from flask_website.docs import DocumentationPage
+</span></span><span class="line"><span class="cl">    writer = index.writer()
+</span></span><span class="line"><span class="cl">    for page in DocumentationPage.iter_pages():
+</span></span><span class="line"><span class="cl">        page.remove_from_search_index(writer)
+</span></span><span class="line"><span class="cl">        page.add_to_search_index(writer)
+</span></span><span class="line"><span class="cl">    writer.commit()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>文档索引构建在docs模块中:</p>
+</div><p>文档索引构建在docs模块中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -997,54 +961,49 @@ index = open_index()</pre></td></tr></table>
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">DOCUMENTATION_PATH = os.path.join(_basedir, &#39;../flask/docs/_build/dirhtml&#39;)
-WHOOSH_INDEX = os.path.join(_basedir, &#39;flask-website.whoosh&#39;)
-
-class DocumentationPage(Indexable):
-    search_document_kind = &#39;documentation&#39;
-
-    def __init__(self, slug):
-        self.slug = slug
-        fn = os.path.join(app.config[&#39;DOCUMENTATION_PATH&#39;],
-                          slug, &#39;index.html&#39;)
-        with open(fn) as f:
-            contents = f.read().decode(&#39;utf-8&#39;)
-            title, text = _doc_body_re.search(contents).groups()
-        self.title = Markup(title).striptags().split(u&#39;—&#39;)[0].strip()
-        self.text = Markup(text).striptags().strip().replace(u&#39;¶&#39;, u&#39;&#39;)
-    
-    @classmethod
-    def iter_pages(cls):
-        base_folder = os.path.abspath(app.config[&#39;DOCUMENTATION_PATH&#39;])
-        for dirpath, dirnames, filenames in os.walk(base_folder):
-            if &#39;index.html&#39; in filenames:
-                slug = dirpath[len(base_folder) + 1:]
-                # skip the index page.  useless
-                if slug:
-                    yield DocumentationPage(slug)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DOCUMENTATION_PATH = os.path.join(_basedir, &#39;../flask/docs/_build/dirhtml&#39;)
+</span></span><span class="line"><span class="cl">WHOOSH_INDEX = os.path.join(_basedir, &#39;flask-website.whoosh&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class DocumentationPage(Indexable):
+</span></span><span class="line"><span class="cl">    search_document_kind = &#39;documentation&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, slug):
+</span></span><span class="line"><span class="cl">        self.slug = slug
+</span></span><span class="line"><span class="cl">        fn = os.path.join(app.config[&#39;DOCUMENTATION_PATH&#39;],
+</span></span><span class="line"><span class="cl">                          slug, &#39;index.html&#39;)
+</span></span><span class="line"><span class="cl">        with open(fn) as f:
+</span></span><span class="line"><span class="cl">            contents = f.read().decode(&#39;utf-8&#39;)
+</span></span><span class="line"><span class="cl">            title, text = _doc_body_re.search(contents).groups()
+</span></span><span class="line"><span class="cl">        self.title = Markup(title).striptags().split(u&#39;—&#39;)[0].strip()
+</span></span><span class="line"><span class="cl">        self.text = Markup(text).striptags().strip().replace(u&#39;¶&#39;, u&#39;&#39;)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @classmethod
+</span></span><span class="line"><span class="cl">    def iter_pages(cls):
+</span></span><span class="line"><span class="cl">        base_folder = os.path.abspath(app.config[&#39;DOCUMENTATION_PATH&#39;])
+</span></span><span class="line"><span class="cl">        for dirpath, dirnames, filenames in os.walk(base_folder):
+</span></span><span class="line"><span class="cl">            if &#39;index.html&#39; in filenames:
+</span></span><span class="line"><span class="cl">                slug = dirpath[len(base_folder) + 1:]
+</span></span><span class="line"><span class="cl">                # skip the index page.  useless
+</span></span><span class="line"><span class="cl">                if slug:
+</span></span><span class="line"><span class="cl">                    yield DocumentationPage(slug)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>文档读取DOCUMENTATION_PATH目录下的源文件(项目文档)</li>
 <li>读取文件的标题和文本，构建索引文件</li>
 </ul>
-
 <h2 id="小结">小结</h2>
-
 <p>本文我们走马观花的查看了flask-view这个flask曾经的主站。虽然没有深入太多细节，但是我们知道了模版渲染，数据库操作，OpenID认证和全文检索四个功能的实现方式，建立了相关技术的索引。如果我们需要构建自己的小型web项目，比如博客，完全可以以这个项目为基础，修改实现。</p>
-
 <blockquote>
 <p>经过数周的调整，接下我们开始进入python影响力巨大的项目之一: Django。敬请期待。</p>
 </blockquote>
-
 <h2 id="小技巧">小技巧</h2>
-
 <p>本项目提供了2个非常实用的小技巧。第1个是json化和html化输出，这样用户可以自由选择输出方式，同时站点也可以构建纯API的接口。这个功能是使用下面的request_wants_json函数提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1052,24 +1011,23 @@ class DocumentationPage(Indexable):
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def request_wants_json():
-    # we only accept json if the quality of json is greater than the
-    # quality of text/html because text/html is preferred to support
-    # browsers that accept on */*
-    best = request.accept_mimetypes \
-        .best_match([&#39;application/json&#39;, &#39;text/html&#39;])
-    return best == &#39;application/json&#39; and \
-       request.accept_mimetypes[best] &gt; request.accept_mimetypes[&#39;text/html&#39;]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def request_wants_json():
+</span></span><span class="line"><span class="cl">    # we only accept json if the quality of json is greater than the
+</span></span><span class="line"><span class="cl">    # quality of text/html because text/html is preferred to support
+</span></span><span class="line"><span class="cl">    # browsers that accept on */*
+</span></span><span class="line"><span class="cl">    best = request.accept_mimetypes \
+</span></span><span class="line"><span class="cl">        .best_match([&#39;application/json&#39;, &#39;text/html&#39;])
+</span></span><span class="line"><span class="cl">    return best == &#39;application/json&#39; and \
+</span></span><span class="line"><span class="cl">       request.accept_mimetypes[best] &gt; request.accept_mimetypes[&#39;text/html&#39;]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>request_wants_json函数中判断头部的mime类型，进行根据是<code>application/json</code>还是<code>text/html</code>决定展示方式。</p>
-
+</div><p>request_wants_json函数中判断头部的mime类型，进行根据是<code>application/json</code>还是<code>text/html</code>决定展示方式。</p>
 <p>第2个小技巧是认证装饰器, 前面一个是登录验证，后一个是超级管理认证:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1085,30 +1043,30 @@ class DocumentationPage(Indexable):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def requires_login(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            flash(u&#39;You need to be signed in for this page.&#39;)
-            return redirect(url_for(&#39;general.login&#39;, next=request.path))
-        return f(*args, **kwargs)
-    return decorated_function
-
-def requires_admin(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not g.user.is_admin:
-            abort(401)
-        return f(*args, **kwargs)
-    return requires_login(decorated_function)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def requires_login(f):
+</span></span><span class="line"><span class="cl">    @wraps(f)
+</span></span><span class="line"><span class="cl">    def decorated_function(*args, **kwargs):
+</span></span><span class="line"><span class="cl">        if g.user is None:
+</span></span><span class="line"><span class="cl">            flash(u&#39;You need to be signed in for this page.&#39;)
+</span></span><span class="line"><span class="cl">            return redirect(url_for(&#39;general.login&#39;, next=request.path))
+</span></span><span class="line"><span class="cl">        return f(*args, **kwargs)
+</span></span><span class="line"><span class="cl">    return decorated_function
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def requires_admin(f):
+</span></span><span class="line"><span class="cl">    @wraps(f)
+</span></span><span class="line"><span class="cl">    def decorated_function(*args, **kwargs):
+</span></span><span class="line"><span class="cl">        if not g.user.is_admin:
+</span></span><span class="line"><span class="cl">            abort(401)
+</span></span><span class="line"><span class="cl">        return f(*args, **kwargs)
+</span></span><span class="line"><span class="cl">    return requires_login(decorated_function)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这两个装饰器，在view的API上使用, 比如编辑snippet需要登录，评论需要管理员权限:</p>
+</div><p>这两个装饰器，在view的API上使用, 比如编辑snippet需要登录，评论需要管理员权限:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1117,21 +1075,20 @@ def requires_admin(f):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@mod.route(&#39;/edit/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
-@requires_login
-def edit(id):
-    ...
-
-@mod.route(&#39;/comments/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
-@requires_admin
-def edit_comment(id):
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@mod.route(&#39;/edit/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+</span></span><span class="line"><span class="cl">@requires_login
+</span></span><span class="line"><span class="cl">def edit(id):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@mod.route(&#39;/comments/&lt;int:id&gt;/&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+</span></span><span class="line"><span class="cl">@requires_admin
+</span></span><span class="line"><span class="cl">def edit_comment(id):
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="参考链接">参考链接</h2>
 <ul>
 <li><a href="https://github.com/pallets/flask-website">https://github.com/pallets/flask-website</a></li>
 </ul>
@@ -1174,11 +1131,11 @@ def edit_comment(id):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2022-01-16 21:34:41 \x2b0800 CST',
+        id: '2022-01-16 21:34:41 \u002b0800 CST',
         title: 'flask-website源码解析',
         link: decodeURI(location.href),
         desc: 'flask—website，是flask曾经的主站源码，使用flask制作，包含模版渲染，数据库操作，openID认证, 全文检索等功能。对于',
@@ -1192,6 +1149,10 @@ def edit_comment(id):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1219,13 +1180,10 @@ def edit_comment(id):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1236,7 +1194,10 @@ def edit_comment(id):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

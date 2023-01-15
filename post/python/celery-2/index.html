@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/celery-2/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="神器 celery 源码解析 - 2 " />
 <meta property="og:description" content="python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/celery-2/" />
-<meta property="article:published_time" content="2021-10-11T22:10:53&#43;08:00"/>
-<meta property="article:modified_time" content="2021-10-11T22:10:53&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/celery-2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-11T22:10:53+08:00" />
+<meta property="article:modified_time" content="2021-10-11T22:10:53+08:00" />
 
 <meta itemprop="name" content="神器 celery 源码解析 - 2 ">
-<meta itemprop="description" content="python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下">
-
-
-<meta itemprop="datePublished" content="2021-10-11T22:10:53&#43;08:00" />
-<meta itemprop="dateModified" content="2021-10-11T22:10:53&#43;08:00" />
-<meta itemprop="wordCount" content="6801">
-
-
-
-<meta itemprop="keywords" content="celery,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下"><meta itemprop="datePublished" content="2021-10-11T22:10:53+08:00" />
+<meta itemprop="dateModified" content="2021-10-11T22:10:53+08:00" />
+<meta itemprop="wordCount" content="6792">
+<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="神器 celery 源码解析 - 2 "/>
 <meta name="twitter:description" content="python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,59 +144,53 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#py-amqp项目概述">py-amqp项目概述</a></li>
-<li><a href="#帧机制详解">帧机制详解</a>
-<ul>
-<li><a href="#定长信息">定长信息</a></li>
-<li><a href="#使用特定字符分隔信息">使用特定字符分隔信息</a></li>
-<li><a href="#使用数据头指定信息长度">使用数据头指定信息长度</a></li>
-</ul></li>
-<li><a href="#amqp协议帧处理">AMQP协议帧处理</a>
-<ul>
-<li><a href="#流的处理">流的处理</a></li>
-<li><a href="#帧的处理">帧的处理</a></li>
-<li><a href="#message的处理">Message的处理</a></li>
-</ul></li>
-<li><a href="#amqp使用">amqp使用</a></li>
-<li><a href="#amqp模型">AMQP模型</a>
-<ul>
-<li><a href="#connection">Connection</a></li>
-<li><a href="#channel">Channel</a></li>
-<li><a href="#message">Message</a></li>
-</ul></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#py-amqp项目概述">py-amqp项目概述</a></li>
+    <li><a href="#帧机制详解">帧机制详解</a>
+      <ul>
+        <li><a href="#定长信息">定长信息</a></li>
+        <li><a href="#使用特定字符分隔信息">使用特定字符分隔信息</a></li>
+        <li><a href="#使用数据头指定信息长度">使用数据头指定信息长度</a></li>
+      </ul>
+    </li>
+    <li><a href="#amqp协议帧处理">AMQP协议帧处理</a>
+      <ul>
+        <li><a href="#流的处理">流的处理</a></li>
+        <li><a href="#帧的处理">帧的处理</a></li>
+        <li><a href="#message的处理">Message的处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#amqp使用">amqp使用</a></li>
+    <li><a href="#amqp模型">AMQP模型</a>
+      <ul>
+        <li><a href="#connection">Connection</a></li>
+        <li><a href="#channel">Channel</a></li>
+        <li><a href="#message">Message</a></li>
+      </ul>
+    </li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下celery的基础，</p>
-
+      <p>python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下celery的基础，</p>
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
-
 <p>几周前，我们一起阅读celery的源码，学习了celery的工具之一，实现Promise功能的<a href="https://game404.github.io/post/python/celery-1/">「vine库」</a>。</p>
-
-<p>本文包括如下几个部分:
-* py-amqp项目概述
-* 帧机制详解
-* AMQP协议帧处理
-* AMQP使用
-* AMQP模型
-* 小结
-* 小技巧</p>
-
+<p>本文包括如下几个部分:</p>
+<ul>
+<li>py-amqp项目概述</li>
+<li>帧机制详解</li>
+<li>AMQP协议帧处理</li>
+<li>AMQP使用</li>
+<li>AMQP模型</li>
+<li>小结</li>
+<li>小技巧</li>
+</ul>
 <h2 id="py-amqp项目概述">py-amqp项目概述</h2>
-
 <p>py-amqp当前版本 <code>5.0.6</code> ，主要代码如下表:</p>
-
 <table>
 <thead>
 <tr>
@@ -201,107 +198,85 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>abstract_channel.py</td>
 <td>抽象的channel</td>
 </tr>
-
 <tr>
 <td>basic_message.py</td>
 <td>message消息实现</td>
 </tr>
-
 <tr>
 <td>channel.py</td>
 <td>channel频道实现</td>
 </tr>
-
 <tr>
 <td>connection.py</td>
 <td>connection连接实现</td>
 </tr>
-
 <tr>
 <td>exceptions.py</td>
 <td>异常</td>
 </tr>
-
 <tr>
 <td>method_framing.py</td>
 <td>帧解析方法</td>
 </tr>
-
 <tr>
 <td>platform.py</td>
 <td>运行平台适配</td>
 </tr>
-
 <tr>
 <td>protocol.py</td>
 <td>协议对象</td>
 </tr>
-
 <tr>
 <td>sasl.py</td>
 <td>ssl认证相关实现</td>
 </tr>
-
 <tr>
 <td>serialization.py</td>
 <td>序列化相关实现</td>
 </tr>
-
 <tr>
 <td>spec.py</td>
 <td>协议规则定义</td>
 </tr>
-
 <tr>
 <td>transport.py</td>
 <td>通讯实现</td>
 </tr>
-
 <tr>
 <td>util.py</td>
 <td>工具类</td>
 </tr>
-
 <tr>
 <td>*.pxd</td>
 <td>Cython的实现，可以加速amqp</td>
 </tr>
 </tbody>
 </table>
-
-<p>项目主要包括2个功能:
-* AMQP协议的传输处理，包括字节流，帧和Message的序列化/反序列化
-* AMQP协议的Connection，Channel，Message三个基础模型实现</p>
-
+<p>项目主要包括2个功能:</p>
+<ul>
+<li>AMQP协议的传输处理，包括字节流，帧和Message的序列化/反序列化</li>
+<li>AMQP协议的Connection，Channel，Message三个基础模型实现</li>
+</ul>
 <p>在正式开始之前，我们需要先简单了解一下AMQP协议:</p>
-
 <blockquote>
 <p>高级消息队列协议即Advanced Message Queuing Protocol（AMQP）是面向消息中间件提供的开放的应用层协议，其设计目标是对于消息的排序、路由（包括点对点和订阅-发布）、保持可靠性、保证安全性[1]。AMQP规范了消息传递方和接收方的行为，以使消息在不同的提供商之间实现互操作性，就像SMTP，HTTP，FTP等协议可以创建交互系统一样。</p>
-
 <p>高级消息队列协议是一种二进制应用层协议，用于应对广泛的面向消息应用程序的支持。协议提供了消息流控制，保证的一个消息对象的传递过程，如至多一次、保证多次、仅有一次等，和基于SASL和TLS的身份验证和消息加密。</p>
 </blockquote>
-
 <p>文字比较难懂，结合下图，消息如何从生产者传递到消费者的过程，应该就可以理解AMQP:</p>
-
-<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing" /></p>
-
+<p><img src="https://www.rabbitmq.com/img/tutorials/intro/hello-world-example-routing.png" alt="hello-world-example-routing"></p>
 <p>上图是使用RabbitMQ实现的，RabbitMQ是一个开源的消息中间件，最早实现了AMQP协议，也是celery的默认消息中间件。强烈建议对AMQP协议不熟悉的朋友先阅读一下参考链接中的: <a href="https://www.rabbitmq.com/tutorials/amqp-concepts.html">「AMQP 0-9-1 Model Explained」</a>。我摘录了channel和message部分内容如下：</p>
-
 <blockquote>
 <p>某些应用程序需要多个连接到代理。但是，同时保持许多 TCP 连接打开是不可取的，因为这样做会消耗系统资源并且使配置防火墙更加困难。AMQP 0-9-1 连接与可以被认为是“共享单个 TCP 连接的轻量级连接”的通道复用。</p>
-
 <p>客户端执行的每个协议操作都发生在通道上。特定通道上的通信与另一个通道上的通信完全分开，因此每个协议方法还携带一个通道 ID（也称为通道号），这是一个整数，代理和客户端都使用它来确定该方法适用于哪个通道。 通道仅存在于连接的上下文中，而不会单独存在。当连接关闭时，其上的所有通道也关闭。</p>
-
 <p>对于使用多个线程/进程进行处理的应用程序，为每个线程/进程打开一个新通道而不在它们之间共享通道是很常见的。</p>
-
+</blockquote>
+<blockquote>
 <p>AMQP 0-9-1 模型中的消息具有属性。有些属性非常常见，以至于 AMQP 0-9-1 规范定义了它们，应用程序开发人员不必考虑确切的属性名称。一些例子是:</p>
-
 <ul>
 <li>内容类型 Content type</li>
 <li>内容编码 Content encoding</li>
@@ -312,131 +287,115 @@
 <li>有效期 Expiration period</li>
 <li>发布者应用程序 ID Publisher application id</li>
 </ul>
-
 <p>AMQP 代理使用某些属性，但大多数属性都可以由接收它们的应用程序解释。一些属性是可选的，称为headers。它们类似于 HTTP 中的 X-Header。消息属性是在发布消息时设置的。</p>
 </blockquote>
-
 <h2 id="帧机制详解">帧机制详解</h2>
-
 <p>之前我介绍过Redis客户端和服务端的通讯协议：RESP（Redis Serialization Protocol），链接在这里:<a href="https://game404.github.io/post/python/redis-py/#redis"> 「Redis-py 源码阅读」</a> 。当时介绍的不够详细，这里我尝试通俗的介绍一下在TCP这种二进制流之上的构建各种应用层协议的常用方法。</p>
-
 <p>我们知道TCP是基于字节流的传输层通信协议，你可以把它想像成下图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+--------------------------------------------+
-|                                            |
-|...00010001110001101110101111001111010110...|
-|                                            |
-+--------------------------------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+--------------------------------------------+
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">|...00010001110001101110101111001111010110...|
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">+--------------------------------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的数据都是由0和1组成，头和尾的省略号表示还有很多数据，这么多数据从左（服务端）流向右 (客户端)。如果没有额外的说明，我们无法从中获取到有效的信息。类似一篇长文没有标点一样，没法读懂，就是一堆乱码。要解决这个问题，一般有3种办法:</p>
-
+</div><p>这里的数据都是由0和1组成，头和尾的省略号表示还有很多数据，这么多数据从左（服务端）流向右 (客户端)。如果没有额外的说明，我们无法从中获取到有效的信息。类似一篇长文没有标点一样，没法读懂，就是一堆乱码。要解决这个问题，一般有3种办法:</p>
 <ul>
 <li>定长信息</li>
 <li>使用特定字符分隔信息</li>
 <li>使用数据头指定信息长度</li>
 </ul>
-
 <h3 id="定长信息">定长信息</h3>
-
 <p>定长信息，类似下图：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+--------+--------+--------+--------+--------+
-|        |        |        |        |        |
-|00100110|10000111|00111011|11010110|00001111|
-|        |        |        |        |        |
-+--------+--------+--------+--------+--------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+--------+--------+--------+--------+--------+
+</span></span><span class="line"><span class="cl">|        |        |        |        |        |
+</span></span><span class="line"><span class="cl">|00100110|10000111|00111011|11010110|00001111|
+</span></span><span class="line"><span class="cl">|        |        |        |        |        |
+</span></span><span class="line"><span class="cl">+--------+--------+--------+--------+--------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们约定每个信息都是8位字符长度，这样上面的数据可以得到5段有效信息，分别是：<code>00100110</code>,<code>10000111</code>&hellip;。定长信息的缺陷很明显，如果信息大于8位需要截断，如果小于8位则需要补齐。</p>
-
+</div><p>我们约定每个信息都是8位字符长度，这样上面的数据可以得到5段有效信息，分别是：<code>00100110</code>,<code>10000111</code>&hellip;。定长信息的缺陷很明显，如果信息大于8位需要截断，如果小于8位则需要补齐。</p>
 <blockquote>
 <p><em>大家可以想象一下 <code>00100110</code> 是如何补齐？方法很简单，位数补齐在前面，所以这里是用0补齐了2位。如果是在尾部进行补齐，就无法知道末尾的0是有效数据还是补齐的数据。</em></p>
 </blockquote>
-
 <p>我们可以使用天幕杆帮忙理解，这种工厂生产出来的东西，都有着一样的长度:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010203721.png" alt="天幕杆" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010203721.png" alt="天幕杆"></p>
 <h3 id="使用特定字符分隔信息">使用特定字符分隔信息</h3>
-
 <p>也可以使用特定的间隔在数据流中区分信息，比如下图。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+--------------------------------------------+
-|                                            |
-|01100110101010 101010010101 1000010110101101|
-|                                            |
-+--------------------------------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+--------------------------------------------+
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">|01100110101010 101010010101 1000010110101101|
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">+--------------------------------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里使用空格  来区分上面的数据，得到3段信息，分别是: <code>01100110101010</code> &hellip;</p>
-
+</div><p>这里使用空格 <code> </code> 来区分上面的数据，得到3段信息，分别是: <code>01100110101010</code> &hellip;</p>
 <blockquote>
 <p>注意仅仅为了示意方便，二进制流中没有空格，只有0010 0000</p>
 </blockquote>
-
 <p>我们可以把间隔理解成竹竿的竹节，2个竹节之间就是一段。自然生长的竹节，肯定是长短不一。
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010204345.png" alt="竹杆" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010204345.png" alt="竹杆"></p>
 <p>使用分隔符方式的缺陷在于，效率比较低下，需要挨个判断是否分隔符。</p>
-
 <h3 id="使用数据头指定信息长度">使用数据头指定信息长度</h3>
-
 <p>数据头就是给每个消息加一个描述消息长度的头，比如下面:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+--------------------------------------------+
-|                                            |
-|10110110100111010110111110101100011100011100|
-|                                            |
-+--------------------------------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+--------------------------------------------+
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">|10110110100111010110111110101100011100011100|
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">+--------------------------------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>1表示后面有1位数据，0表示后面没有数据，所以上面的数据前面部分翻译出来的信息就是<code>0110 1001</code>，对应ASCII的小写字母<code>i</code>:</p>
+</div><p>1表示后面有1位数据，0表示后面没有数据，所以上面的数据前面部分翻译出来的信息就是<code>0110 1001</code>，对应ASCII的小写字母<code>i</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">1011011010011101011 # 流
- 0 1  1  0  1 0 0 1 # 去除长度后的信息</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">1011011010011101011 # 流
+</span></span><span class="line"><span class="cl"> 0 1  1  0  1 0 0 1 # 去除长度后的信息
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>上面仅仅使用0和1模拟，会显示的有点冗余。如果使用字符，就可以按照字符位数来定义。比如:</p>
+</div><p>上面仅仅使用0和1模拟，会显示的有点冗余。如果使用字符，就可以按照字符位数来定义。比如:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -445,32 +404,28 @@
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+--------------------------------------------+
-|                                            |
-|30112101051111120010112113000210201211311111
-|                                            |
-+--------------------------------------------+
-
-30112101051111120010112113000210201211311111
- 3   2  1 5     2  1 1 2  3   2  2  2  3   1 # 长度
- 011 10 0 11111 00 0 1 11 000 10 01 11 111 1</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+--------------------------------------------+
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">|30112101051111120010112113000210201211311111
+</span></span><span class="line"><span class="cl">|                                            |
+</span></span><span class="line"><span class="cl">+--------------------------------------------+
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">30112101051111120010112113000210201211311111
+</span></span><span class="line"><span class="cl"> 3   2  1 5     2  1 1 2  3   2  2  2  3   1 # 长度
+</span></span><span class="line"><span class="cl"> 011 10 0 11111 00 0 1 11 000 10 01 11 111 1
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同样可以用生活中的灯串来理解数据头，每个信息长度的大小，类似大小不等的灯泡，灯泡上标明了数据长度。
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010205443.png" alt="灯串" /></p>
-
+</div><p>同样可以用生活中的灯串来理解数据头，每个信息长度的大小，类似大小不等的灯泡，灯泡上标明了数据长度。
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20211010205443.png" alt="灯串"></p>
 <p>所谓帧，在网络中就是表示一个最小单元，所以我们使用上面3种方法都可以从流中区分出各个信息，也就是帧。实际应用中基本都是第3种方法或者混用2和3。比如http协议、RESP协议是分隔+数据头的组合，AMQP协议也可以认为是此类。</p>
-
 <h2 id="amqp协议帧处理">AMQP协议帧处理</h2>
-
 <h3 id="流的处理">流的处理</h3>
-
 <p>transport负责创建socket，并进行socket上的二进制流的读和写。读的方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -499,43 +454,43 @@
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
-def _read(self, n, initial=False, _errnos=(errno.EAGAIN, errno.EINTR)):
-    &#34;&#34;&#34;Read exactly n bytes from the socket.&#34;&#34;&#34;
-    # 持续的读取字节
-    # self.sock = socket.socket(af, socktype, proto)
-    # self._quick_recv = self.sock.recv
-    recv = self._quick_recv
-    # 字节缓存
-    rbuf = self._read_buffer
-    try:
-        while len(rbuf) &lt; n:
-            try:
-                # 读取剩余字节
-                s = recv(n - len(rbuf))
-            except OSError as exc:
-                if exc.errno in _errnos:
-                    if initial and self.raise_on_initial_eintr:
-                        raise socket.timeout()
-                    continue
-                raise
-            if not s:
-                raise OSError(&#39;Server unexpectedly closed connection&#39;)
-            rbuf += s
-    except:  # noqa
-        self._read_buffer = rbuf
-        raise
-    # 多余的字节缓存住
-    result, self._read_buffer = rbuf[:n], rbuf[n:]
-    return result</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
+</span></span><span class="line"><span class="cl">def _read(self, n, initial=False, _errnos=(errno.EAGAIN, errno.EINTR)):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Read exactly n bytes from the socket.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    # 持续的读取字节
+</span></span><span class="line"><span class="cl">    # self.sock = socket.socket(af, socktype, proto)
+</span></span><span class="line"><span class="cl">    # self._quick_recv = self.sock.recv
+</span></span><span class="line"><span class="cl">    recv = self._quick_recv
+</span></span><span class="line"><span class="cl">    # 字节缓存
+</span></span><span class="line"><span class="cl">    rbuf = self._read_buffer
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        while len(rbuf) &lt; n:
+</span></span><span class="line"><span class="cl">            try:
+</span></span><span class="line"><span class="cl">                # 读取剩余字节
+</span></span><span class="line"><span class="cl">                s = recv(n - len(rbuf))
+</span></span><span class="line"><span class="cl">            except OSError as exc:
+</span></span><span class="line"><span class="cl">                if exc.errno in _errnos:
+</span></span><span class="line"><span class="cl">                    if initial and self.raise_on_initial_eintr:
+</span></span><span class="line"><span class="cl">                        raise socket.timeout()
+</span></span><span class="line"><span class="cl">                    continue
+</span></span><span class="line"><span class="cl">                raise
+</span></span><span class="line"><span class="cl">            if not s:
+</span></span><span class="line"><span class="cl">                raise OSError(&#39;Server unexpectedly closed connection&#39;)
+</span></span><span class="line"><span class="cl">            rbuf += s
+</span></span><span class="line"><span class="cl">    except:  # noqa
+</span></span><span class="line"><span class="cl">        self._read_buffer = rbuf
+</span></span><span class="line"><span class="cl">        raise
+</span></span><span class="line"><span class="cl">    # 多余的字节缓存住
+</span></span><span class="line"><span class="cl">    result, self._read_buffer = rbuf[:n], rbuf[n:]
+</span></span><span class="line"><span class="cl">    return result
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>写的方法如下：</p>
+</div><p>写的方法如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -546,27 +501,26 @@ def _read(self, n, initial=False, _errnos=(errno.EAGAIN, errno.EINTR)):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
-def write(self, s):
-    try:
-        # self._write = self.sock.sendall 
-        self._write(s)
-    except socket.timeout:
-        raise
-    except OSError as exc:
-        if exc.errno not in _UNAVAIL:
-            self.connected = False
-        raise</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
+</span></span><span class="line"><span class="cl">def write(self, s):
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        # self._write = self.sock.sendall 
+</span></span><span class="line"><span class="cl">        self._write(s)
+</span></span><span class="line"><span class="cl">    except socket.timeout:
+</span></span><span class="line"><span class="cl">        raise
+</span></span><span class="line"><span class="cl">    except OSError as exc:
+</span></span><span class="line"><span class="cl">        if exc.errno not in _UNAVAIL:
+</span></span><span class="line"><span class="cl">            self.connected = False
+</span></span><span class="line"><span class="cl">        raise
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="帧的处理">帧的处理</h3>
-
+</div><h3 id="帧的处理">帧的处理</h3>
 <p>二进制流的读和写一般没有什么特别的，重点在如何从读取的流中解析出帧信息。下面是AMQP中帧的读取，也在transport中，主干如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -599,56 +553,54 @@ def write(self, s):
 </span><span class="lnt">31
 </span><span class="lnt">32
 </span><span class="lnt">33
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
-def read_frame(self, unpack=unpack):
-    &#34;&#34;&#34;Parse AMQP frame.
-
-    Frame has following format::
-
-        0      1         3         7                   size+7      size+8
-        +------+---------+---------+   +-------------+   +-----------+
-        | type | channel |  size   |   |   payload   |   | frame-end |
-        +------+---------+---------+   +-------------+   +-----------+
-         octet    short     long        &#39;size&#39; octets        octet
-
-    &#34;&#34;&#34;
-    # 本地化方法，加快执行效率
-    read = self._read
-    # 缓存buffer
-    read_frame_buffer = bytes()
-    ...
-    # 读取帧头7个字节
-    frame_header = read(7, True)
-    read_frame_buffer += frame_header
-    # 解析帧头（大端）（无符号）
-    frame_type, channel, size = unpack(&#39;&gt;BHI&#39;, frame_header)
-    # 读取body
-    payload = read(size)
-    read_frame_buffer += payload
-    # 读取尾部校验码
-    frame_end = ord(read(1))
-    ...
-    if frame_end == 206:
-        # 返回帧数据
-        return frame_type, channel, payload
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># ch23-celery/py-amqp-5.0.6/amqp/transport.py
+</span></span><span class="line"><span class="cl">def read_frame(self, unpack=unpack):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Parse AMQP frame.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Frame has following format::
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        0      1         3         7                   size+7      size+8
+</span></span><span class="line"><span class="cl">        +------+---------+---------+   +-------------+   +-----------+
+</span></span><span class="line"><span class="cl">        | type | channel |  size   |   |   payload   |   | frame-end |
+</span></span><span class="line"><span class="cl">        +------+---------+---------+   +-------------+   +-----------+
+</span></span><span class="line"><span class="cl">         octet    short     long        &#39;size&#39; octets        octet
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    # 本地化方法，加快执行效率
+</span></span><span class="line"><span class="cl">    read = self._read
+</span></span><span class="line"><span class="cl">    # 缓存buffer
+</span></span><span class="line"><span class="cl">    read_frame_buffer = bytes()
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # 读取帧头7个字节
+</span></span><span class="line"><span class="cl">    frame_header = read(7, True)
+</span></span><span class="line"><span class="cl">    read_frame_buffer += frame_header
+</span></span><span class="line"><span class="cl">    # 解析帧头（大端）（无符号）
+</span></span><span class="line"><span class="cl">    frame_type, channel, size = unpack(&#39;&gt;BHI&#39;, frame_header)
+</span></span><span class="line"><span class="cl">    # 读取body
+</span></span><span class="line"><span class="cl">    payload = read(size)
+</span></span><span class="line"><span class="cl">    read_frame_buffer += payload
+</span></span><span class="line"><span class="cl">    # 读取尾部校验码
+</span></span><span class="line"><span class="cl">    frame_end = ord(read(1))
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    if frame_end == 206:
+</span></span><span class="line"><span class="cl">        # 返回帧数据
+</span></span><span class="line"><span class="cl">        return frame_type, channel, payload
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>AMQP的帧格式是帧头+body+帧尾。</li>
 <li>帧头由1个字节的帧类型+2个自己的channelID+4个字节的body长度组成。</li>
 <li>帧尾是1个字节，正常情况下是0xce，对应的十进制就是206。</li>
 <li>使用unpack方法从二进制中获取到信息</li>
 </ul>
-
 <h3 id="message的处理">Message的处理</h3>
-
 <p>通过read_frame方法可以得到一个数据帧，这些帧又在method_framing中被组合成业务可用的Message:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -709,82 +661,81 @@ def read_frame(self, unpack=unpack):
 </span><span class="lnt">59
 </span><span class="lnt">60
 </span><span class="lnt">61
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># ch23-celery/py-amqp-5.0.6/amqp/method_framing.py
-def frame_handler(connection, callback,
-                  unpack_from=unpack_from, content_methods=_CONTENT_METHODS):
-    &#34;&#34;&#34;Create closure that reads frames.&#34;&#34;&#34;
-    # 使用闭包读取frame
-    # 字典默认值为1
-    expected_types = defaultdict(lambda: 1)
-    partial_messages = {}
-    
-    def on_frame(frame):
-        # 帧类型 channelID 帧内容
-        frame_type, channel, buf = frame
-        ...
-        # 帧类型仅 1，2，3，8
-        if frame_type not in (expected_types[channel], 8):
-            raise UnexpectedFrame(
-                &#39;Received frame {} while expecting type: {}&#39;.format(
-                    frame_type, expected_types[channel]),
-            )
-            
-        elif frame_type == 1:
-            # 开始帧
-            # 读取2个整数
-            method_sig = unpack_from(&#39;&gt;HH&#39;, buf, 0)
-            # 三个类型是消息的开始 content_methods=[spec.Basic.Return spec.Basic.Deliver spec.Basic.GetOk]
-            if method_sig in content_methods:
-                # Save what we&#39;ve got so far and wait for the content-header
-                # 创建Message并以channel为key暂存
-                partial_messages[channel] = Message(
-                    frame_method=method_sig, frame_args=buf,
-                )
-                expected_types[channel] = 2
-                return False
-                ...
-        
-        elif frame_type == 2:
-            # 头帧
-            # 从闭包中获取Message
-            msg = partial_messages[channel]
-            # 附加header
-            msg.inbound_header(buf)
-     
-            if not msg.ready:
-                # wait for the content-body
-                # 未就绪，继续等待body
-                expected_types[channel] = 3
-                return False
-        
-        elif frame_type == 3:
-            # 内容帧
-            # 继续从闭包中获取Message
-            msg = partial_messages[channel]
-            # 附加body
-            msg.inbound_body(buf)
-            ...
-            # 重置channel等待下一个包
-            expected_types[channel] = 1
-            # 清空通道的消息
-            partial_messages.pop(channel, None)
-            # 执行message的callback函数
-            callback(channel, msg.frame_method, msg.frame_args, msg)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># ch23-celery/py-amqp-5.0.6/amqp/method_framing.py
+</span></span><span class="line"><span class="cl">def frame_handler(connection, callback,
+</span></span><span class="line"><span class="cl">                  unpack_from=unpack_from, content_methods=_CONTENT_METHODS):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Create closure that reads frames.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    # 使用闭包读取frame
+</span></span><span class="line"><span class="cl">    # 字典默认值为1
+</span></span><span class="line"><span class="cl">    expected_types = defaultdict(lambda: 1)
+</span></span><span class="line"><span class="cl">    partial_messages = {}
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def on_frame(frame):
+</span></span><span class="line"><span class="cl">        # 帧类型 channelID 帧内容
+</span></span><span class="line"><span class="cl">        frame_type, channel, buf = frame
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # 帧类型仅 1，2，3，8
+</span></span><span class="line"><span class="cl">        if frame_type not in (expected_types[channel], 8):
+</span></span><span class="line"><span class="cl">            raise UnexpectedFrame(
+</span></span><span class="line"><span class="cl">                &#39;Received frame {} while expecting type: {}&#39;.format(
+</span></span><span class="line"><span class="cl">                    frame_type, expected_types[channel]),
+</span></span><span class="line"><span class="cl">            )
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">        elif frame_type == 1:
+</span></span><span class="line"><span class="cl">            # 开始帧
+</span></span><span class="line"><span class="cl">            # 读取2个整数
+</span></span><span class="line"><span class="cl">            method_sig = unpack_from(&#39;&gt;HH&#39;, buf, 0)
+</span></span><span class="line"><span class="cl">            # 三个类型是消息的开始 content_methods=[spec.Basic.Return spec.Basic.Deliver spec.Basic.GetOk]
+</span></span><span class="line"><span class="cl">            if method_sig in content_methods:
+</span></span><span class="line"><span class="cl">                # Save what we&#39;ve got so far and wait for the content-header
+</span></span><span class="line"><span class="cl">                # 创建Message并以channel为key暂存
+</span></span><span class="line"><span class="cl">                partial_messages[channel] = Message(
+</span></span><span class="line"><span class="cl">                    frame_method=method_sig, frame_args=buf,
+</span></span><span class="line"><span class="cl">                )
+</span></span><span class="line"><span class="cl">                expected_types[channel] = 2
+</span></span><span class="line"><span class="cl">                return False
+</span></span><span class="line"><span class="cl">                ...
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        elif frame_type == 2:
+</span></span><span class="line"><span class="cl">            # 头帧
+</span></span><span class="line"><span class="cl">            # 从闭包中获取Message
+</span></span><span class="line"><span class="cl">            msg = partial_messages[channel]
+</span></span><span class="line"><span class="cl">            # 附加header
+</span></span><span class="line"><span class="cl">            msg.inbound_header(buf)
+</span></span><span class="line"><span class="cl">     
+</span></span><span class="line"><span class="cl">            if not msg.ready:
+</span></span><span class="line"><span class="cl">                # wait for the content-body
+</span></span><span class="line"><span class="cl">                # 未就绪，继续等待body
+</span></span><span class="line"><span class="cl">                expected_types[channel] = 3
+</span></span><span class="line"><span class="cl">                return False
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        elif frame_type == 3:
+</span></span><span class="line"><span class="cl">            # 内容帧
+</span></span><span class="line"><span class="cl">            # 继续从闭包中获取Message
+</span></span><span class="line"><span class="cl">            msg = partial_messages[channel]
+</span></span><span class="line"><span class="cl">            # 附加body
+</span></span><span class="line"><span class="cl">            msg.inbound_body(buf)
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">            # 重置channel等待下一个包
+</span></span><span class="line"><span class="cl">            expected_types[channel] = 1
+</span></span><span class="line"><span class="cl">            # 清空通道的消息
+</span></span><span class="line"><span class="cl">            partial_messages.pop(channel, None)
+</span></span><span class="line"><span class="cl">            # 执行message的callback函数
+</span></span><span class="line"><span class="cl">            callback(channel, msg.frame_method, msg.frame_args, msg)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>三个帧构成一个Message(业务消息)，分别的帧类型是开始帧1，头帧2，内容帧3</li>
 <li>开始帧上有frame_method和frame_args对应消息的处理方法</li>
 <li>头帧上有消息的属性，比如content_type，reply_to等，类似http头</li>
 <li>内容帧上就是消息的context</li>
 </ul>
-
 <p>写入帧是读取的逆过程，如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -827,88 +778,84 @@ def frame_handler(connection, callback,
 </span><span class="lnt">41
 </span><span class="lnt">42
 </span><span class="lnt">43
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># ch23-celery/py-amqp-5.0.6/amqp/method_framing.py
-def frame_writer(connection, transport,
-                 pack=pack, pack_into=pack_into, range=range, len=len,
-                 bytes=bytes, str_to_bytes=str_to_bytes, text_t=str):
-    &#34;&#34;&#34;Create closure that writes frames.&#34;&#34;&#34;
-    # 输出，也就是之前的self.sock.sendall方法
-    write = transport.write
-
-    buffer_store = Buffer(bytearray(connection.frame_max - 8))
-    def write_frame(type_, channel, method_sig, args, content):
-        ...
-        buf = buffer_store.buf
-        view = buffer_store.view
-        ...
-        # ## FAST: pack into buffer and single write
-        frame = (b&#39;&#39;.join([pack(&#39;&gt;HH&#39;, *method_sig), args])
-                 if type_ == 1 else b&#39;&#39;)
-        framelen = len(frame)
-        # 第一帧
-        pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
-                  type_, channel, framelen, frame, 0xce)
-        offset += 8 + framelen
-        if body is not None:
-            frame = b&#39;&#39;.join([
-                pack(&#39;&gt;HHQ&#39;, method_sig[0], 0, len(body)),
-                properties,
-            ])
-            framelen = len(frame)
-            # 方法帧
-            pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
-                      2, channel, framelen, frame, 0xce)
-            offset += 8 + framelen
-
-            bodylen = len(body)
-            if bodylen &gt; 0:
-                framelen = bodylen
-                # 内容帧
-                pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
-                          3, channel, framelen, body, 0xce)
-                offset += 8 + framelen
-
-        write(view[:offset])
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># ch23-celery/py-amqp-5.0.6/amqp/method_framing.py
+</span></span><span class="line"><span class="cl">def frame_writer(connection, transport,
+</span></span><span class="line"><span class="cl">                 pack=pack, pack_into=pack_into, range=range, len=len,
+</span></span><span class="line"><span class="cl">                 bytes=bytes, str_to_bytes=str_to_bytes, text_t=str):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Create closure that writes frames.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    # 输出，也就是之前的self.sock.sendall方法
+</span></span><span class="line"><span class="cl">    write = transport.write
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    buffer_store = Buffer(bytearray(connection.frame_max - 8))
+</span></span><span class="line"><span class="cl">    def write_frame(type_, channel, method_sig, args, content):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        buf = buffer_store.buf
+</span></span><span class="line"><span class="cl">        view = buffer_store.view
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # ## FAST: pack into buffer and single write
+</span></span><span class="line"><span class="cl">        frame = (b&#39;&#39;.join([pack(&#39;&gt;HH&#39;, *method_sig), args])
+</span></span><span class="line"><span class="cl">                 if type_ == 1 else b&#39;&#39;)
+</span></span><span class="line"><span class="cl">        framelen = len(frame)
+</span></span><span class="line"><span class="cl">        # 第一帧
+</span></span><span class="line"><span class="cl">        pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
+</span></span><span class="line"><span class="cl">                  type_, channel, framelen, frame, 0xce)
+</span></span><span class="line"><span class="cl">        offset += 8 + framelen
+</span></span><span class="line"><span class="cl">        if body is not None:
+</span></span><span class="line"><span class="cl">            frame = b&#39;&#39;.join([
+</span></span><span class="line"><span class="cl">                pack(&#39;&gt;HHQ&#39;, method_sig[0], 0, len(body)),
+</span></span><span class="line"><span class="cl">                properties,
+</span></span><span class="line"><span class="cl">            ])
+</span></span><span class="line"><span class="cl">            framelen = len(frame)
+</span></span><span class="line"><span class="cl">            # 方法帧
+</span></span><span class="line"><span class="cl">            pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
+</span></span><span class="line"><span class="cl">                      2, channel, framelen, frame, 0xce)
+</span></span><span class="line"><span class="cl">            offset += 8 + framelen
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            bodylen = len(body)
+</span></span><span class="line"><span class="cl">            if bodylen &gt; 0:
+</span></span><span class="line"><span class="cl">                framelen = bodylen
+</span></span><span class="line"><span class="cl">                # 内容帧
+</span></span><span class="line"><span class="cl">                pack_into(&#39;&gt;BHI%dsB&#39; % framelen, buf, offset,
+</span></span><span class="line"><span class="cl">                          3, channel, framelen, body, 0xce)
+</span></span><span class="line"><span class="cl">                offset += 8 + framelen
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        write(view[:offset])
+</span></span><span class="line"><span class="cl">        ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>写入的时候是准备好3个帧的二进制数据buf，一次性写入到socket</li>
 </ul>
-
 <p>Message的序列化和反序列化，我们下一个环节，数据模型部分再行介绍。</p>
-
 <h2 id="amqp使用">amqp使用</h2>
-
 <p>了解AMQP协议传输相关的细节后，我们还是先从使用方法进入py-amqp。 生产者发送消息是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import amqp
-
-with amqp.Connection(&#39;broker.example.com&#39;) as c:
-    ch = c.channel()
-    ch.basic_publish(amqp.Message(&#39;Hello World&#39;), routing_key=&#39;test&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import amqp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with amqp.Connection(&#39;broker.example.com&#39;) as c:
+</span></span><span class="line"><span class="cl">    ch = c.channel()
+</span></span><span class="line"><span class="cl">    ch.basic_publish(amqp.Message(&#39;Hello World&#39;), routing_key=&#39;test&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>创建连接，并使用上下文包裹，这样可以自动关闭连接</li>
 <li>从连接中创建channel</li>
 <li>使用channel发送消息，至少包括消息文本和route</li>
 </ul>
-
 <p>消费者消费消息是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -917,37 +864,33 @@ with amqp.Connection(&#39;broker.example.com&#39;) as c:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import amqp
-
-with amqp.Connection(&#39;broker.example.com&#39;) as c:
-    ch = c.channel()
-    def on_message(message):
-        print(&#39;Received message (delivery tag: {}): {}&#39;.format(message.delivery_tag, message.body))
-    ch.basic_consume(queue=&#39;test&#39;, callback=on_message, no_ack=True)
-    while True:
-        c.drain_events()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import amqp
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with amqp.Connection(&#39;broker.example.com&#39;) as c:
+</span></span><span class="line"><span class="cl">    ch = c.channel()
+</span></span><span class="line"><span class="cl">    def on_message(message):
+</span></span><span class="line"><span class="cl">        print(&#39;Received message (delivery tag: {}): {}&#39;.format(message.delivery_tag, message.body))
+</span></span><span class="line"><span class="cl">    ch.basic_consume(queue=&#39;test&#39;, callback=on_message, no_ack=True)
+</span></span><span class="line"><span class="cl">    while True:
+</span></span><span class="line"><span class="cl">        c.drain_events()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>创建连接，也使用上下文包裹</li>
 <li>一样从连接中创建channel</li>
 <li>在channel上绑定消息的处理方法</li>
 <li>消费消息至少指定queue，queue和发送时候的route要一致。也可以设置是否ack。</li>
 <li>持续对连接进行事件监听</li>
 </ul>
-
 <p>从示例可知发送和接收都需要使用Connection和Channel，消息体都使用Message对象。不同的是发送的时候使用publish方法，接收会复杂一点需要持续监听事件和使用consume方法。</p>
-
 <h2 id="amqp模型">AMQP模型</h2>
-
 <h3 id="connection">Connection</h3>
-
 <p>Connection主要有AbstractChannel基类和Connection类构成，比较奇怪的是Connection和Channel都继承自AbstractChannel。我个人觉得这种设计并不好，虽然可以通用Channel和Connection的一些操作。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -956,23 +899,23 @@ with amqp.Connection(&#39;broker.example.com&#39;) as c:
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">        +-----------------+
-        | AbstractChannel |
-        +-^-------------^-+
-          |             |
-      +---+             |
-      |                 |
-+-----+------+       +--+------+
-| Connection |       | Channel |
-+------------+       +---------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        +-----------------+
+</span></span><span class="line"><span class="cl">        | AbstractChannel |
+</span></span><span class="line"><span class="cl">        +-^-------------^-+
+</span></span><span class="line"><span class="cl">          |             |
+</span></span><span class="line"><span class="cl">      +---+             |
+</span></span><span class="line"><span class="cl">      |                 |
+</span></span><span class="line"><span class="cl">+-----+------+       +--+------+
+</span></span><span class="line"><span class="cl">| Connection |       | Channel |
+</span></span><span class="line"><span class="cl">+------------+       +---------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Connection的构造函数:</p>
+</div><p>Connection的构造函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -996,38 +939,38 @@ with amqp.Connection(&#39;broker.example.com&#39;) as c:
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Connection(AbstractChannel):
-    def __init__(self, host=&#39;localhost:5672&#39;, userid=&#39;guest&#39;, password=&#39;guest&#39;,
-             login_method=None, login_response=None,
-             authentication=(),
-             virtual_host=&#39;/&#39;, locale=&#39;en_US&#39;, client_properties=None,
-             ssl=False, connect_timeout=None, channel_max=None,
-             frame_max=None, heartbeat=0, on_open=None, on_blocked=None,
-             on_unblocked=None, confirm_publish=False,
-             on_tune_ok=None, read_timeout=None, write_timeout=None,
-             socket_settings=None, frame_handler=frame_handler,
-             frame_writer=frame_writer, **kwargs):
-        self._connection_id = uuid.uuid4().hex
-        ...
-        # 帧handler，读取帧
-        self.frame_handler_cls = frame_handler
-        # 帧写处理
-        self.frame_writer_cls = frame_writer
-
-        # 所有channel的字典
-        self.channels = {}
-        # The connection object itself is treated as channel 0
-        # 自己也是一个channel，ID是0，这样可以把所有message的操作统一到channel上
-        super().__init__(self, 0)
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Connection(AbstractChannel):
+</span></span><span class="line"><span class="cl">    def __init__(self, host=&#39;localhost:5672&#39;, userid=&#39;guest&#39;, password=&#39;guest&#39;,
+</span></span><span class="line"><span class="cl">             login_method=None, login_response=None,
+</span></span><span class="line"><span class="cl">             authentication=(),
+</span></span><span class="line"><span class="cl">             virtual_host=&#39;/&#39;, locale=&#39;en_US&#39;, client_properties=None,
+</span></span><span class="line"><span class="cl">             ssl=False, connect_timeout=None, channel_max=None,
+</span></span><span class="line"><span class="cl">             frame_max=None, heartbeat=0, on_open=None, on_blocked=None,
+</span></span><span class="line"><span class="cl">             on_unblocked=None, confirm_publish=False,
+</span></span><span class="line"><span class="cl">             on_tune_ok=None, read_timeout=None, write_timeout=None,
+</span></span><span class="line"><span class="cl">             socket_settings=None, frame_handler=frame_handler,
+</span></span><span class="line"><span class="cl">             frame_writer=frame_writer, **kwargs):
+</span></span><span class="line"><span class="cl">        self._connection_id = uuid.uuid4().hex
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # 帧handler，读取帧
+</span></span><span class="line"><span class="cl">        self.frame_handler_cls = frame_handler
+</span></span><span class="line"><span class="cl">        # 帧写处理
+</span></span><span class="line"><span class="cl">        self.frame_writer_cls = frame_writer
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        # 所有channel的字典
+</span></span><span class="line"><span class="cl">        self.channels = {}
+</span></span><span class="line"><span class="cl">        # The connection object itself is treated as channel 0
+</span></span><span class="line"><span class="cl">        # 自己也是一个channel，ID是0，这样可以把所有message的操作统一到channel上
+</span></span><span class="line"><span class="cl">        super().__init__(self, 0)
+</span></span><span class="line"><span class="cl">        ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>connection最首要的是管理数据传输，由connect函数实现:</p>
+</div><p>connection最首要的是管理数据传输，由connect函数实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1050,37 +993,37 @@ with amqp.Connection(&#39;broker.example.com&#39;) as c:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def connect(self, callback=None):
-    # Let the transport.py module setup the actual
-    # socket connection to the broker.
-    #
-    if self.connected:
-        return callback() if callback else None
-    try:
-        # 创建transport实例
-        self.transport = self.Transport(
-            self.host, self.connect_timeout, self.ssl,
-            self.read_timeout, self.write_timeout,
-            socket_settings=self.socket_settings,
-        )
-        self.transport.connect()
-        # 实例化读和写(因为读和写都是闭包)
-        self.on_inbound_frame = self.frame_handler_cls(
-            self, self.on_inbound_method)
-        self.frame_writer = self.frame_writer_cls(self, self.transport)
-
-        ...
-
-    except (OSError, SSLError):
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="nv">def</span> <span class="nf">connect</span><span class="p">(</span><span class="nv">self</span><span class="p">,</span> <span class="nv">callback</span><span class="o">=</span><span class="nc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="o">#</span> <span class="nc">Let</span> <span class="nv">the</span> <span class="nv">transport</span><span class="p">.</span><span class="nv">py</span> <span class="kn">module</span> <span class="nv">setup</span> <span class="nv">the</span> <span class="nv">actual</span>
+</span></span><span class="line"><span class="cl">    <span class="o">#</span> <span class="nv">socket</span> <span class="nv">connection</span> <span class="nv">to</span> <span class="nv">the</span> <span class="nv">broker</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl">    <span class="o">#</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nv">self</span><span class="p">.</span><span class="nl">connected</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">callback</span><span class="p">()</span> <span class="k">if</span> <span class="nv">callback</span> <span class="k">else</span> <span class="nc">None</span>
+</span></span><span class="line"><span class="cl">    <span class="nl">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="o">#</span> <span class="nv">创建transport实例</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">self</span><span class="p">.</span><span class="nv">transport</span> <span class="o">=</span> <span class="nv">self</span><span class="p">.</span><span class="nc">Transport</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">self</span><span class="p">.</span><span class="nv">host</span><span class="p">,</span> <span class="nv">self</span><span class="p">.</span><span class="nv">connect_timeout</span><span class="p">,</span> <span class="nv">self</span><span class="p">.</span><span class="nv">ssl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">self</span><span class="p">.</span><span class="nv">read_timeout</span><span class="p">,</span> <span class="nv">self</span><span class="p">.</span><span class="nv">write_timeout</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">socket_settings</span><span class="o">=</span><span class="nv">self</span><span class="p">.</span><span class="nv">socket_settings</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">self</span><span class="p">.</span><span class="nv">transport</span><span class="p">.</span><span class="nf">connect</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="o">#</span> <span class="nf">实例化读和写</span><span class="p">(</span><span class="nv">因为读和写都是闭包</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">self</span><span class="p">.</span><span class="nv">on_inbound_frame</span> <span class="o">=</span> <span class="nv">self</span><span class="p">.</span><span class="nf">frame_handler_cls</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">self</span><span class="p">,</span> <span class="nv">self</span><span class="p">.</span><span class="nv">on_inbound_method</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">self</span><span class="p">.</span><span class="nv">frame_writer</span> <span class="o">=</span> <span class="nv">self</span><span class="p">.</span><span class="nf">frame_writer_cls</span><span class="p">(</span><span class="nv">self</span><span class="p">,</span> <span class="nv">self</span><span class="p">.</span><span class="nv">transport</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">except</span> <span class="p">(</span><span class="nc">OSError</span><span class="p">,</span> <span class="nc">SSLError</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="o">...</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>connection还要负责一些连接相关的系统功能，比如连接状态的维护:</p>
+</div><p>connection还要负责一些连接相关的系统功能，比如连接状态的维护:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1127,65 +1070,64 @@ with amqp.Connection(&#39;broker.example.com&#39;) as c:
 </span><span class="lnt">45
 </span><span class="lnt">46
 </span><span class="lnt">47
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _setup_listeners(self):
-    self._callbacks.update({
-        spec.Connection.Start: self._on_start,
-        spec.Connection.OpenOk: self._on_open_ok,
-        spec.Connection.Secure: self._on_secure,
-        spec.Connection.Tune: self._on_tune,
-        spec.Connection.Close: self._on_close,
-        spec.Connection.Blocked: self._on_blocked,
-        spec.Connection.Unblocked: self._on_unblocked,
-        spec.Connection.CloseOk: self._on_close_ok,
-    })
-
-
-ef _on_start(self, version_major, version_minor, server_properties,
-                  mechanisms, locales, argsig=&#39;FsSs&#39;):
-    ...
-    # 处理服务端的spec.Connection.Start消息
-    # 回应spec.Connection.StartOk到服务端
-    self.send_method(
-            spec.Connection.StartOk, argsig,
-            (client_properties, authentication.mechanism,
-             login_response, self.locale),
-        )
-    ...
-
-def send_method(self, sig,
-                format=None, args=None, content=None,
-                wait=None, callback=None, returns_tuple=False):
-    p = promise()
-    conn = self.connection
-    ...
-    args = dumps(format, args) if format else &#39;&#39;
-    try:
-        # 写入数据
-        conn.frame_writer(1, self.channel_id, sig, args, content)
-    except StopIteration:
-        ...
-
-    # TODO temp: callback should be after write_method ... ;)
-    if callback:
-        # 指向回调
-        p.then(callback)
-    p()
-    if wait:
-        # 等待回应
-        return self.wait(wait, returns_tuple=returns_tuple)
-    return p</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _setup_listeners(self):
+</span></span><span class="line"><span class="cl">    self._callbacks.update({
+</span></span><span class="line"><span class="cl">        spec.Connection.Start: self._on_start,
+</span></span><span class="line"><span class="cl">        spec.Connection.OpenOk: self._on_open_ok,
+</span></span><span class="line"><span class="cl">        spec.Connection.Secure: self._on_secure,
+</span></span><span class="line"><span class="cl">        spec.Connection.Tune: self._on_tune,
+</span></span><span class="line"><span class="cl">        spec.Connection.Close: self._on_close,
+</span></span><span class="line"><span class="cl">        spec.Connection.Blocked: self._on_blocked,
+</span></span><span class="line"><span class="cl">        spec.Connection.Unblocked: self._on_unblocked,
+</span></span><span class="line"><span class="cl">        spec.Connection.CloseOk: self._on_close_ok,
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ef _on_start(self, version_major, version_minor, server_properties,
+</span></span><span class="line"><span class="cl">                  mechanisms, locales, argsig=&#39;FsSs&#39;):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # 处理服务端的spec.Connection.Start消息
+</span></span><span class="line"><span class="cl">    # 回应spec.Connection.StartOk到服务端
+</span></span><span class="line"><span class="cl">    self.send_method(
+</span></span><span class="line"><span class="cl">            spec.Connection.StartOk, argsig,
+</span></span><span class="line"><span class="cl">            (client_properties, authentication.mechanism,
+</span></span><span class="line"><span class="cl">             login_response, self.locale),
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def send_method(self, sig,
+</span></span><span class="line"><span class="cl">                format=None, args=None, content=None,
+</span></span><span class="line"><span class="cl">                wait=None, callback=None, returns_tuple=False):
+</span></span><span class="line"><span class="cl">    p = promise()
+</span></span><span class="line"><span class="cl">    conn = self.connection
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    args = dumps(format, args) if format else &#39;&#39;
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        # 写入数据
+</span></span><span class="line"><span class="cl">        conn.frame_writer(1, self.channel_id, sig, args, content)
+</span></span><span class="line"><span class="cl">    except StopIteration:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # TODO temp: callback should be after write_method ... ;)
+</span></span><span class="line"><span class="cl">    if callback:
+</span></span><span class="line"><span class="cl">        # 指向回调
+</span></span><span class="line"><span class="cl">        p.then(callback)
+</span></span><span class="line"><span class="cl">    p()
+</span></span><span class="line"><span class="cl">    if wait:
+</span></span><span class="line"><span class="cl">        # 等待回应
+</span></span><span class="line"><span class="cl">        return self.wait(wait, returns_tuple=returns_tuple)
+</span></span><span class="line"><span class="cl">    return p
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>客户端收到服务端发来的spec.Connection.Start消息后，回应一个spec.Connection.StartOk消息</li>
 </ul>
-
 <p>通过connection创建Channel:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1203,34 +1145,33 @@ def send_method(self, sig,
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Channel = Channel
-
-def channel(self, channel_id=None, callback=None):
-    &#34;&#34;&#34;Create new channel.
-
-    Fetch a Channel object identified by the numeric channel_id, or
-    create that object if it doesn&#39;t already exist.
-    &#34;&#34;&#34;
-    ...
-
-    try:
-        # channel_id 存在则从字典中获取
-        return self.channels[channel_id]
-    except KeyError:
-        # 不存在则新建一个channel实例
-        channel = self.Channel(self, channel_id, on_open=callback)
-        channel.open()
-        return channel</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Channel = Channel
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def channel(self, channel_id=None, callback=None):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Create new channel.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Fetch a Channel object identified by the numeric channel_id, or
+</span></span><span class="line"><span class="cl">    create that object if it doesn&#39;t already exist.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        # channel_id 存在则从字典中获取
+</span></span><span class="line"><span class="cl">        return self.channels[channel_id]
+</span></span><span class="line"><span class="cl">    except KeyError:
+</span></span><span class="line"><span class="cl">        # 不存在则新建一个channel实例
+</span></span><span class="line"><span class="cl">        channel = self.Channel(self, channel_id, on_open=callback)
+</span></span><span class="line"><span class="cl">        channel.open()
+</span></span><span class="line"><span class="cl">        return channel
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="channel">Channel</h3>
-
+</div><h3 id="channel">Channel</h3>
 <p>Channel的构造方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1242,26 +1183,26 @@ def channel(self, channel_id=None, callback=None):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Channel(AbstractChannel):
-    
-    def __init__(self, connection,
-                 channel_id=None, auto_decode=True, on_open=None):
-        ...
-        # 新建channelID
-        channel_id = connection._get_free_channel_id()
-        # 指定自己的channelID
-        super().__init__(connection, channel_id)
-        ...
-        # 消息回调
-        self.callbacks = {}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Channel(AbstractChannel):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self, connection,
+</span></span><span class="line"><span class="cl">                 channel_id=None, auto_decode=True, on_open=None):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # 新建channelID
+</span></span><span class="line"><span class="cl">        channel_id = connection._get_free_channel_id()
+</span></span><span class="line"><span class="cl">        # 指定自己的channelID
+</span></span><span class="line"><span class="cl">        super().__init__(connection, channel_id)
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # 消息回调
+</span></span><span class="line"><span class="cl">        self.callbacks = {}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>channel也需要初始化关于channel的系统调用，比如spec.Basic.Delive:</p>
+</div><p>channel也需要初始化关于channel的系统调用，比如spec.Basic.Delive:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1293,46 +1234,46 @@ def channel(self, channel_id=None, callback=None):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _setup_listeners(self):
-    self._callbacks.update({
-        spec.Channel.Close: self._on_close,
-        spec.Channel.CloseOk: self._on_close_ok,
-        spec.Channel.Flow: self._on_flow,
-        spec.Channel.OpenOk: self._on_open_ok,
-        spec.Basic.Cancel: self._on_basic_cancel,
-        spec.Basic.CancelOk: self._on_basic_cancel_ok,
-        spec.Basic.Deliver: self._on_basic_deliver,
-        spec.Basic.Return: self._on_basic_return,
-        spec.Basic.Ack: self._on_basic_ack,
-        spec.Basic.Nack: self._on_basic_nack,
-    })
-    
-def _on_basic_deliver(self, consumer_tag, delivery_tag, redelivered,
-                      exchange, routing_key, msg):
-    msg.channel = self
-    # 投递信息
-    msg.delivery_info = {
-        &#39;consumer_tag&#39;: consumer_tag,
-        &#39;delivery_tag&#39;: delivery_tag,
-        &#39;redelivered&#39;: redelivered,
-        &#39;exchange&#39;: exchange,
-        &#39;routing_key&#39;: routing_key,
-    }
-
-    try:
-        fun = self.callbacks[consumer_tag]
-    except KeyError:
-        ...
-    else:
-        fun(msg)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _setup_listeners(self):
+</span></span><span class="line"><span class="cl">    self._callbacks.update({
+</span></span><span class="line"><span class="cl">        spec.Channel.Close: self._on_close,
+</span></span><span class="line"><span class="cl">        spec.Channel.CloseOk: self._on_close_ok,
+</span></span><span class="line"><span class="cl">        spec.Channel.Flow: self._on_flow,
+</span></span><span class="line"><span class="cl">        spec.Channel.OpenOk: self._on_open_ok,
+</span></span><span class="line"><span class="cl">        spec.Basic.Cancel: self._on_basic_cancel,
+</span></span><span class="line"><span class="cl">        spec.Basic.CancelOk: self._on_basic_cancel_ok,
+</span></span><span class="line"><span class="cl">        spec.Basic.Deliver: self._on_basic_deliver,
+</span></span><span class="line"><span class="cl">        spec.Basic.Return: self._on_basic_return,
+</span></span><span class="line"><span class="cl">        spec.Basic.Ack: self._on_basic_ack,
+</span></span><span class="line"><span class="cl">        spec.Basic.Nack: self._on_basic_nack,
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def _on_basic_deliver(self, consumer_tag, delivery_tag, redelivered,
+</span></span><span class="line"><span class="cl">                      exchange, routing_key, msg):
+</span></span><span class="line"><span class="cl">    msg.channel = self
+</span></span><span class="line"><span class="cl">    # 投递信息
+</span></span><span class="line"><span class="cl">    msg.delivery_info = {
+</span></span><span class="line"><span class="cl">        &#39;consumer_tag&#39;: consumer_tag,
+</span></span><span class="line"><span class="cl">        &#39;delivery_tag&#39;: delivery_tag,
+</span></span><span class="line"><span class="cl">        &#39;redelivered&#39;: redelivered,
+</span></span><span class="line"><span class="cl">        &#39;exchange&#39;: exchange,
+</span></span><span class="line"><span class="cl">        &#39;routing_key&#39;: routing_key,
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        fun = self.callbacks[consumer_tag]
+</span></span><span class="line"><span class="cl">    except KeyError:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        fun(msg)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>先看看消息如何投递出去的:</p>
+</div><p>先看看消息如何投递出去的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1347,31 +1288,30 @@ def _on_basic_deliver(self, consumer_tag, delivery_tag, redelivered,
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _basic_publish(self, msg, exchange=&#39;&#39;, routing_key=&#39;&#39;,
-                   mandatory=False, immediate=False, timeout=None,
-                   confirm_timeout=None,
-                   argsig=&#39;Bssbb&#39;):
-    ...
-    try:
-        with self.connection.transport.having_timeout(timeout):
-            return self.send_method(
-                spec.Basic.Publish, argsig,
-                (0, exchange, routing_key, mandatory, immediate), msg
-            )
-    except socket.timeout:
-        ...
-
-basic_publish = _basic_publish</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _basic_publish(self, msg, exchange=&#39;&#39;, routing_key=&#39;&#39;,
+</span></span><span class="line"><span class="cl">                   mandatory=False, immediate=False, timeout=None,
+</span></span><span class="line"><span class="cl">                   confirm_timeout=None,
+</span></span><span class="line"><span class="cl">                   argsig=&#39;Bssbb&#39;):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        with self.connection.transport.having_timeout(timeout):
+</span></span><span class="line"><span class="cl">            return self.send_method(
+</span></span><span class="line"><span class="cl">                spec.Basic.Publish, argsig,
+</span></span><span class="line"><span class="cl">                (0, exchange, routing_key, mandatory, immediate), msg
+</span></span><span class="line"><span class="cl">            )
+</span></span><span class="line"><span class="cl">    except socket.timeout:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">basic_publish = _basic_publish
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>send_method在前面介绍spec.Connection.StartOk时候已经有过介绍。</p>
-
+</div><p>send_method在前面介绍spec.Connection.StartOk时候已经有过介绍。</p>
 <p>消息的消费，需要先在connection保持监听:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1391,34 +1331,34 @@ basic_publish = _basic_publish</pre></td></tr></table>
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def drain_events(self, timeout=None):
-    # read until message is ready
-    # 持续读，直到读取到message的ready状态
-    while not self.blocking_read(timeout):
-        pass
-
-def blocking_read(self, timeout=None):
-    with self.transport.having_timeout(timeout):
-        # 读取帧
-        frame = self.transport.read_frame()
-    # 处理帧
-    return self.on_inbound_frame(frame)    
-
-def on_inbound_method(self, channel_id, method_sig, payload, content):
-    # on_inbound_frame的callback函数
-    ...
-    # 交由对应的channel处理
-    return self.channels[channel_id].dispatch_method(
-        method_sig, payload, content,
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def drain_events(self, timeout=None):
+</span></span><span class="line"><span class="cl">    # read until message is ready
+</span></span><span class="line"><span class="cl">    # 持续读，直到读取到message的ready状态
+</span></span><span class="line"><span class="cl">    while not self.blocking_read(timeout):
+</span></span><span class="line"><span class="cl">        pass
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def blocking_read(self, timeout=None):
+</span></span><span class="line"><span class="cl">    with self.transport.having_timeout(timeout):
+</span></span><span class="line"><span class="cl">        # 读取帧
+</span></span><span class="line"><span class="cl">        frame = self.transport.read_frame()
+</span></span><span class="line"><span class="cl">    # 处理帧
+</span></span><span class="line"><span class="cl">    return self.on_inbound_frame(frame)    
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def on_inbound_method(self, channel_id, method_sig, payload, content):
+</span></span><span class="line"><span class="cl">    # on_inbound_frame的callback函数
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # 交由对应的channel处理
+</span></span><span class="line"><span class="cl">    return self.channels[channel_id].dispatch_method(
+</span></span><span class="line"><span class="cl">        method_sig, payload, content,
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>channel对message处理就很简单了，直到对应的listener，执行listener</p>
+</div><p>channel对message处理就很简单了，直到对应的listener，执行listener</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1435,33 +1375,32 @@ def on_inbound_method(self, channel_id, method_sig, payload, content):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def dispatch_method(self, method_sig, payload, content):
-    ...
-    content.body = content.body.decode(content.content_encoding)
-    ...
-    amqp_method = self._METHODS[method_sig]
-    listeners = [self._callbacks[method_sig]]
-    one_shot = self._pending.pop(method_sig)
-    args = []
-    if amqp_method.args:
-        args, _ = loads(amqp_method.args, payload, 4)
-    if amqp_method.content:
-        args.append(content)
-
-    for listener in listeners:
-        listener(*args)
-
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def dispatch_method(self, method_sig, payload, content):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    content.body = content.body.decode(content.content_encoding)
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    amqp_method = self._METHODS[method_sig]
+</span></span><span class="line"><span class="cl">    listeners = [self._callbacks[method_sig]]
+</span></span><span class="line"><span class="cl">    one_shot = self._pending.pop(method_sig)
+</span></span><span class="line"><span class="cl">    args = []
+</span></span><span class="line"><span class="cl">    if amqp_method.args:
+</span></span><span class="line"><span class="cl">        args, _ = loads(amqp_method.args, payload, 4)
+</span></span><span class="line"><span class="cl">    if amqp_method.content:
+</span></span><span class="line"><span class="cl">        args.append(content)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for listener in listeners:
+</span></span><span class="line"><span class="cl">        listener(*args)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="message">Message</h3>
-
+</div><h3 id="message">Message</h3>
 <p>Message继承自GenericContent:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1470,23 +1409,23 @@ def on_inbound_method(self, channel_id, method_sig, payload, content):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+----------------+
-| GenericContent |
-+-------+--------+
-        ^
-        |
-        |
-   +----+----+
-   | Message |
-   +---------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+----------------+
+</span></span><span class="line"><span class="cl">| GenericContent |
+</span></span><span class="line"><span class="cl">+-------+--------+
+</span></span><span class="line"><span class="cl">        ^
+</span></span><span class="line"><span class="cl">        |
+</span></span><span class="line"><span class="cl">        |
+</span></span><span class="line"><span class="cl">   +----+----+
+</span></span><span class="line"><span class="cl">   | Message |
+</span></span><span class="line"><span class="cl">   +---------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>两个类都是比较简单的数据结构:</p>
+</div><p>两个类都是比较简单的数据结构:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1539,67 +1478,67 @@ def on_inbound_method(self, channel_id, method_sig, payload, content):
 </span><span class="lnt">51
 </span><span class="lnt">52
 </span><span class="lnt">53
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Message(GenericContent):
-    # 消息头
-    PROPERTIES = [
-        (&#39;content_type&#39;, &#39;s&#39;),
-        (&#39;content_encoding&#39;, &#39;s&#39;),
-        (&#39;application_headers&#39;, &#39;F&#39;),
-        (&#39;delivery_mode&#39;, &#39;o&#39;),
-        (&#39;priority&#39;, &#39;o&#39;),
-        (&#39;correlation_id&#39;, &#39;s&#39;),
-        (&#39;reply_to&#39;, &#39;s&#39;),
-        (&#39;expiration&#39;, &#39;s&#39;),
-        (&#39;message_id&#39;, &#39;s&#39;),
-        (&#39;timestamp&#39;, &#39;L&#39;),
-        (&#39;type&#39;, &#39;s&#39;),
-        (&#39;user_id&#39;, &#39;s&#39;),
-        (&#39;app_id&#39;, &#39;s&#39;),
-        (&#39;cluster_id&#39;, &#39;s&#39;)
-    ]
-    
-    def __init__(self, body=&#39;&#39;, children=None, channel=None, **properties):
-        super().__init__(**properties)
-        #: set by basic_consume/basic_get
-        self.delivery_info = None
-        self.body = body
-        self.channel = channel
-
-class GenericContent:
-    &#34;&#34;&#34;Abstract base class for AMQP content.
-
-    Subclasses should override the PROPERTIES attribute.
-    &#34;&#34;&#34;
-
-    CLASS_ID = None
-    PROPERTIES = [(&#39;dummy&#39;, &#39;s&#39;)]
-
-    def __init__(self, frame_method=None, frame_args=None, **props):
-        self.frame_method = frame_method
-        self.frame_args = frame_args
-        # 消息头
-        self.properties = props
-        self._pending_chunks = []
-        self.body_received = 0
-        self.body_size = 0
-        self.ready = False
-
-    def __getattr__(self, name):
-        # Look for additional properties in the &#39;properties&#39;
-        # dictionary, and if present - the &#39;delivery_info&#39; dictionary.
-        ...
-        if name in self.properties:
-            # 从properties中获取
-            return self.properties[name]
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Message(GenericContent):
+</span></span><span class="line"><span class="cl">    # 消息头
+</span></span><span class="line"><span class="cl">    PROPERTIES = [
+</span></span><span class="line"><span class="cl">        (&#39;content_type&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;content_encoding&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;application_headers&#39;, &#39;F&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;delivery_mode&#39;, &#39;o&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;priority&#39;, &#39;o&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;correlation_id&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;reply_to&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;expiration&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;message_id&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;timestamp&#39;, &#39;L&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;type&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;user_id&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;app_id&#39;, &#39;s&#39;),
+</span></span><span class="line"><span class="cl">        (&#39;cluster_id&#39;, &#39;s&#39;)
+</span></span><span class="line"><span class="cl">    ]
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self, body=&#39;&#39;, children=None, channel=None, **properties):
+</span></span><span class="line"><span class="cl">        super().__init__(**properties)
+</span></span><span class="line"><span class="cl">        #: set by basic_consume/basic_get
+</span></span><span class="line"><span class="cl">        self.delivery_info = None
+</span></span><span class="line"><span class="cl">        self.body = body
+</span></span><span class="line"><span class="cl">        self.channel = channel
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class GenericContent:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Abstract base class for AMQP content.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Subclasses should override the PROPERTIES attribute.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    CLASS_ID = None
+</span></span><span class="line"><span class="cl">    PROPERTIES = [(&#39;dummy&#39;, &#39;s&#39;)]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, frame_method=None, frame_args=None, **props):
+</span></span><span class="line"><span class="cl">        self.frame_method = frame_method
+</span></span><span class="line"><span class="cl">        self.frame_args = frame_args
+</span></span><span class="line"><span class="cl">        # 消息头
+</span></span><span class="line"><span class="cl">        self.properties = props
+</span></span><span class="line"><span class="cl">        self._pending_chunks = []
+</span></span><span class="line"><span class="cl">        self.body_received = 0
+</span></span><span class="line"><span class="cl">        self.body_size = 0
+</span></span><span class="line"><span class="cl">        self.ready = False
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __getattr__(self, name):
+</span></span><span class="line"><span class="cl">        # Look for additional properties in the &#39;properties&#39;
+</span></span><span class="line"><span class="cl">        # dictionary, and if present - the &#39;delivery_info&#39; dictionary.
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        if name in self.properties:
+</span></span><span class="line"><span class="cl">            # 从properties中获取
+</span></span><span class="line"><span class="cl">            return self.properties[name]
+</span></span><span class="line"><span class="cl">        ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>前文介绍的头帧数据，是这样反序列化到Message中的:</p>
+</div><p>前文介绍的头帧数据，是这样反序列化到Message中的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1622,68 +1561,62 @@ class GenericContent:
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def decode_properties_basic(buf, offset):
-    &#34;&#34;&#34;Decode basic properties.&#34;&#34;&#34;
-    properties = {}
-    flags, = unpack_from(&#39;&gt;H&#39;, buf, offset)
-    offset += 2
-
-    if flags &amp; 0x8000:
-        slen, = unpack_from(&#39;&gt;B&#39;, buf, offset)
-        offset += 1
-        properties[&#39;content_type&#39;] = pstr_t(buf[offset:offset + slen])
-        offset += slen
-    ...
-    
-def _load_properties(self, class_id, buf, offset):
-    ...
-    props, offset = PROPERTY_CLASSES[class_id](buf, offset)
-    self.properties = props
-    return offset
-        
-def inbound_header(self, buf, offset=0):
-    ...
-    self._load_properties(class_id, buf, offset)
-    ... </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def decode_properties_basic(buf, offset):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Decode basic properties.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    properties = {}
+</span></span><span class="line"><span class="cl">    flags, = unpack_from(&#39;&gt;H&#39;, buf, offset)
+</span></span><span class="line"><span class="cl">    offset += 2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if flags &amp; 0x8000:
+</span></span><span class="line"><span class="cl">        slen, = unpack_from(&#39;&gt;B&#39;, buf, offset)
+</span></span><span class="line"><span class="cl">        offset += 1
+</span></span><span class="line"><span class="cl">        properties[&#39;content_type&#39;] = pstr_t(buf[offset:offset + slen])
+</span></span><span class="line"><span class="cl">        offset += slen
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def _load_properties(self, class_id, buf, offset):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    props, offset = PROPERTY_CLASSES[class_id](buf, offset)
+</span></span><span class="line"><span class="cl">    self.properties = props
+</span></span><span class="line"><span class="cl">    return offset
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">def inbound_header(self, buf, offset=0):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    self._load_properties(class_id, buf, offset)
+</span></span><span class="line"><span class="cl">    ... 
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>与反序列化对应的序列化方法主要是_serialize_properties实现，就不在赘述。</p>
-
+</div><p>与反序列化对应的序列化方法主要是_serialize_properties实现，就不在赘述。</p>
 <h2 id="小结">小结</h2>
-
 <p>本篇文章，我们围绕AMQP协议，理解在TCP的流上构建应用协议的三种方法: 定长、间隔和数据头 ；了解AMQP协议使用frame传输Message的方法: 使用开始帧，头帧和内容帧三个帧承载一个Message；了解AMQP中三个核心的概念: Connection, Channel和Message的实现，以及如何使用这3个概念实现消息发送和消费。</p>
-
 <h2 id="小技巧">小技巧</h2>
-
 <p>channel使用下面的方法生成递增的不重复id:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; from array import array
-&gt;&gt;&gt; a=array(&#39;H&#39;, range(65535, 0, -1))
-&gt;&gt;&gt; a.pop()
-1
-&gt;&gt;&gt; a.pop()
-2
-&gt;&gt;&gt;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; from array import array
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a=array(&#39;H&#39;, range(65535, 0, -1))
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.pop()
+</span></span><span class="line"><span class="cl">1
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.pop()
+</span></span><span class="line"><span class="cl">2
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>一点题外话: 之前的文章，都叫源码阅读，主要觉得自己写的还不够。但是从搜索上看，源码解析更符合直觉，个人感觉最近的文章也有点进步，所以厚颜从本期开始都改名叫源码解析吧。</p>
 </blockquote>
-
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li>cpython文档 <a href="https://cython.org/#about">https://cython.org/#about</a></li>
 <li>amqp0-9-1协议 <a href="https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf">https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf</a></li>
@@ -1730,11 +1663,11 @@ def inbound_header(self, buf, offset=0):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-10-11 22:10:53 \x2b0800 CST',
+        id: '2021-10-11 22:10:53 \u002b0800 CST',
         title: '神器 celery 源码解析 - 2 ',
         link: decodeURI(location.href),
         desc: 'python-amqp库负责AMQP协议中数据传输。它采用纯python实现(支持cython扩展)，可以通过它理解AMQP协议的细节，打下',
@@ -1748,6 +1681,10 @@ def inbound_header(self, buf, offset=0):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1775,13 +1712,10 @@ def inbound_header(self, buf, offset=0):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1792,7 +1726,10 @@ def inbound_header(self, buf, offset=0):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

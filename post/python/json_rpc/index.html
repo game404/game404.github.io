@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/json_rpc/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="json-rpc 源码阅读" />
 <meta property="og:description" content="JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/json_rpc/" />
-<meta property="article:published_time" content="2022-10-17T10:12:18&#43;08:00"/>
-<meta property="article:modified_time" content="2022-10-17T10:12:18&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/json_rpc/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-10-17T10:12:18+08:00" />
+<meta property="article:modified_time" content="2022-10-17T10:12:18+08:00" />
 
 <meta itemprop="name" content="json-rpc 源码阅读">
-<meta itemprop="description" content="JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth">
-
-
-<meta itemprop="datePublished" content="2022-10-17T10:12:18&#43;08:00" />
-<meta itemprop="dateModified" content="2022-10-17T10:12:18&#43;08:00" />
-<meta itemprop="wordCount" content="3801">
-
-
-
-<meta itemprop="keywords" content="源码,rpc," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth"><meta itemprop="datePublished" content="2022-10-17T10:12:18+08:00" />
+<meta itemprop="dateModified" content="2022-10-17T10:12:18+08:00" />
+<meta itemprop="wordCount" content="3781">
+<meta itemprop="keywords" content="源码,rpc," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="json-rpc 源码阅读"/>
 <meta name="twitter:description" content="JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,28 +144,20 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#json-rpc规范">JSON-RPC规范</a></li>
-<li><a href="#jsonrpcclient的实现">jsonrpcclient的实现</a></li>
-<li><a href="#jsonrpcserver的实现">jsonrpcserver的实现</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-</ul></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul>
+  <ul>
+    <li><a href="#json-rpc规范">JSON-RPC规范</a></li>
+    <li><a href="#jsonrpcclient的实现">jsonrpcclient的实现</a></li>
+    <li><a href="#jsonrpcserver的实现">jsonrpcserver的实现</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的python实现较多，我选择了Exploding Labs 提供的python版本。主要是其它库都比较古老，而e-labs的实现采用最新版本python，支持类型系统，还有一些函数式编程的范式，代码也很简洁，值得学习。</p>
-
+      <p>JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的python实现较多，我选择了Exploding Labs 提供的python版本。主要是其它库都比较古老，而e-labs的实现采用最新版本python，支持类型系统，还有一些函数式编程的范式，代码也很简洁，值得学习。</p>
 <p>e-labs的JSON-RPC分成客户端和服务端两个库，分别是jsonrpcclient和jsonrpcserver,
 代码版本如下表:</p>
-
 <table>
 <thead>
 <tr>
@@ -170,22 +165,18 @@
 <th>版本</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>jsonrpcclient</td>
 <td>4.0.2</td>
 </tr>
-
 <tr>
 <td>jsonrpcserver</td>
 <td>5.0.9</td>
 </tr>
 </tbody>
 </table>
-
 <p>准备好代码后，我们可以开始json-rpc的源码阅读，本文包括下面几个部分:</p>
-
 <ul>
 <li>JSON-RPC规范</li>
 <li>jsonrpcclient的实现</li>
@@ -193,13 +184,11 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-
 <h2 id="json-rpc规范">JSON-RPC规范</h2>
-
 <p>JSON-RPC规范，我这里借用jsonrpcserver中的验证规则文件简单介绍一下，文件如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -239,69 +228,72 @@
 </span><span class="lnt">38
 </span><span class="lnt">39
 </span><span class="lnt">40
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># request-schema.json
-{
-    &#34;$schema&#34;: &#34;http://json-schema.org/draft-04/schema#&#34;,
-    &#34;description&#34;: &#34;A JSON RPC 2.0 request&#34;,
-    &#34;oneOf&#34;: [
-        {
-            &#34;description&#34;: &#34;An individual request&#34;,
-            &#34;$ref&#34;: &#34;#/definitions/request&#34;
-        },
-        {
-            &#34;description&#34;: &#34;An array of requests&#34;,
-            &#34;type&#34;: &#34;array&#34;,
-            &#34;items&#34;: { &#34;$ref&#34;: &#34;#/definitions/request&#34; },
-            &#34;minItems&#34;: 1
-        }
-    ],
-    &#34;definitions&#34;: {
-        &#34;request&#34;: {
-            &#34;type&#34;: &#34;object&#34;,
-            &#34;required&#34;: [ &#34;jsonrpc&#34;, &#34;method&#34; ],
-            &#34;properties&#34;: {
-                &#34;jsonrpc&#34;: { &#34;enum&#34;: [ &#34;2.0&#34; ] },
-                &#34;method&#34;: {
-                    &#34;type&#34;: &#34;string&#34;
-                },
-                &#34;id&#34;: {
-                    &#34;type&#34;: [ &#34;string&#34;, &#34;number&#34;, &#34;null&#34; ],
-                    &#34;note&#34;: [
-                        &#34;While allowed, null should be avoided: http://www.jsonrpc.org/specification#id1&#34;,
-                        &#34;While allowed, a number with a fractional part should be avoided: http://www.jsonrpc.org/specification#id2&#34;
-                    ]
-                },
-                &#34;params&#34;: {
-                    &#34;type&#34;: [ &#34;array&#34;, &#34;object&#34; ]
-                }
-            },
-            &#34;additionalProperties&#34;: false
-        }
-    }
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># request-schema.json
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    &#34;$schema&#34;: &#34;http://json-schema.org/draft-04/schema#&#34;,
+</span></span><span class="line"><span class="cl">    &#34;description&#34;: &#34;A JSON RPC 2.0 request&#34;,
+</span></span><span class="line"><span class="cl">    &#34;oneOf&#34;: [
+</span></span><span class="line"><span class="cl">        {
+</span></span><span class="line"><span class="cl">            &#34;description&#34;: &#34;An individual request&#34;,
+</span></span><span class="line"><span class="cl">            &#34;$ref&#34;: &#34;#/definitions/request&#34;
+</span></span><span class="line"><span class="cl">        },
+</span></span><span class="line"><span class="cl">        {
+</span></span><span class="line"><span class="cl">            &#34;description&#34;: &#34;An array of requests&#34;,
+</span></span><span class="line"><span class="cl">            &#34;type&#34;: &#34;array&#34;,
+</span></span><span class="line"><span class="cl">            &#34;items&#34;: { &#34;$ref&#34;: &#34;#/definitions/request&#34; },
+</span></span><span class="line"><span class="cl">            &#34;minItems&#34;: 1
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    ],
+</span></span><span class="line"><span class="cl">    &#34;definitions&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;request&#34;: {
+</span></span><span class="line"><span class="cl">            &#34;type&#34;: &#34;object&#34;,
+</span></span><span class="line"><span class="cl">            &#34;required&#34;: [ &#34;jsonrpc&#34;, &#34;method&#34; ],
+</span></span><span class="line"><span class="cl">            &#34;properties&#34;: {
+</span></span><span class="line"><span class="cl">                &#34;jsonrpc&#34;: { &#34;enum&#34;: [ &#34;2.0&#34; ] },
+</span></span><span class="line"><span class="cl">                &#34;method&#34;: {
+</span></span><span class="line"><span class="cl">                    &#34;type&#34;: &#34;string&#34;
+</span></span><span class="line"><span class="cl">                },
+</span></span><span class="line"><span class="cl">                &#34;id&#34;: {
+</span></span><span class="line"><span class="cl">                    &#34;type&#34;: [ &#34;string&#34;, &#34;number&#34;, &#34;null&#34; ],
+</span></span><span class="line"><span class="cl">                    &#34;note&#34;: [
+</span></span><span class="line"><span class="cl">                        &#34;While allowed, null should be avoided: http://www.jsonrpc.org/specification#id1&#34;,
+</span></span><span class="line"><span class="cl">                        &#34;While allowed, a number with a fractional part should be avoided: http://www.jsonrpc.org/specification#id2&#34;
+</span></span><span class="line"><span class="cl">                    ]
+</span></span><span class="line"><span class="cl">                },
+</span></span><span class="line"><span class="cl">                &#34;params&#34;: {
+</span></span><span class="line"><span class="cl">                    &#34;type&#34;: [ &#34;array&#34;, &#34;object&#34; ]
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            &#34;additionalProperties&#34;: false
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>文件描述了JSON-RPC的规则，如下:
-*  json-rpc请求可以是单个的request对象，也是是批量的request对象数组
-*  每个request对象需要符合:
-    *  必填字段jsonrpc，值枚举类型。目前2.0，其实就是版本号。(之前有1.0版本)
-    *  必填字段method, 字符串类型。远程函数的名称。
-    *  id字段，支持字符串，数字或者空。为空表示通知无需回应(result)。id确保响应可以一一对应到请求上。
-    *  params字段，支持数组或者字典。</p>
-
-<p>JSON-RPC响应部分的规则是:
-* jsonrpc字段，值为2.0
-* result字段，值为调用结果
-* error字段，值为异常信息，包括code，message和data三个字段，规范定义了详细的错误清单。
-* id同请求的id
-* result和error二选一</p>
-
+</div><p>文件描述了JSON-RPC的规则，如下:</p>
+<ul>
+<li>json-rpc请求可以是单个的request对象，也是是批量的request对象数组</li>
+<li>每个request对象需要符合:
+<ul>
+<li>必填字段jsonrpc，值枚举类型。目前2.0，其实就是版本号。(之前有1.0版本)</li>
+<li>必填字段method, 字符串类型。远程函数的名称。</li>
+<li>id字段，支持字符串，数字或者空。为空表示通知无需回应(result)。id确保响应可以一一对应到请求上。</li>
+<li>params字段，支持数组或者字典。</li>
+</ul>
+</li>
+</ul>
+<p>JSON-RPC响应部分的规则是:</p>
+<ul>
+<li>jsonrpc字段，值为2.0</li>
+<li>result字段，值为调用结果</li>
+<li>error字段，值为异常信息，包括code，message和data三个字段，规范定义了详细的错误清单。</li>
+<li>id同请求的id</li>
+<li>result和error二选一</li>
+</ul>
 <p>强烈建议大家阅读参考链接中的规范原文，介绍的非常清晰，中文翻译也很到位，有助于对JSON-RPC规范完全理解。</p>
-
 <h2 id="jsonrpcclient的实现">jsonrpcclient的实现</h2>
-
 <table>
 <thead>
 <tr>
@@ -309,44 +301,37 @@
 <th>功能描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>id_generators.py</td>
 <td>id生成器</td>
 </tr>
-
 <tr>
 <td>requests.py</td>
 <td>请求信息封装</td>
 </tr>
-
 <tr>
 <td>response.py</td>
 <td>响应信息封装</td>
 </tr>
-
 <tr>
 <td>sentinels.py</td>
 <td>定义NOID，用于通知类请求</td>
 </tr>
-
 <tr>
 <td>utils.py</td>
 <td>一些工具函数</td>
 </tr>
-
 <tr>
 <td>examples</td>
 <td>一些示例</td>
 </tr>
 </tbody>
 </table>
-
 <p>从示例可以知道JSON-RPC，可以使用不同的底层协议比如http，websocket和tcp(zeromq实现)等。我们看最简单的基于http实现的实例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -357,30 +342,31 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from jsonrpcclient import request, parse, Ok
-import logging
-import requests
-
-response = requests.post(&#34;http://localhost:5000/&#34;, json=request(&#34;ping&#34;))
-
-parsed = parse(response.json())
-if isinstance(parsed, Ok):
-    print(parsed.result)
-else:
-    logging.error(parsed.message)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from jsonrpcclient import request, parse, Ok
+</span></span><span class="line"><span class="cl">import logging
+</span></span><span class="line"><span class="cl">import requests
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">response = requests.post(&#34;http://localhost:5000/&#34;, json=request(&#34;ping&#34;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">parsed = parse(response.json())
+</span></span><span class="line"><span class="cl">if isinstance(parsed, Ok):
+</span></span><span class="line"><span class="cl">    print(parsed.result)
+</span></span><span class="line"><span class="cl">else:
+</span></span><span class="line"><span class="cl">    logging.error(parsed.message)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这段api展示了:
-* jsonrpcclient只是封装请求request和响应Ok,数据请求的发送由不同协议提供，这里使用requests，另外还有aiohttp的实现等。
-* resquest函数封装请求，parse解析响应
-* 正常的结果展示result信息，错误的结果展示message信息</p>
-
+</div><p>这段api展示了:</p>
+<ul>
+<li>jsonrpcclient只是封装请求request和响应Ok,数据请求的发送由不同协议提供，这里使用requests，另外还有aiohttp的实现等。</li>
+<li>resquest函数封装请求，parse解析响应</li>
+<li>正常的结果展示result信息，错误的结果展示message信息</li>
+</ul>
 <p>request代码很简单, 封装请求成符合JSON-RPC规范的字符串:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -412,55 +398,55 @@ else:
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># requests.py
-
-def request_pure(
-    id_generator: Iterator[Any],
-    method: str,
-    params: Union[Dict[str, Any], Tuple[Any, ...]],
-    id: Any,
-) -&gt; Dict[str, Any]:
-    return {
-        &#34;jsonrpc&#34;: &#34;2.0&#34;,
-        &#34;method&#34;: method,
-        **(
-            {&#34;params&#34;: list(params) if isinstance(params, tuple) else params}
-            if params
-            else {}
-        ),
-        &#34;id&#34;: id if id is not NOID else next(id_generator),
-    }
-    
-def request_impure(
-    id_generator: Iterator[Any],
-    method: str,
-    params: Union[Dict[str, Any], Tuple[Any, ...], None] = None,
-    id: Any = NOID,
-) -&gt; Dict[str, Any]:
-    return request_pure(
-        id_generator or id_generators.decimal(), method, params or (), id
-    )
-
-request_natural = partial(request_impure, id_generators.decimal())
-...
-request = request_natural</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># requests.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def request_pure(
+</span></span><span class="line"><span class="cl">    id_generator: Iterator[Any],
+</span></span><span class="line"><span class="cl">    method: str,
+</span></span><span class="line"><span class="cl">    params: Union[Dict[str, Any], Tuple[Any, ...]],
+</span></span><span class="line"><span class="cl">    id: Any,
+</span></span><span class="line"><span class="cl">) -&gt; Dict[str, Any]:
+</span></span><span class="line"><span class="cl">    return {
+</span></span><span class="line"><span class="cl">        &#34;jsonrpc&#34;: &#34;2.0&#34;,
+</span></span><span class="line"><span class="cl">        &#34;method&#34;: method,
+</span></span><span class="line"><span class="cl">        **(
+</span></span><span class="line"><span class="cl">            {&#34;params&#34;: list(params) if isinstance(params, tuple) else params}
+</span></span><span class="line"><span class="cl">            if params
+</span></span><span class="line"><span class="cl">            else {}
+</span></span><span class="line"><span class="cl">        ),
+</span></span><span class="line"><span class="cl">        &#34;id&#34;: id if id is not NOID else next(id_generator),
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def request_impure(
+</span></span><span class="line"><span class="cl">    id_generator: Iterator[Any],
+</span></span><span class="line"><span class="cl">    method: str,
+</span></span><span class="line"><span class="cl">    params: Union[Dict[str, Any], Tuple[Any, ...], None] = None,
+</span></span><span class="line"><span class="cl">    id: Any = NOID,
+</span></span><span class="line"><span class="cl">) -&gt; Dict[str, Any]:
+</span></span><span class="line"><span class="cl">    return request_pure(
+</span></span><span class="line"><span class="cl">        id_generator or id_generators.decimal(), method, params or (), id
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">request_natural = partial(request_impure, id_generators.decimal())
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">request = request_natural
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>所以示例中的请求，可以等价下面的curl命令:</p>
+</div><p>所以示例中的请求，可以等价下面的curl命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ curl -X POST http://localhost:5001 -d &#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;method&#34;: &#34;ping&#34;, &#34;params&#34;: {}, &#34;id&#34;: 1}&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ curl -X POST http://localhost:5001 -d &#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;method&#34;: &#34;ping&#34;, &#34;params&#34;: {}, &#34;id&#34;: 1}&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>response处理也很简单:</p>
+</div><p>response处理也很简单:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -479,35 +465,34 @@ request = request_natural</pre></td></tr></table>
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># response.py
-
-class Ok(NamedTuple):
-    result: Any
-    id: Any
-
-    def __repr__(self) -&gt; str:
-        return f&#34;Ok(result={self.result!r}, id={self.id!r})&#34;
-
-class Error(NamedTuple):
-    code: int
-    message: str
-    data: Any
-    id: Any
-
-    def __repr__(self) -&gt; str:
-        return f&#34;Error(code={self.code!r}, message={self.message!r}, data={self.data!r}, id={self.id!r})&#34;
-
-Response = Union[Ok, Error]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># response.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Ok(NamedTuple):
+</span></span><span class="line"><span class="cl">    result: Any
+</span></span><span class="line"><span class="cl">    id: Any
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __repr__(self) -&gt; str:
+</span></span><span class="line"><span class="cl">        return f&#34;Ok(result={self.result!r}, id={self.id!r})&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Error(NamedTuple):
+</span></span><span class="line"><span class="cl">    code: int
+</span></span><span class="line"><span class="cl">    message: str
+</span></span><span class="line"><span class="cl">    data: Any
+</span></span><span class="line"><span class="cl">    id: Any
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __repr__(self) -&gt; str:
+</span></span><span class="line"><span class="cl">        return f&#34;Error(code={self.code!r}, message={self.message!r}, data={self.data!r}, id={self.id!r})&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Response = Union[Ok, Error]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>定义Response类型，是Ok或者Error。Ok和Error是两个可命名元祖。</p>
-
+</div><p>定义Response类型，是Ok或者Error。Ok和Error是两个可命名元祖。</p>
 <p>parse就是将结果json字典解析成对应的Response:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -523,43 +508,40 @@ Response = Union[Ok, Error]</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def to_result(response: Dict[str, Any]) -&gt; Response:
-    return (
-        Ok(response[&#34;result&#34;], response[&#34;id&#34;])
-        if &#34;result&#34; in response
-        else Error(
-            response[&#34;error&#34;][&#34;code&#34;],
-            response[&#34;error&#34;][&#34;message&#34;],
-            response[&#34;error&#34;].get(&#34;data&#34;),
-            response[&#34;id&#34;],
-        )
-    )
-
-def parse(response: Deserialized) -&gt; Union[Response, Iterable[Response]]:
-    return (
-        map(to_result, response) if isinstance(response, list) else to_result(response)
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def to_result(response: Dict[str, Any]) -&gt; Response:
+</span></span><span class="line"><span class="cl">    return (
+</span></span><span class="line"><span class="cl">        Ok(response[&#34;result&#34;], response[&#34;id&#34;])
+</span></span><span class="line"><span class="cl">        if &#34;result&#34; in response
+</span></span><span class="line"><span class="cl">        else Error(
+</span></span><span class="line"><span class="cl">            response[&#34;error&#34;][&#34;code&#34;],
+</span></span><span class="line"><span class="cl">            response[&#34;error&#34;][&#34;message&#34;],
+</span></span><span class="line"><span class="cl">            response[&#34;error&#34;].get(&#34;data&#34;),
+</span></span><span class="line"><span class="cl">            response[&#34;id&#34;],
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def parse(response: Deserialized) -&gt; Union[Response, Iterable[Response]]:
+</span></span><span class="line"><span class="cl">    return (
+</span></span><span class="line"><span class="cl">        map(to_result, response) if isinstance(response, list) else to_result(response)
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>也可以直接使用parse_json函数，从json字符串生成结果:</p>
+</div><p>也可以直接使用parse_json函数，从json字符串生成结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">parse_json = compose(parse, json.loads)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">parse_json = compose(parse, json.loads)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>这里的map，componse等都是函数式编程。在server中函数式编程使用的更多，可见作者非常喜欢函数式编程的思想</p>
 </blockquote>
-
 <h2 id="jsonrpcserver的实现">jsonrpcserver的实现</h2>
-
 <p>jsonrpcclient实现非常简单，jsonrpcserver的实现会略微复杂点，但是还是可以很好的理解的，我们一起继续。jsonrpcserver的主要模块如下:</p>
-
 <table>
 <thead>
 <tr>
@@ -567,49 +549,41 @@ def parse(response: Deserialized) -&gt; Union[Response, Iterable[Response]]:
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>main.py/async_main.py</td>
 <td>main文件，分别是同步和异步版本</td>
 </tr>
-
 <tr>
 <td>dispatcher.py/async_dispatcher.py</td>
 <td>rpc服务的分配器实现</td>
 </tr>
-
 <tr>
 <td>methods.py</td>
 <td>rpc函数的装饰器</td>
 </tr>
-
 <tr>
 <td>request.py</td>
 <td>请求处理</td>
 </tr>
-
 <tr>
 <td>response.py</td>
 <td>响应处理</td>
 </tr>
-
 <tr>
 <td>result.py</td>
 <td>结果处理</td>
 </tr>
-
 <tr>
 <td>examplse</td>
 <td>一些示例</td>
 </tr>
 </tbody>
 </table>
-
 <p>通用，我们先从示例入手，看看api的使用。下面是flask版本:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -627,36 +601,37 @@ def parse(response: Deserialized) -&gt; Union[Response, Iterable[Response]]:
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># flask_server.py
-from flask import Flask, Response, request
-from jsonrpcserver import method, Result, Success, dispatch
-
-app = Flask(__name__)
-
-@method
-def ping() -&gt; Result:
-    return Success(&#34;pong&#34;)
-
-@app.route(&#34;/&#34;, methods=[&#34;POST&#34;])
-def index():
-    return Response(
-        dispatch(request.get_data().decode()), content_type=&#34;application/json&#34;
-    )
-
-if __name__ == &#34;__main__&#34;:
-    app.run()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># flask_server.py
+</span></span><span class="line"><span class="cl">from flask import Flask, Response, request
+</span></span><span class="line"><span class="cl">from jsonrpcserver import method, Result, Success, dispatch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">app = Flask(__name__)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@method
+</span></span><span class="line"><span class="cl">def ping() -&gt; Result:
+</span></span><span class="line"><span class="cl">    return Success(&#34;pong&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@app.route(&#34;/&#34;, methods=[&#34;POST&#34;])
+</span></span><span class="line"><span class="cl">def index():
+</span></span><span class="line"><span class="cl">    return Response(
+</span></span><span class="line"><span class="cl">        dispatch(request.get_data().decode()), content_type=&#34;application/json&#34;
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if __name__ == &#34;__main__&#34;:
+</span></span><span class="line"><span class="cl">    app.run()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从示例我们可以知道，rpc服务其实就2大步骤:
-* 使用method装饰ping函数，使它支持rpc调用，ping函数返回的是一个特点的Result数据结构
-* 所有rpc调用的http-url都是根目录，服务使用dispatch调度rpc请求</p>
-
+</div><p>从示例我们可以知道，rpc服务其实就2大步骤:</p>
+<ul>
+<li>使用method装饰ping函数，使它支持rpc调用，ping函数返回的是一个特点的Result数据结构</li>
+<li>所有rpc调用的http-url都是根目录，服务使用dispatch调度rpc请求</li>
+</ul>
 <p>先看第一步rpc装饰器:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -684,47 +659,46 @@ if __name__ == &#34;__main__&#34;:
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># methods.py
-
-Method = Callable[..., Result]
-Methods = Dict[str, Method]
-
-global_methods = dict()
-
-
-def method(
-    f: Optional[Method] = None, name: Optional[str] = None
-) -&gt; Callable[..., Any]:
-    &#34;&#34;&#34;A decorator to add a function into jsonrpcserver&#39;s internal global_methods dict.
-    The global_methods dict will be used by default unless a methods argument is passed
-    to `dispatch`.
-
-    Functions can be renamed by passing a name argument:
-
-        @method(name=bar)
-        def foo():
-            ...
-    &#34;&#34;&#34;
-
-    def decorator(func: Method) -&gt; Method:
-        nonlocal name
-        global_methods[name or func.__name__] = func
-        return func
-
-    return decorator(f) if callable(f) else cast(Method, decorator)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="c1"># methods.py
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Callable</span><span class="p">[...,</span><span class="w"> </span><span class="n">Result</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Dict</span><span class="p">[</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">Method</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">global_methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dict</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="n">Optional</span><span class="p">[</span><span class="n">Method</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="n">Optional</span><span class="p">[</span><span class="n">str</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">None</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Callable</span><span class="p">[...,</span><span class="w"> </span><span class="n">Any</span><span class="p">]:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s2">&#34;&#34;&#34;A decorator to add a function into jsonrpcserver&#39;s internal global_methods dict.
+</span></span></span><span class="line"><span class="cl"><span class="s2">    The global_methods dict will be used by default unless a methods argument is passed
+</span></span></span><span class="line"><span class="cl"><span class="s2">    to `dispatch`.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">    Functions can be renamed by passing a name argument:
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">        @method(name=bar)
+</span></span></span><span class="line"><span class="cl"><span class="s2">        def foo():
+</span></span></span><span class="line"><span class="cl"><span class="s2">            ...
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">:</span><span class="w"> </span><span class="n">Method</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Method</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">nonlocal</span><span class="w"> </span><span class="n">name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">global_methods</span><span class="p">[</span><span class="n">name</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">func</span><span class="p">.</span><span class="n">__name__</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">func</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">func</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nf">callable</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nf">cast</span><span class="p">(</span><span class="n">Method</span><span class="p">,</span><span class="w"> </span><span class="n">decorator</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>将所有的rpc函数都封装到global_methods字典中</li>
 <li>函数需要返回Result类型</li>
 </ul>
-
 <p>第2步中，main模块提供了dispatch的api，主要就是下面的函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -767,83 +741,82 @@ def method(
 </span><span class="lnt">41
 </span><span class="lnt">42
 </span><span class="lnt">43
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># main.py
-def dispatch_to_response(
-    request: str,
-    methods: Optional[Methods] = None,
-    *,
-    context: Any = NOCONTEXT,
-    deserializer: Callable[[str], Deserialized] = json.loads,
-    validator: Callable[[Deserialized], Deserialized] = default_validator,
-    post_process: Callable[[Response], Any] = identity,
-) -&gt; Union[Response, List[Response], None]:
-    &#34;&#34;&#34;Takes a JSON-RPC request string and dispatches it to method(s), giving Response
-    namedtuple(s) or None.
-
-    This is a public wrapper around dispatch_to_response_pure, adding globals and
-    default values to be nicer for end users.
-
-    Args:
-        request: The JSON-RPC request string.
-        methods: Dictionary of methods that can be called - mapping of function names to
-            functions. If not passed, uses the internal global_methods dict which is
-            populated with the @method decorator.
-        context: If given, will be passed as the first argument to methods.
-        deserializer: Function that deserializes the request string.
-        validator: Function that validates the JSON-RPC request. The function should
-            raise an exception if the request is invalid. To disable validation, pass
-            lambda _: None.
-        post_process: Function that will be applied to Responses.
-
-    Returns:
-        A Response, list of Responses or None.
-
-    Examples:
-       &gt;&gt;&gt; dispatch(&#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;method&#34;: &#34;ping&#34;, &#34;id&#34;: 1}&#39;)
-       &#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;result&#34;: &#34;pong&#34;, &#34;id&#34;: 1}&#39;
-    &#34;&#34;&#34;
-    return dispatch_to_response_pure(
-        deserializer=deserializer,
-        validator=validator,
-        post_process=post_process,
-        context=context,
-        methods=global_methods if methods is None else methods,
-        request=request,
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># main.py
+</span></span><span class="line"><span class="cl">def dispatch_to_response(
+</span></span><span class="line"><span class="cl">    request: str,
+</span></span><span class="line"><span class="cl">    methods: Optional[Methods] = None,
+</span></span><span class="line"><span class="cl">    *,
+</span></span><span class="line"><span class="cl">    context: Any = NOCONTEXT,
+</span></span><span class="line"><span class="cl">    deserializer: Callable[[str], Deserialized] = json.loads,
+</span></span><span class="line"><span class="cl">    validator: Callable[[Deserialized], Deserialized] = default_validator,
+</span></span><span class="line"><span class="cl">    post_process: Callable[[Response], Any] = identity,
+</span></span><span class="line"><span class="cl">) -&gt; Union[Response, List[Response], None]:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Takes a JSON-RPC request string and dispatches it to method(s), giving Response
+</span></span><span class="line"><span class="cl">    namedtuple(s) or None.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    This is a public wrapper around dispatch_to_response_pure, adding globals and
+</span></span><span class="line"><span class="cl">    default values to be nicer for end users.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Args:
+</span></span><span class="line"><span class="cl">        request: The JSON-RPC request string.
+</span></span><span class="line"><span class="cl">        methods: Dictionary of methods that can be called - mapping of function names to
+</span></span><span class="line"><span class="cl">            functions. If not passed, uses the internal global_methods dict which is
+</span></span><span class="line"><span class="cl">            populated with the @method decorator.
+</span></span><span class="line"><span class="cl">        context: If given, will be passed as the first argument to methods.
+</span></span><span class="line"><span class="cl">        deserializer: Function that deserializes the request string.
+</span></span><span class="line"><span class="cl">        validator: Function that validates the JSON-RPC request. The function should
+</span></span><span class="line"><span class="cl">            raise an exception if the request is invalid. To disable validation, pass
+</span></span><span class="line"><span class="cl">            lambda _: None.
+</span></span><span class="line"><span class="cl">        post_process: Function that will be applied to Responses.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Returns:
+</span></span><span class="line"><span class="cl">        A Response, list of Responses or None.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Examples:
+</span></span><span class="line"><span class="cl">       &gt;&gt;&gt; dispatch(&#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;method&#34;: &#34;ping&#34;, &#34;id&#34;: 1}&#39;)
+</span></span><span class="line"><span class="cl">       &#39;{&#34;jsonrpc&#34;: &#34;2.0&#34;, &#34;result&#34;: &#34;pong&#34;, &#34;id&#34;: 1}&#39;
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    return dispatch_to_response_pure(
+</span></span><span class="line"><span class="cl">        deserializer=deserializer,
+</span></span><span class="line"><span class="cl">        validator=validator,
+</span></span><span class="line"><span class="cl">        post_process=post_process,
+</span></span><span class="line"><span class="cl">        context=context,
+</span></span><span class="line"><span class="cl">        methods=global_methods if methods is None else methods,
+</span></span><span class="line"><span class="cl">        request=request,
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>request 请求的函数名称</li>
 <li>methods 可供调用的函数集合，默认就是之前rpc装饰器中存储的global_methods</li>
 <li>deserializer 请求的反序列化函数，validator请求验证器</li>
 <li>post_process响应处理函数</li>
 </ul>
-
 <p>post_process主要就是根据结果类型，分别取不同的字段并序列化:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def to_serializable_one(response: ResponseType) -&gt; Union[Deserialized, None]:
-    return (
-        serialize_error(response._error)
-        if isinstance(response, Left)
-        else serialize_success(response._value)
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def to_serializable_one(response: ResponseType) -&gt; Union[Deserialized, None]:
+</span></span><span class="line"><span class="cl">    return (
+</span></span><span class="line"><span class="cl">        serialize_error(response._error)
+</span></span><span class="line"><span class="cl">        if isinstance(response, Left)
+</span></span><span class="line"><span class="cl">        else serialize_success(response._value)
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>dispatch的实现，主要是下面2个函数dispatch_request和call，前者查找rpc函数，后者执行rpc函数。dispatch_request内容如下:</p>
+</div><p>dispatch的实现，主要是下面2个函数dispatch_request和call，前者查找rpc函数，后者执行rpc函数。dispatch_request内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -858,35 +831,36 @@ def dispatch_to_response(
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def dispatch_request(
-    methods: Methods, context: Any, request: Request
-) -&gt; Tuple[Request, Result]:
-    &#34;&#34;&#34;Get the method, validates the arguments and calls the method.
-
-    Returns: A tuple containing the Result of the method, along with the original
-        Request. We need the ids from the original request to remove notifications
-        before responding, and  create a Response.
-    &#34;&#34;&#34;
-    return (
-        request,
-        get_method(methods, request.method)
-        .bind(partial(validate_args, request, context))
-        .bind(partial(call, request, context)),
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def dispatch_request(
+</span></span><span class="line"><span class="cl">    methods: Methods, context: Any, request: Request
+</span></span><span class="line"><span class="cl">) -&gt; Tuple[Request, Result]:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Get the method, validates the arguments and calls the method.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Returns: A tuple containing the Result of the method, along with the original
+</span></span><span class="line"><span class="cl">        Request. We need the ids from the original request to remove notifications
+</span></span><span class="line"><span class="cl">        before responding, and  create a Response.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    return (
+</span></span><span class="line"><span class="cl">        request,
+</span></span><span class="line"><span class="cl">        get_method(methods, request.method)
+</span></span><span class="line"><span class="cl">        .bind(partial(validate_args, request, context))
+</span></span><span class="line"><span class="cl">        .bind(partial(call, request, context)),
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里使用了oslash这个函数式编程库，我们可以简单的使用unix的管道思想去理解:
-* 使用get_method查找rpc响应函数
-* 使用validate_args验证rpc请求
-* 使用call执行rpc调用
-* 3个步骤依次执行，前者的返回值会作为后缀的参数</p>
-
+</div><p>这里使用了oslash这个函数式编程库，我们可以简单的使用unix的管道思想去理解:</p>
+<ul>
+<li>使用get_method查找rpc响应函数</li>
+<li>使用validate_args验证rpc请求</li>
+<li>使用call执行rpc调用</li>
+<li>3个步骤依次执行，前者的返回值会作为后缀的参数</li>
+</ul>
 <p>重中之重是call函数，原理非常简单:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -908,41 +882,40 @@ def dispatch_to_response(
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def call(request: Request, context: Any, method: Method) -&gt; Result:
-    &#34;&#34;&#34;Call the method.
-
-    Handles any exceptions raised in the method, being sure to return an Error response.
-
-    Returns: A Result.
-    &#34;&#34;&#34;
-    try:
-        result = method(*extract_args(request, context), **extract_kwargs(request))
-        # validate_result raises AssertionError if the return value is not a valid
-        # Result, which should respond with Internal Error because its a problem in the
-        # method.
-        validate_result(result)
-    # Raising JsonRpcError inside the method is an alternative way of returning an error
-    # response.
-    except JsonRpcError as exc:
-        return Left(ErrorResult(code=exc.code, message=exc.message, data=exc.data))
-    # Any other uncaught exception inside method - internal error.
-    except Exception as exc:
-        logger.exception(exc)
-        return Left(InternalErrorResult(str(exc)))
-    return result</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def call(request: Request, context: Any, method: Method) -&gt; Result:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Call the method.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Handles any exceptions raised in the method, being sure to return an Error response.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Returns: A Result.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        result = method(*extract_args(request, context), **extract_kwargs(request))
+</span></span><span class="line"><span class="cl">        # validate_result raises AssertionError if the return value is not a valid
+</span></span><span class="line"><span class="cl">        # Result, which should respond with Internal Error because its a problem in the
+</span></span><span class="line"><span class="cl">        # method.
+</span></span><span class="line"><span class="cl">        validate_result(result)
+</span></span><span class="line"><span class="cl">    # Raising JsonRpcError inside the method is an alternative way of returning an error
+</span></span><span class="line"><span class="cl">    # response.
+</span></span><span class="line"><span class="cl">    except JsonRpcError as exc:
+</span></span><span class="line"><span class="cl">        return Left(ErrorResult(code=exc.code, message=exc.message, data=exc.data))
+</span></span><span class="line"><span class="cl">    # Any other uncaught exception inside method - internal error.
+</span></span><span class="line"><span class="cl">    except Exception as exc:
+</span></span><span class="line"><span class="cl">        logger.exception(exc)
+</span></span><span class="line"><span class="cl">        return Left(InternalErrorResult(str(exc)))
+</span></span><span class="line"><span class="cl">    return result
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>使用args和kwargs动态执行rpc函数，并将结果进行返回</li>
 <li>捕获异常，返回标准错误</li>
 </ul>
-
 <p>这里的Left是函数式编程中的概念，我们可以从response的实现，简单了解一下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -959,64 +932,59 @@ def dispatch_to_response(
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># response.py
-class SuccessResult(NamedTuple):
-    result: Any = None
-
-class ErrorResult(NamedTuple):
-    code: int
-    message: str
-    data: Any = NODATA  # The spec says this value may be omitted
-
-# Union of the two valid result types
-Result = Either[ErrorResult, SuccessResult]
-
-def Success(*args: Any, **kwargs: Any) -&gt; Either[ErrorResult, SuccessResult]:
-    return Right(SuccessResult(*args, **kwargs))
-
-def Error(*args: Any, **kwargs: Any) -&gt; Either[ErrorResult, SuccessResult]:
-    return Left(ErrorResult(*args, **kwargs))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># response.py
+</span></span><span class="line"><span class="cl">class SuccessResult(NamedTuple):
+</span></span><span class="line"><span class="cl">    result: Any = None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class ErrorResult(NamedTuple):
+</span></span><span class="line"><span class="cl">    code: int
+</span></span><span class="line"><span class="cl">    message: str
+</span></span><span class="line"><span class="cl">    data: Any = NODATA  # The spec says this value may be omitted
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Union of the two valid result types
+</span></span><span class="line"><span class="cl">Result = Either[ErrorResult, SuccessResult]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def Success(*args: Any, **kwargs: Any) -&gt; Either[ErrorResult, SuccessResult]:
+</span></span><span class="line"><span class="cl">    return Right(SuccessResult(*args, **kwargs))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def Error(*args: Any, **kwargs: Any) -&gt; Either[ErrorResult, SuccessResult]:
+</span></span><span class="line"><span class="cl">    return Left(ErrorResult(*args, **kwargs))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>SuccessResult和ErrorResult是python的两个标准对象；Result是oslash中定义的联合对象，在ErrorResult, SuccessResult中二选一，有些类似rust中的Option；Right封装了正确的结果，Left封装了错误的结果。</p>
-
+</div><p>SuccessResult和ErrorResult是python的两个标准对象；Result是oslash中定义的联合对象，在ErrorResult, SuccessResult中二选一，有些类似rust中的Option；Right封装了正确的结果，Left封装了错误的结果。</p>
 <blockquote>
 <p>这一部分需要一些函数式编程的基础，如果不太理解，推荐阅读参考链接。</p>
 </blockquote>
-
 <h2 id="小结">小结</h2>
-
 <p>我们一起学习了JSON-RPC规范，并且了解了Exploding Labs如何使用 <strong>现代python</strong> 实现该规范，也接触了一些函数式编程的方式。</p>
-
 <h2 id="小技巧">小技巧</h2>
-
 <p>业务有时候需要自己实现一个简单的自增id，我们也许会用全局变量来做:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">start = 0
-
-def gen1():
-    start +=1
-    return count
-# 调用
-id = gen1()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">start = 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def gen1():
+</span></span><span class="line"><span class="cl">    start +=1
+</span></span><span class="line"><span class="cl">    return count
+</span></span><span class="line"><span class="cl"># 调用
+</span></span><span class="line"><span class="cl">id = gen1()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>全局变量会形成一些污染，利用闭包的特性，我们可以优化成这样：</p>
+</div><p>全局变量会形成一些污染，利用闭包的特性，我们可以优化成这样：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1026,24 +994,24 @@ id = gen1()</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def gen2():
-    start = 0 
-    def incr():
-        start +=1
-        return count
-    return incr
-
-gen = gen2()
-# 调用
-id = gen()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def gen2():
+</span></span><span class="line"><span class="cl">    start = 0 
+</span></span><span class="line"><span class="cl">    def incr():
+</span></span><span class="line"><span class="cl">        start +=1
+</span></span><span class="line"><span class="cl">        return count
+</span></span><span class="line"><span class="cl">    return incr
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gen = gen2()
+</span></span><span class="line"><span class="cl"># 调用
+</span></span><span class="line"><span class="cl">id = gen()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>json-rpc里提供了使用yeild关键字实现的版本:</p>
+</div><p>json-rpc里提供了使用yeild关键字实现的版本:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1055,28 +1023,26 @@ id = gen()</pre></td></tr></table>
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def hexadecimal(start: int = 1) -&gt; Iterator[str]:
-    &#34;&#34;&#34;
-    Incremental hexadecimal numbers.
-
-    e.g. 1, 2, 3, .. 9, a, b, etc.
-
-    Args:
-        start: The first value to start with.
-    &#34;&#34;&#34;
-    while True:
-        yield &#34;%x&#34; % start
-        start += 1</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def hexadecimal(start: int = 1) -&gt; Iterator[str]:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    Incremental hexadecimal numbers.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    e.g. 1, 2, 3, .. 9, a, b, etc.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Args:
+</span></span><span class="line"><span class="cl">        start: The first value to start with.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    while True:
+</span></span><span class="line"><span class="cl">        yield &#34;%x&#34; % start
+</span></span><span class="line"><span class="cl">        start += 1
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>次密接触隔离前的发文，有些仓促，还望读者朋友们见谅</p>
 </blockquote>
-
 <h1 id="参考链接">参考链接</h1>
-
 <ul>
 <li><a href="https://www.jsonrpc.org/specification">https://www.jsonrpc.org/specification</a></li>
 <li><a href="https://ethereum.org/en/developers/docs/apis/json-rpc/">https://ethereum.org/en/developers/docs/apis/json-rpc/</a></li>
@@ -1124,11 +1090,11 @@ id = gen()</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2022-10-17 10:12:18 \x2b0800 CST',
+        id: '2022-10-17 10:12:18 \u002b0800 CST',
         title: 'json-rpc 源码阅读',
         link: decodeURI(location.href),
         desc: 'JSON-RPC是一个无状态且轻量级的远程过程调用(RPC)协议。JSON-RPC应用很广泛，比如以太坊的API。JSON-RPC的pyth',
@@ -1142,6 +1108,10 @@ id = gen()</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1169,13 +1139,10 @@ id = gen()</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1186,7 +1153,10 @@ id = gen()</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

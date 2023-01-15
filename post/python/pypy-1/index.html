@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/pypy-1/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="PyPy真的能让python比c还快？" />
 <meta property="og:description" content="最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/pypy-1/" />
-<meta property="article:published_time" content="2021-05-11T22:41:31&#43;08:00"/>
-<meta property="article:modified_time" content="2021-05-11T22:41:31&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/pypy-1/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-05-11T22:41:31+08:00" />
+<meta property="article:modified_time" content="2021-05-11T22:41:31+08:00" />
 
 <meta itemprop="name" content="PyPy真的能让python比c还快？">
-<meta itemprop="description" content="最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前">
-
-
-<meta itemprop="datePublished" content="2021-05-11T22:41:31&#43;08:00" />
-<meta itemprop="dateModified" content="2021-05-11T22:41:31&#43;08:00" />
+<meta itemprop="description" content="最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前"><meta itemprop="datePublished" content="2021-05-11T22:41:31+08:00" />
+<meta itemprop="dateModified" content="2021-05-11T22:41:31+08:00" />
 <meta itemprop="wordCount" content="5003">
-
-
-
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="PyPy真的能让python比c还快？"/>
 <meta name="twitter:description" content="最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,49 +144,46 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#语言分类">语言分类</a>
-<ul>
-<li><a href="#静态语言-vs-动态语言">静态语言 vs 动态语言</a></li>
-<li><a href="#强类型语言-vs-弱类型语言">强类型语言 vs 弱类型语言</a></li>
-</ul></li>
-<li><a href="#python的解释器实现">python的解释器实现</a></li>
-<li><a href="#pypy为什么快">pypy为什么快</a></li>
-<li><a href="#性能比较">性能比较</a>
-<ul>
-<li><a href="#开车和步行">开车和步行</a></li>
-<li><a href="#横向对比">横向对比</a></li>
-<li><a href="#内存占用">内存占用</a></li>
-</ul></li>
-<li><a href="#性能优化方法">性能优化方法</a>
-<ul>
-<li><a href="#使用c函数">使用c函数</a></li>
-<li><a href="#优化循环">优化循环</a></li>
-<li><a href="#静态类型">静态类型</a></li>
-<li><a href="#算法的魅力">算法的魅力</a></li>
-<li><a href="#优化的原则">优化的原则</a></li>
-</ul></li>
-<li><a href="#pypy的特性">pypy的特性</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#附录">附录</a>
-<ul>
-<li><a href="#测试环境">测试环境</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#语言分类">语言分类</a>
+      <ul>
+        <li><a href="#静态语言-vs-动态语言">静态语言 vs 动态语言</a></li>
+        <li><a href="#强类型语言-vs-弱类型语言">强类型语言 vs 弱类型语言</a></li>
+      </ul>
+    </li>
+    <li><a href="#python的解释器实现">python的解释器实现</a></li>
+    <li><a href="#pypy为什么快">pypy为什么快</a></li>
+    <li><a href="#性能比较">性能比较</a>
+      <ul>
+        <li><a href="#开车和步行">开车和步行</a></li>
+        <li><a href="#横向对比">横向对比</a></li>
+        <li><a href="#内存占用">内存占用</a></li>
+      </ul>
+    </li>
+    <li><a href="#性能优化方法">性能优化方法</a>
+      <ul>
+        <li><a href="#使用c函数">使用c函数</a></li>
+        <li><a href="#优化循环">优化循环</a></li>
+        <li><a href="#静态类型">静态类型</a></li>
+        <li><a href="#算法的魅力">算法的魅力</a></li>
+        <li><a href="#优化的原则">优化的原则</a></li>
+      </ul>
+    </li>
+    <li><a href="#pypy的特性">pypy的特性</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#附录">附录</a>
+      <ul>
+        <li><a href="#测试环境">测试环境</a></li>
+        <li><a href="#参考链接">参考链接</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。</p>
-
+      <p>最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。</p>
 <p>正式开始之前，多唠叨两句。我司发力多个赛道的游戏，其中包括某鱼类游戏Top2项目，拿过阿拉丁神灯奖的SLG卡牌小游戏项目和海外三消游戏。这些不同类型的游戏，后端大多是使用的是pypy。对于如何使用pypy，我有一点使用经验可以聊聊。话不多说，正式开始，本文包括下面几个部分:</p>
-
 <ul>
 <li>语言分类</li>
 <li>python的解释器实现</li>
@@ -193,96 +193,85 @@
 <li>pypy的特性</li>
 <li>小结</li>
 </ul>
-
 <h2 id="语言分类">语言分类</h2>
-
 <p>我们先从最基本的一些语言分类概念聊起，对这部分内容非常了解的朋友可以跳过。</p>
-
 <h3 id="静态语言-vs-动态语言">静态语言 vs 动态语言</h3>
-
 <p>如果在编译时知道变量的类型，则该语言为静态类型。静态类型语言的常见示例包括Java，C，C ++，FORTRAN，Pascal和Scala。在静态类型语言中，一旦使用类型声明了变量，就无法将其分配给其他不同类型的变量，这样做会在编译时引发类型错误。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># java
-
-int data;
-data = 50;
-data = “Hello Game_404!”; // causes an compilation error</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># java
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int data;
+</span></span><span class="line"><span class="cl">data = 50;
+</span></span><span class="line"><span class="cl">data = “Hello Game_404!”; // causes an compilation error
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>如果在运行时检查变量的类型，则语言是动态类型的。动态类型语言的常见示例包括JavaScript，Objective-C，PHP，Python，Ruby，Lisp和Tcl。
+</div><p>如果在运行时检查变量的类型，则语言是动态类型的。动态类型语言的常见示例包括JavaScript，Objective-C，PHP，Python，Ruby，Lisp和Tcl。
 在动态类型语言中，变量在运行时通过赋值语句绑定到对象，并且可以在程序执行期间将相同的变量绑定到不同类型的对象。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># python
-
-data = 10;
-data = &#34;Hello Game_404!&#34;; // no error caused
-data = data + str(10)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># python
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">data = 10;
+</span></span><span class="line"><span class="cl">data = &#34;Hello Game_404!&#34;; // no error caused
+</span></span><span class="line"><span class="cl">data = data + str(10)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>一般来说静态语言编译成字节码执行，动态语言使用解释器执行。编译型语言性能更高，但是较难移植到不同的CPU架构体系和操作系统。解释型语言易于移植，性能会比编译语言要差得多。这是频谱的两个极端。</p>
-
+</div><p>一般来说静态语言编译成字节码执行，动态语言使用解释器执行。编译型语言性能更高，但是较难移植到不同的CPU架构体系和操作系统。解释型语言易于移植，性能会比编译语言要差得多。这是频谱的两个极端。</p>
 <h3 id="强类型语言-vs-弱类型语言">强类型语言 vs 弱类型语言</h3>
-
 <p>强类型语言是一种变量被绑定到特定数据类型的语言，如果类型与表达式中的预期不一致，将导致类型错误，比如下面这个:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># python
-
-temp = “Hello Game_404!”
-temp = temp + 10; // program terminates with below stated error (TypeError: must be str, not int)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># python
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">temp = “Hello Game_404!”
+</span></span><span class="line"><span class="cl">temp = temp + 10; // program terminates with below stated error (TypeError: must be str, not int)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>python和我们感觉不一致，背叛了弱类型语言，不像世界上最好的语言:(</p>
+</div><p>python和我们感觉不一致，背叛了弱类型语言，不像世界上最好的语言:(</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># php
-
-$temp = “Hello Game_404!”;
-$temp = $temp + 10; // no error caused
-echo $temp;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># php
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$temp = “Hello Game_404!”;
+</span></span><span class="line"><span class="cl">$temp = $temp + 10; // no error caused
+</span></span><span class="line"><span class="cl">echo $temp;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>常见编程语言的象限分类如下图:</p>
-
-<p><img src="https://miro.medium.com/max/8400/1*BddwVWW6hFU0miT9DCbUWQ.png" alt="language" /></p>
-
+</div><p>常见编程语言的象限分类如下图:</p>
+<p><img src="https://miro.medium.com/max/8400/1*BddwVWW6hFU0miT9DCbUWQ.png" alt="language"></p>
 <blockquote>
 <p>这一部分内容主要翻译自参考链接1</p>
 </blockquote>
-
 <h2 id="python的解释器实现">python的解释器实现</h2>
-
 <p>python是一门动态编程语言，由特定的解释器解释执行。下面是一些解释器实现:</p>
-
 <ul>
 <li>CPython 使用c语言实现的解释器</li>
 <li>PyPy 使用python语言的子集RPython实现的解释器，一般情况下PyPy比CPython快4.2倍</li>
@@ -292,9 +281,7 @@ echo $temp;</pre></td></tr></table>
 <li>Pyston 一个较新的实现，是CPython 3.8.8的一个分支，具有其他针对性能的优化。它针对大型现实应用程序（例如Web服务），无需进行开发工作即可提供高达30％的加速。</li>
 <li>&hellip;</li>
 </ul>
-
 <p>还有几个相关概念:</p>
-
 <ul>
 <li>IPython &amp;&amp; Jupyter ipython是使用python构建的交互式shell, Jupyter是其web化的包装。</li>
 <li>Anaconda 是一个python虚拟环境，Python数据科学常用。</li>
@@ -303,61 +290,44 @@ echo $temp;</pre></td></tr></table>
 <li>wheel文件和egg文件 都是项目版本发布的打包文件，wheel是最新标准。</li>
 <li>&hellip;</li>
 </ul>
-
 <p>这里大家会有一个疑问，python不是解释型语言嘛？怎么又有编译后的pyc。是这样的: py文件编译成pyc后，解释器默认 <strong>优先</strong> 执行pyc文件，这样可以加快python程序的 <strong>启动速度</strong> (注意是启动速度)。继背叛弱类型语言后，python这个鬼又在编译语言和解释语言之间横跳。</p>
-
 <p>还有一个事件是Go语言在1.5版本实现自举。Go语言在1.5版本之前使用c实现的编译器，在1.5版本时候使用Go实现了自己的编译器，这里有一个鸡生蛋和蛋生鸡的过程，也挺有意思。</p>
-
 <h2 id="pypy为什么快">pypy为什么快</h2>
-
 <p>pypy使用python的子集rpython实现了解释器，和前面介绍的Go的自举有点类似。反常识的是rpython的解释器会比c实现的解释器快？ 主要是因为pypy使用了JIT技术。</p>
-
 <p>Just-In-Time (JIT) Compiler 试图通过对机器码进行一些实际的编译和一些解释来获得两全其美的方法。简而言之，以下是JIT编译为提高性能而采取的步骤：</p>
-
 <ol>
 <li>标识代码中最常用的组件，例如循环中的函数。</li>
 <li>在运行时将这些零件转换为机器码。</li>
 <li>优化生成的机器码。</li>
 <li>用优化的机器码版本交换以前的实现。</li>
 </ol>
-
 <p>这也是 “pypy为什么能让python比c还快” 一文中的示例展现出来的能力。pypy除了速度快外，还有下面一些特点:</p>
-
 <ul>
 <li>内存使用情况比cpython少</li>
 <li>gc策略更优化</li>
 <li>Stackless 协程模式默认支持，支持高并发</li>
 <li>兼容性好，高度兼容cpython实现，基本可以无缝切换</li>
 </ul>
-
 <blockquote>
 <p>以上都是宣称</p>
 </blockquote>
-
 <p>pypy这么强，快和省都占了，为什么没有大规模流行起来呢? 我个人认为，主要还是python的原因。</p>
-
 <ol>
 <li>python生态中大量库采用c实现，特别是科学计算/AI相关的库，pypy在这块并没有优势。pypy快的主要在pure-python，也就是纯粹的python实现部分。</li>
 <li>pypy适合长驻内存的高并发应用（web服务类）</li>
 <li>python是一门胶水语言，并不追求性能极致，即使快4倍也不够快:( 🐶。肯定比不上c，原文中的c应该是 <strong>偷换了概念</strong> ，指c实现的cpython解释器。</li>
 </ol>
-
 <p>需要注意的是，pypy一样也有GIL的存在, 所以高并发主要在stackless。</p>
-
 <blockquote>
 <p>这一部分内容参考自参考链接2</p>
 </blockquote>
-
 <h2 id="性能比较">性能比较</h2>
-
 <p>我们可以编写性能测试用例，用代码说话，对各个实现进行对比。本文的测试用例并不严谨，不过也足够说明一些问题了。</p>
-
 <h3 id="开车和步行">开车和步行</h3>
-
 <p>原文中累加测试用例是100000000次，我们减少成1000次:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -366,21 +336,20 @@ echo $temp;</pre></td></tr></table>
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import time
-
-start = time.time()
-number = 0
-for i in range(1000):
-    number += i
-
-print(number)
-print(f&#34;Elapsed time: {time.time() - start} s&#34;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import time
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">start = time.time()
+</span></span><span class="line"><span class="cl">number = 0
+</span></span><span class="line"><span class="cl">for i in range(1000):
+</span></span><span class="line"><span class="cl">    number += i
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">print(number)
+</span></span><span class="line"><span class="cl">print(f&#34;Elapsed time: {time.time() - start} s&#34;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>测试结果如下表(测试环境在本文附录部分):</p>
-
+</div><p>测试结果如下表(测试环境在本文附录部分):</p>
 <table>
 <thead>
 <tr>
@@ -389,14 +358,12 @@ print(f&#34;Elapsed time: {time.time() - start} s&#34;)</pre></td></tr></table>
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>python3</td>
 <td>1000</td>
 <td>0.00014281272888183594</td>
 </tr>
-
 <tr>
 <td>pypy3</td>
 <td>1000</td>
@@ -404,11 +371,8 @@ print(f&#34;Elapsed time: {time.time() - start} s&#34;)</pre></td></tr></table>
 </tr>
 </tbody>
 </table>
-
 <p>结果显示运行1000次循环的情况下cpython要比pypy快，这和循环100000000次 <strong>相反</strong> 。用下面的例子可以非常形象的解释这一点。</p>
-
 <p>假设您想去一家离您家很近的商店。您可以步行或开车。您的汽车显然比脚快得多。但是，请考虑需要执行以下操作：</p>
-
 <ol>
 <li>去你的车库。</li>
 <li>启动你的车。</li>
@@ -417,21 +381,16 @@ print(f&#34;Elapsed time: {time.time() - start} s&#34;)</pre></td></tr></table>
 <li>查找停车位。</li>
 <li>在返回途中重复该过程。</li>
 </ol>
-
 <p>开车要涉及很多开销，如果您想去的地方在附近，这并不总是值得的！现在想想如果您想去五十英里外的邻近城市会发生什么。开车去那里而不是步行肯定是值得的。</p>
-
 <blockquote>
 <p>举例来自参考链接2</p>
 </blockquote>
-
 <p>尽管速度的差异并不像上面类比那么明显，但是PyPy和CPython的情况也是如此。</p>
-
 <h3 id="横向对比">横向对比</h3>
-
 <p>我们横向对比一下c，python3, pypy3, js 和lua的性能。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -481,61 +440,61 @@ print(f&#34;Elapsed time: {time.time() - start} s&#34;)</pre></td></tr></table>
 </span><span class="lnt">48
 </span><span class="lnt">49
 </span><span class="lnt">50
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># js
-const start = Date.now();
-let number = 0
-for (i=0;i&lt;100000000;i++){
-    number += i
-}
-console.log(number)
-const millis = Date.now() - start;
-console.log(`milliseconds elapsed = `, millis);
-
-# lua
-local starttime = os.clock();
-local number = 0
-local total = 100000000-1
-for i=total,1,-1 do
-    number = number+i
-end
-print(number)
-local endtime = os.clock();
-print(string.format(&#34;elapsed time  : %.4f&#34;, endtime - starttime));
-
-# c
-#include &lt;stdio.h&gt;
-#include &lt;time.h&gt;
-
-const long long TOTAL = 100000000;
-
-long long mySum()
-{
-    long long number=0;
-    long long i;
-    for( i = 0; i &lt; TOTAL; i++ )
-    {
-        number += i;
-    }
-    return number;
-}
-
-int main(void)
-{
-    // Start measuring time
-    clock_t start = clock();
-
-    printf(&#34;%llu \n&#34;, mySum());
-    // Stop measuring time and calculate the elapsed time
-    clock_t end = clock();
-    double elapsed = (end - start)/CLOCKS_PER_SEC;
-    printf(&#34;Time measured: %.3f seconds.\n&#34;, elapsed);
-    return 0;
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># js
+</span></span><span class="line"><span class="cl">const start = Date.now();
+</span></span><span class="line"><span class="cl">let number = 0
+</span></span><span class="line"><span class="cl">for (i=0;i&lt;100000000;i++){
+</span></span><span class="line"><span class="cl">	number += i
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">console.log(number)
+</span></span><span class="line"><span class="cl">const millis = Date.now() - start;
+</span></span><span class="line"><span class="cl">console.log(`milliseconds elapsed = `, millis);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># lua
+</span></span><span class="line"><span class="cl">local starttime = os.clock();
+</span></span><span class="line"><span class="cl">local number = 0
+</span></span><span class="line"><span class="cl">local total = 100000000-1
+</span></span><span class="line"><span class="cl">for i=total,1,-1 do
+</span></span><span class="line"><span class="cl">    number = number+i
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">print(number)
+</span></span><span class="line"><span class="cl">local endtime = os.clock();
+</span></span><span class="line"><span class="cl">print(string.format(&#34;elapsed time  : %.4f&#34;, endtime - starttime));
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># c
+</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;time.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">const long long TOTAL = 100000000;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">long long mySum()
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    long long number=0;
+</span></span><span class="line"><span class="cl">    long long i;
+</span></span><span class="line"><span class="cl">    for( i = 0; i &lt; TOTAL; i++ )
+</span></span><span class="line"><span class="cl">    {
+</span></span><span class="line"><span class="cl">        number += i;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return number;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int main(void)
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    // Start measuring time
+</span></span><span class="line"><span class="cl">    clock_t start = clock();
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;%llu \n&#34;, mySum());
+</span></span><span class="line"><span class="cl">    // Stop measuring time and calculate the elapsed time
+</span></span><span class="line"><span class="cl">    clock_t end = clock();
+</span></span><span class="line"><span class="cl">    double elapsed = (end - start)/CLOCKS_PER_SEC;
+</span></span><span class="line"><span class="cl">    printf(&#34;Time measured: %.3f seconds.\n&#34;, elapsed);
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<table>
+</div><table>
 <thead>
 <tr>
 <th>解释器</th>
@@ -543,32 +502,27 @@ int main(void)
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>c</td>
 <td>100000000</td>
 <td>0.000</td>
 </tr>
-
 <tr>
 <td>pypy3</td>
 <td>100000000</td>
 <td>0.15746307373046875</td>
 </tr>
-
 <tr>
 <td>js</td>
 <td>100000000</td>
 <td>0.198</td>
 </tr>
-
 <tr>
 <td>lua</td>
 <td>100000000</td>
 <td>0.8023</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>100000000</td>
@@ -576,65 +530,58 @@ int main(void)
 </tr>
 </tbody>
 </table>
-
 <p>测试结果可见，c无疑是最快的，秒杀其它语言，这是编译语言的特点。在解释语言中，pypy3表现配得上优秀二字。</p>
-
 <h3 id="内存占用">内存占用</h3>
-
 <p>测试用例中增加内存占用的输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">p = psutil.Process()
-mem = p.memory_info()
-print(mem)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">p = psutil.Process()
+</span></span><span class="line"><span class="cl">mem = p.memory_info()
+</span></span><span class="line"><span class="cl">print(mem)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>测试结果如下:</p>
+</div><p>测试结果如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># python3
-pmem(rss= 9027584, vms=4747534336, pfaults= 2914, pageins=1)
-
-# pypy3
-pmem(rss=39518208, vms=5127745536, pfaults=12188, pageins=58)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># python3
+</span></span><span class="line"><span class="cl">pmem(rss= 9027584, vms=4747534336, pfaults= 2914, pageins=1)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># pypy3
+</span></span><span class="line"><span class="cl">pmem(rss=39518208, vms=5127745536, pfaults=12188, pageins=58)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>pypy3的内存占用会比python3要高，这个才科学，用内存空间换了运行时间。当然这个评测并不严谨，实际情况如何，pypy宣称的内存占用较少，我表示怀疑，但是没有证据。</p>
-
+</div><p>pypy3的内存占用会比python3要高，这个才科学，用内存空间换了运行时间。当然这个评测并不严谨，实际情况如何，pypy宣称的内存占用较少，我表示怀疑，但是没有证据。</p>
 <h2 id="性能优化方法">性能优化方法</h2>
-
 <p>了解语言的性能比较后，我们再看看一些性能优化的方法，这对在cpython和pypy之间选型有帮助。</p>
-
 <h3 id="使用c函数">使用c函数</h3>
-
 <p>python中使用c函数，比如这里的累加可以使用reduce替换，可以提高效率:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def my_add(a, b):
-    return a + b
-
-number = reduce(add, range(100000000))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def my_add(a, b):
+</span></span><span class="line"><span class="cl">    return a + b
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">number = reduce(add, range(100000000))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<table>
+</div><table>
 <thead>
 <tr>
 <th>解释器</th>
@@ -642,26 +589,22 @@ number = reduce(add, range(100000000))</pre></td></tr></table>
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>pypy3</td>
 <td>reduce</td>
 <td>0.08371400833129883</td>
 </tr>
-
 <tr>
 <td>pypy3</td>
 <td>100000000</td>
 <td>0.15746307373046875</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>reduce</td>
 <td>5.705173015594482 s</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>100000000循环</td>
@@ -669,15 +612,12 @@ number = reduce(add, range(100000000))</pre></td></tr></table>
 </tr>
 </tbody>
 </table>
-
 <p>结果展示，reduce对cpython和pypy都有效。</p>
-
 <h3 id="优化循环">优化循环</h3>
-
 <p>优化最关键的地方，提高算法效率，减少循环。更改一下累加的需求，假设我们是求100000000以内的偶数的和，下面展示了使用range的步进减少循环次数来提高性能:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -695,29 +635,29 @@ number = reduce(add, range(100000000))</pre></td></tr></table>
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">try:
-    xrange  # python2注意使用xrange是迭代器，而range是返回一个list
-except NameError:  # python3
-    xrange = range
-
-def test_0():
-    number = 0
-    for i in range(100000000):
-        if i % 2 == 0:
-            number += i
-    return number
-
-def test_1():
-    number = 0
-
-    for i in xrange(0, 100000000, 2):
-        number += i
-    return number</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">try:
+</span></span><span class="line"><span class="cl">    xrange  # python2注意使用xrange是迭代器，而range是返回一个list
+</span></span><span class="line"><span class="cl">except NameError:  # python3
+</span></span><span class="line"><span class="cl">    xrange = range
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_0():
+</span></span><span class="line"><span class="cl">    number = 0
+</span></span><span class="line"><span class="cl">    for i in range(100000000):
+</span></span><span class="line"><span class="cl">        if i % 2 == 0:
+</span></span><span class="line"><span class="cl">            number += i
+</span></span><span class="line"><span class="cl">    return number
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_1():
+</span></span><span class="line"><span class="cl">    number = 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for i in xrange(0, 100000000, 2):
+</span></span><span class="line"><span class="cl">        number += i
+</span></span><span class="line"><span class="cl">    return number
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<table>
+</div><table>
 <thead>
 <tr>
 <th>解释器</th>
@@ -725,14 +665,12 @@ def test_1():
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>python3</td>
 <td>50000000</td>
 <td>2.6723649501800537 s</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>100000000</td>
@@ -740,25 +678,22 @@ def test_1():
 </tr>
 </tbody>
 </table>
-
 <p>循环次数减半后，有效率显著提升。</p>
-
 <h3 id="静态类型">静态类型</h3>
-
 <p>python3可以使用类型注解，提高代码可读性。类型确定逻辑上对性能有帮助，每次处理数据的时候，不用再进行类型推断。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">number: int = 0
-for i in range(100000000):
-    number += i</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">number: int = 0
+</span></span><span class="line"><span class="cl">for i in range(100000000):
+</span></span><span class="line"><span class="cl">    number += i
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<table>
+</div><table>
 <thead>
 <tr>
 <th>解释器</th>
@@ -767,7 +702,6 @@ for i in range(100000000):
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>python3</td>
@@ -775,7 +709,6 @@ for i in range(100000000):
 <td>int</td>
 <td>9.492593050003052 s</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>100000000</td>
@@ -784,17 +717,13 @@ for i in range(100000000):
 </tr>
 </tbody>
 </table>
-
 <p>内存相当于一个空间，我们要用不同的盒子去填充它。图中左边部分1，都使用长度为4(想像float类型)的盒子填充，一行一个，速度最快；图中中间部分2，使用长度为3(想像long类型)和长度为1(想像int类型)的箱子，一行2个，也挺快；图中右侧3，虽然箱子长度仍然是3和1，但是由于没有刻度，填充时候需要试装，所以速度最慢。</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/数据类型.png" alt="数据类型" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.png" alt="数据类型"></p>
 <h3 id="算法的魅力">算法的魅力</h3>
-
 <p>优化到最后，最重量级的内容登场：高斯求和算法。高斯的故事，想必大家都不陌生，下面是算法实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -803,20 +732,20 @@ for i in range(100000000):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def gaussian_sum(total: int) -&gt; int:
-    if total &amp; 1 == 0:
-        return (1 + total) * int(total / 2)
-    else:
-        return total * int((total - 1) / 2) + total
-
-
-# 4999999950000000
-number = gaussian_sum(100000000 - 1)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def gaussian_sum(total: int) -&gt; int:
+</span></span><span class="line"><span class="cl">    if total &amp; 1 == 0:
+</span></span><span class="line"><span class="cl">        return (1 + total) * int(total / 2)
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        return total * int((total - 1) / 2) + total
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 4999999950000000
+</span></span><span class="line"><span class="cl">number = gaussian_sum(100000000 - 1)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<table>
+</div><table>
 <thead>
 <tr>
 <th>解释器</th>
@@ -824,14 +753,12 @@ number = gaussian_sum(100000000 - 1)</pre></td></tr></table>
 <th>耗时(s)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>python3</td>
 <td>高斯求和</td>
 <td>4.100799560546875e-05 s</td>
 </tr>
-
 <tr>
 <td>python3</td>
 <td>100000000循环</td>
@@ -839,18 +766,15 @@ number = gaussian_sum(100000000 - 1)</pre></td></tr></table>
 </tr>
 </tbody>
 </table>
-
 <p>使用高斯求和后，程序秒开。这大概就是业内面试，要考算法的真相，也是算法的魅力所在。</p>
-
 <h3 id="优化的原则">优化的原则</h3>
-
 <p>简单介绍一下优化的原则，主要是下面2点:</p>
-
 <ol>
-<li><p>使用测试而不是推测。</p>
+<li>使用测试而不是推测。</li>
+</ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -858,38 +782,34 @@ number = gaussian_sum(100000000 - 1)</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python3 -m timeit &#39;x=3&#39; &#39;x%2&#39;                                  
-10000000 loops, best of 5: 25.3 nsec per loop
-python3 -m timeit &#39;x=3&#39; &#39;x&amp;1&#39;
-5000000 loops, best of 5: 41.3 nsec per loop
-python2 -m timeit &#39;x=3&#39; &#39;x&amp;1&#39;
-10000000 loops, best of 3: 0.0262 usec per loop
-python2 -m timeit &#39;x=3&#39; &#39;x%2&#39;
-10000000 loops, best of 3: 0.0371 usec per loop</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python3 -m timeit &#39;x=3&#39; &#39;x%2&#39;                                  
+</span></span><span class="line"><span class="cl">10000000 loops, best of 5: 25.3 nsec per loop
+</span></span><span class="line"><span class="cl">python3 -m timeit &#39;x=3&#39; &#39;x&amp;1&#39;
+</span></span><span class="line"><span class="cl">5000000 loops, best of 5: 41.3 nsec per loop
+</span></span><span class="line"><span class="cl">python2 -m timeit &#39;x=3&#39; &#39;x&amp;1&#39;
+</span></span><span class="line"><span class="cl">10000000 loops, best of 3: 0.0262 usec per loop
+</span></span><span class="line"><span class="cl">python2 -m timeit &#39;x=3&#39; &#39;x%2&#39;
+</span></span><span class="line"><span class="cl">10000000 loops, best of 3: 0.0371 usec per loop
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>上面示例展示了，求奇偶的情况下，python3中位运算比取模慢，这是个反直觉推测的地方。在我的python冷兵器合集一文中也有介绍。而且需要注意的是，python2和python3表现相反，所以性能优化要实测，注意环境和实效性。</p></li>
-
-<li><p>遵循2/8法则, 不要过度优化，不用赘述。</p></li>
+</div><p>上面示例展示了，求奇偶的情况下，python3中位运算比取模慢，这是个反直觉推测的地方。在我的python冷兵器合集一文中也有介绍。而且需要注意的是，python2和python3表现相反，所以性能优化要实测，注意环境和实效性。</p>
+<ol start="2">
+<li>遵循2/8法则, 不要过度优化，不用赘述。</li>
 </ol>
-
 <h2 id="pypy的特性">pypy的特性</h2>
-
 <p>pypy还有下面一些特性:</p>
-
 <ul>
 <li>cffi pypy推荐使用cffi的方式加载c</li>
 <li>cProfile pypy下使用cProfile检测性能无效</li>
 <li>sys.getsizeof pypy的gc方式差异，sys.getsizeof无法使用</li>
 <li>__slots__ cpython使用的slots，在pypy下失效</li>
 </ul>
-
 <p>使用slots在python对象中，可以减少对象内存占用，提高效率，下面是测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -916,41 +836,41 @@ python2 -m timeit &#39;x=3&#39; &#39;x%2&#39;
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def test_0():
-    class Player(object):
-
-        def __init__(self, name, age):
-            self.name = name
-            self.age = age
-
-    players = []
-    for i in range(10000):
-        p = Player(name=&#34;p&#34; + str(i), age=i)
-        players.append(p)
-    return players
-
-
-def test_1():
-    class Player(object):
-        __slots__ = &#34;name&#34;, &#34;age&#34;
-
-        def __init__(self, name, age):
-            self.name = name
-            self.age = age
-
-    players = []
-    for i in range(10000):
-        p = Player(name=&#34;p&#34; + str(i), age=i)
-        players.append(p)
-    return players</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def test_0():
+</span></span><span class="line"><span class="cl">    class Player(object):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        def __init__(self, name, age):
+</span></span><span class="line"><span class="cl">            self.name = name
+</span></span><span class="line"><span class="cl">            self.age = age
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    players = []
+</span></span><span class="line"><span class="cl">    for i in range(10000):
+</span></span><span class="line"><span class="cl">        p = Player(name=&#34;p&#34; + str(i), age=i)
+</span></span><span class="line"><span class="cl">        players.append(p)
+</span></span><span class="line"><span class="cl">    return players
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_1():
+</span></span><span class="line"><span class="cl">    class Player(object):
+</span></span><span class="line"><span class="cl">        __slots__ = &#34;name&#34;, &#34;age&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        def __init__(self, name, age):
+</span></span><span class="line"><span class="cl">            self.name = name
+</span></span><span class="line"><span class="cl">            self.age = age
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    players = []
+</span></span><span class="line"><span class="cl">    for i in range(10000):
+</span></span><span class="line"><span class="cl">        p = Player(name=&#34;p&#34; + str(i), age=i)
+</span></span><span class="line"><span class="cl">        players.append(p)
+</span></span><span class="line"><span class="cl">    return players
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>测试日志如下:</p>
+</div><p>测试日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -965,60 +885,49 @@ def test_1():
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># python3 slots
-pmem(rss=10776576, vms=5178499072, pfaults=3351, pageins=58)
-Elapsed time:  0.010818958282470703 s
-
-# python3 默认
-pmem(rss=11792384, vms=5033795584, pfaults=3587, pageins=0)
-Elapsed time:  0.01322031021118164 s
-
-# pypy3 slots
-pmem(rss=40042496, vms=5263011840, pfaults=12341, pageins=4071)
-Elapsed time:  0.005321025848388672 s
-
-# pypy3 默认
-pmem(rss=39862272, vms=4974653440, pfaults=12280, pageins=0)
-Elapsed time:  0.004619121551513672 s</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># python3 slots
+</span></span><span class="line"><span class="cl">pmem(rss=10776576, vms=5178499072, pfaults=3351, pageins=58)
+</span></span><span class="line"><span class="cl">Elapsed time:  0.010818958282470703 s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># python3 默认
+</span></span><span class="line"><span class="cl">pmem(rss=11792384, vms=5033795584, pfaults=3587, pageins=0)
+</span></span><span class="line"><span class="cl">Elapsed time:  0.01322031021118164 s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># pypy3 slots
+</span></span><span class="line"><span class="cl">pmem(rss=40042496, vms=5263011840, pfaults=12341, pageins=4071)
+</span></span><span class="line"><span class="cl">Elapsed time:  0.005321025848388672 s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># pypy3 默认
+</span></span><span class="line"><span class="cl">pmem(rss=39862272, vms=4974653440, pfaults=12280, pageins=0)
+</span></span><span class="line"><span class="cl">Elapsed time:  0.004619121551513672 s
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>详细信息可以看参考链接4和5</p>
 </blockquote>
-
 <p>pypy最重要的特性还是stackless，支持高并发。这里有IO密集型任务（I/O-bound）和CPU密集型任务（compute-bound）的区分，CPU密集型任务的代码，速度很慢，是因为执行大量CPU指令，比如上文的for循环；I / O密集型，速度因磁盘或网络延迟而变慢，这两者之间是有区别的。这部分内容，要介绍清楚也不容易，容我们下章见。</p>
-
 <h2 id="小结">小结</h2>
-
 <p>python是一门解释型编程语言，具有多种解释器实现，常见的是cpython的实现。pypy使用了JIT技术，在一些常见的场景下可以显著提高python的执行效率，对cpython的兼容性也很高。如果项目纯python部分较多，推荐尝试使用pypy运行程序。</p>
-
 <p>顺便打个广告，我司常年招聘各类技术研发，游戏策划，测试，产品经理等等，python方向感兴趣的朋友可以微信公众号里加博主微信参加内推。</p>
-
 <blockquote>
 <p>注：由于个人能力有限，文中示例如有谬误，还望海涵。</p>
 </blockquote>
-
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 <h2 id="附录">附录</h2>
-
 <h3 id="测试环境">测试环境</h3>
-
 <ul>
 <li>MacBook Pro (16-inch, 2019)（2.6 GHz 六核Intel Core i7）</li>
 <li>Python 2.7.16</li>
 <li>Python 3.8.5</li>
 <li>Python 3.6.9 [PyPy 7.3.1 with GCC 4.2.1 Compatible Apple LLVM 11.0.3 (clang-1103.0.32.59)]</li>
 <li>Python 2.7.13 [PyPy 7.3.1 with GCC 4.2.1 Compatible Apple LLVM 11.0.3 (clang-1103.0.32.59)]</li>
-<li>lua#Lua 5.2.3  Copyright &copy; 1994-2013 Lua.org, PUC-Rio</li>
+<li>lua#Lua 5.2.3  Copyright (C) 1994-2013 Lua.org, PUC-Rio</li>
 <li>node#v10.16.3</li>
 </ul>
-
 <h3 id="参考链接">参考链接</h3>
-
 <ol>
 <li><a href="https://medium.com/android-news/magic-lies-here-statically-typed-vs-dynamically-typed-languages-d151c7f95e2b">https://medium.com/android-news/magic-lies-here-statically-typed-vs-dynamically-typed-languages-d151c7f95e2b</a></li>
 <li><a href="https://realpython.com/pypy-faster-python/">https://realpython.com/pypy-faster-python/</a></li>
@@ -1062,11 +971,11 @@ Elapsed time:  0.004619121551513672 s</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-05-11 22:41:31 \x2b0800 CST',
+        id: '2021-05-11 22:41:31 \u002b0800 CST',
         title: 'PyPy真的能让python比c还快？',
         link: decodeURI(location.href),
         desc: '最近 “pypy为什么能让python比c还快” 刷屏了，原文讲的内容偏理论，干货比较少。我们可以再深入一点点，了解pypy的真相。 正式开始之前',
@@ -1080,6 +989,10 @@ Elapsed time:  0.004619121551513672 s</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1107,13 +1020,10 @@ Elapsed time:  0.004619121551513672 s</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1124,7 +1034,10 @@ Elapsed time:  0.004619121551513672 s</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

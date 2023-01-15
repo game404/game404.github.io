@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/docker-log/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Docker容器日志分析" />
 <meta property="og:description" content="Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/docker-log/" />
-<meta property="article:published_time" content="2019-03-24T18:41:26&#43;08:00"/>
-<meta property="article:modified_time" content="2019-03-24T18:41:26&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/docker-log/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-03-24T18:41:26+08:00" />
+<meta property="article:modified_time" content="2019-03-24T18:41:26+08:00" />
 
 <meta itemprop="name" content="Docker容器日志分析">
-<meta itemprop="description" content="Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访">
-
-
-<meta itemprop="datePublished" content="2019-03-24T18:41:26&#43;08:00" />
-<meta itemprop="dateModified" content="2019-03-24T18:41:26&#43;08:00" />
+<meta itemprop="description" content="Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访"><meta itemprop="datePublished" content="2019-03-24T18:41:26+08:00" />
+<meta itemprop="dateModified" content="2019-03-24T18:41:26+08:00" />
 <meta itemprop="wordCount" content="1988">
-
-
-
-<meta itemprop="keywords" content="系列,logging," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="系列,logging," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Docker容器日志分析"/>
 <meta name="twitter:description" content="Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http://127.0.0.1 访"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,148 +144,108 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li><a href="#docker容器日志分析">Docker容器日志分析</a>
-<ul>
-<li>
-<ul>
-<li><a href="#查看容器日志">查看容器日志</a></li>
-<li><a href="#容器日志文件存储">容器日志文件存储</a></li>
-<li><a href="#容器日志文件滚动策略">容器日志文件滚动策略</a></li>
-<li><a href="#nginx容器日志">nginx容器日志</a></li>
-<li><a href="#mysql容器日志">mysql容器日志</a></li>
-<li><a href="#总结">总结</a>
-<ul>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#查看容器日志">查看容器日志</a></li>
+        <li><a href="#容器日志文件存储">容器日志文件存储</a></li>
+        <li><a href="#容器日志文件滚动策略">容器日志文件滚动策略</a></li>
+        <li><a href="#nginx容器日志">nginx容器日志</a></li>
+        <li><a href="#mysql容器日志">mysql容器日志</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h1 id="docker容器日志分析">Docker容器日志分析</h1>
-
+      <h1 id="docker容器日志分析">Docker容器日志分析</h1>
 <h3 id="查看容器日志">查看容器日志</h3>
-
 <p>先使用  <code>docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine</code> 命令启动一个nginx容器。如果没有异常，会得到容器ID如  <strong>d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00</strong>  的长串。再使用  <code>curl -i http://127.0.0.1</code>  访问服务，确认nginx容器正常启动运行。最后使用  <code>docker logs -f d24</code>  查看容器的日志输出，大概如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">172.17.0.1 - - [24/Mar/2019:03:51:21 +0000] &#34;GET / HTTP/1.1&#34; 200 612 &#34;-&#34; &#34;curl/7.29.0&#34; &#34;-&#34;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">172.17.0.1 - - [24/Mar/2019:03:51:21 +0000] &#34;GET / HTTP/1.1&#34; 200 612 &#34;-&#34; &#34;curl/7.29.0&#34; &#34;-&#34;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>一般来说使用容器ID的前3位即可</p>
 </blockquote>
-
 <p>以上就是我们查看容器日志的日常方法了，非常简单实用。</p>
-
 <h3 id="容器日志文件存储">容器日志文件存储</h3>
-
 <p>容器的日志会以json文件方式存储在本地磁盘，可以使用下面方式查看文件路径  <code>docker inspect d42 | grep Log</code> 可以找到:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&#34;LogPath&#34;: &#34;/var/lib/docker/containers/d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00/d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00-json.log&#34;,</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&#34;LogPath&#34;: &#34;/var/lib/docker/containers/d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00/d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00-json.log&#34;,
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>注意1：mac上没有/var/lib/docker目录 ，因为docker for mac的运作方式不一样，最好使用linux系统练习。</p>
-
+</blockquote>
+<blockquote>
 <p>注意2:  如果LogPath内容为空，大概是因为docker engine版本，升级docker版本能到docker-ce 18.09.3</p>
 </blockquote>
-
 <p>查看 <strong>d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00-json.log</strong> 文件，可以看到:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{&#34;log&#34;:&#34;172.17.0.1 - - [24/Mar/2019:03:51:21 +0000] \&#34;GET / HTTP/1.1\&#34; 200 612 \&#34;-\&#34; \&#34;curl/7.29.0\&#34; \&#34;-\&#34;\r\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2019-03-24T03:51:21.982476951Z&#34;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{&#34;log&#34;:&#34;172.17.0.1 - - [24/Mar/2019:03:51:21 +0000] \&#34;GET / HTTP/1.1\&#34; 200 612 \&#34;-\&#34; \&#34;curl/7.29.0\&#34; \&#34;-\&#34;\r\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2019-03-24T03:51:21.982476951Z&#34;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这条信息的<strong>log</strong>字段内容和之前通过  <code>docker logs</code>  命令查看的内容一致。</p>
-
+</div><p>这条信息的<strong>log</strong>字段内容和之前通过  <code>docker logs</code>  命令查看的内容一致。</p>
 <p>容器日志会跟随容器生命周期，容器销毁后日志也会销毁。使用  <code>docker stop 24</code>  关停测试的nginx服务。因为容器启动使用时候用了  <strong>&ndash;rm</strong>  参数，关停后会自动清理删除，所以会发现 /var/lib/docker/containers/d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00  目录不存在了，相应的日志文件也就删除了。</p>
-
 <h3 id="容器日志文件滚动策略">容器日志文件滚动策略</h3>
-
 <p>docker容器日志默认写入json文件，在线上运行时候会有磁盘写满的风险。可以调整策略，让其进行滚动。修改<code>/etc/docker/daemon.json</code>（如果没有就手工创建一个），增加下面内容：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{
-  &#34;log-opts&#34;: {
-    &#34;max-size&#34;: &#34;1m&#34;,
-    &#34;max-file&#34;: &#34;3&#34;
-  }
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">  &#34;log-opts&#34;: {
+</span></span><span class="line"><span class="cl">    &#34;max-size&#34;: &#34;1m&#34;,
+</span></span><span class="line"><span class="cl">    &#34;max-file&#34;: &#34;3&#34;
+</span></span><span class="line"><span class="cl">  }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>修改完成后重启docker服务：</p>
+</div><p>修改完成后重启docker服务：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">systemctl daemon-reload
-systemctl restart docker.service</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl restart docker.service
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>测试一下新的日志策略，使用下面的命令创建一个容器：</p>
+</div><p>测试一下新的日志策略，使用下面的命令创建一个容器：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run -d --rm alpine:3.6 sh -c &#34;while true; do echo hello world; usleep 10; done&#34;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker run -d --rm alpine:3.6 sh -c &#34;while true; do echo hello world; usleep 10; done&#34;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这个alpine容器就是每隔10微秒输出hello world，保持高频度输出，快速生产日志文件。</p>
+</div><p>这个alpine容器就是每隔10微秒输出hello world，保持高频度输出，快速生产日志文件。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">注：shell中的时间控制
-1、sleep : 默认为秒。
-sleep 1s 表示延迟一秒  
-sleep 1m 表示延迟一分钟  
-sleep 1h 表示延迟一小时  
-sleep 1d 表示延迟一天    
-  
-2、usleep : 默认以微秒。  
-1s = 1000ms = 1000000us</pre></td></tr></table>
-</div>
-</div>
-<p>按照前文中查看日志文件的方法</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -291,95 +254,112 @@ sleep 1d 表示延迟一天
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># pwd
-/var/lib/docker/containers/aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3
-# ls -lah
-total 2.6M
-drwx------ 4 root root 4.0K Mar 24 16:22 .
-drwx------ 3 root root 4.0K Mar 24 16:21 ..
--rw-r----- 1 root root 647K Mar 24 16:22 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log
--rw-r----- 1 root root 977K Mar 24 16:22 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log.1
--rw-r----- 1 root root 977K Mar 24 16:21 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log.2</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">注：shell中的时间控制
+</span></span><span class="line"><span class="cl">1、sleep : 默认为秒。
+</span></span><span class="line"><span class="cl">sleep 1s 表示延迟一秒  
+</span></span><span class="line"><span class="cl">sleep 1m 表示延迟一分钟  
+</span></span><span class="line"><span class="cl">sleep 1h 表示延迟一小时  
+</span></span><span class="line"><span class="cl">sleep 1d 表示延迟一天    
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">2、usleep : 默认以微秒。  
+</span></span><span class="line"><span class="cl">1s = 1000ms = 1000000us
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p>按照前文中查看日志文件的方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># pwd
+</span></span><span class="line"><span class="cl">/var/lib/docker/containers/aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3
+</span></span><span class="line"><span class="cl"># ls -lah
+</span></span><span class="line"><span class="cl">total 2.6M
+</span></span><span class="line"><span class="cl">drwx------ 4 root root 4.0K Mar 24 16:22 .
+</span></span><span class="line"><span class="cl">drwx------ 3 root root 4.0K Mar 24 16:21 ..
+</span></span><span class="line"><span class="cl">-rw-r----- 1 root root 647K Mar 24 16:22 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log
+</span></span><span class="line"><span class="cl">-rw-r----- 1 root root 977K Mar 24 16:22 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log.1
+</span></span><span class="line"><span class="cl">-rw-r----- 1 root root 977K Mar 24 16:21 aa3307f5b42770319129e126122be123cfd8e0ebe1c412371ad27e62faa007e3-json.log.2
+</span></span></code></pre></td></tr></table>
 </div>
-<p>很容易发现，日志文件的策略就是维持3个1m大小文件存在，和我们设置保持一致。</p>
-
+</div><p>很容易发现，日志文件的策略就是维持3个1m大小文件存在，和我们设置保持一致。</p>
 <blockquote>
 <p>测试完成后，记得使用docker stop aa3 清理测试现场，max-size也可以按照真实需求调整大小。</p>
 </blockquote>
-
 <h3 id="nginx容器日志">nginx容器日志</h3>
-
 <p>了解docker容器的日志策略后，再看看常用的容器是如何处理的。先看看nginx容器。</p>
-
 <p>首先  <code>docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine</code>  创建一个nginx容器，然后  <code>docker exec -it b6d sh</code>  进入容器，查看/etc/nginx/nginx.conf可以看到下面内容：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">error_log  /var/log/nginx/error.log warn;
-access_log  /var/log/nginx/access.log  main;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">error_log  /var/log/nginx/error.log warn;
+</span></span><span class="line"><span class="cl">access_log  /var/log/nginx/access.log  main;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>也就是nginx会将错误日志和访问日志写入对应的日志文件。继续查看/var/log/nginx目录：</p>
+</div><p>也就是nginx会将错误日志和访问日志写入对应的日志文件。继续查看/var/log/nginx目录：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">/var/log/nginx # ls -lah
-total 0
-drwxr-xr-x    2 root     root          39 Mar  4 07:54 .
-drwxr-xr-x    3 root     root          18 Mar  4 07:54 ..
-lrwxrwxrwx    1 root     root          11 Jan 31 23:32 access.log -&gt; /dev/stdout
-lrwxrwxrwx    1 root     root          11 Jan 31 23:32 error.log -&gt; /dev/stderr</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/var/log/nginx # ls -lah
+</span></span><span class="line"><span class="cl">total 0
+</span></span><span class="line"><span class="cl">drwxr-xr-x    2 root     root          39 Mar  4 07:54 .
+</span></span><span class="line"><span class="cl">drwxr-xr-x    3 root     root          18 Mar  4 07:54 ..
+</span></span><span class="line"><span class="cl">lrwxrwxrwx    1 root     root          11 Jan 31 23:32 access.log -&gt; /dev/stdout
+</span></span><span class="line"><span class="cl">lrwxrwxrwx    1 root     root          11 Jan 31 23:32 error.log -&gt; /dev/stderr
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这就发现奥秘了，access.log文件会通过软链接重定向到标准输出，而错误日志error.log则会重定向标准错误。这样使用<code>docker log</code>命令就可以看到nginx的访问日志了。</p>
-
+</div><p>这就发现奥秘了，access.log文件会通过软链接重定向到标准输出，而错误日志error.log则会重定向标准错误。这样使用<code>docker log</code>命令就可以看到nginx的访问日志了。</p>
 <p>为了进一步验证，查看<a href="https://github.com/nginxinc/docker-nginx/blob/7890fc2342613e6669ad83ceead9c81136d2cc0a/mainline/alpine/Dockerfile">nginx dockerfile</a>文件，其中有：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    # forward request and error logs to docker log collector
-    &amp;&amp; ln -sf /dev/stdout /var/log/nginx/access.log \
-    &amp;&amp; ln -sf /dev/stderr /var/log/nginx/error.log</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    # forward request and error logs to docker log collector
+</span></span><span class="line"><span class="cl">	&amp;&amp; ln -sf /dev/stdout /var/log/nginx/access.log \
+</span></span><span class="line"><span class="cl">	&amp;&amp; ln -sf /dev/stderr /var/log/nginx/error.log
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可见nginx镜像创建时候就定义好了日志文件的输出。</p>
-
+</div><p>可见nginx镜像创建时候就定义好了日志文件的输出。</p>
 <blockquote>
 <p>同样使用<code>docker stop 524</code>清理现场，以后就不再介绍清理这一步骤了。</p>
 </blockquote>
-
 <h3 id="mysql容器日志">mysql容器日志</h3>
-
 <p>启动一个mysql容器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run --rm -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker run --rm -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>不难看到mysql容器日志输出, 截取其中片段如下:</p>
+</div><p>不难看到mysql容器日志输出, 截取其中片段如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -397,60 +377,53 @@ lrwxrwxrwx    1 root     root          11 Jan 31 23:32 error.log -&gt; /dev/stde
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Initializing database
-2019-03-24T08:48:19.102726Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
-2019-03-24T08:48:20.241459Z 0 [Warning] InnoDB: New log files created, LSN=45790
-2019-03-24T08:48:20.414933Z 0 [Warning] InnoDB: Creating foreign key constraint system tables.
-2019-03-24T08:48:20.509897Z 0 [Warning] No existing UUID has been found, so we assume that this is the first time that this server has been started. Generating a new UUID: 935a6ee7-4e11-11e9-b135-0242ac110002.
-2019-03-24T08:48:20.519148Z 0 [Warning] Gtid table is not ready to be used. Table &#39;mysql.gtid_executed&#39; cannot be opened.
-2019-03-24T08:48:20.519843Z 1 [Warning] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
-2019-03-24T08:48:24.066683Z 1 [Warning] &#39;user&#39; entry &#39;root@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066730Z 1 [Warning] &#39;user&#39; entry &#39;mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066740Z 1 [Warning] &#39;user&#39; entry &#39;mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066756Z 1 [Warning] &#39;db&#39; entry &#39;performance_schema mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066761Z 1 [Warning] &#39;db&#39; entry &#39;sys mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066772Z 1 [Warning] &#39;proxies_priv&#39; entry &#39;@ root@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066814Z 1 [Warning] &#39;tables_priv&#39; entry &#39;user mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
-2019-03-24T08:48:24.066822Z 1 [Warning] &#39;tables_priv&#39; entry &#39;sys_config mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
-Database initialized
-Initializing certificates
-Generating a RSA private key</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Initializing database
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:19.102726Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:20.241459Z 0 [Warning] InnoDB: New log files created, LSN=45790
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:20.414933Z 0 [Warning] InnoDB: Creating foreign key constraint system tables.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:20.509897Z 0 [Warning] No existing UUID has been found, so we assume that this is the first time that this server has been started. Generating a new UUID: 935a6ee7-4e11-11e9-b135-0242ac110002.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:20.519148Z 0 [Warning] Gtid table is not ready to be used. Table &#39;mysql.gtid_executed&#39; cannot be opened.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:20.519843Z 1 [Warning] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066683Z 1 [Warning] &#39;user&#39; entry &#39;root@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066730Z 1 [Warning] &#39;user&#39; entry &#39;mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066740Z 1 [Warning] &#39;user&#39; entry &#39;mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066756Z 1 [Warning] &#39;db&#39; entry &#39;performance_schema mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066761Z 1 [Warning] &#39;db&#39; entry &#39;sys mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066772Z 1 [Warning] &#39;proxies_priv&#39; entry &#39;@ root@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066814Z 1 [Warning] &#39;tables_priv&#39; entry &#39;user mysql.session@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">2019-03-24T08:48:24.066822Z 1 [Warning] &#39;tables_priv&#39; entry &#39;sys_config mysql.sys@localhost&#39; ignored in --skip-name-resolve mode.
+</span></span><span class="line"><span class="cl">Database initialized
+</span></span><span class="line"><span class="cl">Initializing certificates
+</span></span><span class="line"><span class="cl">Generating a RSA private key
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看mysql <a href="https://github.com/docker-library/mysql/blob/bb7ea52db4e12d3fb526450d22382d5cd8cd41ca/5.7/Dockerfile">Dockerfile</a>  文件，可以知道mysql镜像启动入口在<strong>entrypoint.sh</strong>，从脚本中发现：</p>
+</div><p>查看mysql <a href="https://github.com/docker-library/mysql/blob/bb7ea52db4e12d3fb526450d22382d5cd8cd41ca/5.7/Dockerfile">Dockerfile</a>  文件，可以知道mysql镜像启动入口在<strong>entrypoint.sh</strong>，从脚本中发现：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">echo &#39;Initializing database&#39;
-&#34;$@&#34; --initialize-insecure
-echo &#39;Database initialized&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">echo &#39;Initializing database&#39;
+</span></span><span class="line"><span class="cl">&#34;$@&#34; --initialize-insecure
+</span></span><span class="line"><span class="cl">echo &#39;Database initialized&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这样就是mysql容器启动时候的输出对应起来了。<strong>entrypoint.sh</strong>比较复杂，主要功能就是启动mysqld，并将日志输出，因为不是本文重点，就不详细介绍了。</p>
-
+</div><p>这样就是mysql容器启动时候的输出对应起来了。<strong>entrypoint.sh</strong>比较复杂，主要功能就是启动mysqld，并将日志输出，因为不是本文重点，就不详细介绍了。</p>
 <h3 id="总结">总结</h3>
-
 <ol>
 <li>docker容器默认输出到本地json文件，并且可以对其进行大小和数量控制。</li>
 <li>应用容器日志可以先生成日志文件，然后将应用日志文件软连接到标准输出，比如nginx；也可以在启动时候直接将日志打印到标准输出，比如mysql。</li>
 </ol>
-
 <h4 id="参考链接">参考链接</h4>
-
 <p><a href="https://www.cnblogs.com/YatHo/p/7866029.html">Docker 日志都在哪里？怎么收集？</a></p>
-
 <p><a href="https://docs.docker.com/config/containers/logging/json-file/">JSON File logging driver</a></p>
-
 <p><a href="https://hub.docker.com/_/mysql">docker mysql</a></p>
-
 <p>最后，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 
     </div>
 
@@ -490,11 +463,11 @@ echo &#39;Database initialized&#39;</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2019-03-24 18:41:26 \x2b0800 CST',
+        id: '2019-03-24 18:41:26 \u002b0800 CST',
         title: 'Docker容器日志分析',
         link: decodeURI(location.href),
         desc: 'Docker容器日志分析 查看容器日志 先使用 docker run -it --rm -d -p 80:80 nginx:1.15.8-alpine 命令启动一个nginx容器。如果没有异常，会得到容器ID如 d2408a7931c95a3a83ffeca2fba887763cf925a67890ef3be4d9ff838aa25b00 的长串。再使用 curl -i http:\/\/127.0.0.1 访',
@@ -508,6 +481,10 @@ echo &#39;Database initialized&#39;</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -535,13 +512,10 @@ echo &#39;Database initialized&#39;</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -552,7 +526,10 @@ echo &#39;Database initialized&#39;</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

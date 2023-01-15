@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/celery-6/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Celery 源码解析 - 6" />
 <meta property="og:description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/celery-6/" />
-<meta property="article:published_time" content="2021-12-05T19:54:18&#43;08:00"/>
-<meta property="article:modified_time" content="2021-12-05T19:54:18&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/celery-6/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-05T19:54:18+08:00" />
+<meta property="article:modified_time" content="2021-12-05T19:54:18+08:00" />
 
 <meta itemprop="name" content="Celery 源码解析 - 6">
-<meta itemprop="description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的">
-
-
-<meta itemprop="datePublished" content="2021-12-05T19:54:18&#43;08:00" />
-<meta itemprop="dateModified" content="2021-12-05T19:54:18&#43;08:00" />
+<meta itemprop="description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的"><meta itemprop="datePublished" content="2021-12-05T19:54:18+08:00" />
+<meta itemprop="dateModified" content="2021-12-05T19:54:18+08:00" />
 <meta itemprop="wordCount" content="3858">
-
-
-
-<meta itemprop="keywords" content="celery,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="celery,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Celery 源码解析 - 6"/>
 <meta name="twitter:description" content="本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,28 +144,20 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#worker模式启动流程">worker模式启动流程</a></li>
-<li><a href="#beat模式启动流程">beat模式启动流程</a></li>
-<li><a href="#multi模式启动流程">multi模式启动流程</a></li>
-<li><a href="#worker接收任务流程">worker接收任务流程</a></li>
-<li><a href="#小结">小结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#worker模式启动流程">worker模式启动流程</a></li>
+    <li><a href="#beat模式启动流程">beat模式启动流程</a></li>
+    <li><a href="#multi模式启动流程">multi模式启动流程</a></li>
+    <li><a href="#worker接收任务流程">worker接收任务流程</a></li>
+    <li><a href="#小结">小结</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。</p>
-
+      <p>本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。</p>
 <p>Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大量消息，并且提供了一整套操作此系统的工具。Celery 也是一款消息队列工具，可用于处理实时数据以及任务调度。</p>
-
 <p>本文是是celery源码解析的第<strong>六</strong>篇，在前五篇里分别介绍了:</p>
-
 <ol>
 <li><a href="https://game404.github.io/post/python/celery-1/">神器 celery 源码解析- vine实现Promise功能</a></li>
 <li><a href="https://game404.github.io/post/python/celery-2/">神器 celery 源码解析- py-amqp实现AMQP协议</a></li>
@@ -170,34 +165,32 @@
 <li><a href="https://game404.github.io/post/python/celery-4/">神器 celery 源码解析- kombu的企业级算法</a></li>
 <li><a href="https://game404.github.io/post/python/celery-5/">神器 celery 源码解析- celery启动流程分析</a></li>
 </ol>
-
 <h2 id="worker模式启动流程">worker模式启动流程</h2>
-
 <p>我们启动celery的worker, 启动大概分成3个阶段，先看第一阶段创建蓝图:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ celery -A myapp worker -l DEBUG
-[2021-11-24 15:53:12,984: DEBUG/MainProcess] | Worker: Preparing bootsteps.
-[2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: Building graph...
-[2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Timer, Hub, Pool, Autoscaler, Beat, Consumer}
-[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
-[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Building graph...
-[2021-11-24 15:53:13,038: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ celery -A myapp worker -l DEBUG
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:12,984: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: Building graph...
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:12,988: DEBUG/MainProcess] | Worker: New boot order: {StateDB, Timer, Hub, Pool, Autoscaler, Beat, Consumer}
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,005: DEBUG/MainProcess] | Consumer: Building graph...
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,038: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Gossip, Agent, Heart, event loop}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这一阶段主要启动了worker和consumer2个蓝图, 下面是蓝图的创建和日志可以完整对应:</p>
+</div><p>这一阶段主要启动了worker和consumer2个蓝图, 下面是蓝图的创建和日志可以完整对应:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -214,31 +207,31 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Blueprint:
-    def apply(self, parent, **kwargs):
-        # 创建蓝图
-        self._debug(&#39;Preparing bootsteps.&#39;)
-        order = self.order = []
-        steps = self.steps = self.claim_steps()
-
-        self._debug(&#39;Building graph...&#39;)
-        for S in self._finalize_steps(steps):
-            step = S(parent, **kwargs)
-            steps[step.name] = step
-            order.append(step)
-        self._debug(&#39;New boot order: {%s}&#39;,
-                    &#39;, &#39;.join(s.alias for s in self.order))
-        for step in order:
-            step.include(parent)
-        return self</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Blueprint:
+</span></span><span class="line"><span class="cl">    def apply(self, parent, **kwargs):
+</span></span><span class="line"><span class="cl">        # 创建蓝图
+</span></span><span class="line"><span class="cl">        self._debug(&#39;Preparing bootsteps.&#39;)
+</span></span><span class="line"><span class="cl">        order = self.order = []
+</span></span><span class="line"><span class="cl">        steps = self.steps = self.claim_steps()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        self._debug(&#39;Building graph...&#39;)
+</span></span><span class="line"><span class="cl">        for S in self._finalize_steps(steps):
+</span></span><span class="line"><span class="cl">            step = S(parent, **kwargs)
+</span></span><span class="line"><span class="cl">            steps[step.name] = step
+</span></span><span class="line"><span class="cl">            order.append(step)
+</span></span><span class="line"><span class="cl">        self._debug(&#39;New boot order: {%s}&#39;,
+</span></span><span class="line"><span class="cl">                    &#39;, &#39;.join(s.alias for s in self.order))
+</span></span><span class="line"><span class="cl">        for step in order:
+</span></span><span class="line"><span class="cl">            step.include(parent)
+</span></span><span class="line"><span class="cl">        return self
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第一个Worker蓝图在WorkController中，包括了下面一些步骤:</p>
+</div><p>第一个Worker蓝图在WorkController中，包括了下面一些步骤:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -253,29 +246,29 @@
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class WorkController:
-
-    class Blueprint(bootsteps.Blueprint):
-    &#34;&#34;&#34;Worker bootstep blueprint.&#34;&#34;&#34;
-
-    name = &#39;Worker&#39;
-    default_steps = {
-        &#39;celery.worker.components:Hub&#39;,
-        &#39;celery.worker.components:Pool&#39;,
-        &#39;celery.worker.components:Beat&#39;,
-        &#39;celery.worker.components:Timer&#39;,
-        &#39;celery.worker.components:StateDB&#39;,
-        &#39;celery.worker.components:Consumer&#39;,
-        &#39;celery.worker.autoscale:WorkerComponent&#39;,
-    }</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class WorkController:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class Blueprint(bootsteps.Blueprint):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Worker bootstep blueprint.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    name = &#39;Worker&#39;
+</span></span><span class="line"><span class="cl">    default_steps = {
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:Hub&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:Pool&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:Beat&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:Timer&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:StateDB&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.components:Consumer&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.autoscale:WorkerComponent&#39;,
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第二个Consumer蓝图在Consumer中，包括了下面一些步骤:</p>
+</div><p>第二个Consumer蓝图在Consumer中，包括了下面一些步骤:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -292,31 +285,31 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Consumer:
-    &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
-    class Blueprint(bootsteps.Blueprint):
-    &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
-
-    name = &#39;Consumer&#39;
-    default_steps = [
-        &#39;celery.worker.consumer.connection:Connection&#39;,
-        &#39;celery.worker.consumer.mingle:Mingle&#39;,
-        &#39;celery.worker.consumer.events:Events&#39;,
-        &#39;celery.worker.consumer.gossip:Gossip&#39;,
-        &#39;celery.worker.consumer.heart:Heart&#39;,
-        &#39;celery.worker.consumer.control:Control&#39;,
-        &#39;celery.worker.consumer.tasks:Tasks&#39;,
-        &#39;celery.worker.consumer.consumer:Evloop&#39;,
-        &#39;celery.worker.consumer.agent:Agent&#39;,
-    ]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Consumer:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    class Blueprint(bootsteps.Blueprint):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Consumer blueprint.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    name = &#39;Consumer&#39;
+</span></span><span class="line"><span class="cl">    default_steps = [
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.connection:Connection&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.mingle:Mingle&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.events:Events&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.gossip:Gossip&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.heart:Heart&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.control:Control&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.tasks:Tasks&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.consumer:Evloop&#39;,
+</span></span><span class="line"><span class="cl">        &#39;celery.worker.consumer.agent:Agent&#39;,
+</span></span><span class="line"><span class="cl">    ]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>创建完2个蓝图后，并没有立即启动蓝图，转而进入第二阶段创建启动worker，日志输出如下:</p>
+</div><p>创建完2个蓝图后，并没有立即启动蓝图，转而进入第二阶段创建启动worker，日志输出如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -345,43 +338,43 @@
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">...
-celery@192.168.5.28 v5.1.2 (sun-harmonics)
-
-macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
-
-[config]
-.&gt; app:         myapp:0x7fc898739ac0
-.&gt; transport:   redis://localhost:6379/0
-.&gt; results:     redis://localhost:6379/0
-.&gt; concurrency: 12 (prefork)
-.&gt; task events: OFF (enable -E to monitor tasks in this worker)
-
-[queues]
-.&gt; celery           exchange=celery(direct) key=celery
-
-
-[tasks]
-  . celery.accumulate
-  . celery.backend_cleanup
-  . celery.chain
-  . celery.chord
-  . celery.chord_unlock
-  . celery.chunks
-  . celery.group
-  . celery.map
-  . celery.starmap
-  . myapp.add
-
-...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">celery@192.168.5.28 v5.1.2 (sun-harmonics)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[config]
+</span></span><span class="line"><span class="cl">.&gt; app:         myapp:0x7fc898739ac0
+</span></span><span class="line"><span class="cl">.&gt; transport:   redis://localhost:6379/0
+</span></span><span class="line"><span class="cl">.&gt; results:     redis://localhost:6379/0
+</span></span><span class="line"><span class="cl">.&gt; concurrency: 12 (prefork)
+</span></span><span class="line"><span class="cl">.&gt; task events: OFF (enable -E to monitor tasks in this worker)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[queues]
+</span></span><span class="line"><span class="cl">.&gt; celery           exchange=celery(direct) key=celery
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[tasks]
+</span></span><span class="line"><span class="cl">  . celery.accumulate
+</span></span><span class="line"><span class="cl">  . celery.backend_cleanup
+</span></span><span class="line"><span class="cl">  . celery.chain
+</span></span><span class="line"><span class="cl">  . celery.chord
+</span></span><span class="line"><span class="cl">  . celery.chord_unlock
+</span></span><span class="line"><span class="cl">  . celery.chunks
+</span></span><span class="line"><span class="cl">  . celery.group
+</span></span><span class="line"><span class="cl">  . celery.map
+</span></span><span class="line"><span class="cl">  . celery.starmap
+</span></span><span class="line"><span class="cl">  . myapp.add
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这个过程app创建完成，把当前的配置信息，task列表都展示出来。 展示信息的模版:</p>
+</div><p>这个过程app创建完成，把当前的配置信息，task列表都展示出来。 展示信息的模版:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -401,34 +394,34 @@ macOS-10.16-x86_64-i386-64bit 2021-11-24 11:04:09
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">BANNER = &#34;&#34;&#34;\
-{hostname} v{version}
-
-{platform} {timestamp}
-
-[config]
-.&gt; app:         {app}
-.&gt; transport:   {conninfo}
-.&gt; results:     {results}
-.&gt; concurrency: {concurrency}
-.&gt; task events: {events}
-
-[queues]
-{queues}
-&#34;&#34;&#34;
-
-EXTRA_INFO_FMT = &#34;&#34;&#34;
-[tasks]
-{tasks}
-&#34;&#34;&#34;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">BANNER = &#34;&#34;&#34;\
+</span></span><span class="line"><span class="cl">{hostname} v{version}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">{platform} {timestamp}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[config]
+</span></span><span class="line"><span class="cl">.&gt; app:         {app}
+</span></span><span class="line"><span class="cl">.&gt; transport:   {conninfo}
+</span></span><span class="line"><span class="cl">.&gt; results:     {results}
+</span></span><span class="line"><span class="cl">.&gt; concurrency: {concurrency}
+</span></span><span class="line"><span class="cl">.&gt; task events: {events}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[queues]
+</span></span><span class="line"><span class="cl">{queues}
+</span></span><span class="line"><span class="cl">&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">EXTRA_INFO_FMT = &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">[tasks]
+</span></span><span class="line"><span class="cl">{tasks}
+</span></span><span class="line"><span class="cl">&#34;&#34;&#34;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>task信息来自app的tasks，在上篇我们介绍过，其实就是TaskRegistry；并发模式默认使用的<code>prefork</code>，多进程模式；然后是AMQP的消费者，queue，exchange等信息:</p>
+</div><p>task信息来自app的tasks，在上篇我们介绍过，其实就是TaskRegistry；并发模式默认使用的<code>prefork</code>，多进程模式；然后是AMQP的消费者，queue，exchange等信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -455,58 +448,58 @@ EXTRA_INFO_FMT = &#34;&#34;&#34;
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def extra_info(self):
-    if self.loglevel &lt;= logging.INFO:
-        include_builtins = self.loglevel &lt;= logging.DEBUG
-        tasklist = sep.join(
-            f&#39;  . {task}&#39; for task in sorted(self.app.tasks)
-            if (not task.startswith(int_) if not include_builtins else task)
-        )
-        return EXTRA_INFO_FMT.format(tasks=tasklist)
-            
-def startup_info(self, artlines=True):
-    app = self.app
-    concurrency = str(self.concurrency)
-    appr = &#39;{}:{:#x}&#39;.format(app.main or &#39;__main__&#39;, id(app))
-    ...
-    banner = BANNER.format(
-        app=appr,
-        hostname=safe_str(self.hostname),
-        timestamp=datetime.now().replace(microsecond=0),
-        version=VERSION_BANNER,
-        conninfo=self.app.connection().as_uri(),
-        results=self.app.backend.as_uri(),
-        concurrency=concurrency,
-        platform=safe_str(_platform.platform()),
-        events=events,
-        queues=app.amqp.queues.format(indent=0, indent_first=False),
-    ).splitlines()
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def extra_info(self):
+</span></span><span class="line"><span class="cl">    if self.loglevel &lt;= logging.INFO:
+</span></span><span class="line"><span class="cl">        include_builtins = self.loglevel &lt;= logging.DEBUG
+</span></span><span class="line"><span class="cl">        tasklist = sep.join(
+</span></span><span class="line"><span class="cl">            f&#39;  . {task}&#39; for task in sorted(self.app.tasks)
+</span></span><span class="line"><span class="cl">            if (not task.startswith(int_) if not include_builtins else task)
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">        return EXTRA_INFO_FMT.format(tasks=tasklist)
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">def startup_info(self, artlines=True):
+</span></span><span class="line"><span class="cl">    app = self.app
+</span></span><span class="line"><span class="cl">    concurrency = str(self.concurrency)
+</span></span><span class="line"><span class="cl">    appr = &#39;{}:{:#x}&#39;.format(app.main or &#39;__main__&#39;, id(app))
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    banner = BANNER.format(
+</span></span><span class="line"><span class="cl">        app=appr,
+</span></span><span class="line"><span class="cl">        hostname=safe_str(self.hostname),
+</span></span><span class="line"><span class="cl">        timestamp=datetime.now().replace(microsecond=0),
+</span></span><span class="line"><span class="cl">        version=VERSION_BANNER,
+</span></span><span class="line"><span class="cl">        conninfo=self.app.connection().as_uri(),
+</span></span><span class="line"><span class="cl">        results=self.app.backend.as_uri(),
+</span></span><span class="line"><span class="cl">        concurrency=concurrency,
+</span></span><span class="line"><span class="cl">        platform=safe_str(_platform.platform()),
+</span></span><span class="line"><span class="cl">        events=events,
+</span></span><span class="line"><span class="cl">        queues=app.amqp.queues.format(indent=0, indent_first=False),
+</span></span><span class="line"><span class="cl">    ).splitlines()
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以查看celery的进程数，确认总共创建了12个进程(进程数是通过cpu核数计算出来):</p>
+</div><p>我们可以查看celery的进程数，确认总共创建了12个进程(进程数是通过cpu核数计算出来):</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  ~ ps -ef | grep celery
-  501 72465 68316   0  3:53下午 ttys003    0:10.17 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
-  ...
-  501 72479 72465   0  3:53下午 ttys003    0:00.01 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
-  501 80540 71485   0  5:33下午 ttys005    0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn celery</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">➜  ~ ps -ef | grep celery
+</span></span><span class="line"><span class="cl">  501 72465 68316   0  3:53下午 ttys003    0:10.17 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
+</span></span><span class="line"><span class="cl">  ...
+</span></span><span class="line"><span class="cl">  501 72479 72465   0  3:53下午 ttys003    0:00.01 /Library/Frameworks/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python /Users/yoo/work/yuanmahui/python/.venv/bin/celery -A myapp worker -l DEBUG
+</span></span><span class="line"><span class="cl">  501 80540 71485   0  5:33下午 ttys005    0:00.00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn celery
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>除了默认的多进程方式，celery还支持下面这些并发模式:</p>
+</div><p>除了默认的多进程方式，celery还支持下面这些并发模式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -518,30 +511,29 @@ def startup_info(self, artlines=True):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">ALIASES = {
-    &#39;prefork&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,
-    &#39;eventlet&#39;: &#39;celery.concurrency.eventlet:TaskPool&#39;,
-    &#39;gevent&#39;: &#39;celery.concurrency.gevent:TaskPool&#39;,
-    &#39;solo&#39;: &#39;celery.concurrency.solo:TaskPool&#39;,
-    &#39;processes&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,  # XXX compat alias
-    &#39;threads&#39;: &#39;celery.concurrency.thread:TaskPool&#39;
-}
-
-def get_implementation(cls):
-    &#34;&#34;&#34;Return pool implementation by name.&#34;&#34;&#34;
-    return symbol_by_name(cls, ALIASES)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ALIASES = {
+</span></span><span class="line"><span class="cl">    &#39;prefork&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,
+</span></span><span class="line"><span class="cl">    &#39;eventlet&#39;: &#39;celery.concurrency.eventlet:TaskPool&#39;,
+</span></span><span class="line"><span class="cl">    &#39;gevent&#39;: &#39;celery.concurrency.gevent:TaskPool&#39;,
+</span></span><span class="line"><span class="cl">    &#39;solo&#39;: &#39;celery.concurrency.solo:TaskPool&#39;,
+</span></span><span class="line"><span class="cl">    &#39;processes&#39;: &#39;celery.concurrency.prefork:TaskPool&#39;,  # XXX compat alias
+</span></span><span class="line"><span class="cl">    &#39;threads&#39;: &#39;celery.concurrency.thread:TaskPool&#39;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def get_implementation(cls):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Return pool implementation by name.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    return symbol_by_name(cls, ALIASES)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>threads 需要concurrent.futures支持，也就是python3.2版本以上</p>
 </blockquote>
-
 <p>worker启动的第3阶段就是启动蓝图，日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -567,44 +559,42 @@ def get_implementation(cls):
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Hub
-[2021-11-24 15:53:13,062: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Pool
-[2021-11-24 15:53:13,410: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Worker: Starting Consumer
-[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Consumer: Starting Connection
-[2021-11-24 15:53:15,902: INFO/MainProcess] Connected to redis://localhost:6379/0
-[2021-11-24 15:53:15,902: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:15,902: DEBUG/MainProcess] | Consumer: Starting Events
-[2021-11-24 15:53:15,918: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:15,918: DEBUG/MainProcess] | Consumer: Starting Mingle
-[2021-11-24 15:53:15,918: INFO/MainProcess] mingle: searching for neighbors
-[2021-11-24 15:53:16,966: INFO/MainProcess] mingle: all alone
-[2021-11-24 15:53:16,966: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:16,967: DEBUG/MainProcess] | Consumer: Starting Tasks
-[2021-11-24 15:53:16,975: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:16,975: DEBUG/MainProcess] | Consumer: Starting Control
-[2021-11-24 15:53:16,988: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:16,988: DEBUG/MainProcess] | Consumer: Starting Gossip
-[2021-11-24 15:53:17,001: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:17,002: DEBUG/MainProcess] | Consumer: Starting Heart
-[2021-11-24 15:53:17,008: DEBUG/MainProcess] ^-- substep ok
-[2021-11-24 15:53:17,008: DEBUG/MainProcess] | Consumer: Starting event loop
-[2021-11-24 15:53:17,008: DEBUG/MainProcess] | Worker: Hub.register Pool...
-[2021-11-24 15:53:17,009: INFO/MainProcess] celery@192.168.5.28 ready.
-[2021-11-24 15:53:17,010: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Hub
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,062: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,062: DEBUG/MainProcess] | Worker: Starting Pool
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,410: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Worker: Starting Consumer
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:13,411: DEBUG/MainProcess] | Consumer: Starting Connection
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,902: INFO/MainProcess] Connected to redis://localhost:6379/0
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,902: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,902: DEBUG/MainProcess] | Consumer: Starting Events
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,918: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,918: DEBUG/MainProcess] | Consumer: Starting Mingle
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:15,918: INFO/MainProcess] mingle: searching for neighbors
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,966: INFO/MainProcess] mingle: all alone
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,966: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,967: DEBUG/MainProcess] | Consumer: Starting Tasks
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,975: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,975: DEBUG/MainProcess] | Consumer: Starting Control
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,988: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:16,988: DEBUG/MainProcess] | Consumer: Starting Gossip
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,001: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,002: DEBUG/MainProcess] | Consumer: Starting Heart
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,008: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,008: DEBUG/MainProcess] | Consumer: Starting event loop
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,008: DEBUG/MainProcess] | Worker: Hub.register Pool...
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,009: INFO/MainProcess] celery@192.168.5.28 ready.
+</span></span><span class="line"><span class="cl">[2021-11-24 15:53:17,010: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在worker启动中，我们需要关注worker蓝图的hub，pool二步(step)，consumer蓝图的connection，events，mingle，task，control，gossip，heart和Evloop七步(step)。</p>
-
+</div><p>在worker启动中，我们需要关注worker蓝图的hub，pool二步(step)，consumer蓝图的connection，events，mingle，task，control，gossip，heart和Evloop七步(step)。</p>
 <h2 id="beat模式启动流程">beat模式启动流程</h2>
-
 <p>beat模式的启动和worker模式不一样。beat模式主要是定时处理，并且beat模式不执行具体的任务，只是负责触发定时任务。其启动日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -623,33 +613,33 @@ def get_implementation(cls):
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ celery -A myapp beat -l DEBUG
-celery beat v5.0.5 (singularity) is starting.
-__    -    ... __   -        _
-LocalTime -&gt; 2021-12-05 15:40:39
-Configuration -&gt;
-    . broker -&gt; redis://localhost:6379/0
-    . loader -&gt; celery.loaders.app.AppLoader
-    . scheduler -&gt; celery.beat.PersistentScheduler
-    . db -&gt; celerybeat-schedule
-    . logfile -&gt; [stderr]@%DEBUG
-    . maxinterval -&gt; 5.00 minutes (300s)
-[2021-12-05 15:40:39,639: DEBUG/MainProcess] Setting default socket timeout to 30
-[2021-12-05 15:40:39,639: INFO/MainProcess] beat: Starting...
-[2021-12-05 15:40:39,667: DEBUG/MainProcess] Current schedule:
-&lt;ScheduleEntry: celery.backend_cleanup celery.backend_cleanup() &lt;crontab: 0 4 * * * (m/h/d/dM/MY)&gt;
-[2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Ticking with max interval-&gt;5.00 minutes
-[2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
-[2021-12-05 15:45:39,608: DEBUG/MainProcess] beat: Synchronizing schedule...
-[2021-12-05 15:45:39,609: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ celery -A myapp beat -l DEBUG
+</span></span><span class="line"><span class="cl">celery beat v5.0.5 (singularity) is starting.
+</span></span><span class="line"><span class="cl">__    -    ... __   -        _
+</span></span><span class="line"><span class="cl">LocalTime -&gt; 2021-12-05 15:40:39
+</span></span><span class="line"><span class="cl">Configuration -&gt;
+</span></span><span class="line"><span class="cl">    . broker -&gt; redis://localhost:6379/0
+</span></span><span class="line"><span class="cl">    . loader -&gt; celery.loaders.app.AppLoader
+</span></span><span class="line"><span class="cl">    . scheduler -&gt; celery.beat.PersistentScheduler
+</span></span><span class="line"><span class="cl">    . db -&gt; celerybeat-schedule
+</span></span><span class="line"><span class="cl">    . logfile -&gt; [stderr]@%DEBUG
+</span></span><span class="line"><span class="cl">    . maxinterval -&gt; 5.00 minutes (300s)
+</span></span><span class="line"><span class="cl">[2021-12-05 15:40:39,639: DEBUG/MainProcess] Setting default socket timeout to 30
+</span></span><span class="line"><span class="cl">[2021-12-05 15:40:39,639: INFO/MainProcess] beat: Starting...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:40:39,667: DEBUG/MainProcess] Current schedule:
+</span></span><span class="line"><span class="cl">&lt;ScheduleEntry: celery.backend_cleanup celery.backend_cleanup() &lt;crontab: 0 4 * * * (m/h/d/dM/MY)&gt;
+</span></span><span class="line"><span class="cl">[2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Ticking with max interval-&gt;5.00 minutes
+</span></span><span class="line"><span class="cl">[2021-12-05 15:40:39,668: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+</span></span><span class="line"><span class="cl">[2021-12-05 15:45:39,608: DEBUG/MainProcess] beat: Synchronizing schedule...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:45:39,609: DEBUG/MainProcess] beat: Waking up in 5.00 minutes.
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从日志可以看到beat模式启动也大概可以分成2个阶段。第一个阶段就是创建和启动任务调度器，由beat命令提供:</p>
+</div><p>从日志可以看到beat模式启动也大概可以分成2个阶段。第一个阶段就是创建和启动任务调度器，由beat命令提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -658,23 +648,23 @@ Configuration -&gt;
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Beat:
-    &#34;&#34;&#34;Beat as a service.&#34;&#34;&#34;
-    
-    def run(self):
-        print(str(self.colored.cyan(
-            f&#39;celery beat v{VERSION_BANNER} is starting.&#39;)))
-        self.init_loader()
-        self.set_process_title()
-        self.start_scheduler()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Beat:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Beat as a service.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def run(self):
+</span></span><span class="line"><span class="cl">        print(str(self.colored.cyan(
+</span></span><span class="line"><span class="cl">            f&#39;celery beat v{VERSION_BANNER} is starting.&#39;)))
+</span></span><span class="line"><span class="cl">        self.init_loader()
+</span></span><span class="line"><span class="cl">        self.set_process_title()
+</span></span><span class="line"><span class="cl">        self.start_scheduler()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第二个阶段，任务调度器开始时间循环:</p>
+</div><p>第二个阶段，任务调度器开始时间循环:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -704,46 +694,45 @@ Configuration -&gt;
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># celery/beat.py
-
-class Service:
-    &#34;&#34;&#34;Celery periodic task service.&#34;&#34;&#34;
-    
-    scheduler_cls = PersistentScheduler
-    
-    def start(self, embedded_process=False):
-        info(&#39;beat: Starting...&#39;)
-        debug(&#39;beat: Ticking with max interval-&gt;%s&#39;,
-              humanize_seconds(self.scheduler.max_interval))
-
-        signals.beat_init.send(sender=self)
-        if embedded_process:
-            signals.beat_embedded_init.send(sender=self)
-            platforms.set_process_title(&#39;celery beat&#39;)
-
-        try:
-            while not self._is_shutdown.is_set():
-                interval = self.scheduler.tick()
-                if interval and interval &gt; 0.0:
-                    debug(&#39;beat: Waking up %s.&#39;,
-                          humanize_seconds(interval, prefix=&#39;in &#39;))
-                    time.sleep(interval)
-                    if self.scheduler.should_sync():
-                        self.scheduler._do_sync()
-        except (KeyboardInterrupt, SystemExit):
-            self._is_shutdown.set()
-        finally:
-            self.sync()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># celery/beat.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Service:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Celery periodic task service.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    scheduler_cls = PersistentScheduler
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def start(self, embedded_process=False):
+</span></span><span class="line"><span class="cl">        info(&#39;beat: Starting...&#39;)
+</span></span><span class="line"><span class="cl">        debug(&#39;beat: Ticking with max interval-&gt;%s&#39;,
+</span></span><span class="line"><span class="cl">              humanize_seconds(self.scheduler.max_interval))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        signals.beat_init.send(sender=self)
+</span></span><span class="line"><span class="cl">        if embedded_process:
+</span></span><span class="line"><span class="cl">            signals.beat_embedded_init.send(sender=self)
+</span></span><span class="line"><span class="cl">            platforms.set_process_title(&#39;celery beat&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            while not self._is_shutdown.is_set():
+</span></span><span class="line"><span class="cl">                interval = self.scheduler.tick()
+</span></span><span class="line"><span class="cl">                if interval and interval &gt; 0.0:
+</span></span><span class="line"><span class="cl">                    debug(&#39;beat: Waking up %s.&#39;,
+</span></span><span class="line"><span class="cl">                          humanize_seconds(interval, prefix=&#39;in &#39;))
+</span></span><span class="line"><span class="cl">                    time.sleep(interval)
+</span></span><span class="line"><span class="cl">                    if self.scheduler.should_sync():
+</span></span><span class="line"><span class="cl">                        self.scheduler._do_sync()
+</span></span><span class="line"><span class="cl">        except (KeyboardInterrupt, SystemExit):
+</span></span><span class="line"><span class="cl">            self._is_shutdown.set()
+</span></span><span class="line"><span class="cl">        finally:
+</span></span><span class="line"><span class="cl">            self.sync()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的时间循环使用一个while循环去完成，每次tick都会检查是否有需要执行的任务，默认5分钟检查一次。</p>
-
+</div><p>这里的时间循环使用一个while循环去完成，每次tick都会检查是否有需要执行的任务，默认5分钟检查一次。</p>
 <p>如果到达任务执行的时刻，则是通过下面的apply_async发送到worker(远程)去执行:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -756,67 +745,65 @@ class Service:
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def apply_async(self, entry, producer=None, advance=True, **kwargs):
-    # Update time-stamps and run counts before we actually execute,
-    # so we have that done if an exception is raised (doesn&#39;t schedule
-    # forever.)
-    entry = self.reserve(entry) if advance else entry
-    task = self.app.tasks.get(entry.task)
-
-    try:
-        entry_args = [v() if isinstance(v, BeatLazyFunc) else v for v in (entry.args or [])]
-        entry_kwargs = {k: v() if isinstance(v, BeatLazyFunc) else v for k, v in entry.kwargs.items()}
-        return task.apply_async(entry_args, entry_kwargs,
-                                    producer=producer,
-                                    **entry.options)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def apply_async(self, entry, producer=None, advance=True, **kwargs):
+</span></span><span class="line"><span class="cl">    # Update time-stamps and run counts before we actually execute,
+</span></span><span class="line"><span class="cl">    # so we have that done if an exception is raised (doesn&#39;t schedule
+</span></span><span class="line"><span class="cl">    # forever.)
+</span></span><span class="line"><span class="cl">    entry = self.reserve(entry) if advance else entry
+</span></span><span class="line"><span class="cl">    task = self.app.tasks.get(entry.task)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        entry_args = [v() if isinstance(v, BeatLazyFunc) else v for v in (entry.args or [])]
+</span></span><span class="line"><span class="cl">        entry_kwargs = {k: v() if isinstance(v, BeatLazyFunc) else v for k, v in entry.kwargs.items()}
+</span></span><span class="line"><span class="cl">        return task.apply_async(entry_args, entry_kwargs,
+</span></span><span class="line"><span class="cl">                                    producer=producer,
+</span></span><span class="line"><span class="cl">                                    **entry.options)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="multi模式启动流程">multi模式启动流程</h2>
-
+</div><h2 id="multi模式启动流程">multi模式启动流程</h2>
 <p>使用multi模式启动celery，可以让celery以服务的形式在background执行任务，并且可以启动更多的celery的执行进程。使用下面命令启动2个node ，w1和w2。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ celery multi start w1 w2 -A myapp -l DEBUG
-celery multi v5.0.5 (singularity)
-&gt; Starting nodes...
-    &gt; w1@bogon: OK
-    &gt; w2@bogon: OK</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ celery multi start w1 w2 -A myapp -l DEBUG
+</span></span><span class="line"><span class="cl">celery multi v5.0.5 (singularity)
+</span></span><span class="line"><span class="cl">&gt; Starting nodes...
+</span></span><span class="line"><span class="cl">	&gt; w1@bogon: OK
+</span></span><span class="line"><span class="cl">	&gt; w2@bogon: OK
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>注意这个命令需要sudo权限</p>
 </blockquote>
-
 <p>使用下面命令监测celery服务的状态。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ celery -A myapp status
--&gt;  w1@bogon: OK
--&gt;  w2@bogon: OK
-
-2 nodes online.</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ celery -A myapp status
+</span></span><span class="line"><span class="cl">-&gt;  w1@bogon: OK
+</span></span><span class="line"><span class="cl">-&gt;  w2@bogon: OK
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">2 nodes online.
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>w1的启动流程会写入到日志，日志内容如下:</p>
+</div><p>w1的启动流程会写入到日志，日志内容如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -852,67 +839,67 @@ celery multi v5.0.5 (singularity)
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ cat /var/log/celery/w1.log
-[2021-12-05 15:59:11,161: DEBUG/MainProcess] | Worker: Preparing bootsteps.
-[2021-12-05 15:59:11,162: DEBUG/MainProcess] | Worker: Building graph...
-[2021-12-05 15:59:11,163: DEBUG/MainProcess] | Worker: New boot order: {Beat, StateDB, Timer, Hub, Pool, Autoscaler, Consumer}
-[2021-12-05 15:59:11,175: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
-[2021-12-05 15:59:11,175: DEBUG/MainProcess] | Consumer: Building graph...
-[2021-12-05 15:59:11,206: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Agent, Gossip, Heart, event loop}
-[2021-12-05 15:59:11,219: DEBUG/MainProcess] | Worker: Starting Hub
-[2021-12-05 15:59:11,219: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:11,220: DEBUG/MainProcess] | Worker: Starting Pool
-[2021-12-05 15:59:11,517: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:11,518: DEBUG/MainProcess] | Worker: Starting Consumer
-[2021-12-05 15:59:11,518: DEBUG/MainProcess] | Consumer: Starting Connection
-[2021-12-05 15:59:11,549: INFO/MainProcess] Connected to redis://localhost:6379/0
-[2021-12-05 15:59:11,549: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:11,549: DEBUG/MainProcess] | Consumer: Starting Events
-[2021-12-05 15:59:11,561: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:11,561: DEBUG/MainProcess] | Consumer: Starting Mingle
-[2021-12-05 15:59:11,562: INFO/MainProcess] mingle: searching for neighbors
-[2021-12-05 15:59:12,602: INFO/MainProcess] mingle: all alone
-[2021-12-05 15:59:12,602: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:12,603: DEBUG/MainProcess] | Consumer: Starting Tasks
-[2021-12-05 15:59:12,609: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:12,609: DEBUG/MainProcess] | Consumer: Starting Control
-[2021-12-05 15:59:12,621: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:12,622: DEBUG/MainProcess] | Consumer: Starting Gossip
-[2021-12-05 15:59:12,632: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:12,633: DEBUG/MainProcess] | Consumer: Starting Heart
-[2021-12-05 15:59:12,638: DEBUG/MainProcess] ^-- substep ok
-[2021-12-05 15:59:12,638: DEBUG/MainProcess] | Consumer: Starting event loop
-[2021-12-05 15:59:12,638: DEBUG/MainProcess] | Worker: Hub.register Pool...
-[2021-12-05 15:59:12,639: INFO/MainProcess] w1@bogon ready.
-[2021-12-05 15:59:12,639: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
-[2021-12-05 15:59:18,039: DEBUG/MainProcess] pidbox received method hello(from_node=&#39;w2@bogon&#39;, revoked={}) [reply_to:{&#39;exchange&#39;: &#39;reply.celery.pidbox&#39;, &#39;routing_key&#39;: &#39;196c0b68-a329-3e09-a1cf-54abb5e057db&#39;} ticket:e640e757-9514-436c-8548-0ddcbe15f9a4]
-[2021-12-05 15:59:18,040: INFO/MainProcess] sync with w2@bogon
-[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ cat /var/log/celery/w1.log
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,161: DEBUG/MainProcess] | Worker: Preparing bootsteps.
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,162: DEBUG/MainProcess] | Worker: Building graph...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,163: DEBUG/MainProcess] | Worker: New boot order: {Beat, StateDB, Timer, Hub, Pool, Autoscaler, Consumer}
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,175: DEBUG/MainProcess] | Consumer: Preparing bootsteps.
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,175: DEBUG/MainProcess] | Consumer: Building graph...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,206: DEBUG/MainProcess] | Consumer: New boot order: {Connection, Events, Mingle, Tasks, Control, Agent, Gossip, Heart, event loop}
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,219: DEBUG/MainProcess] | Worker: Starting Hub
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,219: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,220: DEBUG/MainProcess] | Worker: Starting Pool
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,517: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,518: DEBUG/MainProcess] | Worker: Starting Consumer
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,518: DEBUG/MainProcess] | Consumer: Starting Connection
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,549: INFO/MainProcess] Connected to redis://localhost:6379/0
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,549: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,549: DEBUG/MainProcess] | Consumer: Starting Events
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,561: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,561: DEBUG/MainProcess] | Consumer: Starting Mingle
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:11,562: INFO/MainProcess] mingle: searching for neighbors
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,602: INFO/MainProcess] mingle: all alone
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,602: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,603: DEBUG/MainProcess] | Consumer: Starting Tasks
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,609: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,609: DEBUG/MainProcess] | Consumer: Starting Control
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,621: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,622: DEBUG/MainProcess] | Consumer: Starting Gossip
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,632: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,633: DEBUG/MainProcess] | Consumer: Starting Heart
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,638: DEBUG/MainProcess] ^-- substep ok
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,638: DEBUG/MainProcess] | Consumer: Starting event loop
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,638: DEBUG/MainProcess] | Worker: Hub.register Pool...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,639: INFO/MainProcess] w1@bogon ready.
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:12,639: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:18,039: DEBUG/MainProcess] pidbox received method hello(from_node=&#39;w2@bogon&#39;, revoked={}) [reply_to:{&#39;exchange&#39;: &#39;reply.celery.pidbox&#39;, &#39;routing_key&#39;: &#39;196c0b68-a329-3e09-a1cf-54abb5e057db&#39;} ticket:e640e757-9514-436c-8548-0ddcbe15f9a4]
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:18,040: INFO/MainProcess] sync with w2@bogon
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:19,088: DEBUG/MainProcess] w2@bogon joined the party
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>w1的启动方式和worker模式基本一致，特别的地方在日志的最后部分显示w2启动完成后，w1和w2进行了互联。对应可以在w2的日志中看到w1的连接信息:</p>
+</div><p>w1的启动方式和worker模式基本一致，特别的地方在日志的最后部分显示w2启动完成后，w1和w2进行了互联。对应可以在w2的日志中看到w1的连接信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ cat /var/log/celery/w2.log
-...
-[2021-12-05 15:59:19,089: INFO/MainProcess] w2@bogon ready.
-[2021-12-05 15:59:19,089: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
-[2021-12-05 15:59:20,663: DEBUG/MainProcess] w1@bogon joined the party</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ cat /var/log/celery/w2.log
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:19,089: INFO/MainProcess] w2@bogon ready.
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:19,089: DEBUG/MainProcess] basic.qos: prefetch_count-&gt;48
+</span></span><span class="line"><span class="cl">[2021-12-05 15:59:20,663: DEBUG/MainProcess] w1@bogon joined the party
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>所以multi模式的特点就是新增加了Cluster和Node的概念，用来管理所有的worker，主要代码如下:</p>
+</div><p>所以multi模式的特点就是新增加了Cluster和Node的概念，用来管理所有的worker，主要代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -931,73 +918,70 @@ celery multi v5.0.5 (singularity)
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@splash
-@using_cluster
-def start(self, cluster):
-    self.note(&#39;&gt; Starting nodes...&#39;)
-    return int(any(cluster.start()))
-
-def start(self):
-    return [self.start_node(node) for node in self]
-
-def start_node(self, node):
-    maybe_call(self.on_node_start, node)
-    retcode = node.start(
-            self.env,
-            on_spawn=self.on_child_spawn,
-            on_signalled=self.on_child_signalled,
-            on_failure=self.on_child_failure,
-        )
-    maybe_call(self.on_node_status, node, retcode)
-    return retcode</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@splash
+</span></span><span class="line"><span class="cl">@using_cluster
+</span></span><span class="line"><span class="cl">def start(self, cluster):
+</span></span><span class="line"><span class="cl">    self.note(&#39;&gt; Starting nodes...&#39;)
+</span></span><span class="line"><span class="cl">    return int(any(cluster.start()))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def start(self):
+</span></span><span class="line"><span class="cl">    return [self.start_node(node) for node in self]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def start_node(self, node):
+</span></span><span class="line"><span class="cl">    maybe_call(self.on_node_start, node)
+</span></span><span class="line"><span class="cl">    retcode = node.start(
+</span></span><span class="line"><span class="cl">            self.env,
+</span></span><span class="line"><span class="cl">            on_spawn=self.on_child_spawn,
+</span></span><span class="line"><span class="cl">            on_signalled=self.on_child_signalled,
+</span></span><span class="line"><span class="cl">            on_failure=self.on_child_failure,
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">    maybe_call(self.on_node_status, node, retcode)
+</span></span><span class="line"><span class="cl">    return retcode
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Node直接同步是在Gossip的step中:</p>
+</div><p>Node直接同步是在Gossip的step中:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Gossip(bootsteps.ConsumerStep):
-    ...
-    def on_node_join(self, worker):
-        debug(&#39;%s joined the party&#39;, worker.hostname)
-        self._call_handlers(self.on.node_join, worker)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Gossip(bootsteps.ConsumerStep):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    def on_node_join(self, worker):
+</span></span><span class="line"><span class="cl">        debug(&#39;%s joined the party&#39;, worker.hostname)
+</span></span><span class="line"><span class="cl">        self._call_handlers(self.on.node_join, worker)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>完成测试后，可以使用命令 <code>celery multi stop w1 w2</code> 关闭node</p>
 </blockquote>
-
 <h2 id="worker接收任务流程">worker接收任务流程</h2>
-
 <p>worker接收任务并执行的日志如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
-[2021-11-24 21:33:50,535: DEBUG/MainProcess] TaskPool: Apply &lt;function _trace_task_ret at 0x7fe6086ac280&gt; (args:(&#39;myapp.add&#39;, &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, {&#39;lang&#39;: &#39;py&#39;, &#39;task&#39;: &#39;myapp.add&#39;, &#39;id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;shadow&#39;: None, &#39;eta&#39;: None, &#39;expires&#39;: None, &#39;group&#39;: None, &#39;group_index&#39;: None, &#39;retries&#39;: 0, &#39;timelimit&#39;: [None, None], &#39;root_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;parent_id&#39;: None, &#39;argsrepr&#39;: &#39;(16, 16)&#39;, &#39;kwargsrepr&#39;: &#39;{}&#39;, &#39;origin&#39;: &#39;gen83110@192.168.5.28&#39;, &#39;reply_to&#39;: &#39;63862dbb-9d82-3bdd-b7fb-03580941362a&#39;, &#39;correlation_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;hostname&#39;: &#39;celery@192.168.5.28&#39;, &#39;delivery_info&#39;: {&#39;exchange&#39;: &#39;&#39;, &#39;routing_key&#39;: &#39;celery&#39;, &#39;priority&#39;: 0, &#39;redelivered&#39;: None}, &#39;args&#39;: [16, 16], &#39;kwargs&#39;: {}}, b&#39;[[16, 16], {}, {&#34;callbacks&#34;: null, &#34;errbacks&#34;: null, &#34;chain&#34;: null, &#34;chord&#34;: null}]&#39;, &#39;application/json&#39;, &#39;utf-8&#39;) kwargs:{})
-[2021-11-24 21:33:50,536: DEBUG/MainProcess] Task accepted: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] pid:83086
-[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[2021-11-24 21:33:50,535: INFO/MainProcess] Received task: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2]
+</span></span><span class="line"><span class="cl">[2021-11-24 21:33:50,535: DEBUG/MainProcess] TaskPool: Apply &lt;function _trace_task_ret at 0x7fe6086ac280&gt; (args:(&#39;myapp.add&#39;, &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, {&#39;lang&#39;: &#39;py&#39;, &#39;task&#39;: &#39;myapp.add&#39;, &#39;id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;shadow&#39;: None, &#39;eta&#39;: None, &#39;expires&#39;: None, &#39;group&#39;: None, &#39;group_index&#39;: None, &#39;retries&#39;: 0, &#39;timelimit&#39;: [None, None], &#39;root_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;parent_id&#39;: None, &#39;argsrepr&#39;: &#39;(16, 16)&#39;, &#39;kwargsrepr&#39;: &#39;{}&#39;, &#39;origin&#39;: &#39;gen83110@192.168.5.28&#39;, &#39;reply_to&#39;: &#39;63862dbb-9d82-3bdd-b7fb-03580941362a&#39;, &#39;correlation_id&#39;: &#39;e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2&#39;, &#39;hostname&#39;: &#39;celery@192.168.5.28&#39;, &#39;delivery_info&#39;: {&#39;exchange&#39;: &#39;&#39;, &#39;routing_key&#39;: &#39;celery&#39;, &#39;priority&#39;: 0, &#39;redelivered&#39;: None}, &#39;args&#39;: [16, 16], &#39;kwargs&#39;: {}}, b&#39;[[16, 16], {}, {&#34;callbacks&#34;: null, &#34;errbacks&#34;: null, &#34;chain&#34;: null, &#34;chord&#34;: null}]&#39;, &#39;application/json&#39;, &#39;utf-8&#39;) kwargs:{})
+</span></span><span class="line"><span class="cl">[2021-11-24 21:33:50,536: DEBUG/MainProcess] Task accepted: myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] pid:83086
+</span></span><span class="line"><span class="cl">[2021-11-24 21:33:50,537: INFO/ForkPoolWorker-8] Task myapp.add[e9bb4aa0-8280-443f-a5ed-3deb0a0b99c2] succeeded in 0.000271957000000711s: 32
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从日志信息可以看到，主进程MainProcess收到task执行的请求，然后从任务池中获取到任务，然后调度任务到一个子进程ForkPoolWorker-9中执行。</p>
-
+</div><p>从日志信息可以看到，主进程MainProcess收到task执行的请求，然后从任务池中获取到任务，然后调度任务到一个子进程ForkPoolWorker-9中执行。</p>
 <p>任务的接收是在默认的策略函数中开始:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1012,29 +996,29 @@ def start_node(self, node):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># celery/worker/strategy.py
-
-def default(task, app, consumer,
-            info=logger.info, error=logger.error, task_reserved=task_reserved,
-            to_system_tz=timezone.to_system, bytes=bytes,
-            proto1_to_proto2=proto1_to_proto2):
-    &#34;&#34;&#34;Default task execution strategy.
-
-    Note:
-        Strategies are here as an optimization, so sadly
-        it&#39;s not very easy to override.
-    &#34;&#34;&#34;
-    ...
-    info(&#39;Received task: %s&#39;, req)
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># celery/worker/strategy.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def default(task, app, consumer,
+</span></span><span class="line"><span class="cl">            info=logger.info, error=logger.error, task_reserved=task_reserved,
+</span></span><span class="line"><span class="cl">            to_system_tz=timezone.to_system, bytes=bytes,
+</span></span><span class="line"><span class="cl">            proto1_to_proto2=proto1_to_proto2):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Default task execution strategy.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Note:
+</span></span><span class="line"><span class="cl">        Strategies are here as an optimization, so sadly
+</span></span><span class="line"><span class="cl">        it&#39;s not very easy to override.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    info(&#39;Received task: %s&#39;, req)
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>任务池是由并发模型提供:</p>
+</div><p>任务池是由并发模型提供:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1053,35 +1037,32 @@ def default(task, app, consumer,
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># celery/concurrency/base.py
-
-def apply_async(self, target, args=None, kwargs=None, **options):
-    &#34;&#34;&#34;Equivalent of the :func:`apply` built-in function.
-
-    Callbacks should optimally return as soon as possible since
-    otherwise the thread which handles the result will get blocked.
-    &#34;&#34;&#34;
-    kwargs = {} if not kwargs else kwargs
-    args = [] if not args else args
-    if self._does_debug:
-        logger.debug(&#39;TaskPool: Apply %s (args:%s kwargs:%s)&#39;,
-                     target, truncate(safe_repr(args), 1024),
-                     truncate(safe_repr(kwargs), 1024))
-
-    return self.on_apply(target, args, kwargs,
-                         waitforslot=self.putlocks,
-                         callbacks_propagate=self.callbacks_propagate,
-                         **options)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="c1"># celery/concurrency/base.py
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">apply_async</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">kwargs</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">options</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s2">&#34;&#34;&#34;Equivalent of the :func:`apply` built-in function.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">    Callbacks should optimally return as soon as possible since
+</span></span></span><span class="line"><span class="cl"><span class="s2">    otherwise the thread which handles the result will get blocked.
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">kwargs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">kwargs</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">kwargs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">args</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">_does_debug</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="nf">debug</span><span class="p">(</span><span class="s1">&#39;TaskPool: Apply %s (args:%s kwargs:%s)&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                     </span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="nf">truncate</span><span class="p">(</span><span class="nf">safe_repr</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="w"> </span><span class="mi">1024</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                     </span><span class="nf">truncate</span><span class="p">(</span><span class="nf">safe_repr</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span><span class="w"> </span><span class="mi">1024</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">on_apply</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">kwargs</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                         </span><span class="n">waitforslot</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">putlocks</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                         </span><span class="n">callbacks_propagate</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">callbacks_propagate</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                         </span><span class="o">**</span><span class="n">options</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="小结">小结</h2>
-
+</div><h2 id="小结">小结</h2>
 <p>我们通过对worker，beat和multi三种启动模式的日志跟踪分析，对celery的启动流程和模块功能有更进一步的了解。三个模式都需要创建app，所以启动时候通过参数<code>-A myapp</code>参数，由app创建/查找各种task。不同的地方首先是beat和worker/multi不同，beat实际上就是一个生产者，通过配置定时的产生任务，然后发送给worker/multi具体执行。其次不同的是worker和multi的运作方式，multi以服务方式运行，并且可以跨机器。在worker模式下，本机创建多个工作进程，是一个多进程模型。multi则是多个机器Node形成一个Cluster集群，任务在集群内部进行调度。celery的分布式模型大概可以如下图:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/celery-model.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/celery-model.png" alt=""></p>
 <p>同时通过运行日志分析，我们可以知道celery的启动过程通过不同的Blueprint的不同Step过程实现；定时功能主要在beat和schedule模块实现；而分布式功能主要在concurrency模块，这样对各个模块的主体功能分工会有更清晰的认知。</p>
 
     </div>
@@ -1122,11 +1103,11 @@ def apply_async(self, target, args=None, kwargs=None, **options):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-12-05 19:54:18 \x2b0800 CST',
+        id: '2021-12-05 19:54:18 \u002b0800 CST',
         title: 'Celery 源码解析 - 6',
         link: decodeURI(location.href),
         desc: '本章我们跟着日志一起看看一次完整的任务调度流程，从另外一个角度了解启动过程中celery都做了什么。 Celery是一款非常简单、灵活、可靠的',
@@ -1140,6 +1121,10 @@ def apply_async(self, target, args=None, kwargs=None, **options):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1167,13 +1152,10 @@ def apply_async(self, target, args=None, kwargs=None, **options):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1184,7 +1166,10 @@ def apply_async(self, target, args=None, kwargs=None, **options):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

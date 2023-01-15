@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/argparse/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="python argparse 源码阅读" />
 <meta property="og:description" content="http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/argparse/" />
-<meta property="article:published_time" content="2021-02-11T21:36:27&#43;08:00"/>
-<meta property="article:modified_time" content="2021-02-11T21:36:27&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/argparse/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-02-11T21:36:27+08:00" />
+<meta property="article:modified_time" content="2021-02-11T21:36:27+08:00" />
 
 <meta itemprop="name" content="python argparse 源码阅读">
-<meta itemprop="description" content="http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12">
-
-
-<meta itemprop="datePublished" content="2021-02-11T21:36:27&#43;08:00" />
-<meta itemprop="dateModified" content="2021-02-11T21:36:27&#43;08:00" />
-<meta itemprop="wordCount" content="5090">
-
-
-
-<meta itemprop="keywords" content="cli,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12"><meta itemprop="datePublished" content="2021-02-11T21:36:27+08:00" />
+<meta itemprop="dateModified" content="2021-02-11T21:36:27+08:00" />
+<meta itemprop="wordCount" content="5063">
+<meta itemprop="keywords" content="cli,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="python argparse 源码阅读"/>
 <meta name="twitter:description" content="http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,39 +144,35 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#sys-argv-简介">sys.argv 简介</a></li>
-<li><a href="#getopt-解析">getopt 解析</a></li>
-<li><a href="#optparse-解析">optparse 解析</a>
-<ul>
-<li><a href="#optparse-模块结构">optparse 模块结构</a></li>
-<li><a href="#optparse-实现">optparse 实现</a></li>
-</ul></li>
-<li><a href="#argparse">argparse</a>
-<ul>
-<li><a href="#argparse-模块结构">argparse 模块结构</a></li>
-<li><a href="#argparse-使用示例">argparse 使用示例</a></li>
-<li><a href="#argparse-action实现">argparse action实现</a></li>
-</ul></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#sysargv-简介">sys.argv 简介</a></li>
+    <li><a href="#getopt-解析">getopt 解析</a></li>
+    <li><a href="#optparse-解析">optparse 解析</a>
+      <ul>
+        <li><a href="#optparse-模块结构">optparse 模块结构</a></li>
+        <li><a href="#optparse-实现">optparse 实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#argparse">argparse</a>
+      <ul>
+        <li><a href="#argparse-模块结构">argparse 模块结构</a></li>
+        <li><a href="#argparse-使用示例">argparse 使用示例</a></li>
+        <li><a href="#argparse-action实现">argparse action实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p><code>http.server</code> 可以使用 <code>-h</code> 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。</p>
-
+      <p><code>http.server</code> 可以使用 <code>-h</code> 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。</p>
 <p>先看看展示:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -186,117 +185,120 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python -m http.server -h
-usage: server.py [-h] [--cgi] [--bind ADDRESS] [--directory DIRECTORY] [port]
-
-positional arguments:
-  port                  Specify alternate port [default: 8000]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --cgi                 Run as CGI Server
-  --bind ADDRESS, -b ADDRESS
-                        Specify alternate bind address [default: all interfaces]
-  --directory DIRECTORY, -d DIRECTORY
-                        Specify alternative directory [default:current directory]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python -m http.server -h
+</span></span><span class="line"><span class="cl">usage: server.py [-h] [--cgi] [--bind ADDRESS] [--directory DIRECTORY] [port]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">positional arguments:
+</span></span><span class="line"><span class="cl">  port                  Specify alternate port [default: 8000]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">optional arguments:
+</span></span><span class="line"><span class="cl">  -h, --help            show this help message and exit
+</span></span><span class="line"><span class="cl">  --cgi                 Run as CGI Server
+</span></span><span class="line"><span class="cl">  --bind ADDRESS, -b ADDRESS
+</span></span><span class="line"><span class="cl">                        Specify alternate bind address [default: all interfaces]
+</span></span><span class="line"><span class="cl">  --directory DIRECTORY, -d DIRECTORY
+</span></span><span class="line"><span class="cl">                        Specify alternative directory [default:current directory]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从 <code>http.server</code> 模块帮助信息中可以看到：
-* usage 提供了使用的完整的使用示例
-* 位置参数 <strong>port</strong> , 可以自定义服务端口， 默认值 <strong>8000</strong>
-* 可选参数，叫关键字参数可能更合适些:
-    - -h/&ndash;help 展示帮助信息
-    - &ndash;cgi 使用cgi服务，看起来是个bool值
-    - &ndash;bind/-b 服务ip地址，默认是所有地址
-    - &ndash;directory/-d 服务文件目录，默认当前目录</p>
-
+</div><p>从 <code>http.server</code> 模块帮助信息中可以看到：</p>
+<ul>
+<li>usage 提供了使用的完整的使用示例</li>
+<li>位置参数 <strong>port</strong> , 可以自定义服务端口， 默认值 <strong>8000</strong></li>
+<li>可选参数，叫关键字参数可能更合适些:
+<ul>
+<li>-h/&ndash;help 展示帮助信息</li>
+<li>&ndash;cgi 使用cgi服务，看起来是个bool值</li>
+<li>&ndash;bind/-b 服务ip地址，默认是所有地址</li>
+<li>&ndash;directory/-d 服务文件目录，默认当前目录</li>
+</ul>
+</li>
+</ul>
 <p>我们把上面的描述换个方式，使用python函数定义，这样就很容易理解位置参数和关键字参数了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def http_server(port, cgi=False, bind=&#34;all interfaces&#34;, directory=&#34;current directory&#34;):
-    pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def http_server(port, cgi=False, bind=&#34;all interfaces&#34;, directory=&#34;current directory&#34;):
+</span></span><span class="line"><span class="cl">    pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>函数和命令行参数定义有所不同：
-* 关键字参数有长短选项的写法，<code>-b</code>和<code>--bind</code>都可以
-* port会限定数值是int类似型
-* usage信息和help信息是如何自动生成的</p>
-
-<p>带着这几个疑问，我们去python源码中查找答案。本文分下面几个部分:
-* sys.argv 简介
-* getopt 解析
-* optparse 解析
-* argparser 解析
-* 小结
-* 小技巧</p>
-
-<h2 id="sys-argv-简介">sys.argv 简介</h2>
-
+</div><p>函数和命令行参数定义有所不同：</p>
+<ul>
+<li>关键字参数有长短选项的写法，<code>-b</code>和<code>--bind</code>都可以</li>
+<li>port会限定数值是int类似型</li>
+<li>usage信息和help信息是如何自动生成的</li>
+</ul>
+<p>带着这几个疑问，我们去python源码中查找答案。本文分下面几个部分:</p>
+<ul>
+<li>sys.argv 简介</li>
+<li>getopt 解析</li>
+<li>optparse 解析</li>
+<li>argparser 解析</li>
+<li>小结</li>
+<li>小技巧</li>
+</ul>
+<h2 id="sysargv-简介">sys.argv 简介</h2>
 <p>编写测试脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># simple.py
-
-import sys
-
-if __name__ == &#34;__main__&#34;:
-    print(type(sys.argv), sys.argv)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># simple.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import sys
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if __name__ == &#34;__main__&#34;:
+</span></span><span class="line"><span class="cl">    print(type(sys.argv), sys.argv)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用下面的命令运行测试脚本</p>
+</div><p>使用下面的命令运行测试脚本</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python simple.py 1 a bbb c=2 d@3
-&lt;class &#39;list&#39;&gt; [&#39;simple.py&#39;, &#39;1&#39;, &#39;a&#39;, &#39;bbb&#39;, &#39;c=2&#39;, &#39;d@3&#39;]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python simple.py 1 a bbb c=2 d@3
+</span></span><span class="line"><span class="cl">&lt;class &#39;list&#39;&gt; [&#39;simple.py&#39;, &#39;1&#39;, &#39;a&#39;, &#39;bbb&#39;, &#39;c=2&#39;, &#39;d@3&#39;]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到 <code>sys.argv</code> 是一个列表，其中包含了被传递给 Python 脚本的命令行参数， argv[0] 为脚本的名称。这是命令工具的起点，所有命令行工具从这里派生扩展。</p>
-
+</div><p>可以看到 <code>sys.argv</code> 是一个列表，其中包含了被传递给 Python 脚本的命令行参数， argv[0] 为脚本的名称。这是命令工具的起点，所有命令行工具从这里派生扩展。</p>
 <h2 id="getopt-解析">getopt 解析</h2>
-
 <p>我在上个例子中使用了 <code>d@3</code> , 这是搞笑的。命令行参数有约定的惯例和规范，在unix-shell中由getopt函数实现，具体可以看参考链接中的wiki部分。python中也提供了 <code>getopt</code> 实现。先看看如何使用，短选项使用单个 <code>-</code> 前缀:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import getopt
-args = &#39;-a -b -cfoo -d bar a1 a2&#39;.split()
-print(args)  # [&#39;-a&#39;, &#39;-b&#39;, &#39;-cfoo&#39;, &#39;-d&#39;, &#39;bar&#39;, &#39;a1&#39;, &#39;a2&#39;]
-
-optlist, args = getopt.getopt(args, &#39;abc:d:&#39;)
-print(optlist)  # [(&#39;-a&#39;, &#39;&#39;), (&#39;-b&#39;, &#39;&#39;), (&#39;-c&#39;, &#39;foo&#39;), (&#39;-d&#39;, &#39;bar&#39;)]
-print(args)  # [&#39;a1&#39;, &#39;a2&#39;]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import getopt
+</span></span><span class="line"><span class="cl">args = &#39;-a -b -cfoo -d bar a1 a2&#39;.split()
+</span></span><span class="line"><span class="cl">print(args)  # [&#39;-a&#39;, &#39;-b&#39;, &#39;-cfoo&#39;, &#39;-d&#39;, &#39;bar&#39;, &#39;a1&#39;, &#39;a2&#39;]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">optlist, args = getopt.getopt(args, &#39;abc:d:&#39;)
+</span></span><span class="line"><span class="cl">print(optlist)  # [(&#39;-a&#39;, &#39;&#39;), (&#39;-b&#39;, &#39;&#39;), (&#39;-c&#39;, &#39;foo&#39;), (&#39;-d&#39;, &#39;bar&#39;)]
+</span></span><span class="line"><span class="cl">print(args)  # [&#39;a1&#39;, &#39;a2&#39;]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>长选项使用两个<code>--</code> 前缀:</p>
+</div><p>长选项使用两个<code>--</code> 前缀:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -304,24 +306,23 @@ print(args)  # [&#39;a1&#39;, &#39;a2&#39;]</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">s = &#39;--condition=foo --testing --output-file abc.def -x a1 a2&#39;
-args = s.split()
-print(args)  # [&#39;--condition=foo&#39;, &#39;--testing&#39;, &#39;--output-file&#39;, &#39;abc.def&#39;, &#39;-x&#39;, &#39;a1&#39;, &#39;a2&#39;]
-
-optlist, args = getopt.getopt(args, &#39;x&#39;, [
-    &#39;condition=&#39;, &#39;output-file=&#39;, &#39;testing&#39;])
-print(optlist)  # [(&#39;--condition&#39;, &#39;foo&#39;), (&#39;--testing&#39;, &#39;&#39;), (&#39;--output-file&#39;, &#39;abc.def&#39;), (&#39;-x&#39;, &#39;&#39;)]
-print(args)  # [&#39;a1&#39;, &#39;a2&#39;]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">s = &#39;--condition=foo --testing --output-file abc.def -x a1 a2&#39;
+</span></span><span class="line"><span class="cl">args = s.split()
+</span></span><span class="line"><span class="cl">print(args)  # [&#39;--condition=foo&#39;, &#39;--testing&#39;, &#39;--output-file&#39;, &#39;abc.def&#39;, &#39;-x&#39;, &#39;a1&#39;, &#39;a2&#39;]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">optlist, args = getopt.getopt(args, &#39;x&#39;, [
+</span></span><span class="line"><span class="cl">    &#39;condition=&#39;, &#39;output-file=&#39;, &#39;testing&#39;])
+</span></span><span class="line"><span class="cl">print(optlist)  # [(&#39;--condition&#39;, &#39;foo&#39;), (&#39;--testing&#39;, &#39;&#39;), (&#39;--output-file&#39;, &#39;abc.def&#39;), (&#39;-x&#39;, &#39;&#39;)]
+</span></span><span class="line"><span class="cl">print(args)  # [&#39;a1&#39;, &#39;a2&#39;]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p><code>getopt</code>返关键字参数optlist和位置参数args。 关键字有长关键字 <code>--connddition</code> 和短关键字 <code>-c</code> 两个名称，为什么会有长短两种方式，我的理解是长关键字语义更明确，单独的字母 <strong>c</strong> 很难知道代表的含义，而使用单词 <strong>condditon</strong> 则一目了然; 短关键字使用更便捷，只需要敲一个字母，还可以多个参数合并，比如 <code>ls -lah</code>。</p>
-
+</div><p><code>getopt</code>返关键字参数optlist和位置参数args。 关键字有长关键字 <code>--connddition</code> 和短关键字 <code>-c</code> 两个名称，为什么会有长短两种方式，我的理解是长关键字语义更明确，单独的字母 <strong>c</strong> 很难知道代表的含义，而使用单词 <strong>condditon</strong> 则一目了然; 短关键字使用更便捷，只需要敲一个字母，还可以多个参数合并，比如 <code>ls -lah</code>。</p>
 <p>在 <code>quopri</code> 中演示了如何使用 <code>getopt</code> 实现命令行参数解析:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -341,34 +342,34 @@ print(args)  # [&#39;a1&#39;, &#39;a2&#39;]</pre></td></tr></table>
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># quopri
-
-import getopt
-try:
-    opts, args = getopt.getopt(sys.argv[1:], &#39;td&#39;)
-except getopt.error as msg:
-    sys.stdout = sys.stderr
-    print(msg)
-    print(&#34;usage: quopri [-t | -d] [file] ...&#34;)  # 帮助信息
-    print(&#34;-t: quote tabs&#34;)
-    print(&#34;-d: decode; default encode&#34;)
-    sys.exit(2)
-...
-
-for o, a in opts:  # 解析关键字参数
-    if o == &#39;-t&#39;: tabs = 1
-    if o == &#39;-d&#39;: deco = 1
-
-for file in args:  # 解析位置参数
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># quopri
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import getopt
+</span></span><span class="line"><span class="cl">try:
+</span></span><span class="line"><span class="cl">    opts, args = getopt.getopt(sys.argv[1:], &#39;td&#39;)
+</span></span><span class="line"><span class="cl">except getopt.error as msg:
+</span></span><span class="line"><span class="cl">    sys.stdout = sys.stderr
+</span></span><span class="line"><span class="cl">    print(msg)
+</span></span><span class="line"><span class="cl">    print(&#34;usage: quopri [-t | -d] [file] ...&#34;)  # 帮助信息
+</span></span><span class="line"><span class="cl">    print(&#34;-t: quote tabs&#34;)
+</span></span><span class="line"><span class="cl">    print(&#34;-d: decode; default encode&#34;)
+</span></span><span class="line"><span class="cl">    sys.exit(2)
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">for o, a in opts:  # 解析关键字参数
+</span></span><span class="line"><span class="cl">    if o == &#39;-t&#39;: tabs = 1
+</span></span><span class="line"><span class="cl">    if o == &#39;-d&#39;: deco = 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">for file in args:  # 解析位置参数
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>主要的<code>getopt</code>函数代码如下:</p>
+</div><p>主要的<code>getopt</code>函数代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -380,32 +381,31 @@ for file in args:  # 解析位置参数
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># getopt 
-
-def getopt(args, shortopts, longopts = []): 
-    opts = []
-    longopts = list(longopts)
-    while args and args[0].startswith(&#39;-&#39;) and args[0] != &#39;-&#39;: 
-        ...
-        if args[0].startswith(&#39;--&#39;):  
-            opts, args = do_longs(opts, args[0][2:], longopts, args[1:])
-        else:
-            opts, args = do_shorts(opts, args[0][1:], shortopts, args[1:])  # args[0][1:] 移除前缀
-    return opts, args</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># getopt 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def getopt(args, shortopts, longopts = []): 
+</span></span><span class="line"><span class="cl">    opts = []
+</span></span><span class="line"><span class="cl">    longopts = list(longopts)
+</span></span><span class="line"><span class="cl">    while args and args[0].startswith(&#39;-&#39;) and args[0] != &#39;-&#39;: 
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        if args[0].startswith(&#39;--&#39;):  
+</span></span><span class="line"><span class="cl">            opts, args = do_longs(opts, args[0][2:], longopts, args[1:])
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            opts, args = do_shorts(opts, args[0][1:], shortopts, args[1:])  # args[0][1:] 移除前缀
+</span></span><span class="line"><span class="cl">    return opts, args
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>3个参数:待解析参数，短参数定义，长参数定义。 短参数定义使用字符串，比如<code>abc:d:</code>；长参数使用数组，比如: <code>['condition=', 'output-file=', 'testing']</code></li>
 <li>使用while循环持续的解析关键字参数，关键字参数解析完成后剩余的就是位置参数args</li>
 <li>长参数使用do_longs解析，短参数使用do_shorts解析</li>
 </ul>
-
 <p>短参数的解析方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -425,44 +425,43 @@ def getopt(args, shortopts, longopts = []):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def do_shorts(opts, optstring, shortopts, args):
-    while optstring != &#39;&#39;:  # while循环
-        opt, optstring = optstring[0], optstring[1:]  # 截取参数关键字和剩余字符
-        if short_has_arg(opt, shortopts):
-            if optstring == &#39;&#39;:
-                if not args:
-                    raise GetoptError(_(&#39;option -%s requires argument&#39;) % opt,
-                                      opt)
-                optstring, args = args[0], args[1:]  # 贪婪后面的参数 &#39;-d&#39;, &#39;bar&#39;
-            optarg, optstring = optstring, &#39;&#39;  # 取甚于部分 -cfoo
-        else:
-            optarg = &#39;&#39;
-        opts.append((&#39;-&#39; + opt, optarg))  # 无参数 &#39;-a&#39;, &#39;-b
-    return opts, args
-
-def short_has_arg(opt, shortopts):
-    for i in range(len(shortopts)):
-        if opt == shortopts[i] != &#39;:&#39;:
-            return shortopts.startswith(&#39;:&#39;, i+1)  # 判断之后是否跟着:字符 
-    raise GetoptError(_(&#39;option -%s not recognized&#39;) % opt, opt)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def do_shorts(opts, optstring, shortopts, args):
+</span></span><span class="line"><span class="cl">    while optstring != &#39;&#39;:  # while循环
+</span></span><span class="line"><span class="cl">        opt, optstring = optstring[0], optstring[1:]  # 截取参数关键字和剩余字符
+</span></span><span class="line"><span class="cl">        if short_has_arg(opt, shortopts):
+</span></span><span class="line"><span class="cl">            if optstring == &#39;&#39;:
+</span></span><span class="line"><span class="cl">                if not args:
+</span></span><span class="line"><span class="cl">                    raise GetoptError(_(&#39;option -%s requires argument&#39;) % opt,
+</span></span><span class="line"><span class="cl">                                      opt)
+</span></span><span class="line"><span class="cl">                optstring, args = args[0], args[1:]  # 贪婪后面的参数 &#39;-d&#39;, &#39;bar&#39;
+</span></span><span class="line"><span class="cl">            optarg, optstring = optstring, &#39;&#39;  # 取甚于部分 -cfoo
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            optarg = &#39;&#39;
+</span></span><span class="line"><span class="cl">        opts.append((&#39;-&#39; + opt, optarg))  # 无参数 &#39;-a&#39;, &#39;-b
+</span></span><span class="line"><span class="cl">    return opts, args
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def short_has_arg(opt, shortopts):
+</span></span><span class="line"><span class="cl">    for i in range(len(shortopts)):
+</span></span><span class="line"><span class="cl">        if opt == shortopts[i] != &#39;:&#39;:
+</span></span><span class="line"><span class="cl">            return shortopts.startswith(&#39;:&#39;, i+1)  # 判断之后是否跟着:字符 
+</span></span><span class="line"><span class="cl">    raise GetoptError(_(&#39;option -%s not recognized&#39;) % opt, opt)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>以 <code>args=['-a', '-b', '-cfoo', '-d', 'bar', 'a1', 'a2']</code> 和 <code>shortopts='abc:d:'</code> 为例，介绍一下解析的执行过程:
-* -a, -b 无需参数值，，在shortopts仅<code>ab</code>，没有<code>:</code>后缀，未命中short_has_arg，返回两个元祖 (&lsquo;-a&rsquo;, &ldquo;), (&lsquo;-b&rsquo;, &ldquo;)
-* -cfoo 需要参数值，在shortopts中有<code>c:</code>，命中short_has_arg，返回 (&lsquo;-c&rsquo;, &lsquo;foo&rsquo;)
-* -d, 需要参数值，在shortopts中有<code>d:</code>，命中short_has_arg，并捕获后面跟着的bar，一起返回  (&lsquo;-d&rsquo;, &lsquo;bar&rsquo;)
-* a1, a2 位置参数最后剩余</p>
-
+</div><p>以 <code>args=['-a', '-b', '-cfoo', '-d', 'bar', 'a1', 'a2']</code> 和 <code>shortopts='abc:d:'</code> 为例，介绍一下解析的执行过程:</p>
+<ul>
+<li>-a, -b 无需参数值，，在shortopts仅<code>ab</code>，没有<code>:</code>后缀，未命中short_has_arg，返回两个元祖 (&rsquo;-a&rsquo;, &lsquo;&rsquo;), (&rsquo;-b&rsquo;, &lsquo;&rsquo;)</li>
+<li>-cfoo 需要参数值，在shortopts中有<code>c:</code>，命中short_has_arg，返回 (&rsquo;-c&rsquo;, &lsquo;foo&rsquo;)</li>
+<li>-d, 需要参数值，在shortopts中有<code>d:</code>，命中short_has_arg，并捕获后面跟着的bar，一起返回  (&rsquo;-d&rsquo;, &lsquo;bar&rsquo;)</li>
+<li>a1, a2 位置参数最后剩余</li>
+</ul>
 <p>这样我们就很清楚 <code>abc:d:</code> 的含义了，每个字符是一个参数，如果需要参数值，则后面跟一个<code>:</code>字符。长参数的解析方法，比较类似，就不再赘述了。</p>
-
 <h2 id="optparse-解析">optparse 解析</h2>
-
 <p>从<code>quopri</code>源码中可以看到 <code>getopt</code> 提供的方法比较单薄，还需要手工<code>print(usage &amp;&amp; help)</code>信息，解析后的参数使用也不直观, 需要按照位置获取。接下来登场的是 <code>optparse</code> , 可以在cProfile中看到使用示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -478,30 +477,30 @@ def short_has_arg(opt, shortopts):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># cProfile.py
-
-from optparse import OptionParser
-
-usage = &#34;cProfile.py [-o output_file_path] [-s sort] scriptfile [arg] ...&#34;  # 注1
-parser = OptionParser(usage=usage)
-parser.allow_interspersed_args = False
-parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
-    help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)  # 注2
-parser.add_option(&#39;-s&#39;, &#39;--sort&#39;, dest=&#34;sort&#34;,
-    help=&#34;Sort order when printing to stdout, based on pstats.Stats class&#34;,
-    default=-1)
-    
-(options, args) = parser.parse_args()
- 
-runctx(code, globs, None, options.outfile, options.sort)  # 注3</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># cProfile.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">from optparse import OptionParser
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">usage = &#34;cProfile.py [-o output_file_path] [-s sort] scriptfile [arg] ...&#34;  # 注1
+</span></span><span class="line"><span class="cl">parser = OptionParser(usage=usage)
+</span></span><span class="line"><span class="cl">parser.allow_interspersed_args = False
+</span></span><span class="line"><span class="cl">parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
+</span></span><span class="line"><span class="cl">    help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)  # 注2
+</span></span><span class="line"><span class="cl">parser.add_option(&#39;-s&#39;, &#39;--sort&#39;, dest=&#34;sort&#34;,
+</span></span><span class="line"><span class="cl">    help=&#34;Sort order when printing to stdout, based on pstats.Stats class&#34;,
+</span></span><span class="line"><span class="cl">    default=-1)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">(options, args) = parser.parse_args()
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">runctx(code, globs, None, options.outfile, options.sort)  # 注3
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看效果:</p>
+</div><p>查看效果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -511,56 +510,51 @@ runctx(code, globs, None, options.outfile, options.sort)  # 注3</pre></td></tr>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python -m cProfile -h
-Usage: cProfile.py [-o output_file_path] [-s sort] [-m module | scriptfile] [arg] ...
-
-Options:
-  -h, --help            show this help message and exit
-  -o OUTFILE, --outfile=OUTFILE
-                        Save stats to &lt;outfile&gt;
-  -s SORT, --sort=SORT  Sort order when printing to stdout, based on
-                        pstats.Stats class
-  -m                    Profile a library module</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="nv">python</span> <span class="o">-</span><span class="nv">m</span> <span class="nv">cProfile</span> <span class="o">-</span><span class="nv">h</span>
+</span></span><span class="line"><span class="cl"><span class="nc">Usage</span><span class="p">:</span> <span class="nv">cProfile</span><span class="p">.</span><span class="nv">py</span> <span class="p">[</span><span class="o">-</span><span class="nv">o</span> <span class="nv">output_file_path</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="nv">s</span> <span class="nv">sort</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="nv">m</span> <span class="kn">module</span> <span class="o">|</span> <span class="nv">scriptfile</span><span class="p">]</span> <span class="p">[</span><span class="nv">arg</span><span class="p">]</span> <span class="o">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nc">Options</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="o">-</span><span class="nv">h</span><span class="p">,</span> <span class="o">--</span><span class="nv">help</span>            <span class="nv">show</span> <span class="nv">this</span> <span class="nv">help</span> <span class="nv">message</span> <span class="nv">and</span> <span class="nv">exit</span>
+</span></span><span class="line"><span class="cl">  <span class="o">-</span><span class="nv">o</span> <span class="nc">OUTFILE</span><span class="p">,</span> <span class="o">--</span><span class="nv">outfile</span><span class="o">=</span><span class="nc">OUTFILE</span>
+</span></span><span class="line"><span class="cl">                        <span class="nc">Save</span> <span class="nv">stats</span> <span class="nv">to</span> <span class="p">&lt;</span><span class="nv">outfile</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">-</span><span class="nv">s</span> <span class="nc">SORT</span><span class="p">,</span> <span class="o">--</span><span class="nv">sort</span><span class="o">=</span><span class="nc">SORT</span>  <span class="nc">Sort</span> <span class="nv">order</span> <span class="nv">when</span> <span class="nv">printing</span> <span class="nv">to</span> <span class="nv">stdout</span><span class="p">,</span> <span class="nv">based</span> <span class="nv">on</span>
+</span></span><span class="line"><span class="cl">                        <span class="nv">pstats</span><span class="p">.</span><span class="nc">Stats</span> <span class="nv">class</span>
+</span></span><span class="line"><span class="cl">  <span class="o">-</span><span class="nv">m</span>                    <span class="nc">Profile</span> <span class="nv">a</span> <span class="nv">library</span> <span class="kn">module</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>optparse对比getopt:
-* 可以设置usage信息 (注1)
-* 自动收集参数帮助，生成help信息 (注2)
-* option使用比较直观，可以使用 <code>options.outfile</code> 获取参数值 (注3)</p>
-
+</div><p>optparse对比getopt:</p>
+<ul>
+<li>可以设置usage信息 (注1)</li>
+<li>自动收集参数帮助，生成help信息 (注2)</li>
+<li>option使用比较直观，可以使用 <code>options.outfile</code> 获取参数值 (注3)</li>
+</ul>
 <p>官方的文档中介绍optparse难以扩展，已经被废弃，推荐使用基于它的argparse替代。但是我们还是不放过它，这对理解argparser有帮助。</p>
-
 <h3 id="optparse-模块结构">optparse 模块结构</h3>
-
 <p>optparse的模块类图:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/optparse_classes.png" alt="optparse" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/optparse_classes.png" alt="optparse"></p>
 <p>可以看到optparse模块主要就是 <code>OptionParser</code>, <code>Option</code>和<code>HelpFormatter</code> 三个类。</p>
-
 <h3 id="optparse-实现">optparse 实现</h3>
-
 <p>parser的使用模版，就是下面3行代码：创建对象，添加option和进行参数解析并返回</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">parser = OptionParser(usage=usage)
-parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
-    help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)  #  添加多个参数...
-parser.parse_args()  # 自动获取sys.argv 不需要传入</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">parser = OptionParser(usage=usage)
+</span></span><span class="line"><span class="cl">parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
+</span></span><span class="line"><span class="cl">    help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)  #  添加多个参数...
+</span></span><span class="line"><span class="cl">parser.parse_args()  # 自动获取sys.argv 不需要传入
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>先查看 OptionParser 对象创建</p>
+</div><p>先查看 OptionParser 对象创建</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -598,52 +592,52 @@ parser.parse_args()  # 自动获取sys.argv 不需要传入</pre></td></tr></tab
 </span><span class="lnt">36
 </span><span class="lnt">37
 </span><span class="lnt">38
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class OptionContainer:
-    
-    def __init__(self, option_class, conflict_handler, description):
-        # Initialize the option list and related data structures.
-        # This method must be provided by subclasses, and it must
-        # initialize at least the following instance attributes:
-        # option_list, _short_opt, _long_opt, defaults.
-        self._create_option_list()  # 抽象方法，由子类实现，这时候可能没有abc模块，抽象方法使用注释进行要求
-        self.option_class = option_class  # 选项类，可以由用户扩展
-        self.conflict_handler = handler
-        self.description = description
-    
-class OptionParser(OptionContainer):
-    
-    def __init__(self,
-                 usage=None,
-                 option_list=None,
-                 option_class=Option,
-                 version=None,
-                 conflict_handler=&#34;error&#34;,
-                 description=None,
-                 formatter=None,
-                 add_help_option=True,
-                 prog=None,
-                 epilog=None):
-        OptionContainer.__init__(
-            self, option_class, conflict_handler, description)
-        self.usage = usage
-        self.version = version
-        if formatter is None:
-            formatter = IndentedHelpFormatter()  # 默认帮助类
-        self.formatter = formatter
-        self.formatter.set_parser(self)
-        
-        self._populate_option_list(option_list,
-                                   add_help=add_help_option)
-
-        self._init_parsing_state()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class OptionContainer:
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self, option_class, conflict_handler, description):
+</span></span><span class="line"><span class="cl">        # Initialize the option list and related data structures.
+</span></span><span class="line"><span class="cl">        # This method must be provided by subclasses, and it must
+</span></span><span class="line"><span class="cl">        # initialize at least the following instance attributes:
+</span></span><span class="line"><span class="cl">        # option_list, _short_opt, _long_opt, defaults.
+</span></span><span class="line"><span class="cl">        self._create_option_list()  # 抽象方法，由子类实现，这时候可能没有abc模块，抽象方法使用注释进行要求
+</span></span><span class="line"><span class="cl">        self.option_class = option_class  # 选项类，可以由用户扩展
+</span></span><span class="line"><span class="cl">        self.conflict_handler = handler
+</span></span><span class="line"><span class="cl">        self.description = description
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">class OptionParser(OptionContainer):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self,
+</span></span><span class="line"><span class="cl">                 usage=None,
+</span></span><span class="line"><span class="cl">                 option_list=None,
+</span></span><span class="line"><span class="cl">                 option_class=Option,
+</span></span><span class="line"><span class="cl">                 version=None,
+</span></span><span class="line"><span class="cl">                 conflict_handler=&#34;error&#34;,
+</span></span><span class="line"><span class="cl">                 description=None,
+</span></span><span class="line"><span class="cl">                 formatter=None,
+</span></span><span class="line"><span class="cl">                 add_help_option=True,
+</span></span><span class="line"><span class="cl">                 prog=None,
+</span></span><span class="line"><span class="cl">                 epilog=None):
+</span></span><span class="line"><span class="cl">        OptionContainer.__init__(
+</span></span><span class="line"><span class="cl">            self, option_class, conflict_handler, description)
+</span></span><span class="line"><span class="cl">        self.usage = usage
+</span></span><span class="line"><span class="cl">        self.version = version
+</span></span><span class="line"><span class="cl">        if formatter is None:
+</span></span><span class="line"><span class="cl">            formatter = IndentedHelpFormatter()  # 默认帮助类
+</span></span><span class="line"><span class="cl">        self.formatter = formatter
+</span></span><span class="line"><span class="cl">        self.formatter.set_parser(self)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        self._populate_option_list(option_list,
+</span></span><span class="line"><span class="cl">                                   add_help=add_help_option)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        self._init_parsing_state()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>上面代码创建了OptionParser对象，下面代码初始化了部分属性</p>
+</div><p>上面代码创建了OptionParser对象，下面代码初始化了部分属性</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -667,38 +661,38 @@ class OptionParser(OptionContainer):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _create_option_list(self):
-    self.option_list = []
-    self.option_groups = [] 
-    self._short_opt = {}            # single letter -&gt; Option instance
-    self._long_opt = {}             # long option -&gt; Option instance
-    self.defaults = {}              # maps option dest -&gt; default value
-
-def _add_help_option(self):
-    self.add_option(&#34;-h&#34;, &#34;--help&#34;,
-                    action=&#34;help&#34;,
-                    help=_(&#34;show this help message and exit&#34;))
-
-def _populate_option_list(self, option_list, add_help=True):
-    ...
-    if self.version:
-        self._add_version_option()  # version-option默认未开启
-    if add_help:
-        self._add_help_option()  # 默认添加help-option
-
-def _init_parsing_state(self):
-    # These are set in parse_args() for the convenience of callbacks.
-    self.rargs = None  # 初始化
-    self.largs = None
-    self.values = None</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _create_option_list(self):
+</span></span><span class="line"><span class="cl">    self.option_list = []
+</span></span><span class="line"><span class="cl">    self.option_groups = [] 
+</span></span><span class="line"><span class="cl">    self._short_opt = {}            # single letter -&gt; Option instance
+</span></span><span class="line"><span class="cl">    self._long_opt = {}             # long option -&gt; Option instance
+</span></span><span class="line"><span class="cl">    self.defaults = {}              # maps option dest -&gt; default value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _add_help_option(self):
+</span></span><span class="line"><span class="cl">    self.add_option(&#34;-h&#34;, &#34;--help&#34;,
+</span></span><span class="line"><span class="cl">                    action=&#34;help&#34;,
+</span></span><span class="line"><span class="cl">                    help=_(&#34;show this help message and exit&#34;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _populate_option_list(self, option_list, add_help=True):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    if self.version:
+</span></span><span class="line"><span class="cl">        self._add_version_option()  # version-option默认未开启
+</span></span><span class="line"><span class="cl">    if add_help:
+</span></span><span class="line"><span class="cl">        self._add_help_option()  # 默认添加help-option
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _init_parsing_state(self):
+</span></span><span class="line"><span class="cl">    # These are set in parse_args() for the convenience of callbacks.
+</span></span><span class="line"><span class="cl">    self.rargs = None  # 初始化
+</span></span><span class="line"><span class="cl">    self.largs = None
+</span></span><span class="line"><span class="cl">    self.values = None
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>add_option实现，可以看到很熟悉的长参数和短参数</p>
+</div><p>add_option实现，可以看到很熟悉的长参数和短参数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -717,33 +711,33 @@ def _init_parsing_state(self):
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def add_option(self, *args, **kwargs):
-    if isinstance(args[0], str):
-        option = self.option_class(*args, **kwargs)  # Option
-    
-    self.option_list.append(option)
-    option.container = self
-    
-    for opt in option._short_opts:
-        self._short_opt[opt] = option  # 长参数
-    for opt in option._long_opts: 
-        self._long_opt[opt] = option  # 短参数
-
-    if option.dest is not None:     # option has a dest, we need a default
-        if option.default is not NO_DEFAULT:
-            self.defaults[option.dest] = option.default
-        elif option.dest not in self.defaults:
-            self.defaults[option.dest] = None
-
-    return option</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def add_option(self, *args, **kwargs):
+</span></span><span class="line"><span class="cl">    if isinstance(args[0], str):
+</span></span><span class="line"><span class="cl">        option = self.option_class(*args, **kwargs)  # Option
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    self.option_list.append(option)
+</span></span><span class="line"><span class="cl">    option.container = self
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    for opt in option._short_opts:
+</span></span><span class="line"><span class="cl">        self._short_opt[opt] = option  # 长参数
+</span></span><span class="line"><span class="cl">    for opt in option._long_opts: 
+</span></span><span class="line"><span class="cl">        self._long_opt[opt] = option  # 短参数
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if option.dest is not None:     # option has a dest, we need a default
+</span></span><span class="line"><span class="cl">        if option.default is not NO_DEFAULT:
+</span></span><span class="line"><span class="cl">            self.defaults[option.dest] = option.default
+</span></span><span class="line"><span class="cl">        elif option.dest not in self.defaults:
+</span></span><span class="line"><span class="cl">            self.defaults[option.dest] = None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return option
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Option存储参数设置, 构建长选项和短选项列表，并check选项是否合法：</p>
+</div><p>Option存储参数设置, 构建长选项和短选项列表，并check选项是否合法：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -756,27 +750,27 @@ def _init_parsing_state(self):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Option:
-    
-    def __init__(self, *opts, **attrs):
-    self._short_opts = []  
-    self._long_opts = []  # 为什么option要有short和long两个数组
-    ...
-    self._set_opt_strings(opts)
-
-    # Set all other attrs (action, type, etc.) from &#39;attrs&#39; dict
-    self._set_attrs(attrs)
-
-    for checker in self.CHECK_METHODS:
-        checker(self)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Option:
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self, *opts, **attrs):
+</span></span><span class="line"><span class="cl">    self._short_opts = []  
+</span></span><span class="line"><span class="cl">    self._long_opts = []  # 为什么option要有short和long两个数组
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    self._set_opt_strings(opts)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # Set all other attrs (action, type, etc.) from &#39;attrs&#39; dict
+</span></span><span class="line"><span class="cl">    self._set_attrs(attrs)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for checker in self.CHECK_METHODS:
+</span></span><span class="line"><span class="cl">        checker(self)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用前缀判断参数列表：</p>
+</div><p>使用前缀判断参数列表：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -788,26 +782,26 @@ def _init_parsing_state(self):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _set_opt_strings(self, opts):
-    for opt in opts:
-        if len(opt) &lt; 2:
-            raise
-        elif len(opt) == 2:
-            if not (opt[0] == &#34;-&#34; and opt[1] != &#34;-&#34;):
-                raise 
-            self._short_opts.append(opt)
-        else:
-            if not (opt[0:2] == &#34;--&#34; and opt[2] != &#34;-&#34;):
-                raise 
-            self._long_opts.append(opt)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _set_opt_strings(self, opts):
+</span></span><span class="line"><span class="cl">    for opt in opts:
+</span></span><span class="line"><span class="cl">        if len(opt) &lt; 2:
+</span></span><span class="line"><span class="cl">            raise
+</span></span><span class="line"><span class="cl">        elif len(opt) == 2:
+</span></span><span class="line"><span class="cl">            if not (opt[0] == &#34;-&#34; and opt[1] != &#34;-&#34;):
+</span></span><span class="line"><span class="cl">                raise 
+</span></span><span class="line"><span class="cl">            self._short_opts.append(opt)
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            if not (opt[0:2] == &#34;--&#34; and opt[2] != &#34;-&#34;):
+</span></span><span class="line"><span class="cl">                raise 
+</span></span><span class="line"><span class="cl">            self._long_opts.append(opt)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>option的检查方法比较多，我们看一下的action和type检查</p>
+</div><p>option的检查方法比较多，我们看一下的action和type检查</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -843,69 +837,69 @@ def _init_parsing_state(self):
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">CHECK_METHODS = [_check_action,
-                 _check_type,
-                 _check_choice,
-                 _check_dest,
-                 _check_const,
-                 _check_nargs,
-                 _check_callback]
-
-def _check_action(self):
-    if self.action is None:
-        self.action = &#34;store&#34;  # 默认原样存储
-    elif self.action not in self.ACTIONS:
-        raise
-
-def _check_type(self):  # 判断参数类型
-    if self.type is None:
-        if self.action in self.ALWAYS_TYPED_ACTIONS:
-            if self.choices is not None:
-                # The &#34;choices&#34; attribute implies &#34;choice&#34; type.
-                self.type = &#34;choice&#34;  # 枚举
-            else:
-                # No type given?  &#34;string&#34; is the most sensible default.
-                self.type = &#34;string&#34;
-    else:
-        # Allow type objects or builtin type conversion functions
-        # (int, str, etc.) as an alternative to their names.
-        if isinstance(self.type, type):  # 其它类型
-            self.type = self.type.__name__
-
-        if self.type == &#34;str&#34;:
-            self.type = &#34;string&#34;
-
-        if self.type not in self.TYPES:
-            raise 
-        if self.action not in self.TYPED_ACTIONS:
-            raise </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">CHECK_METHODS = [_check_action,
+</span></span><span class="line"><span class="cl">                 _check_type,
+</span></span><span class="line"><span class="cl">                 _check_choice,
+</span></span><span class="line"><span class="cl">                 _check_dest,
+</span></span><span class="line"><span class="cl">                 _check_const,
+</span></span><span class="line"><span class="cl">                 _check_nargs,
+</span></span><span class="line"><span class="cl">                 _check_callback]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _check_action(self):
+</span></span><span class="line"><span class="cl">    if self.action is None:
+</span></span><span class="line"><span class="cl">        self.action = &#34;store&#34;  # 默认原样存储
+</span></span><span class="line"><span class="cl">    elif self.action not in self.ACTIONS:
+</span></span><span class="line"><span class="cl">        raise
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _check_type(self):  # 判断参数类型
+</span></span><span class="line"><span class="cl">    if self.type is None:
+</span></span><span class="line"><span class="cl">        if self.action in self.ALWAYS_TYPED_ACTIONS:
+</span></span><span class="line"><span class="cl">            if self.choices is not None:
+</span></span><span class="line"><span class="cl">                # The &#34;choices&#34; attribute implies &#34;choice&#34; type.
+</span></span><span class="line"><span class="cl">                self.type = &#34;choice&#34;  # 枚举
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                # No type given?  &#34;string&#34; is the most sensible default.
+</span></span><span class="line"><span class="cl">                self.type = &#34;string&#34;
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        # Allow type objects or builtin type conversion functions
+</span></span><span class="line"><span class="cl">        # (int, str, etc.) as an alternative to their names.
+</span></span><span class="line"><span class="cl">        if isinstance(self.type, type):  # 其它类型
+</span></span><span class="line"><span class="cl">            self.type = self.type.__name__
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if self.type == &#34;str&#34;:
+</span></span><span class="line"><span class="cl">            self.type = &#34;string&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if self.type not in self.TYPES:
+</span></span><span class="line"><span class="cl">            raise 
+</span></span><span class="line"><span class="cl">        if self.action not in self.TYPED_ACTIONS:
+</span></span><span class="line"><span class="cl">            raise 
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>store-action的使用等解析参数时候再介绍。完成Parser对象的构建后，就是如何使用parse_args解析参数：</p>
+</div><p>store-action的使用等解析参数时候再介绍。完成Parser对象的构建后，就是如何使用parse_args解析参数：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def parse_args(self, args=None, values=None):
-    rargs = sys.argv[1:]  # 从sys.argv中获取输入
-    ...
-    values = self.get_default_values()  # 获取默认值
-    ...
-    stop = self._process_args([], rargs, values)  # 解析参数</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def parse_args(self, args=None, values=None):
+</span></span><span class="line"><span class="cl">    rargs = sys.argv[1:]  # 从sys.argv中获取输入
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    values = self.get_default_values()  # 获取默认值
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    stop = self._process_args([], rargs, values)  # 解析参数
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>熟悉的参数解析分支:</p>
+</div><p>熟悉的参数解析分支:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -916,25 +910,25 @@ def _check_type(self):  # 判断参数类型
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _process_args(self, largs, rargs, values):
-    while rargs:  # while循环
-        arg = rargs[0]
-        elif arg[0:2] == &#34;--&#34;:
-            # process a single long option (possibly with value(s))
-            self._process_long_opt(rargs, values)  # 处理长参数
-        elif arg[:1] == &#34;-&#34; and len(arg) &gt; 1:
-            # process a cluster of short options (possibly with
-            # value(s) for the last one only)
-            self._process_short_opts(rargs, values)  # 处理短参数
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _process_args(self, largs, rargs, values):
+</span></span><span class="line"><span class="cl">    while rargs:  # while循环
+</span></span><span class="line"><span class="cl">        arg = rargs[0]
+</span></span><span class="line"><span class="cl">        elif arg[0:2] == &#34;--&#34;:
+</span></span><span class="line"><span class="cl">            # process a single long option (possibly with value(s))
+</span></span><span class="line"><span class="cl">            self._process_long_opt(rargs, values)  # 处理长参数
+</span></span><span class="line"><span class="cl">        elif arg[:1] == &#34;-&#34; and len(arg) &gt; 1:
+</span></span><span class="line"><span class="cl">            # process a cluster of short options (possibly with
+</span></span><span class="line"><span class="cl">            # value(s) for the last one only)
+</span></span><span class="line"><span class="cl">            self._process_short_opts(rargs, values)  # 处理短参数
+</span></span><span class="line"><span class="cl">        ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>短参数的解析过程:</p>
+</div><p>短参数的解析过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -963,43 +957,43 @@ def _check_type(self):  # 判断参数类型
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _process_short_opts(self, rargs, values):
-    arg = rargs.pop(0)
-    stop = False
-    i = 1
-    for ch in arg[1:]:  # 逐个字符解析
-        opt = &#34;-&#34; + ch
-        option = self._short_opt.get(opt)  # 获取对应的 Option 规则
-        i += 1                      # we have consumed a character
-
-        if option.takes_value():
-            # Any characters left in arg?  Pretend they&#39;re the
-            # next arg, and stop consuming characters of arg.
-            if i &lt; len(arg):
-                rargs.insert(0, arg[i:])
-                stop = True
-
-            nargs = option.nargs
-            if len(rargs) &lt; nargs:
-                ...
-            elif nargs == 1:
-                value = rargs.pop(0)  # 解析出参数值
-            else:
-                value = tuple(rargs[0:nargs])
-                del rargs[0:nargs]
-
-        else:                       # option doesn&#39;t take a value
-            value = None
-
-        option.process(opt, value, values, self) # 存储到option </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _process_short_opts(self, rargs, values):
+</span></span><span class="line"><span class="cl">    arg = rargs.pop(0)
+</span></span><span class="line"><span class="cl">    stop = False
+</span></span><span class="line"><span class="cl">    i = 1
+</span></span><span class="line"><span class="cl">    for ch in arg[1:]:  # 逐个字符解析
+</span></span><span class="line"><span class="cl">        opt = &#34;-&#34; + ch
+</span></span><span class="line"><span class="cl">        option = self._short_opt.get(opt)  # 获取对应的 Option 规则
+</span></span><span class="line"><span class="cl">        i += 1                      # we have consumed a character
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if option.takes_value():
+</span></span><span class="line"><span class="cl">            # Any characters left in arg?  Pretend they&#39;re the
+</span></span><span class="line"><span class="cl">            # next arg, and stop consuming characters of arg.
+</span></span><span class="line"><span class="cl">            if i &lt; len(arg):
+</span></span><span class="line"><span class="cl">                rargs.insert(0, arg[i:])
+</span></span><span class="line"><span class="cl">                stop = True
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            nargs = option.nargs
+</span></span><span class="line"><span class="cl">            if len(rargs) &lt; nargs:
+</span></span><span class="line"><span class="cl">                ...
+</span></span><span class="line"><span class="cl">            elif nargs == 1:
+</span></span><span class="line"><span class="cl">                value = rargs.pop(0)  # 解析出参数值
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                value = tuple(rargs[0:nargs])
+</span></span><span class="line"><span class="cl">                del rargs[0:nargs]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        else:                       # option doesn&#39;t take a value
+</span></span><span class="line"><span class="cl">            value = None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        option.process(opt, value, values, self) # 存储到option 
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Option存储参数Action的实现:</p>
+</div><p>Option存储参数Action的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1034,49 +1028,49 @@ def _check_type(self):  # 判断参数类型
 </span><span class="lnt">33
 </span><span class="lnt">34
 </span><span class="lnt">35
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def process(self, opt, value, values, parser):
-    # And then take whatever action is expected of us.
-    # This is a separate method to make life easier for
-    # subclasses to add new actions.
-    return self.take_action(
-        self.action, self.dest, opt, value, values, parser)
-
-def take_action(self, action, dest, opt, value, values, parser):
-    if action == &#34;store&#34;:
-        setattr(values, dest, value)  # 直接存储
-    elif action == &#34;store_const&#34;:
-        setattr(values, dest, self.const)  # 使用定义的常量
-    elif action == &#34;store_true&#34;:
-        setattr(values, dest, True)  # int=true
-    elif action == &#34;store_false&#34;:
-        setattr(values, dest, False)  # int=false
-    elif action == &#34;append&#34;:
-        values.ensure_value(dest, []).append(value)  # 接受数组
-    elif action == &#34;append_const&#34;:
-        values.ensure_value(dest, []).append(self.const)  # 常量数组
-    elif action == &#34;count&#34;:
-        setattr(values, dest, values.ensure_value(dest, 0) + 1) # 计数参数，可以重复使用
-    elif action == &#34;callback&#34;:  # 支持回掉
-        args = self.callback_args or ()
-        kwargs = self.callback_kwargs or {}
-        self.callback(self, opt, value, parser, *args, **kwargs)
-    elif action == &#34;help&#34;:  # 帮助
-        parser.print_help()
-        parser.exit()
-    elif action == &#34;version&#34;:  # 版本
-        parser.print_version()
-        parser.exit()
-    else:
-        raise ValueError(&#34;unknown action %r&#34; % self.action)
-    return 1</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def process(self, opt, value, values, parser):
+</span></span><span class="line"><span class="cl">    # And then take whatever action is expected of us.
+</span></span><span class="line"><span class="cl">    # This is a separate method to make life easier for
+</span></span><span class="line"><span class="cl">    # subclasses to add new actions.
+</span></span><span class="line"><span class="cl">    return self.take_action(
+</span></span><span class="line"><span class="cl">        self.action, self.dest, opt, value, values, parser)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def take_action(self, action, dest, opt, value, values, parser):
+</span></span><span class="line"><span class="cl">    if action == &#34;store&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, value)  # 直接存储
+</span></span><span class="line"><span class="cl">    elif action == &#34;store_const&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, self.const)  # 使用定义的常量
+</span></span><span class="line"><span class="cl">    elif action == &#34;store_true&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, True)  # int=true
+</span></span><span class="line"><span class="cl">    elif action == &#34;store_false&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, False)  # int=false
+</span></span><span class="line"><span class="cl">    elif action == &#34;append&#34;:
+</span></span><span class="line"><span class="cl">        values.ensure_value(dest, []).append(value)  # 接受数组
+</span></span><span class="line"><span class="cl">    elif action == &#34;append_const&#34;:
+</span></span><span class="line"><span class="cl">        values.ensure_value(dest, []).append(self.const)  # 常量数组
+</span></span><span class="line"><span class="cl">    elif action == &#34;count&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, values.ensure_value(dest, 0) + 1) # 计数参数，可以重复使用
+</span></span><span class="line"><span class="cl">    elif action == &#34;callback&#34;:  # 支持回掉
+</span></span><span class="line"><span class="cl">        args = self.callback_args or ()
+</span></span><span class="line"><span class="cl">        kwargs = self.callback_kwargs or {}
+</span></span><span class="line"><span class="cl">        self.callback(self, opt, value, parser, *args, **kwargs)
+</span></span><span class="line"><span class="cl">    elif action == &#34;help&#34;:  # 帮助
+</span></span><span class="line"><span class="cl">        parser.print_help()
+</span></span><span class="line"><span class="cl">        parser.exit()
+</span></span><span class="line"><span class="cl">    elif action == &#34;version&#34;:  # 版本
+</span></span><span class="line"><span class="cl">        parser.print_version()
+</span></span><span class="line"><span class="cl">        parser.exit()
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        raise ValueError(&#34;unknown action %r&#34; % self.action)
+</span></span><span class="line"><span class="cl">    return 1
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>action的使用，可以看参考链接中的howto部分，介绍的非常详细。接下来重点看一下帮助部分的实现。</p>
+</div><p>action的使用，可以看参考链接中的howto部分，介绍的非常详细。接下来重点看一下帮助部分的实现。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1121,66 +1115,64 @@ def take_action(self, action, dest, opt, value, values, parser):
 </span><span class="lnt">43
 </span><span class="lnt">44
 </span><span class="lnt">45
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># parse
-def format_help(self, formatter=None):
-        if formatter is None:
-            formatter = self.formatter
-        result = []
-        if self.usage:
-            result.append(self.get_usage() + &#34;\n&#34;)  # 输出usage 
-        if self.description:
-            result.append(self.format_description(formatter) + &#34;\n&#34;)  # 输出description
-        result.append(self.format_option_help(formatter))  # 开始option-help 
-        ...
-        return &#34;&#34;.join(result)
-
-def format_option_help(self, formatter=None):
-    formatter.store_option_strings(self)
-    result = []
-    result.append(formatter.format_heading(_(&#34;Options&#34;)))  
-    formatter.indent()
-    if self.option_list:
-        result.append(OptionContainer.format_option_help(self, formatter)) # 收集option的帮助
-        result.append(&#34;\n&#34;)
-    ...
-    formatter.dedent()
-    return &#34;&#34;.join(result[:-1])
-
-def format_option(self, option):
-    result = []
-    opts = self.option_strings[option]
-    opt_width = self.help_position - self.current_indent - 2
-    if len(opts) &gt; opt_width: # 输出option的关键字
-        opts = &#34;%*s%s\n&#34; % (self.current_indent, &#34;&#34;, opts)
-        indent_first = self.help_position
-    else:                       # start help on same line as opts
-        opts = &#34;%*s%-*s  &#34; % (self.current_indent, &#34;&#34;, opt_width, opts)
-        indent_first = 0
-    result.append(opts)
-    if option.help:  # 输出option帮助信息
-        help_text = self.expand_default(option)
-        help_lines = textwrap.wrap(help_text, self.help_width)
-        result.append(&#34;%*s%s\n&#34; % (indent_first, &#34;&#34;, help_lines[0]))
-        result.extend([&#34;%*s%s\n&#34; % (self.help_position, &#34;&#34;, line)
-                       for line in help_lines[1:]])
-    elif opts[-1] != &#34;\n&#34;:
-        result.append(&#34;\n&#34;)
-    return &#34;&#34;.join(result)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># parse
+</span></span><span class="line"><span class="cl">def format_help(self, formatter=None):
+</span></span><span class="line"><span class="cl">        if formatter is None:
+</span></span><span class="line"><span class="cl">            formatter = self.formatter
+</span></span><span class="line"><span class="cl">        result = []
+</span></span><span class="line"><span class="cl">        if self.usage:
+</span></span><span class="line"><span class="cl">            result.append(self.get_usage() + &#34;\n&#34;)  # 输出usage 
+</span></span><span class="line"><span class="cl">        if self.description:
+</span></span><span class="line"><span class="cl">            result.append(self.format_description(formatter) + &#34;\n&#34;)  # 输出description
+</span></span><span class="line"><span class="cl">        result.append(self.format_option_help(formatter))  # 开始option-help 
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        return &#34;&#34;.join(result)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def format_option_help(self, formatter=None):
+</span></span><span class="line"><span class="cl">    formatter.store_option_strings(self)
+</span></span><span class="line"><span class="cl">    result = []
+</span></span><span class="line"><span class="cl">    result.append(formatter.format_heading(_(&#34;Options&#34;)))  
+</span></span><span class="line"><span class="cl">    formatter.indent()
+</span></span><span class="line"><span class="cl">    if self.option_list:
+</span></span><span class="line"><span class="cl">        result.append(OptionContainer.format_option_help(self, formatter)) # 收集option的帮助
+</span></span><span class="line"><span class="cl">        result.append(&#34;\n&#34;)
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    formatter.dedent()
+</span></span><span class="line"><span class="cl">    return &#34;&#34;.join(result[:-1])
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def format_option(self, option):
+</span></span><span class="line"><span class="cl">    result = []
+</span></span><span class="line"><span class="cl">    opts = self.option_strings[option]
+</span></span><span class="line"><span class="cl">    opt_width = self.help_position - self.current_indent - 2
+</span></span><span class="line"><span class="cl">    if len(opts) &gt; opt_width: # 输出option的关键字
+</span></span><span class="line"><span class="cl">        opts = &#34;%*s%s\n&#34; % (self.current_indent, &#34;&#34;, opts)
+</span></span><span class="line"><span class="cl">        indent_first = self.help_position
+</span></span><span class="line"><span class="cl">    else:                       # start help on same line as opts
+</span></span><span class="line"><span class="cl">        opts = &#34;%*s%-*s  &#34; % (self.current_indent, &#34;&#34;, opt_width, opts)
+</span></span><span class="line"><span class="cl">        indent_first = 0
+</span></span><span class="line"><span class="cl">    result.append(opts)
+</span></span><span class="line"><span class="cl">    if option.help:  # 输出option帮助信息
+</span></span><span class="line"><span class="cl">        help_text = self.expand_default(option)
+</span></span><span class="line"><span class="cl">        help_lines = textwrap.wrap(help_text, self.help_width)
+</span></span><span class="line"><span class="cl">        result.append(&#34;%*s%s\n&#34; % (indent_first, &#34;&#34;, help_lines[0]))
+</span></span><span class="line"><span class="cl">        result.extend([&#34;%*s%s\n&#34; % (self.help_position, &#34;&#34;, line)
+</span></span><span class="line"><span class="cl">                       for line in help_lines[1:]])
+</span></span><span class="line"><span class="cl">    elif opts[-1] != &#34;\n&#34;:
+</span></span><span class="line"><span class="cl">        result.append(&#34;\n&#34;)
+</span></span><span class="line"><span class="cl">    return &#34;&#34;.join(result)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>看完处理流程，我们大概还有2个疑问：</p>
-
+</div><p>看完处理流程，我们大概还有2个疑问：</p>
 <ol>
 <li>option为什么有 _short_opts 和 _long_opts 2个数组</li>
 <li>如何使用 <code>options.outfile</code> 获取参数值的</li>
 </ol>
-
 <p>第一个问题，请看代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1191,77 +1183,71 @@ def format_option(self, option):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># -o 和 --outfile 都可以表示同一个option
-parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
-        help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)
-
-def _set_opt_strings(self, opts):
-    # opts = [&#39;-o&#39;, &#39;--outfile&#39;]
-    for opt in opts:
-        if ..:
-            self._short_opts.append(opt)
-        if ..:
-            self._long_opts.append(opt)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># -o 和 --outfile 都可以表示同一个option
+</span></span><span class="line"><span class="cl">parser.add_option(&#39;-o&#39;, &#39;--outfile&#39;, dest=&#34;outfile&#34;,
+</span></span><span class="line"><span class="cl">        help=&#34;Save stats to &lt;outfile&gt;&#34;, default=None)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _set_opt_strings(self, opts):
+</span></span><span class="line"><span class="cl">    # opts = [&#39;-o&#39;, &#39;--outfile&#39;]
+</span></span><span class="line"><span class="cl">    for opt in opts:
+</span></span><span class="line"><span class="cl">        if ..:
+</span></span><span class="line"><span class="cl">            self._short_opts.append(opt)
+</span></span><span class="line"><span class="cl">        if ..:
+</span></span><span class="line"><span class="cl">            self._long_opts.append(opt)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第二个问题，请看代码：</p>
+</div><p>第二个问题，请看代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 参数值存储到一个字典
-setattr(values, dest, value)
-...
-def parse_args(self, args=None, values=None):
-    ...
-    # 返回参数字典
-    return (values, args)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 参数值存储到一个字典
+</span></span><span class="line"><span class="cl">setattr(values, dest, value)
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">def parse_args(self, args=None, values=None):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # 返回参数字典
+</span></span><span class="line"><span class="cl">    return (values, args)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>optparse比较难以扩展，我认为主要是因为这段代码：</p>
+</div><p>optparse比较难以扩展，我认为主要是因为这段代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def take_action(self, action, dest, opt, value, values, parser):
-    if action == &#34;store&#34;:
-        setattr(values, dest, value)
-    elif action == &#34;store_const&#34;:
-        setattr(values, dest, self.const)
-    ....</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def take_action(self, action, dest, opt, value, values, parser):
+</span></span><span class="line"><span class="cl">    if action == &#34;store&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, value)
+</span></span><span class="line"><span class="cl">    elif action == &#34;store_const&#34;:
+</span></span><span class="line"><span class="cl">        setattr(values, dest, self.const)
+</span></span><span class="line"><span class="cl">    ....
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这种if-else的代码逻辑，分支一旦变多，就难以维护。可以考虑用设计模式替换。</p>
-
+</div><p>这种if-else的代码逻辑，分支一旦变多，就难以维护。可以考虑用设计模式替换。</p>
 <h2 id="argparse">argparse</h2>
-
 <h3 id="argparse-模块结构">argparse 模块结构</h3>
-
 <p>argparser的类图，可以看到继承自optparse，左侧基本一致。只是右侧将option换成了action的实现。</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/argparse_classes.png" alt="argparse" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/argparse_classes.png" alt="argparse"></p>
 <h3 id="argparse-使用示例">argparse 使用示例</h3>
-
 <p>http.server中argparse使用示例</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1285,57 +1271,56 @@ def parse_args(self, args=None, values=None):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># http.server 
-
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
-                   help=&#39;Run as CGI Server&#39;)
-parser.add_argument(&#39;--bind&#39;, &#39;-b&#39;, metavar=&#39;ADDRESS&#39;,
-                    help=&#39;Specify alternate bind address &#39;
-                         &#39;[default: all interfaces]&#39;)
-parser.add_argument(&#39;--directory&#39;, &#39;-d&#39;, default=os.getcwd(),
-                    help=&#39;Specify alternative directory &#39;
-                    &#39;[default:current directory]&#39;)
-parser.add_argument(&#39;port&#39;, action=&#39;store&#39;,
-                    default=8000, type=int,
-                    nargs=&#39;?&#39;,
-                    help=&#39;Specify alternate port [default: 8000]&#39;)
-args = parser.parse_args()
-
-if args.cgi:
-    handler_class = CGIHTTPRequestHandler
-else:
-    handler_class = SimpleHTTPRequestHandler
-test(HandlerClass=handler_class, port=args.port, bind=args.bind)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># http.server 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import argparse
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">parser = argparse.ArgumentParser()
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
+</span></span><span class="line"><span class="cl">                   help=&#39;Run as CGI Server&#39;)
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;--bind&#39;, &#39;-b&#39;, metavar=&#39;ADDRESS&#39;,
+</span></span><span class="line"><span class="cl">                    help=&#39;Specify alternate bind address &#39;
+</span></span><span class="line"><span class="cl">                         &#39;[default: all interfaces]&#39;)
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;--directory&#39;, &#39;-d&#39;, default=os.getcwd(),
+</span></span><span class="line"><span class="cl">                    help=&#39;Specify alternative directory &#39;
+</span></span><span class="line"><span class="cl">                    &#39;[default:current directory]&#39;)
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;port&#39;, action=&#39;store&#39;,
+</span></span><span class="line"><span class="cl">                    default=8000, type=int,
+</span></span><span class="line"><span class="cl">                    nargs=&#39;?&#39;,
+</span></span><span class="line"><span class="cl">                    help=&#39;Specify alternate port [default: 8000]&#39;)
+</span></span><span class="line"><span class="cl">args = parser.parse_args()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if args.cgi:
+</span></span><span class="line"><span class="cl">    handler_class = CGIHTTPRequestHandler
+</span></span><span class="line"><span class="cl">else:
+</span></span><span class="line"><span class="cl">    handler_class = SimpleHTTPRequestHandler
+</span></span><span class="line"><span class="cl">test(HandlerClass=handler_class, port=args.port, bind=args.bind)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>和optparse一样的使用模版：创建对象，添加参数，解析参数</p>
+</div><p>和optparse一样的使用模版：创建对象，添加参数，解析参数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">parser = argparse.ArgumentParser()
-parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
-                   help=&#39;Run as CGI Server&#39;)
-args = parser.parse_args()
-# args.port, args.bind</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">parser = argparse.ArgumentParser()
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
+</span></span><span class="line"><span class="cl">                   help=&#39;Run as CGI Server&#39;)
+</span></span><span class="line"><span class="cl">args = parser.parse_args()
+</span></span><span class="line"><span class="cl"># args.port, args.bind
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="argparse-action实现">argparse action实现</h3>
-
+</div><h3 id="argparse-action实现">argparse action实现</h3>
 <p>由于文章篇幅，我们重点看看action部分的实现，使用了注册模式解决if-else问题:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1372,61 +1357,60 @@ args = parser.parse_args()
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class _ActionsContainer(object):
-
-    def __init__(self,
-                 description,
-                 prefix_chars,
-                 argument_default,
-                 conflict_handler):
-        super(_ActionsContainer, self).__init__()
-        # set up registries
-        self._registries = {}  # 注册中心
-
-        # register actions
-        self.register(&#39;action&#39;, None, _StoreAction)  # 注册action类
-        self.register(&#39;action&#39;, &#39;store&#39;, _StoreAction)
-        
-        
-    def _pop_action_class(self, kwargs, default=None):
-        action = kwargs.pop(&#39;action&#39;, default)
-        return self._registry_get(&#39;action&#39;, action, action)  # 获取对应action类
-    
-    def add_argument(self, *args, **kwargs):
-        
-        # create the action object, and add it to the parser
-        action_class = self._pop_action_class(kwargs)
-        action = action_class(**kwargs)  # 创建action对象
-    
-    def parse_args(self, args=None, namespace=None):
-        for action in self._actions:
-            if action.dest is not SUPPRESS:
-                if not hasattr(namespace, action.dest):
-                    if action.default is not SUPPRESS:
-                        setattr(namespace, action.dest, action.default)  # 执行action对象
-
-# 使用方法
-parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
-                   help=&#39;Run as CGI Server&#39;)
-args = parser.parse_args()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class _ActionsContainer(object):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self,
+</span></span><span class="line"><span class="cl">                 description,
+</span></span><span class="line"><span class="cl">                 prefix_chars,
+</span></span><span class="line"><span class="cl">                 argument_default,
+</span></span><span class="line"><span class="cl">                 conflict_handler):
+</span></span><span class="line"><span class="cl">        super(_ActionsContainer, self).__init__()
+</span></span><span class="line"><span class="cl">        # set up registries
+</span></span><span class="line"><span class="cl">        self._registries = {}  # 注册中心
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        # register actions
+</span></span><span class="line"><span class="cl">        self.register(&#39;action&#39;, None, _StoreAction)  # 注册action类
+</span></span><span class="line"><span class="cl">        self.register(&#39;action&#39;, &#39;store&#39;, _StoreAction)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def _pop_action_class(self, kwargs, default=None):
+</span></span><span class="line"><span class="cl">        action = kwargs.pop(&#39;action&#39;, default)
+</span></span><span class="line"><span class="cl">        return self._registry_get(&#39;action&#39;, action, action)  # 获取对应action类
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def add_argument(self, *args, **kwargs):
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        # create the action object, and add it to the parser
+</span></span><span class="line"><span class="cl">        action_class = self._pop_action_class(kwargs)
+</span></span><span class="line"><span class="cl">        action = action_class(**kwargs)  # 创建action对象
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def parse_args(self, args=None, namespace=None):
+</span></span><span class="line"><span class="cl">        for action in self._actions:
+</span></span><span class="line"><span class="cl">            if action.dest is not SUPPRESS:
+</span></span><span class="line"><span class="cl">                if not hasattr(namespace, action.dest):
+</span></span><span class="line"><span class="cl">                    if action.default is not SUPPRESS:
+</span></span><span class="line"><span class="cl">                        setattr(namespace, action.dest, action.default)  # 执行action对象
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 使用方法
+</span></span><span class="line"><span class="cl">parser.add_argument(&#39;--cgi&#39;, action=&#39;store_true&#39;,
+</span></span><span class="line"><span class="cl">                   help=&#39;Run as CGI Server&#39;)
+</span></span><span class="line"><span class="cl">args = parser.parse_args()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="小结">小结</h2>
-
-<p>最后我们再来简单小结一下:
-* 使用sys.argv接受命令行参数
-* 命令行参数有位置参数和可选参数
-* 可选参数有<code>-</code>+单个字符和<code>--</code>+单词的长参数两种
-* 命令行参数的解析模版都是3步：创建解析器，添加解析器规则和解析参数</p>
-
+</div><h2 id="小结">小结</h2>
+<p>最后我们再来简单小结一下:</p>
+<ul>
+<li>使用sys.argv接受命令行参数</li>
+<li>命令行参数有位置参数和可选参数</li>
+<li>可选参数有<code>-</code>+单个字符和<code>--</code>+单词的长参数两种</li>
+<li>命令行参数的解析模版都是3步：创建解析器，添加解析器规则和解析参数</li>
+</ul>
 <h2 id="小技巧">小技巧</h2>
-
 <p>分析参数解析过程中，发现切片的一个特点，索引不会越界:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1436,28 +1420,27 @@ args = parser.parse_args()</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; b =[1,2]
-&gt;&gt;&gt; b[1:]
-[2]
-&gt;&gt;&gt; 
-&gt;&gt;&gt; b[3:]  # 安全
-[]
-&gt;&gt;&gt; b[3]  # 异常
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-IndexError: list index out of range</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; b =[1,2]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[1:]
+</span></span><span class="line"><span class="cl">[2]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; 
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[3:]  # 安全
+</span></span><span class="line"><span class="cl">[]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[3]  # 异常
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">IndexError: list index out of range
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>Python 能够优雅地处理那些没有意义的切片索引：一个过大的索引值(即下标值大于字符串实际长度)将被字符串实际长度所代替，当上边界比下边界大时(即切片左值大于右值)就返回空字符串。（摘自python-tutorial3）</p>
 </blockquote>
-
 <p>另外使用gettext支持国际化，也可以插一个眼:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1471,26 +1454,25 @@ IndexError: list index out of range</pre></td></tr></table>
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">try:
-    from gettext import gettext, ngettext
-except ImportError:
-    def gettext(message):
-        return message
-
-_ = gettext
-
-class BadOptionError (OptParseError):
-    
-    ...
-
-    def __str__(self):
-        return _(&#34;no such option: %s&#34;) % self.opt_str</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">try:
+</span></span><span class="line"><span class="cl">    from gettext import gettext, ngettext
+</span></span><span class="line"><span class="cl">except ImportError:
+</span></span><span class="line"><span class="cl">    def gettext(message):
+</span></span><span class="line"><span class="cl">        return message
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">_ = gettext
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class BadOptionError (OptParseError):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __str__(self):
+</span></span><span class="line"><span class="cl">        return _(&#34;no such option: %s&#34;) % self.opt_str
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="参考链接">参考链接</h2>
 <ul>
 <li><a href="https://docs.python.org/zh-cn/3/library/getopt.html">https://docs.python.org/zh-cn/3/library/getopt.html</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Getopts">https://en.wikipedia.org/wiki/Getopts</a></li>
@@ -1536,11 +1518,11 @@ class BadOptionError (OptParseError):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-02-11 21:36:27 \x2b0800 CST',
+        id: '2021-02-11 21:36:27 \u002b0800 CST',
         title: 'python argparse 源码阅读',
         link: decodeURI(location.href),
         desc: 'http.server 可以使用 -h 查看帮助。这种自定义的命令行工具对用户使用程序非常有帮助，我们一起学习是如何实现命令工具的。 先看看展示: 1 2 3 4 5 6 7 8 9 10 11 12',
@@ -1554,6 +1536,10 @@ class BadOptionError (OptParseError):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1581,13 +1567,10 @@ class BadOptionError (OptParseError):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1598,7 +1581,10 @@ class BadOptionError (OptParseError):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

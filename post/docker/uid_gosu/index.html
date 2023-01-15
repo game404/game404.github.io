@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/docker/uid_gosu/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="容器安全漏洞实验" />
 <meta property="og:description" content="漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/docker/uid_gosu/" />
-<meta property="article:published_time" content="2021-12-19T21:04:03&#43;08:00"/>
-<meta property="article:modified_time" content="2021-12-19T21:04:03&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/docker/uid_gosu/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-19T21:04:03+08:00" />
+<meta property="article:modified_time" content="2021-12-19T21:04:03+08:00" />
 
 <meta itemprop="name" content="容器安全漏洞实验">
-<meta itemprop="description" content="漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容">
-
-
-<meta itemprop="datePublished" content="2021-12-19T21:04:03&#43;08:00" />
-<meta itemprop="dateModified" content="2021-12-19T21:04:03&#43;08:00" />
+<meta itemprop="description" content="漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容"><meta itemprop="datePublished" content="2021-12-19T21:04:03+08:00" />
+<meta itemprop="dateModified" content="2021-12-19T21:04:03+08:00" />
 <meta itemprop="wordCount" content="2023">
-
-
-
-<meta itemprop="keywords" content="安全," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="安全," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="容器安全漏洞实验"/>
 <meta name="twitter:description" content="漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,316 +144,299 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#漏洞演示">漏洞演示</a></li>
-<li><a href="#原理">原理</a></li>
-<li><a href="#容器用户">容器用户</a></li>
-<li><a href="#指定容器用户">指定容器用户</a></li>
-<li><a href="#gosu切换用户">gosu切换用户</a></li>
-<li><a href="#版本">版本</a></li>
-<li><a href="#清理">清理</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#漏洞演示">漏洞演示</a></li>
+    <li><a href="#原理">原理</a></li>
+    <li><a href="#容器用户">容器用户</a></li>
+    <li><a href="#指定容器用户">指定容器用户</a></li>
+    <li><a href="#gosu切换用户">gosu切换用户</a></li>
+    <li><a href="#版本">版本</a></li>
+    <li><a href="#清理">清理</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="漏洞演示">漏洞演示</h2>
-
+      <h2 id="漏洞演示">漏洞演示</h2>
 <p>使用 <strong>root</strong> 账号创建一个临时文件 <code>a.txt</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt
-[root@localhost ~]# cat /root/tmp/a.txt 
-aaa</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt
+</span></span><span class="line"><span class="cl">[root@localhost ~]# cat /root/tmp/a.txt 
+</span></span><span class="line"><span class="cl">aaa
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>确认 <strong>work</strong> 账号没有 <code>a.txt</code> 的权限:</p>
+</div><p>确认 <strong>work</strong> 账号没有 <code>a.txt</code> 的权限:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[work@localhost ~]$ cat /root/tmp/a.txt
-cat: /root/tmp/a.txt: Permission denied</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[work@localhost ~]$ cat /root/tmp/a.txt
+</span></span><span class="line"><span class="cl">cat: /root/tmp/a.txt: Permission denied
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用下面命令启动一个redis容器并挂载数据卷 <code>/root/tmp</code> :</p>
+</div><p>使用下面命令启动一个redis容器并挂载数据卷 <code>/root/tmp</code> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 注意这里是work账号
-[work@localhost ~]$ docker run -d -v /root/tmp:/root/tmp  redis:6.0.10
-f709b9d2ef3acd8edd525ba6a47246976715d720c047c868bea0631d51f4ab54docker run -d -v /root/tmp:/root/tmp  redis:6.0.10</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 注意这里是work账号
+</span></span><span class="line"><span class="cl">[work@localhost ~]$ docker run -d -v /root/tmp:/root/tmp  redis:6.0.10
+</span></span><span class="line"><span class="cl">f709b9d2ef3acd8edd525ba6a47246976715d720c047c868bea0631d51f4ab54docker run -d -v /root/tmp:/root/tmp  redis:6.0.10
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>进入刚才创建的 <code>redis</code> 容器并修改 <code>a.txt</code> 文件:</p>
+</div><p>进入刚才创建的 <code>redis</code> 容器并修改 <code>a.txt</code> 文件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 注意这里也是work账号
-[work@localhost ~]$ docker exec -it f70 bash
-root@f709b9d2ef3a:/data# echo &#34;bbb&#34; &gt;&gt; /root/tmp/a.txt 
-root@f709b9d2ef3a:/data# cat /root/tmp/a.txt 
-aaa
-bbb</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 注意这里也是work账号
+</span></span><span class="line"><span class="cl">[work@localhost ~]$ docker exec -it f70 bash
+</span></span><span class="line"><span class="cl">root@f709b9d2ef3a:/data# echo &#34;bbb&#34; &gt;&gt; /root/tmp/a.txt 
+</span></span><span class="line"><span class="cl">root@f709b9d2ef3a:/data# cat /root/tmp/a.txt 
+</span></span><span class="line"><span class="cl">aaa
+</span></span><span class="line"><span class="cl">bbb
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>回到宿主机上，使用 <strong>root</strong> 账号确认 <code>/root/tmp/a.txt</code> 文件内容:</p>
+</div><p>回到宿主机上，使用 <strong>root</strong> 账号确认 <code>/root/tmp/a.txt</code> 文件内容:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[root@localhost ~]# cat /root/tmp/a.txt 
-aaa
-bbb</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost ~]# cat /root/tmp/a.txt 
+</span></span><span class="line"><span class="cl">aaa
+</span></span><span class="line"><span class="cl">bbb
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到一个普通的 <em>work</em> 账号，通过docker容器提权操作了一个没有权限的文档。</p>
-
+</div><p>可以看到一个普通的 <em>work</em> 账号，通过docker容器提权操作了一个没有权限的文档。</p>
 <h2 id="原理">原理</h2>
-
 <p>使用work账号进入刚才的redis容器然后保持：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[work@localhost ~]$ docker exec -it f70 bash
-root@f709b9d2ef3a:/data# id
-uid=0(root) gid=0(root) groups=0(root)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[work@localhost ~]$ docker exec -it f70 bash
+</span></span><span class="line"><span class="cl">root@f709b9d2ef3a:/data# id
+</span></span><span class="line"><span class="cl">uid=0(root) gid=0(root) groups=0(root)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在宿主机使用root账号查看一下容器的bash进程</p>
+</div><p>在宿主机使用root账号查看一下容器的bash进程</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[root@localhost ~]# docker top f70
-UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
-systemd+            13516               13497               0                   04:18               ?                   00:00:03            redis-server *:6379
-root                13679               13497               0                   04:32               pts/0               00:00:00            bash</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost ~]# docker top f70
+</span></span><span class="line"><span class="cl">UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+</span></span><span class="line"><span class="cl">systemd+            13516               13497               0                   04:18               ?                   00:00:03            redis-server *:6379
+</span></span><span class="line"><span class="cl">root                13679               13497               0                   04:32               pts/0               00:00:00            bash
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在宿主机确认<strong>13679</strong>进程的user是root</p>
+</div><p>在宿主机确认<strong>13679</strong>进程的user是root</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[root@localhost ~]# ps -ef | grep 13679
-root     13679 13497  0 04:32 pts/0    00:00:00 bash</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost ~]# ps -ef | grep 13679
+</span></span><span class="line"><span class="cl">root     13679 13497  0 04:32 pts/0    00:00:00 bash
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到work账号进入容器bash程序的时候，切换成root账号，所以权限得到提升。如果绑定了root的目录，则就可以对root目录进行操作。</p>
-
+</div><p>可以看到work账号进入容器bash程序的时候，切换成root账号，所以权限得到提升。如果绑定了root的目录，则就可以对root目录进行操作。</p>
 <p>这是因为我们的docker服务是使用root账号启动的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[root@localhost ~]# ps -ef | grep dockerd
-root     12694     1  0 03:59 ?        00:00:01 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost ~]# ps -ef | grep dockerd
+</span></span><span class="line"><span class="cl">root     12694     1  0 03:59 ?        00:00:01 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="容器用户">容器用户</h2>
-
-<!--
-我们可以得出结论3: **用非root账号安装docker，容器内使用gosu切换账号** 。
--->
-
+</div><h2 id="容器用户">容器用户</h2>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>在宿主机查看redis进程, 可以知道宿主机上redis进程的username是 <strong>polkitd</strong> :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ ps -ef | grep redis
-polkitd  12876 12857  0 14:17 ?        00:00:00 redis-server *:6379</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ ps -ef | grep redis
+</span></span><span class="line"><span class="cl">polkitd  12876 12857  0 14:17 ?        00:00:00 redis-server *:6379
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>也可以使用 <code>docker top</code> 查看:</p>
+</div><p>也可以使用 <code>docker top</code> 查看:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ docker top dca
-UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
-polkitd             12876               12857               1                   14:17               ?                   00:00:00            redis-server *:6379</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ docker top dca
+</span></span><span class="line"><span class="cl">UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+</span></span><span class="line"><span class="cl">polkitd             12876               12857               1                   14:17               ?                   00:00:00            redis-server *:6379
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看宿主机上polkitd账号的uid:</p>
+</div><p>查看宿主机上polkitd账号的uid:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ id polkitd
-uid=999(polkitd) gid=998(polkitd) 组=998(polkitd)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ id polkitd
+</span></span><span class="line"><span class="cl">uid=999(polkitd) gid=998(polkitd) 组=998(polkitd)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>进入容器查看容器内用户:</p>
+</div><p>进入容器查看容器内用户:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">root@5be8ce78244c:/data# gosu redis bash  # 使用gosu切换到redis账号
-redis@5be8ce78244c:/data$ id
-uid=999(redis) gid=999(redis) groups=999(redis)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@5be8ce78244c:/data# gosu redis bash  # 使用gosu切换到redis账号
+</span></span><span class="line"><span class="cl">redis@5be8ce78244c:/data$ id
+</span></span><span class="line"><span class="cl">uid=999(redis) gid=999(redis) groups=999(redis)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里可以发现容器内redis和宿主机polkitd的uid是一致的。</p>
-
+</div><p>这里可以发现容器内redis和宿主机polkitd的uid是一致的。</p>
 <p><code>redis:6.0.10</code>镜像没有安装 <strong>ps</strong>， 可以进入容器后执行 <code>apt-get update &amp;&amp; apt-get install procps</code> 安装。然后查看redis进程的uid:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">root@6c54c348686d:/data# ps -ef
-UID         PID   PPID  C STIME TTY          TIME CMD
-redis         1      0  0 08:08 ?        00:00:00 redis-server *:6379
-root         26      0  0 08:09 pts/0    00:00:00 bash
-root        350     26  0 08:15 pts/0    00:00:00 ps -ef</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@6c54c348686d:/data# ps -ef
+</span></span><span class="line"><span class="cl">UID         PID   PPID  C STIME TTY          TIME CMD
+</span></span><span class="line"><span class="cl">redis         1      0  0 08:08 ?        00:00:00 redis-server *:6379
+</span></span><span class="line"><span class="cl">root         26      0  0 08:09 pts/0    00:00:00 bash
+</span></span><span class="line"><span class="cl">root        350     26  0 08:15 pts/0    00:00:00 ps -ef
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>确认容器内是使用redis账号启动的服务，服务进程号是 <strong>1</strong>。还可以在宿主机上确认redis账号不存在:</p>
+</div><p>确认容器内是使用redis账号启动的服务，服务进程号是 <strong>1</strong>。还可以在宿主机上确认redis账号不存在:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ id redis
-id: redis: no such user</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ id redis
+</span></span><span class="line"><span class="cl">id: redis: no such user
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以得出结论1: <strong>容器用户uid和宿主机用户的uid相同，名称可以不同</strong> 。</p>
-
+</div><p>我们可以得出结论1: <strong>容器用户uid和宿主机用户的uid相同，名称可以不同</strong> 。</p>
 <h2 id="指定容器用户">指定容器用户</h2>
-
 <p>容器可以指定用户。编写 <code>Dockerfile</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">FROM redis:6.0.10
-RUN groupadd -r test1 &amp;&amp; useradd -r -g test1 test1  # 创建一下test1用户</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">FROM redis:6.0.10
+</span></span><span class="line"><span class="cl">RUN groupadd -r test1 &amp;&amp; useradd -r -g test1 test1  # 创建一下test1用户
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>编译镜像</p>
+</div><p>编译镜像</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker build -t redis:redis_test .</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker build -t redis:redis_test .
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>运行自定义的redis镜像, 运行时需要指定用户</p>
+</div><p>运行自定义的redis镜像, 运行时需要指定用户</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker run -d --user test1 redis:redis_test</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker run -d --user test1 redis:redis_test
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
-<p><code>docker run -u</code> 参数帮助:  &ndash;user string   Username or UID (format: <name|uid>[:<group|gid>])</p>
+</div><blockquote>
+<p><code>docker run -u</code> 参数帮助:  &ndash;user string   Username or UID (format: &lt;name|uid&gt;[:&lt;group|gid&gt;])</p>
 </blockquote>
-
 <p>在宿主机上查看redis进程信息, 发现是systemd-bus-proxy创建的进程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ ps -axo user:20,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm | grep redis
-systemd-bus-proxy    15429  0.1  0.0  52796 11916 ?        Ssl  16:24:01 00:00:01 redis-server</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ ps -axo user:20,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm | grep redis
+</span></span><span class="line"><span class="cl">systemd-bus-proxy    15429  0.1  0.0  52796 11916 ?        Ssl  16:24:01 00:00:01 redis-server
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>ps -ef 中如果username超过8个字符，会显示成 <strong>systemd+</strong>, 所以上面命令要使用 use:20 格式化一下长度</p>
 </blockquote>
-
 <p>看看systemd-bus-proxy的uid</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ id systemd-bus-proxy
-uid=998(systemd-bus-proxy) gid=996(systemd-bus-proxy) groups=996(systemd-bus-proxy)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ id systemd-bus-proxy
+</span></span><span class="line"><span class="cl">uid=998(systemd-bus-proxy) gid=996(systemd-bus-proxy) groups=996(systemd-bus-proxy)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>进入容器查看:</p>
+</div><p>进入容器查看:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ docker exec -it 680 bash
-test1@680ccf686e5f:/data$ id  # 注意当前用户变成了test1，uid=998
-uid=998(test1) gid=998(test1) groups=998(test1)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ docker exec -it 680 bash
+</span></span><span class="line"><span class="cl">test1@680ccf686e5f:/data$ id  # 注意当前用户变成了test1，uid=998
+</span></span><span class="line"><span class="cl">uid=998(test1) gid=998(test1) groups=998(test1)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用test1运行的容器没有权限安装包，使用下面方式确认进程的uid=998</p>
+</div><p>使用test1运行的容器没有权限安装包，使用下面方式确认进程的uid=998</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -458,45 +444,40 @@ uid=998(test1) gid=998(test1) groups=998(test1)</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ cat /proc/1/status | grep id
-Tgid:   1
-Ngid:   0
-Pid:    1
-PPid:   0
-TracerPid:  0
-Uid:    998 998 998 998
-Gid:    998 998 998 998</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ cat /proc/1/status | grep id
+</span></span><span class="line"><span class="cl">Tgid:	1
+</span></span><span class="line"><span class="cl">Ngid:	0
+</span></span><span class="line"><span class="cl">Pid:	1
+</span></span><span class="line"><span class="cl">PPid:	0
+</span></span><span class="line"><span class="cl">TracerPid:	0
+</span></span><span class="line"><span class="cl">Uid:	998	998	998	998
+</span></span><span class="line"><span class="cl">Gid:	998	998	998	998
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>docker的机制是容器的id=1的进程是主进程。</p>
-
+</div><p>docker的机制是容器的id=1的进程是主进程。</p>
 <p>我们可以得出结论2: <strong>容器用户可以在镜像中创建，在container运行时使用<code>--user</code>参数指定</strong> 。</p>
-
 <h2 id="gosu切换用户">gosu切换用户</h2>
-
 <p>容器可以指定用户，自然涉及到切换用户的问题，宿主机上使用 <code>su</code> , 容器内建议 <code>gosu</code>，下面是Docker — 从入门到实践中的内容:</p>
-
 <blockquote>
 <p>如果以 root 执行的脚本，在执行期间希望改变身份，比如希望以某个已经建立 好的用户来运行某个服务进程，不要使用 <code>su</code> 或者 <code>sudo</code> ，这些都需要比较麻烦 的配置，而且在 TTY 缺失的环境下经常出错。</p>
 </blockquote>
-
 <p>redis:6.0.10的 <a href="https://github.com/docker-library/redis/blob/f634377257f6a41eaded4fb57672260fea6369e1/6.0/Dockerfile">Dockerfile</a> 源码中可以看到创建了redis=999的账号:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-RUN groupadd -r -g 999 redis &amp;&amp; useradd -r -g redis -u 999 redis</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+</span></span><span class="line"><span class="cl">RUN groupadd -r -g 999 redis &amp;&amp; useradd -r -g redis -u 999 redis
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>重点是 <strong>docker-entrypoint.sh</strong> 部分:</p>
+</div><p>重点是 <strong>docker-entrypoint.sh</strong> 部分:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -515,35 +496,34 @@ RUN groupadd -r -g 999 redis &amp;&amp; useradd -r -g redis -u 999 redis</pre></
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">root@6c54c348686d:/data# whereis docker-entrypoint.sh
-docker-entrypoint: /usr/local/bin/docker-entrypoint.sh
-root@6c54c348686d:/data# cat /usr/local/bin/docker-entrypoint.sh
-<span class="cp">#!/bin/sh
-</span><span class="cp"></span><span class="nb">set</span> -e
-
-<span class="c1"># first arg is `-f` or `--some-option`</span>
-<span class="c1"># or first arg is `something.conf`</span>
-<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="p">#-</span><span class="si">}</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="p">%.conf</span><span class="si">}</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="nb">set</span> -- redis-server <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
-<span class="k">fi</span>
-
-<span class="c1"># allow the container to be started with `--user`</span>
-<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;redis-server&#39;</span> -a <span class="s2">&#34;</span><span class="k">$(</span>id -u<span class="k">)</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    find . <span class="se">\!</span> -user redis -exec chown redis <span class="s1">&#39;{}&#39;</span> +
-    <span class="nb">exec</span> gosu redis <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>  <span class="c1"># 使用redis账号启动redis-server</span>
-<span class="k">fi</span>
-
-<span class="nb">exec</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@6c54c348686d:/data# whereis docker-entrypoint.sh
+</span></span><span class="line"><span class="cl">docker-entrypoint: /usr/local/bin/docker-entrypoint.sh
+</span></span><span class="line"><span class="cl">root@6c54c348686d:/data# cat /usr/local/bin/docker-entrypoint.sh
+</span></span><span class="line"><span class="cl"><span class="c1">#!/bin/sh</span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -e
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># first arg is `-f` or `--some-option`</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># or first arg is `something.conf`</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="p">#-</span><span class="si">}</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">1</span><span class="p">%.conf</span><span class="si">}</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">set</span> -- redis-server <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># allow the container to be started with `--user`</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;redis-server&#39;</span> -a <span class="s2">&#34;</span><span class="k">$(</span>id -u<span class="k">)</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">	find . <span class="se">\!</span> -user redis -exec chown redis <span class="s1">&#39;{}&#39;</span> +
+</span></span><span class="line"><span class="cl">	<span class="nb">exec</span> gosu redis <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>  <span class="c1"># 使用redis账号启动redis-server</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">exec</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>所以默认的redis:6.0.10显示uid=999。</p>
-
+</div><p>所以默认的redis:6.0.10显示uid=999。</p>
 <p>下面是gosu官方的日志：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -554,29 +534,27 @@ root@6c54c348686d:/data# cat /usr/local/bin/docker-entrypoint.sh
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ docker run -it --rm ubuntu:trusty su -c &#39;exec ps aux&#39;
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  0.0  0.0  46636  2688 ?        Ss+  02:22   0:00 su -c exec ps a
-root         6  0.0  0.0  15576  2220 ?        Rs   02:22   0:00 ps aux
-$ docker run -it --rm ubuntu:trusty sudo ps aux
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  3.0  0.0  46020  3144 ?        Ss+  02:22   0:00 sudo ps aux
-root         7  0.0  0.0  15576  2172 ?        R+   02:22   0:00 ps aux
-$ docker run -it --rm -v $PWD/gosu-amd64:/usr/local/bin/gosu:ro ubuntu:trusty gosu root ps aux
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ docker run -it --rm ubuntu:trusty su -c &#39;exec ps aux&#39;
+</span></span><span class="line"><span class="cl">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span class="line"><span class="cl">root         1  0.0  0.0  46636  2688 ?        Ss+  02:22   0:00 su -c exec ps a
+</span></span><span class="line"><span class="cl">root         6  0.0  0.0  15576  2220 ?        Rs   02:22   0:00 ps aux
+</span></span><span class="line"><span class="cl">$ docker run -it --rm ubuntu:trusty sudo ps aux
+</span></span><span class="line"><span class="cl">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span class="line"><span class="cl">root         1  3.0  0.0  46020  3144 ?        Ss+  02:22   0:00 sudo ps aux
+</span></span><span class="line"><span class="cl">root         7  0.0  0.0  15576  2172 ?        R+   02:22   0:00 ps aux
+</span></span><span class="line"><span class="cl">$ docker run -it --rm -v $PWD/gosu-amd64:/usr/local/bin/gosu:ro ubuntu:trusty gosu root ps aux
+</span></span><span class="line"><span class="cl">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+</span></span><span class="line"><span class="cl">root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>sudo会作为被授权的命令的父进程一直存在，直到该命令退出，gosu则没有这个问题。</p>
-
+</div><p>sudo会作为被授权的命令的父进程一直存在，直到该命令退出，gosu则没有这个问题。</p>
 <h2 id="版本">版本</h2>
-
 <p>本次使用使用的相关版本:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -590,45 +568,43 @@ root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux</pre></t
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">NAME=&#34;CentOS Linux&#34;
-VERSION=&#34;7 (Core)&#34;
-...
-
-Client: Docker Engine - Community
- Version:           20.10.7
- API version:       1.41
-...
-
-Server: Docker Engine - Community
- Engine:
-  Version:          20.10.7
-  API version:      1.41 (minimum version 1.12)
-  ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">NAME=&#34;CentOS Linux&#34;
+</span></span><span class="line"><span class="cl">VERSION=&#34;7 (Core)&#34;
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Client: Docker Engine - Community
+</span></span><span class="line"><span class="cl"> Version:           20.10.7
+</span></span><span class="line"><span class="cl"> API version:       1.41
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Server: Docker Engine - Community
+</span></span><span class="line"><span class="cl"> Engine:
+</span></span><span class="line"><span class="cl">  Version:          20.10.7
+</span></span><span class="line"><span class="cl">  API version:      1.41 (minimum version 1.12)
+</span></span><span class="line"><span class="cl">  ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="清理">清理</h2>
-
+</div><h2 id="清理">清理</h2>
 <p>可以使用下面命令清理实验环境</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">docker ps -aq | xargs docker  stop  # 关闭容器
-docker container prune  # 清理容器
-
-docker rmi redis:redis_test  # 删除镜像
-docker image prune  # 清理镜像</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker ps -aq | xargs docker  stop  # 关闭容器
+</span></span><span class="line"><span class="cl">docker container prune  # 清理容器
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker rmi redis:redis_test  # 删除镜像
+</span></span><span class="line"><span class="cl">docker image prune  # 清理镜像
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="参考链接">参考链接</h2>
 <ul>
 <li><a href="https://github.com/yeasy/docker_practice/blob/master/SUMMARY.md">https://github.com/yeasy/docker_practice/blob/master/SUMMARY.md</a></li>
 <li><a href="https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf">https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf</a></li>
@@ -672,14 +648,14 @@ docker image prune  # 清理镜像</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-12-19 21:04:03 \x2b0800 CST',
+        id: '2021-12-19 21:04:03 \u002b0800 CST',
         title: '容器安全漏洞实验',
         link: decodeURI(location.href),
-        desc: '漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo \x26#34;aaa\x26#34; \x26gt; \/root\/tmp\/a.txt [root@localhost ~]# cat \/root\/tmp\/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat \/root\/tmp\/a.txt cat: \/root\/tmp\/a.txt: Permission denied 使用下面命令启动一个redis容',
+        desc: '漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo \u0026#34;aaa\u0026#34; \u0026gt; \/root\/tmp\/a.txt [root@localhost ~]# cat \/root\/tmp\/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat \/root\/tmp\/a.txt cat: \/root\/tmp\/a.txt: Permission denied 使用下面命令启动一个redis容',
         owner: 'game404',
         repo: 'game404.github.io',
         oauth: {
@@ -690,6 +666,10 @@ docker image prune  # 清理镜像</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -717,13 +697,10 @@ docker image prune  # 清理镜像</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -734,7 +711,10 @@ docker image prune  # 清理镜像</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

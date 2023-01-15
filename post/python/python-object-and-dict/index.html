@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/python-object-and-dict/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="python 对象杂谈" />
 <meta property="og:description" content="需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/python-object-and-dict/" />
-<meta property="article:published_time" content="2021-09-02T21:50:56&#43;08:00"/>
-<meta property="article:modified_time" content="2021-09-02T21:50:56&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/python-object-and-dict/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-09-02T21:50:56+08:00" />
+<meta property="article:modified_time" content="2021-09-02T21:50:56+08:00" />
 
 <meta itemprop="name" content="python 对象杂谈">
-<meta itemprop="description" content="需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一">
-
-
-<meta itemprop="datePublished" content="2021-09-02T21:50:56&#43;08:00" />
-<meta itemprop="dateModified" content="2021-09-02T21:50:56&#43;08:00" />
-<meta itemprop="wordCount" content="3186">
-
-
-
-<meta itemprop="keywords" content="语法," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一"><meta itemprop="datePublished" content="2021-09-02T21:50:56+08:00" />
+<meta itemprop="dateModified" content="2021-09-02T21:50:56+08:00" />
+<meta itemprop="wordCount" content="3179">
+<meta itemprop="keywords" content="语法," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="python 对象杂谈"/>
 <meta name="twitter:description" content="需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,66 +144,60 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#需求">需求</a></li>
-<li><a href="#object-vs-dict">object vs dict</a></li>
-<li><a href="#访问属性的4种方法">访问属性的4种方法</a></li>
-<li><a href="#对象的-dict-属性">对象的 __dict__ 属性</a></li>
-<li><a href="#使用slot限制对象">使用slot限制对象</a></li>
-<li><a href="#实现somedict类">实现SomeDict类</a></li>
-<li><a href="#总结">总结</a></li>
-<li><a href="#性能小技巧">性能小技巧</a>
-<ul>
-<li><a href="#和-dict-的性能对比">{} 和 dict 的性能对比</a></li>
-<li><a href="#slots-性能对比"><strong>slots</strong> 性能对比</a></li>
-</ul></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#需求">需求</a></li>
+    <li><a href="#object-vs-dict">object vs dict</a></li>
+    <li><a href="#访问属性的4种方法">访问属性的4种方法</a></li>
+    <li><a href="#对象的-__dict__-属性">对象的 __dict__ 属性</a></li>
+    <li><a href="#使用slot限制对象">使用slot限制对象</a></li>
+    <li><a href="#实现somedict类">实现SomeDict类</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#性能小技巧">性能小技巧</a>
+      <ul>
+        <li><a href="#-和-dict-的性能对比">{} 和 dict 的性能对比</a></li>
+        <li><a href="#__slots__-性能对比"><strong>slots</strong> 性能对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="需求">需求</h2>
-
+      <h2 id="需求">需求</h2>
 <p>老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。</p>
-
 <p>我们有一个玩家的session字典集合，希望记录玩家的连接信息，大概伪代码是这样的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 创建玩家字典集合
-player_session_dict = {}
-# 设置玩家
-player_session_dict[&#34;1000&#34;]=&#34;playerA&#34;
-# 判断玩家连接
-assert player_session_dict[&#34;1000&#34;] == &#34;playerA&#34;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 创建玩家字典集合
+</span></span><span class="line"><span class="cl">player_session_dict = {}
+</span></span><span class="line"><span class="cl"># 设置玩家
+</span></span><span class="line"><span class="cl">player_session_dict[&#34;1000&#34;]=&#34;playerA&#34;
+</span></span><span class="line"><span class="cl"># 判断玩家连接
+</span></span><span class="line"><span class="cl">assert player_session_dict[&#34;1000&#34;] == &#34;playerA&#34;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>一般情况下使用 <em>{}</em> 没有问题 , 但是某些协议会把玩家的ID使用int型，获取session就报错了:</p>
+</div><p>一般情况下使用 <em>{}</em> 没有问题 , 但是某些协议会把玩家的ID使用int型，获取session就报错了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">assert player_session_dict[1000] == &#34;playerA&#34;  # error</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">assert player_session_dict[1000] == &#34;playerA&#34;  # error
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>要解决这个问题，希望实现一个数据结构来存储session，使用int/str均可以获取到玩家对应的session:</p>
+</div><p>要解决这个问题，希望实现一个数据结构来存储session，使用int/str均可以获取到玩家对应的session:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -209,34 +206,34 @@ assert player_session_dict[&#34;1000&#34;] == &#34;playerA&#34;</pre></td></tr><
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">player_session_dict = SomeDict()
-player_session_dict[1000]=&#34;playerA&#34;
-
-# 使用int作为key可以获取
-assert player_session_dict[1000] == &#34;playerA&#34;
-assert player_session_dict.get(1000) == &#34;playerA&#34;
-# 使用string作为key也可以获取
-assert player_session_dict[&#34;1000&#34;] == &#34;playerA&#34;
-assert player_session_dict.get(&#34;1000&#34;) == &#34;playerA&#34;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">player_session_dict = SomeDict()
+</span></span><span class="line"><span class="cl">player_session_dict[1000]=&#34;playerA&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 使用int作为key可以获取
+</span></span><span class="line"><span class="cl">assert player_session_dict[1000] == &#34;playerA&#34;
+</span></span><span class="line"><span class="cl">assert player_session_dict.get(1000) == &#34;playerA&#34;
+</span></span><span class="line"><span class="cl"># 使用string作为key也可以获取
+</span></span><span class="line"><span class="cl">assert player_session_dict[&#34;1000&#34;] == &#34;playerA&#34;
+</span></span><span class="line"><span class="cl">assert player_session_dict.get(&#34;1000&#34;) == &#34;playerA&#34;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>本文包括下面几个部分
-* object vs dict
-* 访问属性的4种方法
-* 对象的 __dict__ 属性
-* 使用slot限制对象
-* 实现SomeDict类
-* 总结
-* 小技巧</p>
-
+</div><p>本文包括下面几个部分</p>
+<ul>
+<li>object vs dict</li>
+<li>访问属性的4种方法</li>
+<li>对象的 __dict__ 属性</li>
+<li>使用slot限制对象</li>
+<li>实现SomeDict类</li>
+<li>总结</li>
+<li>小技巧</li>
+</ul>
 <h2 id="object-vs-dict">object vs dict</h2>
-
 <p>首先从python的对象和字典入手，编写下面的测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -248,30 +245,29 @@ assert player_session_dict.get(&#34;1000&#34;) == &#34;playerA&#34;</pre></td></
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class A:
-...     pass
-... 
-&gt;&gt;&gt; a = A()
-&gt;&gt;&gt; class B(object):
-...     pass
-... 
-&gt;&gt;&gt; b = B()
-&gt;&gt;&gt; class C(dict):
-...     pass
-... 
-&gt;&gt;&gt; c = C()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class A:
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">... 
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a = A()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; class B(object):
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">... 
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b = B()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; class C(dict):
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">... 
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c = C()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>A类是旧式写法，B类是新式写法，我习惯使用B类写法，感觉更明确</p>
 </blockquote>
-
 <p>判断a，b，c三个对象的类型和继承关系:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -283,39 +279,38 @@ assert player_session_dict.get(&#34;1000&#34;) == &#34;playerA&#34;</pre></td></
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; isinstance(a, object)
-True
-&gt;&gt;&gt; isinstance(a, dict)
-False
-&gt;&gt;&gt; isinstance(b, object)
-True
-&gt;&gt;&gt; isinstance(b, dict)
-False
-&gt;&gt;&gt; isinstance(c, object)
-True
-&gt;&gt;&gt; isinstance(c, dict)
-True</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(a, object)
+</span></span><span class="line"><span class="cl">True
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(a, dict)
+</span></span><span class="line"><span class="cl">False
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(b, object)
+</span></span><span class="line"><span class="cl">True
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(b, dict)
+</span></span><span class="line"><span class="cl">False
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(c, object)
+</span></span><span class="line"><span class="cl">True
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; isinstance(c, dict)
+</span></span><span class="line"><span class="cl">True
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到dict继承自对象object，这个符合常识。从源码 <code>builtins.py</code> 中也可以验证这一点:</p>
+</div><p>可以看到dict继承自对象object，这个符合常识。从源码 <code>builtins.py</code> 中也可以验证这一点:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class dict(object):
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class dict(object):
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>目前看来，我们的数据结构SomeDict即可以派生自object，也可以派生自dict。</p>
-
+</div><p>目前看来，我们的数据结构SomeDict即可以派生自object，也可以派生自dict。</p>
 <p>并且通过测试可以发现，使用{}和dict()都是创建字典，使用上没有差异:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -325,77 +320,74 @@ True</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; a = {}
-&gt;&gt;&gt; b = dict()
-&gt;&gt;&gt; type(a)
-&lt;class &#39;dict&#39;&gt;
-&gt;&gt;&gt; type(b)
-&lt;class &#39;dict&#39;&gt;
-&gt;&gt;&gt; a == b
-True
-&gt;&gt;&gt; a is b
-False</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; a = {}
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b = dict()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; type(a)
+</span></span><span class="line"><span class="cl">&lt;class &#39;dict&#39;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; type(b)
+</span></span><span class="line"><span class="cl">&lt;class &#39;dict&#39;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a == b
+</span></span><span class="line"><span class="cl">True
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a is b
+</span></span><span class="line"><span class="cl">False
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>内存占用也一样:</p>
+</div><p>内存占用也一样:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; import sys
-&gt;&gt;&gt;
-&gt;&gt;&gt; sys.getsizeof(a)
-280
-&gt;&gt;&gt; b = dict()
-&gt;&gt;&gt; sys.getsizeof(b)
-280</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; import sys
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; sys.getsizeof(a)
+</span></span><span class="line"><span class="cl">280
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b = dict()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; sys.getsizeof(b)
+</span></span><span class="line"><span class="cl">280
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="访问属性的4种方法">访问属性的4种方法</h2>
-
+</div><h2 id="访问属性的4种方法">访问属性的4种方法</h2>
 <p>python中获取对象属性大概有下面几种方法:</p>
-
 <ol>
 <li><code>.</code> 点: 访问object的属性attribute，不存在会报AttributeError</li>
 <li><code>[]</code> 方括号: 根据索引获取list/map对应的值，字典索引不存在会报KeyError(list索引不存在会报IndexError)</li>
 <li><code>get</code> get方法，同方括号，区别是索引不存在不会报错</li>
 <li>使用 <code>in</code> 判断属性是否存在</li>
 </ol>
-
 <p>普通的对象可以使用 <code>.</code> 获取属性：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class A(object):
-...     pass
-...
-&gt;&gt;&gt; a = A()
-&gt;&gt;&gt; a.name = &#34;aa&#34;
-&gt;&gt;&gt; a.name
-&#39;aa&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class A(object):
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a = A()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.name = &#34;aa&#34;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.name
+</span></span><span class="line"><span class="cl">&#39;aa&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同时普通类不可以使用 <code>[]</code> 和 <code>get</code> 方法获取属性:</p>
+</div><p>同时普通类不可以使用 <code>[]</code> 和 <code>get</code> 方法获取属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -405,26 +397,25 @@ False</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; a[&#34;name&#34;]
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-TypeError: &#39;A&#39; object does not support item assignment
-&gt;&gt;&gt; a.get(&#34;name&#34;)
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-AttributeError: &#39;A&#39; object has no attribute &#39;get&#39;
-&gt;&gt;&gt; a
-&lt;__main__.A object at 0x10de4fad0&gt;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; a[&#34;name&#34;]
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">TypeError: &#39;A&#39; object does not support item assignment
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a.get(&#34;name&#34;)
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">AttributeError: &#39;A&#39; object has no attribute &#39;get&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; a
+</span></span><span class="line"><span class="cl">&lt;__main__.A object at 0x10de4fad0&gt;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<hr />
-
+</div><hr>
 <p>普通的字典可以使用 <code>[]</code> 获取属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -432,67 +423,66 @@ AttributeError: &#39;A&#39; object has no attribute &#39;get&#39;
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; b = {}
-&gt;&gt;&gt; b[&#34;name&#34;]
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-KeyError: &#39;name&#39;
-&gt;&gt;&gt; b[&#34;name&#34;] = &#34;bb&#34;
-&gt;&gt;&gt; b[&#34;name&#34;]
-&#39;bb&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; b = {}
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[&#34;name&#34;]
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">KeyError: &#39;name&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[&#34;name&#34;] = &#34;bb&#34;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; b[&#34;name&#34;]
+</span></span><span class="line"><span class="cl">&#39;bb&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>当属性不存在的时候会报KeyError的错误，可以使用get方法更安全，不存在的属性会返回none:</p>
+</div><p>当属性不存在的时候会报KeyError的错误，可以使用get方法更安全，不存在的属性会返回none:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; b.get(&#34;age&#34;)
-&gt;&gt;&gt; print(b.get(&#34;age&#34;))
-None</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; b.get(&#34;age&#34;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; print(b.get(&#34;age&#34;))
+</span></span><span class="line"><span class="cl">None
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>也可以使用in对字典属性是否存在进行先行判断，确认存在后再进行获取:</p>
+</div><p>也可以使用in对字典属性是否存在进行先行判断，确认存在后再进行获取:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; if &#34;age&#34; in b:
-...     print(&#34;age in b&#34;)
-...     print(b[&#34;age&#34;])
-...</pre></td></tr></table>
-</div>
-</div>
-<p>普通的字典不可以使用 <code>.</code> 获取属性:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; b.name
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-AttributeError: &#39;dict&#39; object has no attribute &#39;name&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; if &#34;age&#34; in b:
+</span></span><span class="line"><span class="cl">...     print(&#34;age in b&#34;)
+</span></span><span class="line"><span class="cl">...     print(b[&#34;age&#34;])
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p>普通的字典不可以使用 <code>.</code> 获取属性:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; b.name
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">AttributeError: &#39;dict&#39; object has no attribute &#39;name&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-<hr />
-
+</div><hr>
 <p>如果一个类，派生自字典呢？先看代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -503,25 +493,25 @@ AttributeError: &#39;dict&#39; object has no attribute &#39;name&#39;</pre></td>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class C(dict):
-...     pass
-...
-&gt;&gt;&gt;
-&gt;&gt;&gt; c = C()
-&gt;&gt;&gt; c.name = &#34;cc&#34;
-&gt;&gt;&gt; c.name
-&#39;cc&#39;
-&gt;&gt;&gt; c[&#34;age&#34;] = 10
-&gt;&gt;&gt; c[&#34;age&#34;]
-10</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class C(dict):
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c = C()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.name = &#34;cc&#34;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.name
+</span></span><span class="line"><span class="cl">&#39;cc&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c[&#34;age&#34;] = 10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c[&#34;age&#34;]
+</span></span><span class="line"><span class="cl">10
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>c对象即可使用<code>.</code>获取属性, 也可以使用<code>[]</code> 获取属性，兼具object和dict的特性。但是需要注意的是不可以混搭使用:</p>
+</div><p>c对象即可使用<code>.</code>获取属性, 也可以使用<code>[]</code> 获取属性，兼具object和dict的特性。但是需要注意的是不可以混搭使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -530,44 +520,44 @@ AttributeError: &#39;dict&#39; object has no attribute &#39;name&#39;</pre></td>
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; c[&#34;name&#34;]
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-KeyError: &#39;name&#39;
-&gt;&gt;&gt;
-&gt;&gt;&gt; c.age
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-AttributeError: &#39;B&#39; object has no attribute &#39;age&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; c[&#34;name&#34;]
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">KeyError: &#39;name&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.age
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">AttributeError: &#39;B&#39; object has no attribute &#39;age&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p><code>get</code>和<code>in</code>的使用和<code>[]</code>的表现一致:</p>
+</div><p><code>get</code>和<code>in</code>的使用和<code>[]</code>的表现一致:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; c.get(&#34;name&#34;)
-&gt;&gt;&gt; c.get(&#34;age&#34;)
-10
-&gt;&gt;&gt; &#34;name&#34; in c
-False
-&gt;&gt;&gt; &#34;age&#34; in c
-True</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; c.get(&#34;name&#34;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.get(&#34;age&#34;)
+</span></span><span class="line"><span class="cl">10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; &#34;name&#34; in c
+</span></span><span class="line"><span class="cl">False
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; &#34;age&#34; in c
+</span></span><span class="line"><span class="cl">True
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看get方法，可以找到相关定义:</p>
+</div><p>查看get方法，可以找到相关定义:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -582,35 +572,33 @@ True</pre></td></tr></table>
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Mapping(_Collection[_KT], Generic[_KT, _VT_co]):
-    # TODO: We wish the key type could also be covariant, but that doesn&#39;t work,
-    # see discussion in https: //github.com/python/typing/pull/273.
-    @abstractmethod
-    def __getitem__(self, k: _KT) -&gt; _VT_co:
-        ...
-    # Mixin methods
-    @overload
-    def get(self, k: _KT) -&gt; Optional[_VT_co]: ...
-    @overload
-    def get(self, k: _KT, default: Union[_VT_co, _T]) -&gt; Union[_VT_co, _T]: ...
-    def items(self) -&gt; AbstractSet[Tuple[_KT, _VT_co]]: ...
-    def keys(self) -&gt; AbstractSet[_KT]: ...
-    def values(self) -&gt; ValuesView[_VT_co]: ...
-    def __contains__(self, o: object) -&gt; bool: ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Mapping(_Collection[_KT], Generic[_KT, _VT_co]):
+</span></span><span class="line"><span class="cl">    # TODO: We wish the key type could also be covariant, but that doesn&#39;t work,
+</span></span><span class="line"><span class="cl">    # see discussion in https: //github.com/python/typing/pull/273.
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def __getitem__(self, k: _KT) -&gt; _VT_co:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    # Mixin methods
+</span></span><span class="line"><span class="cl">    @overload
+</span></span><span class="line"><span class="cl">    def get(self, k: _KT) -&gt; Optional[_VT_co]: ...
+</span></span><span class="line"><span class="cl">    @overload
+</span></span><span class="line"><span class="cl">    def get(self, k: _KT, default: Union[_VT_co, _T]) -&gt; Union[_VT_co, _T]: ...
+</span></span><span class="line"><span class="cl">    def items(self) -&gt; AbstractSet[Tuple[_KT, _VT_co]]: ...
+</span></span><span class="line"><span class="cl">    def keys(self) -&gt; AbstractSet[_KT]: ...
+</span></span><span class="line"><span class="cl">    def values(self) -&gt; ValuesView[_VT_co]: ...
+</span></span><span class="line"><span class="cl">    def __contains__(self, o: object) -&gt; bool: ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>in 对应的就是 <em><strong>contains</strong></em> 方法。Mapping又mixin自Collection，所以也可以使用[]</p>
 </blockquote>
-
-<h2 id="对象的-dict-属性">对象的 __dict__ 属性</h2>
-
+<h2 id="对象的-__dict__-属性">对象的 __dict__ 属性</h2>
 <p>要完全理解上面的c对象的使用差异，需要了解object的实现，其中主要就有 <em>__dict__</em> 。 先看代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -623,80 +611,77 @@ True</pre></td></tr></table>
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class C(dict):
-...     pass
-...
-&gt;&gt;&gt; c = C()
-&gt;&gt;&gt; c.name = &#34;cc&#34;
-&gt;&gt;&gt;
-&gt;&gt;&gt; c[&#34;age&#34;] = 10
-&gt;&gt;&gt;
-&gt;&gt;&gt; c
-{&#39;age&#39;: 10}
-&gt;&gt;&gt;
-&gt;&gt;&gt; c.__dict__
-{&#39;name&#39;: &#39;bb&#39;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class C(dict):
+</span></span><span class="line"><span class="cl">...     pass
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c = C()
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.name = &#34;cc&#34;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c[&#34;age&#34;] = 10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c
+</span></span><span class="line"><span class="cl">{&#39;age&#39;: 10}
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; c.__dict__
+</span></span><span class="line"><span class="cl">{&#39;name&#39;: &#39;bb&#39;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到c对象的表现分离出两个字典。一个是字典部分，从dict而来，可以使用 <code>[]</code> ; 另一种是继承自对象的 __dict__, 可以使用 <code>.</code>。</p>
-
+</div><p>可以看到c对象的表现分离出两个字典。一个是字典部分，从dict而来，可以使用 <code>[]</code> ; 另一种是继承自对象的 __dict__, 可以使用 <code>.</code>。</p>
 <p>__dict__是自定义对象的隐藏属性，比如前面的a对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; a.__dict__
-{&#39;name&#39;: &#39;aa&#39;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; a.__dict__
+</span></span><span class="line"><span class="cl">{&#39;name&#39;: &#39;aa&#39;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>甚至A类:</p>
+</div><p>甚至A类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; A.__dict__
-dict_proxy({&#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;A&#39; objects&gt;, &#39;__module__&#39;: &#39;__main__&#39;, &#39;__weakref__&#39;: &lt;attribute &#39;__weakref__&#39; of &#39;A&#39; objects&gt;, &#39;__doc__&#39;: None})</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; A.__dict__
+</span></span><span class="line"><span class="cl">dict_proxy({&#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;A&#39; objects&gt;, &#39;__module__&#39;: &#39;__main__&#39;, &#39;__weakref__&#39;: &lt;attribute &#39;__weakref__&#39; of &#39;A&#39; objects&gt;, &#39;__doc__&#39;: None})
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是官方文档中的相关解释:</p>
-
+</div><p>下面是官方文档中的相关解释:</p>
 <blockquote>
 <p>自定义类(Custom classes)：每个类都有通过一个字典对象实现的独立命名空间。类属性引用会被转化为在此字典中查找，例如 C.x 会被转化为 C.<strong>dict</strong>[&ldquo;x&rdquo;]</p>
-
+</blockquote>
+<blockquote>
 <p>类实例(Class instances): 每个类实例都有通过一个字典对象实现的独立命名空间，属性引用会首先在此字典中查找。当未在其中发现某个属性，而实例对应的类中有该属性时，会继续在类属性中查找。特殊属性: <strong>dict</strong> 为属性字典; <strong>class</strong> 为实例对应的类。</p>
-
+</blockquote>
+<blockquote>
 <p>映射/字典(Mapping/Dictionary): 此类对象表示由任意索引集合所索引的对象的集合。通过下标 a[k] 可在映射 a 中选择索引为 k 的条目；这可以在表达式中使用，也可作为赋值或 del 语句的目标。内置函数 len() 可返回一个映射中的条目数。</p>
 </blockquote>
-
 <p>这里的命名空间可以理解成作用域，比如:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">name = &#34;aaa&#34;
-    def func():
-        name = &#34;bbb&#34;
-        pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">name = &#34;aaa&#34;
+</span></span><span class="line"><span class="cl">    def func():
+</span></span><span class="line"><span class="cl">        name = &#34;bbb&#34;
+</span></span><span class="line"><span class="cl">        pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的name定义在不同的作用域可以是不同的值，global里是aaa，在func里是bbb。同样对于C对象的实例c1和c2，同样的属性名称name指向不同的 __dict__命名空间。</p>
-
+</div><p>这里的name定义在不同的作用域可以是不同的值，global里是aaa，在func里是bbb。同样对于C对象的实例c1和c2，同样的属性名称name指向不同的 __dict__命名空间。</p>
 <h2 id="使用slot限制对象">使用slot限制对象</h2>
-
 <p>对于普通对象，我们可以这样定义和使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -706,41 +691,41 @@ dict_proxy({&#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;A&#39; 
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class D(object):
-...     def __init__(self, name):
-...             self.name = name
-...
-&gt;&gt;&gt;
-&gt;&gt;&gt; d = D(&#34;dd&#34;)
-&gt;&gt;&gt; d.name
-&#39;dd&#39;
-&gt;&gt;&gt; d.__dict__
-{&#39;name&#39;: &#39;dd&#39;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class D(object):
+</span></span><span class="line"><span class="cl">...     def __init__(self, name):
+</span></span><span class="line"><span class="cl">...             self.name = name
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; d = D(&#34;dd&#34;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; d.name
+</span></span><span class="line"><span class="cl">&#39;dd&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; d.__dict__
+</span></span><span class="line"><span class="cl">{&#39;name&#39;: &#39;dd&#39;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>定义了name，然后使用name，非常自然。但是也可以这样动态的赋值和使用age属性:</p>
+</div><p>定义了name，然后使用name，非常自然。但是也可以这样动态的赋值和使用age属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; d.age = 10
-&gt;&gt;&gt; d.age
-10
-&gt;&gt;&gt; d.__dict__
-{&#39;name&#39;: &#39;dd&#39;, &#39;age&#39;: 10}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; d.age = 10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; d.age
+</span></span><span class="line"><span class="cl">10
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; d.__dict__
+</span></span><span class="line"><span class="cl">{&#39;name&#39;: &#39;dd&#39;, &#39;age&#39;: 10}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这样写的代码，就难以后期维护。可以使用__slots__来限制对象:</p>
+</div><p>这样写的代码，就难以后期维护。可以使用__slots__来限制对象:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -752,43 +737,42 @@ dict_proxy({&#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;A&#39; 
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; class E(object):
-...     __slots__=(&#34;name&#34;)
-...     def __init__(self,name):
-...             self.name=name
-...
-&gt;&gt;&gt; e = E(&#34;ee&#34;)
-&gt;&gt;&gt; e.name
-&#39;ee&#39;
-&gt;&gt;&gt; e.age = 10
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-AttributeError: &#39;E&#39; object has no attribute &#39;age&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; class E(object):
+</span></span><span class="line"><span class="cl">...     __slots__=(&#34;name&#34;)
+</span></span><span class="line"><span class="cl">...     def __init__(self,name):
+</span></span><span class="line"><span class="cl">...             self.name=name
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; e = E(&#34;ee&#34;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; e.name
+</span></span><span class="line"><span class="cl">&#39;ee&#39;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; e.age = 10
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">AttributeError: &#39;E&#39; object has no attribute &#39;age&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>slot是插槽的意思，E定义了一个叫name的插槽，这样只允许使用预先定义的name属性，其它属性会报错。使用slots后，对象的__dict__也被优化了:</p>
+</div><p>slot是插槽的意思，E定义了一个叫name的插槽，这样只允许使用预先定义的name属性，其它属性会报错。使用slots后，对象的__dict__也被优化了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; b.__dict__
-Traceback (most recent call last):
-  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
-AttributeError: &#39;B&#39; object has no attribute &#39;__dict__&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; b.__dict__
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;
+</span></span><span class="line"><span class="cl">AttributeError: &#39;B&#39; object has no attribute &#39;__dict__&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="实现somedict类">实现SomeDict类</h2>
-
+</div><h2 id="实现somedict类">实现SomeDict类</h2>
 <p>了解了上面这么多基础知识后，我们可以实现满足需求的SomeDict了。要表现的和 <code>{}</code> 一样，这样才不影响业务使用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -807,33 +791,33 @@ AttributeError: &#39;B&#39; object has no attribute &#39;__dict__&#39;</pre></td
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SomeDict(dict):
-
-    def __getitem__(self, item):
-        # []
-        return super(SomeDict, self).__getitem__(str(item))
-    
-    def __setitem__(self, key, value):
-        super(SomeDict, self).__setitem__(str(key), value)
-    
-    def __delitem__(self, key):
-        super(SomeDict, self).__delitem__(str(key))
-
-    def get(self, item):
-        # get
-        return super(SomeDict, self).get(str(item))
-
-    def __contains__(self, item):
-        # in
-        return super(SomeDict, self).__contains__(str(item))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SomeDict(dict):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __getitem__(self, item):
+</span></span><span class="line"><span class="cl">        # []
+</span></span><span class="line"><span class="cl">        return super(SomeDict, self).__getitem__(str(item))
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __setitem__(self, key, value):
+</span></span><span class="line"><span class="cl">        super(SomeDict, self).__setitem__(str(key), value)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __delitem__(self, key):
+</span></span><span class="line"><span class="cl">        super(SomeDict, self).__delitem__(str(key))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def get(self, item):
+</span></span><span class="line"><span class="cl">        # get
+</span></span><span class="line"><span class="cl">        return super(SomeDict, self).get(str(item))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __contains__(self, item):
+</span></span><span class="line"><span class="cl">        # in
+</span></span><span class="line"><span class="cl">        return super(SomeDict, self).__contains__(str(item))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是测试用例:</p>
+</div><p>下面是测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -852,77 +836,71 @@ AttributeError: &#39;B&#39; object has no attribute &#39;__dict__&#39;</pre></td
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def test_some_dict():
-    session_clients = SomeDict()
-    session_clients[&#34;1000&#34;] = &#34;1000&#34;
-    assert session_clients[&#34;1000&#34;] == &#34;1000&#34;
-    assert session_clients[1000] == &#34;1000&#34;
-    assert session_clients.get(&#34;1000&#34;) == &#34;1000&#34;
-    assert session_clients.get(1000) == &#34;1000&#34;
-    assert session_clients.get(&#34;non_key&#34;) is None
-    try:
-        session_clients[&#34;non_key&#34;]
-    except KeyError as e:
-        pass
-    assert &#34;1000&#34; in session_clients
-    assert 1000 in session_clients
-    assert &#34;non_key&#34; not in session_clients
-    assert 10001 not in session_clients
-    del session_clients[1000]
-    assert 1000 not in session_clients
-    print(&#34;success&#34;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def test_some_dict():
+</span></span><span class="line"><span class="cl">    session_clients = SomeDict()
+</span></span><span class="line"><span class="cl">    session_clients[&#34;1000&#34;] = &#34;1000&#34;
+</span></span><span class="line"><span class="cl">    assert session_clients[&#34;1000&#34;] == &#34;1000&#34;
+</span></span><span class="line"><span class="cl">    assert session_clients[1000] == &#34;1000&#34;
+</span></span><span class="line"><span class="cl">    assert session_clients.get(&#34;1000&#34;) == &#34;1000&#34;
+</span></span><span class="line"><span class="cl">    assert session_clients.get(1000) == &#34;1000&#34;
+</span></span><span class="line"><span class="cl">    assert session_clients.get(&#34;non_key&#34;) is None
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        session_clients[&#34;non_key&#34;]
+</span></span><span class="line"><span class="cl">    except KeyError as e:
+</span></span><span class="line"><span class="cl">        pass
+</span></span><span class="line"><span class="cl">    assert &#34;1000&#34; in session_clients
+</span></span><span class="line"><span class="cl">    assert 1000 in session_clients
+</span></span><span class="line"><span class="cl">    assert &#34;non_key&#34; not in session_clients
+</span></span><span class="line"><span class="cl">    assert 10001 not in session_clients
+</span></span><span class="line"><span class="cl">    del session_clients[1000]
+</span></span><span class="line"><span class="cl">    assert 1000 not in session_clients
+</span></span><span class="line"><span class="cl">    print(&#34;success&#34;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="总结">总结</h2>
-
+</div><h2 id="总结">总结</h2>
 <p>我们深入了python语言的对象和字典的细节实现，比较了使用 <em>.</em> 和 <em>[]</em> 两种取值方式的差异，实现了一个仅字符串作为key的字典。简单总结起来就是:</p>
-
 <ul>
 <li>对于自定义对象，可以使用 <em>.</em> 获取属性值</li>
 <li>对于字典对象，可以使用 <em>[]</em> 获取属性值</li>
 <li>对于字典对象，还可以使用 <em>get</em> 和 <em>in</em> 进行友好获取 (无异常)</li>
 </ul>
-
 <h2 id="性能小技巧">性能小技巧</h2>
-
 <p>关于字典还有下面2个性能优化的小技巧。</p>
-
-<h3 id="和-dict-的性能对比">{} 和 dict 的性能对比</h3>
-
+<h3 id="-和-dict-的性能对比">{} 和 dict 的性能对比</h3>
 <p>使用timeit测试一下使用 <em>{}</em> 和 <em>dict()</em> 创建对象的速度:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ python3 -m timeit &#39;x={}&#39;               
-20000000 loops, best of 5: 18.1 nsec per loop
-$ python3 -m timeit &#39;x=dict()&#39;
-5000000 loops, best of 5: 93.6 nsec per loop</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ python3 -m timeit &#39;x={}&#39;               
+</span></span><span class="line"><span class="cl">20000000 loops, best of 5: 18.1 nsec per loop
+</span></span><span class="line"><span class="cl">$ python3 -m timeit &#39;x=dict()&#39;
+</span></span><span class="line"><span class="cl">5000000 loops, best of 5: 93.6 nsec per loop
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以发现使用{}语法要快很多。我们编写下面测试用例:</p>
+</div><p>可以发现使用{}语法要快很多。我们编写下面测试用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">a = {}
-
-b = dict()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">a = {}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">b = dict()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这是测试用例编译后的结果:</p>
+</div><p>这是测试用例编译后的结果:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -930,41 +908,37 @@ b = dict()</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">  1           0 BUILD_MAP                0
-              2 STORE_NAME               0 (a)
-
-  3           4 LOAD_NAME                1 (dict)
-              6 CALL_FUNCTION            0
-              8 STORE_NAME               2 (b)
-             10 LOAD_CONST               0 (None)
-             12 RETURN_VALUE</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  1           0 BUILD_MAP                0
+</span></span><span class="line"><span class="cl">              2 STORE_NAME               0 (a)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  3           4 LOAD_NAME                1 (dict)
+</span></span><span class="line"><span class="cl">              6 CALL_FUNCTION            0
+</span></span><span class="line"><span class="cl">              8 STORE_NAME               2 (b)
+</span></span><span class="line"><span class="cl">             10 LOAD_CONST               0 (None)
+</span></span><span class="line"><span class="cl">             12 RETURN_VALUE
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到前者就是一个BUILD_MAP语句，后者还包括调用构造函数等，所以前者要快，性能更好。</p>
-
-<h3 id="slots-性能对比"><strong>slots</strong> 性能对比</h3>
-
+</div><p>可以看到前者就是一个BUILD_MAP语句，后者还包括调用构造函数等，所以前者要快，性能更好。</p>
+<h3 id="__slots__-性能对比"><strong>slots</strong> 性能对比</h3>
 <p>同样可以使用timeit对slot进行测试:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># python3 -m timeit -s &#39;class A(object):pass&#39;  --  &#34;A()&#34;
-# 5000000 loops, best of 5: 67.2 nsec per loop
-# python3 -m timeit -s &#39;class A(object): __slots__ = (&#34;x&#34;,) &#39; --  &#34;A()&#34;
-# 5000000 loops, best of 5: 63.1 nsec per loop</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># python3 -m timeit -s &#39;class A(object):pass&#39;  --  &#34;A()&#34;
+</span></span><span class="line"><span class="cl"># 5000000 loops, best of 5: 67.2 nsec per loop
+</span></span><span class="line"><span class="cl"># python3 -m timeit -s &#39;class A(object): __slots__ = (&#34;x&#34;,) &#39; --  &#34;A()&#34;
+</span></span><span class="line"><span class="cl"># 5000000 loops, best of 5: 63.1 nsec per loop
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>很容易发现使用slot后，创建对象速度也会变快。</p>
-
+</div><p>很容易发现使用slot后，创建对象速度也会变快。</p>
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li><a href="https://docs.python.org/3/reference/datamodel.html">https://docs.python.org/3/reference/datamodel.html</a></li>
 <li><a href="https://docs.python.org/3/reference/expressions.html#primaries">https://docs.python.org/3/reference/expressions.html#primaries</a></li>
@@ -1008,11 +982,11 @@ b = dict()</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-09-02 21:50:56 \x2b0800 CST',
+        id: '2021-09-02 21:50:56 \u002b0800 CST',
         title: 'python 对象杂谈',
         link: decodeURI(location.href),
         desc: '需求 老实说，单纯的研究语言细节，比较无趣且容易忘记。这次的研究，起源于一个业务场景的需求，跟着场景需求深入语言细节更容易理解和记忆。 我们有一',
@@ -1026,6 +1000,10 @@ b = dict()</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1053,13 +1031,10 @@ b = dict()</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1070,7 +1045,10 @@ b = dict()</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

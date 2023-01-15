@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/django-rbac-permission-design/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Django Rbac 权限设计" />
 <meta property="og:description" content="Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &ldquo;Alice&rdquo;: { &ldquo;read&rdquo;:" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/django-rbac-permission-design/" />
-<meta property="article:published_time" content="2019-12-08T23:34:12&#43;08:00"/>
-<meta property="article:modified_time" content="2019-12-08T23:34:12&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/django-rbac-permission-design/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-12-08T23:34:12+08:00" />
+<meta property="article:modified_time" content="2019-12-08T23:34:12+08:00" />
 
 <meta itemprop="name" content="Django Rbac 权限设计">
-<meta itemprop="description" content="Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &ldquo;Alice&rdquo;: { &ldquo;read&rdquo;:">
-
-
-<meta itemprop="datePublished" content="2019-12-08T23:34:12&#43;08:00" />
-<meta itemprop="dateModified" content="2019-12-08T23:34:12&#43;08:00" />
-<meta itemprop="wordCount" content="2319">
-
-
-
-<meta itemprop="keywords" content="django,design," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &ldquo;Alice&rdquo;: { &ldquo;read&rdquo;:"><meta itemprop="datePublished" content="2019-12-08T23:34:12+08:00" />
+<meta itemprop="dateModified" content="2019-12-08T23:34:12+08:00" />
+<meta itemprop="wordCount" content="2320">
+<meta itemprop="keywords" content="django,design," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Django Rbac 权限设计"/>
 <meta name="twitter:description" content="Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { &ldquo;Alice&rdquo;: { &ldquo;read&rdquo;:"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,112 +144,88 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li><a href="#django-rbac-权限设计">Django Rbac 权限设计</a>
-<ul>
-<li><a href="#相关概念">相关概念</a></li>
-<li><a href="#django的默认权限">django的默认权限</a></li>
-<li><a href="#系统需求分析">系统需求分析</a></li>
-<li><a href="#模型实现">模型实现</a>
-<ul>
-<li><a href="#操作权限部分">操作权限部分</a></li>
-<li><a href="#数据权限部分">数据权限部分</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#相关概念">相关概念</a></li>
+    <li><a href="#django的默认权限">django的默认权限</a></li>
+    <li><a href="#系统需求分析">系统需求分析</a></li>
+    <li><a href="#模型实现">模型实现</a>
+      <ul>
+        <li><a href="#操作权限部分">操作权限部分</a></li>
+        <li><a href="#数据权限部分">数据权限部分</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h1 id="django-rbac-权限设计">Django Rbac 权限设计</h1>
-
+      <h1 id="django-rbac-权限设计">Django Rbac 权限设计</h1>
 <h2 id="相关概念">相关概念</h2>
-
 <ul>
 <li>ACL</li>
 </ul>
-
 <blockquote>
 <p>ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。</p>
-
 <p>例如一个文件对象的 ACL 为 { &ldquo;Alice&rdquo;: { &ldquo;read&rdquo;: true, &ldquo;write&rdquo;: true }, &ldquo;Bob&rdquo;: { &ldquo;read&rdquo;: true } }，</p>
-
 <p>这代表 Alice 对该文件既能读又能写，而 Bob 只能读取。</p>
 </blockquote>
-
 <ul>
 <li>RBAC</li>
 </ul>
-
 <blockquote>
 <p>RBAC基于角色的权限访问控制（Role-Based Access Control）不同于赋予使用者权限，而是将权限赋予角色。</p>
-
+</blockquote>
+<blockquote>
 <p>RBAC模型中「权限」只和「角色」对应，而用户也和「角色」对应，为用户赋予角色，然后管理角色的权限，完成了权限与用户的解耦。</p>
 </blockquote>
-
 <ul>
 <li>RBAC0/RBAC1/RBAC2/RBAC3</li>
 </ul>
-
 <p>RBAC0主要特点是:</p>
-
 <blockquote>
 <p>用户和角色之间是多对一还是多对多的关系。</p>
 </blockquote>
-
 <p>RBAC1主要特点是:</p>
-
 <blockquote>
 <p>角色可以继承，形成树状。</p>
 </blockquote>
-
 <p>RBAC2主要特定是:</p>
-
 <blockquote>
 <p>角色可以互斥。（出纳和会计）
 基数约束。（ceo）
 先决条件。（逐层升级）
 运行时互斥。（运行时只允许一个角色，水的三态）</p>
 </blockquote>
-
 <p>RBAC3，统一rabac1和rbac2。</p>
-
 <ul>
 <li>数据权限</li>
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">object (row) level permissions 
-model (table) level permissions</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">object (row) level permissions 
+</span></span><span class="line"><span class="cl">model (table) level permissions
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>权限的直观表现</li>
 </ul>
-
 <blockquote>
 <p>操作权限: web系统页面的菜单和按钮
 数据权限: web系统中对数据记录操作</p>
 </blockquote>
-
 <h2 id="django的默认权限">django的默认权限</h2>
-
 <p>Django 带有一个简单的权限系统。它提供了为指定的用户和用户组分配权限的方法。</p>
-
 <blockquote>
 <p>这里的group和角色实际上为一个概念</p>
 </blockquote>
-
-<p>User 对象有两个多对多字段:groups 和 user_permissions。 User 对象可以像访问其他 <code>Django model</code>: 一样访问他们的相关对象。</p>
+<p>User 对象有两个多对多字段:groups 和 user_permissions。 User 对象可以像访问其他 <code>Django model </code>: 一样访问他们的相关对象。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -254,75 +233,72 @@ model (table) level permissions</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">myuser.groups.set([group_list])
-myuser.groups.add(group, group, ...)
-myuser.groups.remove(group, group, ...)
-myuser.groups.clear()
-myuser.user_permissions.set([permission_list])
-myuser.user_permissions.add(permission, permission, ...)
-myuser.user_permissions.remove(permission, permission, ...)
-myuser.user_permissions.clear()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">myuser.groups.set([group_list])
+</span></span><span class="line"><span class="cl">myuser.groups.add(group, group, ...)
+</span></span><span class="line"><span class="cl">myuser.groups.remove(group, group, ...)
+</span></span><span class="line"><span class="cl">myuser.groups.clear()
+</span></span><span class="line"><span class="cl">myuser.user_permissions.set([permission_list])
+</span></span><span class="line"><span class="cl">myuser.user_permissions.add(permission, permission, ...)
+</span></span><span class="line"><span class="cl">myuser.user_permissions.remove(permission, permission, ...)
+</span></span><span class="line"><span class="cl">myuser.user_permissions.clear()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>注意这里:可以直接对用户进行授权。</p>
 </blockquote>
-
 <p>假设你有一个名为 foo 应用程序和一个名为 Bar 的模型，要测试基础权限，你应该使用：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">添加：user.has_perm(&#39;foo.add_bar&#39;)
-修改：user.has_perm(&#39;foo.change_bar&#39;)
-删除：user.has_perm(&#39;foo.delete_bar&#39;)
-查看：user.has_perm(&#39;foo.view_bar&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">添加：user.has_perm(&#39;foo.add_bar&#39;)
+</span></span><span class="line"><span class="cl">修改：user.has_perm(&#39;foo.change_bar&#39;)
+</span></span><span class="line"><span class="cl">删除：user.has_perm(&#39;foo.delete_bar&#39;)
+</span></span><span class="line"><span class="cl">查看：user.has_perm(&#39;foo.view_bar&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以扩展/屏蔽默认的权限：</p>
+</div><p>可以扩展/屏蔽默认的权限：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Person(models.Model):
-    class Meta:
-        default_permissions = ()
-        permissions = [(&#39;can_eat_pizzas&#39;, &#39;Can eat pizzas&#39;)]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Person(models.Model):
+</span></span><span class="line"><span class="cl">    class Meta:
+</span></span><span class="line"><span class="cl">        default_permissions = ()
+</span></span><span class="line"><span class="cl">        permissions = [(&#39;can_eat_pizzas&#39;, &#39;Can eat pizzas&#39;)]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p><code>default_permissions = ()</code>屏蔽了<code>Person</code>默认的<code>add_person</code>、 <code>change_person</code>、 <code>delete_person</code>和 <code>view_person</code>。而<code>permissions = [('can_eat_pizzas', 'Can eat pizzas')]</code>为<code>Person</code>增加了<code>can_eat_pizzas</code>权限。</p>
-
+</div><p><code>default_permissions = ()</code>屏蔽了<code>Person</code>默认的<code>add_person</code>、 <code>change_person</code>、 <code>delete_person</code>和 <code>view_person</code>。而<code>permissions = [('can_eat_pizzas', 'Can eat pizzas')]</code>为<code>Person</code>增加了<code>can_eat_pizzas</code>权限。</p>
 <h2 id="系统需求分析">系统需求分析</h2>
-
 <ol>
 <li>角色有编码，可以便捷的在编程过程中使用, 比如:</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">if user.role.has(&#34;manager&#34;) :
-    dosomething()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if user.role.has(&#34;manager&#34;) :
+</span></span><span class="line"><span class="cl">    dosomething()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol start="2">
 <li>权限可以使用菜单组织成二级目录，比如:</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -338,49 +314,47 @@ myuser.user_permissions.clear()</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">* 权限管理
-    - 用户管理
-        * 增加
-        * 编辑
-        * 删除
-        * 搜索
-    - 角色管理
-    - 权限管理
-* 论坛管理
-    - 版面管理
-        * 新增版面
-        * 修改版面
-        * 查看版面
-        * 关闭
-    - 文章管理
-        * ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">* 权限管理
+</span></span><span class="line"><span class="cl">    - 用户管理
+</span></span><span class="line"><span class="cl">        * 增加
+</span></span><span class="line"><span class="cl">        * 编辑
+</span></span><span class="line"><span class="cl">        * 删除
+</span></span><span class="line"><span class="cl">        * 搜索
+</span></span><span class="line"><span class="cl">    - 角色管理
+</span></span><span class="line"><span class="cl">    - 权限管理
+</span></span><span class="line"><span class="cl">* 论坛管理
+</span></span><span class="line"><span class="cl">    - 版面管理
+</span></span><span class="line"><span class="cl">        * 新增版面
+</span></span><span class="line"><span class="cl">        * 修改版面
+</span></span><span class="line"><span class="cl">        * 查看版面
+</span></span><span class="line"><span class="cl">        * 关闭
+</span></span><span class="line"><span class="cl">    - 文章管理
+</span></span><span class="line"><span class="cl">        * ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol start="3">
 <li>权限可以配合RESTFul规范进行远程拦截(没有model情况下)</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">GET /articles/
-DELETE /articles/1/</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">GET /articles/
+</span></span><span class="line"><span class="cl">DELETE /articles/1/
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="模型实现">模型实现</h2>
-
+</div><h2 id="模型实现">模型实现</h2>
 <h3 id="操作权限部分">操作权限部分</h3>
-
 <ol>
 <li>model部分如下:</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -408,44 +382,44 @@ DELETE /articles/1/</pre></td></tr></table>
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Permission(models.Model):
-    &#34;&#34;&#34;约定一级代表目录，二级代表页面，三级代表按钮&#34;&#34;&#34;
-    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
-    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
-    higher = models.ForeignKey(&#39;self&#39;, verbose_name=&#39;上级&#39;, on_delete=models.CASCADE)
-    url = models.CharField(verbose_name=&#39;路径&#39;, max_length=32, blank=True, null=True)
-    action = models.CharField(verbose_name=&#39;方法&#39;, max_length=32, blank=True, null=True)
-    ...
-
-
-class Role(models.Model):
-    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
-    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name=&#39;permissions&#39;,
-        blank=True,
-    )
-    ...
-
-
-class User(AbstractUser):
-    roles = models.ManyToManyField(
-        Role,
-        verbose_name=&#39;roles&#39;,
-        blank=True,
-    )
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Permission(models.Model):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;约定一级代表目录，二级代表页面，三级代表按钮&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    higher = models.ForeignKey(&#39;self&#39;, verbose_name=&#39;上级&#39;, on_delete=models.CASCADE)
+</span></span><span class="line"><span class="cl">    url = models.CharField(verbose_name=&#39;路径&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    action = models.CharField(verbose_name=&#39;方法&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Role(models.Model):
+</span></span><span class="line"><span class="cl">    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    permissions = models.ManyToManyField(
+</span></span><span class="line"><span class="cl">        Permission,
+</span></span><span class="line"><span class="cl">        verbose_name=&#39;permissions&#39;,
+</span></span><span class="line"><span class="cl">        blank=True,
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class User(AbstractUser):
+</span></span><span class="line"><span class="cl">    roles = models.ManyToManyField(
+</span></span><span class="line"><span class="cl">        Role,
+</span></span><span class="line"><span class="cl">        verbose_name=&#39;roles&#39;,
+</span></span><span class="line"><span class="cl">        blank=True,
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol start="2">
 <li>操作权限拦截如下:</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -458,53 +432,52 @@ class User(AbstractUser):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class RBACMiddleware:
-
-    def __call__(self, request):
-        request_url = request.path_info
-        request_user = request.user
-        for url in settings.SAFE_URL:
-            if re.match(url, request_url):
-                pass
-        # 读取数据库/缓存
-        if has_permission_url(request_user, request_url):
-            pass
-        else:
-            return render(request, &#39;page403.html&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class RBACMiddleware:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __call__(self, request):
+</span></span><span class="line"><span class="cl">        request_url = request.path_info
+</span></span><span class="line"><span class="cl">        request_user = request.user
+</span></span><span class="line"><span class="cl">        for url in settings.SAFE_URL:
+</span></span><span class="line"><span class="cl">            if re.match(url, request_url):
+</span></span><span class="line"><span class="cl">                pass
+</span></span><span class="line"><span class="cl">        # 读取数据库/缓存
+</span></span><span class="line"><span class="cl">        if has_permission_url(request_user, request_url):
+</span></span><span class="line"><span class="cl">            pass
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            return render(request, &#39;page403.html&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="数据权限部分">数据权限部分</h3>
-
+</div><h3 id="数据权限部分">数据权限部分</h3>
 <p>数据权限和业务结合紧密，一般不需要做统一的数据权限拦截，各个业务自由使用。
 不过可以将数据权限抽象成下面几种类型，规范使用，实现可配置化。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">* 行限制（根据某列的条件控制可影响的行数）
-    - 所有者 is_owner_required 只能够删除自己的数据行
-    - 协作者 is_teamworker_required 可以编辑team(部门)所属的数据行
-    - 受限者 is_manager_required 可以批准3天内请假
-* 列限制 (控制可影响的列)
-    - 电话号码保密 filter_phone
-    - 薪资保密 filter_salary</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">* 行限制（根据某列的条件控制可影响的行数）
+</span></span><span class="line"><span class="cl">    - 所有者 is_owner_required 只能够删除自己的数据行
+</span></span><span class="line"><span class="cl">    - 协作者 is_teamworker_required 可以编辑team(部门)所属的数据行
+</span></span><span class="line"><span class="cl">    - 受限者 is_manager_required 可以批准3天内请假
+</span></span><span class="line"><span class="cl">* 列限制 (控制可影响的列)
+</span></span><span class="line"><span class="cl">    - 电话号码保密 filter_phone
+</span></span><span class="line"><span class="cl">    - 薪资保密 filter_salary
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol>
 <li>model 部分</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -515,29 +488,28 @@ class User(AbstractUser):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Checker(models.Model):
-    CHECKER_CLAZZ = (
-        (1, 函数),
-        (2, 表达式),
-    )
-
-    clazz = models.CharField(verbose_name=&#39;类别&#39;, choices=CHECKER_TYPE, max_length=15, blank=True, null=True)
-    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
-    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
-    value = models.CharField(verbose_name=&#39;数值&#39;, max_length=32, blank=True, null=True)
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Checker(models.Model):
+</span></span><span class="line"><span class="cl">    CHECKER_CLAZZ = (
+</span></span><span class="line"><span class="cl">        (1, 函数),
+</span></span><span class="line"><span class="cl">        (2, 表达式),
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    clazz = models.CharField(verbose_name=&#39;类别&#39;, choices=CHECKER_TYPE, max_length=15, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    name = models.CharField(verbose_name=&#39;名称&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    code = models.CharField(verbose_name=&#39;编码&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    value = models.CharField(verbose_name=&#39;数值&#39;, max_length=32, blank=True, null=True)
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol start="2">
 <li>实现部分</li>
 </ol>
-
 <p>简单的拦截:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -568,45 +540,45 @@ class User(AbstractUser):
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def is_owner_required(model, pk_name=&#39;pk&#39;):
-    def decorator(view_func):
-        def wrap(request, *args, **kwargs):
-            pk = kwargs.get(pk_name, None)
-            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
-            if o.is_owner(request.user):
-                return view_func(request, *args, **kwargs)
-            else:
-                raise PermissionDenied
-        return wraps(view_func)(wrap)
-    return decorator
-
-def is_teamworker_required(model, pk_name=&#39;pk&#39;):
-    def decorator(view_func):
-        def wrap(request, *args, **kwargs):
-            pk = kwargs.get(pk_name, None)
-            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
-            if o.is_teamworker(request.user):
-                return view_func(request, *args, **kwargs)
-            else:
-                raise PermissionDenied
-        return wraps(view_func)(wrap)
-    return decorator
-
-@is_owner_required(Comment)
-def delete_comment(request, pk):
-    pass
-    
-@is_teamworker_required(Comment)
-def edit_comment(request, pk):
-    pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def is_owner_required(model, pk_name=&#39;pk&#39;):
+</span></span><span class="line"><span class="cl">    def decorator(view_func):
+</span></span><span class="line"><span class="cl">        def wrap(request, *args, **kwargs):
+</span></span><span class="line"><span class="cl">            pk = kwargs.get(pk_name, None)
+</span></span><span class="line"><span class="cl">            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
+</span></span><span class="line"><span class="cl">            if o.is_owner(request.user):
+</span></span><span class="line"><span class="cl">                return view_func(request, *args, **kwargs)
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                raise PermissionDenied
+</span></span><span class="line"><span class="cl">        return wraps(view_func)(wrap)
+</span></span><span class="line"><span class="cl">    return decorator
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def is_teamworker_required(model, pk_name=&#39;pk&#39;):
+</span></span><span class="line"><span class="cl">    def decorator(view_func):
+</span></span><span class="line"><span class="cl">        def wrap(request, *args, **kwargs):
+</span></span><span class="line"><span class="cl">            pk = kwargs.get(pk_name, None)
+</span></span><span class="line"><span class="cl">            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
+</span></span><span class="line"><span class="cl">            if o.is_teamworker(request.user):
+</span></span><span class="line"><span class="cl">                return view_func(request, *args, **kwargs)
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                raise PermissionDenied
+</span></span><span class="line"><span class="cl">        return wraps(view_func)(wrap)
+</span></span><span class="line"><span class="cl">    return decorator
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@is_owner_required(Comment)
+</span></span><span class="line"><span class="cl">def delete_comment(request, pk):
+</span></span><span class="line"><span class="cl">    pass
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">@is_teamworker_required(Comment)
+</span></span><span class="line"><span class="cl">def edit_comment(request, pk):
+</span></span><span class="line"><span class="cl">    pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>复杂点的拦截:</p>
+</div><p>复杂点的拦截:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -623,31 +595,31 @@ def edit_comment(request, pk):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def is_manager_required(code, pk_name=&#39;pk&#39;):
-    def decorator(view_func):
-        def wrap(request, *args, **kwargs):
-            pk = kwargs.get(pk_name, None)
-            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
-            c=checkModel.objects.get(code=code)
-            # check request user role limit value
-            if c.check(request.user):
-                return view_func(request, *args, **kwargs)
-            else:
-                raise PermissionDenied
-        return wraps(view_func)(wrap)
-    return decorator
-    
-@is_manager_required(code=&#34;manager_limit_3&#34;)
-def audit_holiday(request, pk):
-    pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def is_manager_required(code, pk_name=&#39;pk&#39;):
+</span></span><span class="line"><span class="cl">    def decorator(view_func):
+</span></span><span class="line"><span class="cl">        def wrap(request, *args, **kwargs):
+</span></span><span class="line"><span class="cl">            pk = kwargs.get(pk_name, None)
+</span></span><span class="line"><span class="cl">            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
+</span></span><span class="line"><span class="cl">            c=checkModel.objects.get(code=code)
+</span></span><span class="line"><span class="cl">            # check request user role limit value
+</span></span><span class="line"><span class="cl">            if c.check(request.user):
+</span></span><span class="line"><span class="cl">                return view_func(request, *args, **kwargs)
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                raise PermissionDenied
+</span></span><span class="line"><span class="cl">        return wraps(view_func)(wrap)
+</span></span><span class="line"><span class="cl">    return decorator
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">@is_manager_required(code=&#34;manager_limit_3&#34;)
+</span></span><span class="line"><span class="cl">def audit_holiday(request, pk):
+</span></span><span class="line"><span class="cl">    pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>完全动态的拦截:</p>
+</div><p>完全动态的拦截:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -668,33 +640,33 @@ def audit_holiday(request, pk):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def common_required(code, pk_name=&#39;pk&#39;):
-    def decorator(view_func):
-        def wrap(request, *args, **kwargs):
-            pk = kwargs.get(pk_name, None)
-            o=model.objects.get(pk=pk) #raises ObjectDoesNotExist
-            c=checkModel.objects.get(code=code)
-            # 动态获取模块
-            module = __import__(c.value.module_name, fromlist=[c.value.module_class])
-            # 动态获取验证函数
-            checker = getattr(module, c.value.name)
-            # 执行验证函数
-            if checker.check(request.user, c.value.number):
-                return view_func(request, *args, **kwargs)
-            else:
-                raise PermissionDenied
-        return wraps(view_func)(wrap)
-    return decorator
-    
-@common_required(code=&#34;check_user_level&#34;)
-def dosomething(request, pk):
-    pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="nv">def</span> <span class="nf">common_required</span><span class="p">(</span><span class="nv">code</span><span class="p">,</span> <span class="nv">pk_name</span><span class="o">=</span><span class="s1">&#39;pk&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="nv">view_func</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="nv">request</span><span class="p">,</span> <span class="o">*</span><span class="nv">args</span><span class="p">,</span> <span class="o">**</span><span class="nv">kwargs</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">pk</span> <span class="o">=</span> <span class="nv">kwargs</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="nv">pk_name</span><span class="p">,</span> <span class="nc">None</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">o</span><span class="o">=</span><span class="nv">model</span><span class="p">.</span><span class="nv">objects</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="nv">pk</span><span class="o">=</span><span class="nv">pk</span><span class="p">)</span> <span class="cp">#raises ObjectDoesNotExist</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">c</span><span class="o">=</span><span class="nv">checkModel</span><span class="p">.</span><span class="nv">objects</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="nv">code</span><span class="o">=</span><span class="nv">code</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="o">#</span> <span class="nv">动态获取模块</span>
+</span></span><span class="line"><span class="cl">            <span class="kn">module</span> <span class="o">=</span> <span class="nf">__import__</span><span class="p">(</span><span class="nv">c</span><span class="p">.</span><span class="nv">value</span><span class="p">.</span><span class="nv">module_name</span><span class="p">,</span> <span class="nv">fromlist</span><span class="o">=</span><span class="p">[</span><span class="nv">c</span><span class="p">.</span><span class="nv">value</span><span class="p">.</span><span class="nv">module_class</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">            <span class="o">#</span> <span class="nv">动态获取验证函数</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">checker</span> <span class="o">=</span> <span class="nf">getattr</span><span class="p">(</span><span class="kn">module</span><span class="p">,</span> <span class="nv">c</span><span class="p">.</span><span class="nv">value</span><span class="p">.</span><span class="nv">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="o">#</span> <span class="nv">执行验证函数</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nv">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">(</span><span class="nv">request</span><span class="p">.</span><span class="nv">user</span><span class="p">,</span> <span class="nv">c</span><span class="p">.</span><span class="nv">value</span><span class="p">.</span><span class="nv">number</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="nf">view_func</span><span class="p">(</span><span class="nv">request</span><span class="p">,</span> <span class="o">*</span><span class="nv">args</span><span class="p">,</span> <span class="o">**</span><span class="nv">kwargs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">raise</span> <span class="nc">PermissionDenied</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">wraps</span><span class="p">(</span><span class="nv">view_func</span><span class="p">)(</span><span class="nv">wrap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nv">decorator</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="o">@</span><span class="nf">common_required</span><span class="p">(</span><span class="nv">code</span><span class="o">=</span><span class="s2">&#34;check_user_level&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">def</span> <span class="nf">dosomething</span><span class="p">(</span><span class="nv">request</span><span class="p">,</span> <span class="nv">pk</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">pass</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>最后，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
+</div><p>最后，欢迎加下面的微信和我互动交流，一起进阶:
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 
     </div>
 
@@ -734,14 +706,14 @@ def dosomething(request, pk):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2019-12-08 23:34:12 \x2b0800 CST',
+        id: '2019-12-08 23:34:12 \u002b0800 CST',
         title: 'Django Rbac 权限设计',
         link: decodeURI(location.href),
-        desc: 'Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { \x26ldquo;Alice\x26rdquo;: { \x26ldquo;read\x26rdquo;:',
+        desc: 'Django Rbac 权限设计 相关概念 ACL ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。 例如一个文件对象的 ACL 为 { \u0026ldquo;Alice\u0026rdquo;: { \u0026ldquo;read\u0026rdquo;:',
         owner: 'game404',
         repo: 'game404.github.io',
         oauth: {
@@ -752,6 +724,10 @@ def dosomething(request, pk):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -779,13 +755,10 @@ def dosomething(request, pk):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -796,7 +769,10 @@ def dosomething(request, pk):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/requests-test/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="requests项目如何使用pytest进行单元测试" />
 <meta property="og:description" content="pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/requests-test/" />
-<meta property="article:published_time" content="2021-08-26T19:52:59&#43;08:00"/>
-<meta property="article:modified_time" content="2021-08-26T19:52:59&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/requests-test/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-08-26T19:52:59+08:00" />
+<meta property="article:modified_time" content="2021-08-26T19:52:59+08:00" />
 
 <meta itemprop="name" content="requests项目如何使用pytest进行单元测试">
-<meta itemprop="description" content="pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，">
-
-
-<meta itemprop="datePublished" content="2021-08-26T19:52:59&#43;08:00" />
-<meta itemprop="dateModified" content="2021-08-26T19:52:59&#43;08:00" />
-<meta itemprop="wordCount" content="5759">
-
-
-
-<meta itemprop="keywords" content="测试,源码,requests," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，"><meta itemprop="datePublished" content="2021-08-26T19:52:59+08:00" />
+<meta itemprop="dateModified" content="2021-08-26T19:52:59+08:00" />
+<meta itemprop="wordCount" content="5764">
+<meta itemprop="keywords" content="测试,源码,requests," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="requests项目如何使用pytest进行单元测试"/>
 <meta name="twitter:description" content="pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,51 +144,43 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#requests项目单元测试状况">requests项目单元测试状况</a></li>
-<li><a href="#简单工具类如何测试">简单工具类如何测试</a>
-<ul>
-<li><a href="#test-help-实现分析">test_help 实现分析</a></li>
-<li><a href="#test-hooks-实现分析">test_hooks 实现分析</a></li>
-<li><a href="#test-structures-实现分析">test_structures 实现分析</a></li>
-<li><a href="#utils-py">utils.py</a></li>
-<li><a href="#utils测试用例">utils测试用例</a></li>
-</ul></li>
-<li><a href="#request-api如何测试">request-api如何测试</a></li>
-<li><a href="#底层api测试">底层API测试</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#requests项目单元测试状况">requests项目单元测试状况</a></li>
+    <li><a href="#简单工具类如何测试">简单工具类如何测试</a>
+      <ul>
+        <li><a href="#test_help-实现分析">test_help 实现分析</a></li>
+        <li><a href="#test_hooks-实现分析">test_hooks 实现分析</a></li>
+        <li><a href="#test_structures-实现分析">test_structures 实现分析</a></li>
+        <li><a href="#utilspy">utils.py</a></li>
+        <li><a href="#utils测试用例">utils测试用例</a></li>
+      </ul>
+    </li>
+    <li><a href="#request-api如何测试">request-api如何测试</a></li>
+    <li><a href="#底层api测试">底层API测试</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，是python开源项目的TOP10。关于这2个项目，之前都有过介绍，本文主要介绍requests项目如何使用pytest进行单元测试，希望达到下面3个目标：</p>
-
+      <p>pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，是python开源项目的TOP10。关于这2个项目，之前都有过介绍，本文主要介绍requests项目如何使用pytest进行单元测试，希望达到下面3个目标：</p>
 <ol>
 <li>熟练pytest的使用</li>
 <li>学习如何对项目进行单元测试</li>
 <li>深入requests的一些实现细节</li>
 </ol>
-
-<p>本文分如下几个部分:
-* requests项目单元测试状况
-* 简单工具类如何测试
-* request-api如何测试
-* 底层API测试</p>
-
+<p>本文分如下几个部分:</p>
+<ul>
+<li>requests项目单元测试状况</li>
+<li>简单工具类如何测试</li>
+<li>request-api如何测试</li>
+<li>底层API测试</li>
+</ul>
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 <h2 id="requests项目单元测试状况">requests项目单元测试状况</h2>
-
 <p>requests的单元测试代码全部在 <em>tests</em> 目录，使用 <em>pytest.ini</em> 进行配置。测试除<code>pytest</code>外，还需要安装:</p>
-
 <table>
 <thead>
 <tr>
@@ -193,38 +188,32 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>httpbin</td>
 <td>一个使用flask实现的http服务，可以客户端定义http响应，主要用于测试http协议</td>
 </tr>
-
 <tr>
 <td>pytest-httpbin</td>
 <td>pytest的插件，封装httpbin的实现</td>
 </tr>
-
 <tr>
 <td>pytest-mock</td>
 <td>pytest的插件，提供mock</td>
 </tr>
-
 <tr>
 <td>pytest-cov</td>
 <td>pytest的插件，提供覆盖率</td>
 </tr>
 </tbody>
 </table>
-
 <blockquote>
 <p>上述依赖 <code>master</code> 版本在requirement-dev文件中定义；<code>2.24.0</code>版本会在pipenv中定义。</p>
 </blockquote>
-
 <p>测试用例使用make命令，子命令在Makefile中定义, 使用<code>make ci</code>运行所有单元测试结果如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -252,42 +241,42 @@
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ make ci
-pytest tests --junitxml=report.xml
-======================================================================================================= test session starts =======================================================================================================
-platform linux -- Python 3.6.8, pytest-3.10.1, py-1.10.0, pluggy-0.13.1
-rootdir: /home/work6/project/requests, inifile: pytest.ini
-plugins: mock-2.0.0, httpbin-1.0.0, cov-2.9.0
-collected 552 items                                                                                                                                                                                                               
-
-tests/test_help.py ...                                                                                                                                                                                                      [  0%]
-tests/test_hooks.py ...                                                                                                                                                                                                     [  1%]
-tests/test_lowlevel.py ...............                                                                                                                                                                                      [  3%]
-tests/test_packages.py ...                                                                                                                                                                                                  [  4%]
-tests/test_requests.py .................................................................................................................................................................................................... [ 39%]
-127.0.0.1 - - [10/Aug/2021 08:41:53] &#34;GET /stream/4 HTTP/1.1&#34; 200 756
-.127.0.0.1 - - [10/Aug/2021 08:41:53] &#34;GET /stream/4 HTTP/1.1&#34; 500 59
-----------------------------------------
-Exception happened during processing of request from (&#39;127.0.0.1&#39;, 46048)
-Traceback (most recent call last):
-  File &#34;/usr/lib64/python3.6/wsgiref/handlers.py&#34;, line 138, in run
-    self.finish_response()
-x.........................................................................................                                                                                                                                 [ 56%]
-tests/test_structures.py ....................                                                                                                                                                                               [ 59%]
-tests/test_testserver.py ......s....                                                                                                                                                                                        [ 61%]
-tests/test_utils.py ..s................................................................................................................................................................................................ssss [ 98%]
-ssssss.....                                                                                                                                                                                                                 [100%]
-
------------------------------------------------------------------------------------ generated xml file: /home/work6/project/requests/report.xml -----------------------------------------------------------------------------------
-======================================================================================= 539 passed, 12 skipped, 1 xfailed in 64.16 seconds ========================================================================================</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ make ci
+</span></span><span class="line"><span class="cl">pytest tests --junitxml=report.xml
+</span></span><span class="line"><span class="cl">======================================================================================================= test session starts =======================================================================================================
+</span></span><span class="line"><span class="cl">platform linux -- Python 3.6.8, pytest-3.10.1, py-1.10.0, pluggy-0.13.1
+</span></span><span class="line"><span class="cl">rootdir: /home/work6/project/requests, inifile: pytest.ini
+</span></span><span class="line"><span class="cl">plugins: mock-2.0.0, httpbin-1.0.0, cov-2.9.0
+</span></span><span class="line"><span class="cl">collected 552 items                                                                                                                                                                                                               
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">tests/test_help.py ...                                                                                                                                                                                                      [  0%]
+</span></span><span class="line"><span class="cl">tests/test_hooks.py ...                                                                                                                                                                                                     [  1%]
+</span></span><span class="line"><span class="cl">tests/test_lowlevel.py ...............                                                                                                                                                                                      [  3%]
+</span></span><span class="line"><span class="cl">tests/test_packages.py ...                                                                                                                                                                                                  [  4%]
+</span></span><span class="line"><span class="cl">tests/test_requests.py .................................................................................................................................................................................................... [ 39%]
+</span></span><span class="line"><span class="cl">127.0.0.1 - - [10/Aug/2021 08:41:53] &#34;GET /stream/4 HTTP/1.1&#34; 200 756
+</span></span><span class="line"><span class="cl">.127.0.0.1 - - [10/Aug/2021 08:41:53] &#34;GET /stream/4 HTTP/1.1&#34; 500 59
+</span></span><span class="line"><span class="cl">----------------------------------------
+</span></span><span class="line"><span class="cl">Exception happened during processing of request from (&#39;127.0.0.1&#39;, 46048)
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;/usr/lib64/python3.6/wsgiref/handlers.py&#34;, line 138, in run
+</span></span><span class="line"><span class="cl">    self.finish_response()
+</span></span><span class="line"><span class="cl">x.........................................................................................                                                                                                                                 [ 56%]
+</span></span><span class="line"><span class="cl">tests/test_structures.py ....................                                                                                                                                                                               [ 59%]
+</span></span><span class="line"><span class="cl">tests/test_testserver.py ......s....                                                                                                                                                                                        [ 61%]
+</span></span><span class="line"><span class="cl">tests/test_utils.py ..s................................................................................................................................................................................................ssss [ 98%]
+</span></span><span class="line"><span class="cl">ssssss.....                                                                                                                                                                                                                 [100%]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">----------------------------------------------------------------------------------- generated xml file: /home/work6/project/requests/report.xml -----------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">======================================================================================= 539 passed, 12 skipped, 1 xfailed in 64.16 seconds ========================================================================================
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到requests在1分钟内，总共通过了539个测试用例，效果还是不错。使用 <code>make coverage</code> 查看单元测试覆盖率:</p>
+</div><p>可以看到requests在1分钟内，总共通过了539个测试用例，效果还是不错。使用 <code>make coverage</code> 查看单元测试覆盖率:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -312,43 +301,40 @@ ssssss.....                                                                     
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ make coverage
------------ coverage: platform linux, python 3.6.8-final-0 -----------
-Name                          Stmts   Miss  Cover
--------------------------------------------------
-requests/__init__.py             71     71     0%
-requests/__version__.py          10     10     0%
-requests/_internal_utils.py      16      5    69%
-requests/adapters.py            222     67    70%
-requests/api.py                  20     13    35%
-requests/auth.py                174     54    69%
-requests/certs.py                 4      4     0%
-requests/compat.py               47     47     0%
-requests/cookies.py             238    115    52%
-requests/exceptions.py           35     29    17%
-requests/help.py                 63     19    70%
-requests/hooks.py                15      4    73%
-requests/models.py              455    119    74%
-requests/packages.py             16     16     0%
-requests/sessions.py            283     67    76%
-requests/status_codes.py         15     15     0%
-requests/structures.py           40     19    52%
-requests/utils.py               465    170    63%
--------------------------------------------------
-TOTAL                          2189    844    61%
-Coverage XML written to file coverage.xml</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ make coverage
+</span></span><span class="line"><span class="cl">----------- coverage: platform linux, python 3.6.8-final-0 -----------
+</span></span><span class="line"><span class="cl">Name                          Stmts   Miss  Cover
+</span></span><span class="line"><span class="cl">-------------------------------------------------
+</span></span><span class="line"><span class="cl">requests/__init__.py             71     71     0%
+</span></span><span class="line"><span class="cl">requests/__version__.py          10     10     0%
+</span></span><span class="line"><span class="cl">requests/_internal_utils.py      16      5    69%
+</span></span><span class="line"><span class="cl">requests/adapters.py            222     67    70%
+</span></span><span class="line"><span class="cl">requests/api.py                  20     13    35%
+</span></span><span class="line"><span class="cl">requests/auth.py                174     54    69%
+</span></span><span class="line"><span class="cl">requests/certs.py                 4      4     0%
+</span></span><span class="line"><span class="cl">requests/compat.py               47     47     0%
+</span></span><span class="line"><span class="cl">requests/cookies.py             238    115    52%
+</span></span><span class="line"><span class="cl">requests/exceptions.py           35     29    17%
+</span></span><span class="line"><span class="cl">requests/help.py                 63     19    70%
+</span></span><span class="line"><span class="cl">requests/hooks.py                15      4    73%
+</span></span><span class="line"><span class="cl">requests/models.py              455    119    74%
+</span></span><span class="line"><span class="cl">requests/packages.py             16     16     0%
+</span></span><span class="line"><span class="cl">requests/sessions.py            283     67    76%
+</span></span><span class="line"><span class="cl">requests/status_codes.py         15     15     0%
+</span></span><span class="line"><span class="cl">requests/structures.py           40     19    52%
+</span></span><span class="line"><span class="cl">requests/utils.py               465    170    63%
+</span></span><span class="line"><span class="cl">-------------------------------------------------
+</span></span><span class="line"><span class="cl">TOTAL                          2189    844    61%
+</span></span><span class="line"><span class="cl">Coverage XML written to file coverage.xml
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>结果显示requests项目总体覆盖率61%，每个模块的覆盖率也清晰可见。</p>
-
+</div><p>结果显示requests项目总体覆盖率61%，每个模块的覆盖率也清晰可见。</p>
 <blockquote>
 <p>单元测试覆盖率使用代码行数进行判断，<code>Stmts</code>显示模块的有效行数，<code>Miss</code>显示未执行到的行。如果生成html的报告，还可以定位到具体未覆盖到的行；pycharm的coverage也有类似功能。</p>
 </blockquote>
-
 <p>tests下的文件及测试类如下表:</p>
-
 <table>
 <thead>
 <tr>
@@ -356,63 +342,51 @@ Coverage XML written to file coverage.xml</pre></td></tr></table>
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>compat</td>
 <td>python2和python3兼容</td>
 </tr>
-
 <tr>
 <td>conftest</td>
 <td>pytest配置</td>
 </tr>
-
 <tr>
 <td>test_help,test_packages,test_hooks,test_structures</td>
 <td>简单测试类</td>
 </tr>
-
 <tr>
 <td>utils.py</td>
 <td>工具函数</td>
 </tr>
-
 <tr>
 <td>test_utils</td>
 <td>测试工具函数</td>
 </tr>
-
 <tr>
 <td>test_requests</td>
 <td>测试requests</td>
 </tr>
-
 <tr>
 <td>testserver\server</td>
 <td>模拟服务</td>
 </tr>
-
 <tr>
 <td>test_testserver</td>
 <td>模拟服务测试</td>
 </tr>
-
 <tr>
 <td>test_lowlevel</td>
 <td>使用模拟服务测试模拟网络测试</td>
 </tr>
 </tbody>
 </table>
-
 <h2 id="简单工具类如何测试">简单工具类如何测试</h2>
-
-<h3 id="test-help-实现分析">test_help 实现分析</h3>
-
+<h3 id="test_help-实现分析">test_help 实现分析</h3>
 <p>先从最简单的test_help上手，测试类和被测试对象命名是对应的。先看看被测试的模块<code>help.py</code>。这个模块主要是2个函数 <em>info</em> 和 <em>_implementation</em>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -441,43 +415,43 @@ Coverage XML written to file coverage.xml</pre></td></tr></table>
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import idna
-
-def _implementation():
-    ...
-    
-def info():
-    ...
-    system_ssl = ssl.OPENSSL_VERSION_NUMBER
-    system_ssl_info = {
-        &#39;version&#39;: &#39;%x&#39; % system_ssl if system_ssl is not None else &#39;&#39;
-    }
-    idna_info = {
-        &#39;version&#39;: getattr(idna, &#39;__version__&#39;, &#39;&#39;),
-    }
-    ...
-    return {
-        &#39;platform&#39;: platform_info,
-        &#39;implementation&#39;: implementation_info,
-        &#39;system_ssl&#39;: system_ssl_info,
-        &#39;using_pyopenssl&#39;: pyopenssl is not None,
-        &#39;pyOpenSSL&#39;: pyopenssl_info,
-        &#39;urllib3&#39;: urllib3_info,
-        &#39;chardet&#39;: chardet_info,
-        &#39;cryptography&#39;: cryptography_info,
-        &#39;idna&#39;: idna_info,
-        &#39;requests&#39;: {
-            &#39;version&#39;: requests_version,
-        },
-    }</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import idna
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _implementation():
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def info():
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    system_ssl = ssl.OPENSSL_VERSION_NUMBER
+</span></span><span class="line"><span class="cl">    system_ssl_info = {
+</span></span><span class="line"><span class="cl">        &#39;version&#39;: &#39;%x&#39; % system_ssl if system_ssl is not None else &#39;&#39;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    idna_info = {
+</span></span><span class="line"><span class="cl">        &#39;version&#39;: getattr(idna, &#39;__version__&#39;, &#39;&#39;),
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    return {
+</span></span><span class="line"><span class="cl">        &#39;platform&#39;: platform_info,
+</span></span><span class="line"><span class="cl">        &#39;implementation&#39;: implementation_info,
+</span></span><span class="line"><span class="cl">        &#39;system_ssl&#39;: system_ssl_info,
+</span></span><span class="line"><span class="cl">        &#39;using_pyopenssl&#39;: pyopenssl is not None,
+</span></span><span class="line"><span class="cl">        &#39;pyOpenSSL&#39;: pyopenssl_info,
+</span></span><span class="line"><span class="cl">        &#39;urllib3&#39;: urllib3_info,
+</span></span><span class="line"><span class="cl">        &#39;chardet&#39;: chardet_info,
+</span></span><span class="line"><span class="cl">        &#39;cryptography&#39;: cryptography_info,
+</span></span><span class="line"><span class="cl">        &#39;idna&#39;: idna_info,
+</span></span><span class="line"><span class="cl">        &#39;requests&#39;: {
+</span></span><span class="line"><span class="cl">            &#39;version&#39;: requests_version,
+</span></span><span class="line"><span class="cl">        },
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>info提供系统环境的信息，_implementation是其内部实现，以下划线*_*开头。再看测试类test_help:</p>
+</div><p>info提供系统环境的信息，_implementation是其内部实现，以下划线*_*开头。再看测试类test_help:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -498,85 +472,80 @@ def info():
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from requests.help import info
-
-def test_system_ssl():
-    &#34;&#34;&#34;Verify we&#39;re actually setting system_ssl when it should be available.&#34;&#34;&#34;
-    assert info()[&#39;system_ssl&#39;][&#39;version&#39;] != &#39;&#39;
-
-class VersionedPackage(object):
-    def __init__(self, version):
-        self.__version__ = version
-
-def test_idna_without_version_attribute(mocker):
-    &#34;&#34;&#34;Older versions of IDNA don&#39;t provide a __version__ attribute, verify
-    that if we have such a package, we don&#39;t blow up.
-    &#34;&#34;&#34;
-    mocker.patch(&#39;requests.help.idna&#39;, new=None)
-    assert info()[&#39;idna&#39;] == {&#39;version&#39;: &#39;&#39;}
-
-def test_idna_with_version_attribute(mocker):
-    &#34;&#34;&#34;Verify we&#39;re actually setting idna version when it should be available.&#34;&#34;&#34;
-    mocker.patch(&#39;requests.help.idna&#39;, new=VersionedPackage(&#39;2.6&#39;))
-    assert info()[&#39;idna&#39;] == {&#39;version&#39;: &#39;2.6&#39;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from requests.help import info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_system_ssl():
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Verify we&#39;re actually setting system_ssl when it should be available.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    assert info()[&#39;system_ssl&#39;][&#39;version&#39;] != &#39;&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class VersionedPackage(object):
+</span></span><span class="line"><span class="cl">    def __init__(self, version):
+</span></span><span class="line"><span class="cl">        self.__version__ = version
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_idna_without_version_attribute(mocker):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Older versions of IDNA don&#39;t provide a __version__ attribute, verify
+</span></span><span class="line"><span class="cl">    that if we have such a package, we don&#39;t blow up.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    mocker.patch(&#39;requests.help.idna&#39;, new=None)
+</span></span><span class="line"><span class="cl">    assert info()[&#39;idna&#39;] == {&#39;version&#39;: &#39;&#39;}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_idna_with_version_attribute(mocker):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Verify we&#39;re actually setting idna version when it should be available.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    mocker.patch(&#39;requests.help.idna&#39;, new=VersionedPackage(&#39;2.6&#39;))
+</span></span><span class="line"><span class="cl">    assert info()[&#39;idna&#39;] == {&#39;version&#39;: &#39;2.6&#39;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>首先从头部的导入信息可以看到，仅仅对info函数进行测试，这个容易理解。info测试通过，自然覆盖到_implementation这个内部函数。这里可以得到单元测试的第1个技巧:</p>
-
+</div><p>首先从头部的导入信息可以看到，仅仅对info函数进行测试，这个容易理解。info测试通过，自然覆盖到_implementation这个内部函数。这里可以得到单元测试的第1个技巧:</p>
 <ol>
 <li>仅对public的接口进行测试</li>
 </ol>
-
 <p><code>test_idna_without_version_attribute</code>和<code>test_idna_with_version_attribute</code>均有一个mocker参数，这是pytest-mock提供的功能，会自动注入一个mock实现。使用这个mock对idna模块进行模拟</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 模拟空实现
-mocker.patch(&#39;requests.help.idna&#39;, new=None)
-# 模拟版本2.6
-mocker.patch(&#39;requests.help.idna&#39;, new=VersionedPackage(&#39;2.6&#39;))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 模拟空实现
+</span></span><span class="line"><span class="cl">mocker.patch(&#39;requests.help.idna&#39;, new=None)
+</span></span><span class="line"><span class="cl"># 模拟版本2.6
+</span></span><span class="line"><span class="cl">mocker.patch(&#39;requests.help.idna&#39;, new=VersionedPackage(&#39;2.6&#39;))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可能大家会比较奇怪，这里patch模拟的是 <code>requests.help.idna</code> , 而我们在help中导入的是 <code>inda</code> 模块。这是因为在<code>requests.packages</code>中对inda进行了模块名重定向:</p>
+</div><p>可能大家会比较奇怪，这里patch模拟的是 <code>requests.help.idna</code> , 而我们在help中导入的是 <code>inda</code> 模块。这是因为在<code>requests.packages</code>中对inda进行了模块名重定向:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><span class="k">for</span> <span class="kn">package</span> <span class="nf">in</span> <span class="p">(</span><span class="err">&#39;</span><span class="nx">urllib3</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">idna</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">chardet</span><span class="err">&#39;</span><span class="p">):</span>
-    <span class="nf">locals</span><span class="p">()[</span><span class="kn">package</span><span class="p">]</span> <span class="p">=</span> <span class="nf">__import__</span><span class="p">(</span><span class="kn">package</span><span class="p">)</span>
-    <span class="err">#</span> <span class="nx">This</span> <span class="nx">traversal</span> <span class="nx">is</span> <span class="nx">apparently</span> <span class="nx">necessary</span> <span class="nx">such</span> <span class="nx">that</span> <span class="nx">the</span> <span class="nx">identities</span> <span class="nx">are</span>
-    <span class="err">#</span> <span class="nf">preserved</span> <span class="p">(</span><span class="nx">requests</span><span class="p">.</span><span class="nx">packages</span><span class="p">.</span><span class="nx">urllib3</span><span class="p">.</span><span class="o">*</span> <span class="nx">is</span> <span class="nx">urllib3</span><span class="p">.</span><span class="o">*</span><span class="p">)</span>
-    <span class="k">for</span> <span class="nx">mod</span> <span class="nx">in</span> <span class="nf">list</span><span class="p">(</span><span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nx">mod</span> <span class="o">==</span> <span class="kn">package</span> <span class="nx">or</span> <span class="nx">mod</span><span class="p">.</span><span class="nf">startswith</span><span class="p">(</span><span class="kn">package</span> <span class="o">+</span> <span class="sc">&#39;.&#39;</span><span class="p">):</span>
-            <span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">[</span><span class="err">&#39;</span><span class="nx">requests</span><span class="p">.</span><span class="nx">packages</span><span class="p">.</span><span class="err">&#39;</span> <span class="o">+</span> <span class="nx">mod</span><span class="p">]</span> <span class="p">=</span> <span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">[</span><span class="nx">mod</span><span class="p">]</span></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="kn">package</span> <span class="nf">in</span> <span class="p">(</span><span class="err">&#39;</span><span class="nx">urllib3</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">idna</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="nx">chardet</span><span class="err">&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">locals</span><span class="p">()[</span><span class="kn">package</span><span class="p">]</span> <span class="p">=</span> <span class="nf">__import__</span><span class="p">(</span><span class="kn">package</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span> <span class="nx">This</span> <span class="nx">traversal</span> <span class="nx">is</span> <span class="nx">apparently</span> <span class="nx">necessary</span> <span class="nx">such</span> <span class="nx">that</span> <span class="nx">the</span> <span class="nx">identities</span> <span class="nx">are</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span> <span class="nf">preserved</span> <span class="p">(</span><span class="nx">requests</span><span class="p">.</span><span class="nx">packages</span><span class="p">.</span><span class="nx">urllib3</span><span class="p">.</span><span class="o">*</span> <span class="nx">is</span> <span class="nx">urllib3</span><span class="p">.</span><span class="o">*</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">mod</span> <span class="nx">in</span> <span class="nf">list</span><span class="p">(</span><span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">mod</span> <span class="o">==</span> <span class="kn">package</span> <span class="nx">or</span> <span class="nx">mod</span><span class="p">.</span><span class="nf">startswith</span><span class="p">(</span><span class="kn">package</span> <span class="o">+</span> <span class="sc">&#39;.&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">[</span><span class="err">&#39;</span><span class="nx">requests</span><span class="p">.</span><span class="nx">packages</span><span class="p">.</span><span class="err">&#39;</span> <span class="o">+</span> <span class="nx">mod</span><span class="p">]</span> <span class="p">=</span> <span class="nx">sys</span><span class="p">.</span><span class="nx">modules</span><span class="p">[</span><span class="nx">mod</span><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用mocker后，idna的<strong>version</strong>信息就可以进行控制，这样info中的idna结果也就可以预期。那么可以得到第2个技巧:</p>
-
-<ol>
+</div><p>使用mocker后，idna的__version__信息就可以进行控制，这样info中的idna结果也就可以预期。那么可以得到第2个技巧:</p>
+<ol start="2">
 <li>使用mock辅助单元测试</li>
 </ol>
-
-<h3 id="test-hooks-实现分析">test_hooks 实现分析</h3>
-
+<h3 id="test_hooks-实现分析">test_hooks 实现分析</h3>
 <p>我们继续查看hooks如何进行测试:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -592,30 +561,30 @@ mocker.patch(&#39;requests.help.idna&#39;, new=VersionedPackage(&#39;2.6&#39;))<
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from requests import hooks
-
-def hook(value):
-    return value[1:]
-
-@pytest.mark.parametrize(
-    &#39;hooks_list, result&#39;, (
-        (hook, &#39;ata&#39;),
-        ([hook, lambda x: None, hook], &#39;ta&#39;),
-    )
-)
-def test_hooks(hooks_list, result):
-    assert hooks.dispatch_hook(&#39;response&#39;, {&#39;response&#39;: hooks_list}, &#39;Data&#39;) == result
-
-def test_default_hooks():
-    assert hooks.default_hooks() == {&#39;response&#39;: []}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from requests import hooks
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def hook(value):
+</span></span><span class="line"><span class="cl">    return value[1:]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">    &#39;hooks_list, result&#39;, (
+</span></span><span class="line"><span class="cl">        (hook, &#39;ata&#39;),
+</span></span><span class="line"><span class="cl">        ([hook, lambda x: None, hook], &#39;ta&#39;),
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">def test_hooks(hooks_list, result):
+</span></span><span class="line"><span class="cl">    assert hooks.dispatch_hook(&#39;response&#39;, {&#39;response&#39;: hooks_list}, &#39;Data&#39;) == result
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def test_default_hooks():
+</span></span><span class="line"><span class="cl">    assert hooks.default_hooks() == {&#39;response&#39;: []}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>hooks模块的2个接口default_hooks和dispatch_hook都进行了测试。其中default_hooks是纯函数，无参数有返回值，这种函数最容易测试，仅仅检查返回值是否符合预期即可。dispatch_hook会复杂一些，还涉及对回调函数(hook函数)的调用:</p>
+</div><p>hooks模块的2个接口default_hooks和dispatch_hook都进行了测试。其中default_hooks是纯函数，无参数有返回值，这种函数最容易测试，仅仅检查返回值是否符合预期即可。dispatch_hook会复杂一些，还涉及对回调函数(hook函数)的调用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -628,40 +597,38 @@ def test_default_hooks():
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def dispatch_hook(key, hooks, hook_data, **kwargs):
-    &#34;&#34;&#34;Dispatches a hook dictionary on a given piece of data.&#34;&#34;&#34;
-    hooks = hooks or {}
-    hooks = hooks.get(key)
-    if hooks:
-        # 判断钩子函数
-        if hasattr(hooks, &#39;__call__&#39;):
-            hooks = [hooks]
-        for hook in hooks:
-            _hook_data = hook(hook_data, **kwargs)
-            if _hook_data is not None:
-                hook_data = _hook_data
-    return hook_data</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def dispatch_hook(key, hooks, hook_data, **kwargs):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Dispatches a hook dictionary on a given piece of data.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    hooks = hooks or {}
+</span></span><span class="line"><span class="cl">    hooks = hooks.get(key)
+</span></span><span class="line"><span class="cl">    if hooks:
+</span></span><span class="line"><span class="cl">        # 判断钩子函数
+</span></span><span class="line"><span class="cl">        if hasattr(hooks, &#39;__call__&#39;):
+</span></span><span class="line"><span class="cl">            hooks = [hooks]
+</span></span><span class="line"><span class="cl">        for hook in hooks:
+</span></span><span class="line"><span class="cl">            _hook_data = hook(hook_data, **kwargs)
+</span></span><span class="line"><span class="cl">            if _hook_data is not None:
+</span></span><span class="line"><span class="cl">                hook_data = _hook_data
+</span></span><span class="line"><span class="cl">    return hook_data
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>pytest.mark.parametrize提供了2组参数进行测试。第一组参数hook和ata很简单，hook是一个函数，会对参数裁剪，去掉首位，ata是期望的返回值。test_hooks的response的参数是Data，所以结果应该是ata。第二组参数中的第一个参数会复杂一些，变成了一个数组，首位还是hook函数，中间使用一个匿名函数，匿名函数没有返回值，这样覆盖到 <code>if _hook_data is not None:</code> 的旁路分支。执行过程如下:
-* hook函数裁剪*Data*首位，剩余<em>ata</em>
-* 匿名函数不对结果修改，剩余<em>ata</em>
-* hook函数继续裁剪*ata*首位，剩余<em>ta</em></p>
-
+</div><p>pytest.mark.parametrize提供了2组参数进行测试。第一组参数hook和ata很简单，hook是一个函数，会对参数裁剪，去掉首位，ata是期望的返回值。test_hooks的response的参数是Data，所以结果应该是ata。第二组参数中的第一个参数会复杂一些，变成了一个数组，首位还是hook函数，中间使用一个匿名函数，匿名函数没有返回值，这样覆盖到 <code>if _hook_data is not None:</code> 的旁路分支。执行过程如下:</p>
+<ul>
+<li>hook函数裁剪<em>Data</em>首位，剩余<em>ata</em></li>
+<li>匿名函数不对结果修改，剩余<em>ata</em></li>
+<li>hook函数继续裁剪<em>ata</em>首位，剩余<em>ta</em></li>
+</ul>
 <p>经过测试可以发现dispatch_hook的设计十分巧妙，使用pipeline模式，将所有的钩子串起来，这是和事件机制不一样的地方。细心的话，我们可以发现 <code>if hooks:</code> 并未进行旁路测试，这个不够严谨，有违我们的第3个技巧:</p>
-
-<ol>
+<ol start="3">
 <li>测试尽可能覆盖目标函数的所有分支</li>
 </ol>
-
-<h3 id="test-structures-实现分析">test_structures 实现分析</h3>
-
+<h3 id="test_structures-实现分析">test_structures 实现分析</h3>
 <p>LookupDict的测试用例如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -686,45 +653,43 @@ def test_default_hooks():
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestLookupDict:
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        &#34;&#34;&#34;LookupDict instance with &#34;bad_gateway&#34; attribute.&#34;&#34;&#34;
-        self.lookup_dict = LookupDict(&#39;test&#39;)
-        self.lookup_dict.bad_gateway = 502
-
-    def test_repr(self):
-        assert repr(self.lookup_dict) == &#34;&lt;lookup &#39;test&#39;&gt;&#34;
-
-    get_item_parameters = pytest.mark.parametrize(
-        &#39;key, value&#39;, (
-            (&#39;bad_gateway&#39;, 502),
-            (&#39;not_a_key&#39;, None)
-        )
-    )
-
-    @get_item_parameters
-    def test_getitem(self, key, value):
-        assert self.lookup_dict[key] == value
-
-    @get_item_parameters
-    def test_get(self, key, value):
-        assert self.lookup_dict.get(key) == value</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestLookupDict:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @pytest.fixture(autouse=True)
+</span></span><span class="line"><span class="cl">    def setup(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;LookupDict instance with &#34;bad_gateway&#34; attribute.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        self.lookup_dict = LookupDict(&#39;test&#39;)
+</span></span><span class="line"><span class="cl">        self.lookup_dict.bad_gateway = 502
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_repr(self):
+</span></span><span class="line"><span class="cl">        assert repr(self.lookup_dict) == &#34;&lt;lookup &#39;test&#39;&gt;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    get_item_parameters = pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">        &#39;key, value&#39;, (
+</span></span><span class="line"><span class="cl">            (&#39;bad_gateway&#39;, 502),
+</span></span><span class="line"><span class="cl">            (&#39;not_a_key&#39;, None)
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @get_item_parameters
+</span></span><span class="line"><span class="cl">    def test_getitem(self, key, value):
+</span></span><span class="line"><span class="cl">        assert self.lookup_dict[key] == value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @get_item_parameters
+</span></span><span class="line"><span class="cl">    def test_get(self, key, value):
+</span></span><span class="line"><span class="cl">        assert self.lookup_dict.get(key) == value
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以发现使用setup方法配合@pytest.fixture，给所有测试用例初始化了一个lookup_dict对象；同时pytest.mark.parametrize可以在不同的测试用例之间复用的，我们可以得到第4个技巧:</p>
-
-<ol>
+</div><p>可以发现使用setup方法配合@pytest.fixture，给所有测试用例初始化了一个lookup_dict对象；同时pytest.mark.parametrize可以在不同的测试用例之间复用的，我们可以得到第4个技巧:</p>
+<ol start="4">
 <li>使用pytest.fixture复用被测试对象，使用pytest.mark.parametriz复用测试参数</li>
 </ol>
-
-<p>通过TestLookupDict的test_getitem和test_get可以更直观的了解LookupDict的get和<strong>getitem</strong>方法的作用:</p>
+<p>通过TestLookupDict的test_getitem和test_get可以更直观的了解LookupDict的get和__getitem__方法的作用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -732,27 +697,26 @@ def test_default_hooks():
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class LookupDict(dict):
-    ...
-    def __getitem__(self, key):
-        # We allow fall-through here, so values default to None
-        return self.__dict__.get(key, None)
-
-    def get(self, key, default=None):
-        return self.__dict__.get(key, default)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class LookupDict(dict):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    def __getitem__(self, key):
+</span></span><span class="line"><span class="cl">        # We allow fall-through here, so values default to None
+</span></span><span class="line"><span class="cl">        return self.__dict__.get(key, None)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def get(self, key, default=None):
+</span></span><span class="line"><span class="cl">        return self.__dict__.get(key, default)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>get自定义字典，使其可以使用 <em>get</em> 方法获取值</li>
 <li>__getitem__自定义字典，使其可以使用 <em>[]</em> 符合获取值</li>
 </ul>
-
 <p>CaseInsensitiveDict的测试用例在test_structures和test_requests中都有测试，前者主要是基础测试，后者偏向业务使用层面，我们可以看到这两种差异：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -779,53 +743,49 @@ def test_default_hooks():
 </span><span class="lnt">25
 </span><span class="lnt">26
 </span><span class="lnt">27
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestCaseInsensitiveDict:
-    # 类测试
-    def test_repr(self):
-        assert repr(self.case_insensitive_dict) == &#34;{&#39;Accept&#39;: &#39;application/json&#39;}&#34;
-
-    def test_copy(self):
-        copy = self.case_insensitive_dict.copy()
-        assert copy is not self.case_insensitive_dict
-        assert copy == self.case_insensitive_dict
-
-class TestCaseInsensitiveDict:
-    # 使用方法测试
-    def test_delitem(self):
-        cid = CaseInsensitiveDict()
-        cid[&#39;Spam&#39;] = &#39;someval&#39;
-        del cid[&#39;sPam&#39;]
-        assert &#39;spam&#39; not in cid
-        assert len(cid) == 0
-
-    def test_contains(self):
-        cid = CaseInsensitiveDict()
-        cid[&#39;Spam&#39;] = &#39;someval&#39;
-        assert &#39;Spam&#39; in cid
-        assert &#39;spam&#39; in cid
-        assert &#39;SPAM&#39; in cid
-        assert &#39;sPam&#39; in cid
-        assert &#39;notspam&#39; not in cid</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestCaseInsensitiveDict:
+</span></span><span class="line"><span class="cl">    # 类测试
+</span></span><span class="line"><span class="cl">    def test_repr(self):
+</span></span><span class="line"><span class="cl">        assert repr(self.case_insensitive_dict) == &#34;{&#39;Accept&#39;: &#39;application/json&#39;}&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_copy(self):
+</span></span><span class="line"><span class="cl">        copy = self.case_insensitive_dict.copy()
+</span></span><span class="line"><span class="cl">        assert copy is not self.case_insensitive_dict
+</span></span><span class="line"><span class="cl">        assert copy == self.case_insensitive_dict
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class TestCaseInsensitiveDict:
+</span></span><span class="line"><span class="cl">    # 使用方法测试
+</span></span><span class="line"><span class="cl">    def test_delitem(self):
+</span></span><span class="line"><span class="cl">        cid = CaseInsensitiveDict()
+</span></span><span class="line"><span class="cl">        cid[&#39;Spam&#39;] = &#39;someval&#39;
+</span></span><span class="line"><span class="cl">        del cid[&#39;sPam&#39;]
+</span></span><span class="line"><span class="cl">        assert &#39;spam&#39; not in cid
+</span></span><span class="line"><span class="cl">        assert len(cid) == 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_contains(self):
+</span></span><span class="line"><span class="cl">        cid = CaseInsensitiveDict()
+</span></span><span class="line"><span class="cl">        cid[&#39;Spam&#39;] = &#39;someval&#39;
+</span></span><span class="line"><span class="cl">        assert &#39;Spam&#39; in cid
+</span></span><span class="line"><span class="cl">        assert &#39;spam&#39; in cid
+</span></span><span class="line"><span class="cl">        assert &#39;SPAM&#39; in cid
+</span></span><span class="line"><span class="cl">        assert &#39;sPam&#39; in cid
+</span></span><span class="line"><span class="cl">        assert &#39;notspam&#39; not in cid
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>借鉴上面的测试方法，不难得出第5个技巧:</p>
-
-<ol>
+</div><p>借鉴上面的测试方法，不难得出第5个技巧:</p>
+<ol start="5">
 <li>可以从不同的层面对同一个对象进行单元测试</li>
 </ol>
-
 <blockquote>
 <p>后面的test_lowlevel和test_requests也应用了这种技巧</p>
 </blockquote>
-
-<h3 id="utils-py">utils.py</h3>
-
+<h3 id="utilspy">utils.py</h3>
 <p>utils中构建了一个可以写入env的生成器(由yield关键字提供)，可以当上下文装饰器使用:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -841,30 +801,30 @@ class TestCaseInsensitiveDict:
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">import contextlib
-import os
-
-@contextlib.contextmanager
-def override_environ(**kwargs):
-    save_env = dict(os.environ)
-    for key, value in kwargs.items():
-        if value is None:
-            del os.environ[key]
-        else:
-            os.environ[key] = value
-    try:
-        yield
-    finally:
-        os.environ.clear()
-        os.environ.update(save_env)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import contextlib
+</span></span><span class="line"><span class="cl">import os
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@contextlib.contextmanager
+</span></span><span class="line"><span class="cl">def override_environ(**kwargs):
+</span></span><span class="line"><span class="cl">    save_env = dict(os.environ)
+</span></span><span class="line"><span class="cl">    for key, value in kwargs.items():
+</span></span><span class="line"><span class="cl">        if value is None:
+</span></span><span class="line"><span class="cl">            del os.environ[key]
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            os.environ[key] = value
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        yield
+</span></span><span class="line"><span class="cl">    finally:
+</span></span><span class="line"><span class="cl">        os.environ.clear()
+</span></span><span class="line"><span class="cl">        os.environ.update(save_env)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是使用方法示例:</p>
+</div><p>下面是使用方法示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -880,36 +840,34 @@ def override_environ(**kwargs):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># test_requests.py
-
-kwargs = {
-    var: proxy
-}
-# 模拟控制proxy环境变量
-with override_environ(**kwargs):
-    proxies = session.rebuild_proxies(prep, {})
-    
-def rebuild_proxies(self, prepared_request, proxies):  
-    bypass_proxy = should_bypass_proxies(url, no_proxy=no_proxy)
- 
-def should_bypass_proxies(url, no_proxy):
-    ...
-    get_proxy = lambda k: os.environ.get(k) or os.environ.get(k.upper())
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># test_requests.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kwargs = {
+</span></span><span class="line"><span class="cl">    var: proxy
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl"># 模拟控制proxy环境变量
+</span></span><span class="line"><span class="cl">with override_environ(**kwargs):
+</span></span><span class="line"><span class="cl">    proxies = session.rebuild_proxies(prep, {})
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def rebuild_proxies(self, prepared_request, proxies):  
+</span></span><span class="line"><span class="cl">    bypass_proxy = should_bypass_proxies(url, no_proxy=no_proxy)
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">def should_bypass_proxies(url, no_proxy):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    get_proxy = lambda k: os.environ.get(k) or os.environ.get(k.upper())
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ol>
+</div><ol start="6">
 <li>涉及环境变量的地方，可以使用上下文装饰器进行模拟多种环境变量</li>
 </ol>
-
 <h3 id="utils测试用例">utils测试用例</h3>
-
 <p>utils的测试用例较多，我们选择部分进行分析。先看to_key_val_list函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -921,26 +879,26 @@ def should_bypass_proxies(url, no_proxy):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># 对象转列表
-def to_key_val_list(value):
-    if value is None:
-        return None
-
-    if isinstance(value, (str, bytes, bool, int)):
-        raise ValueError(&#39;cannot encode objects that are not 2-tuples&#39;)
-
-    if isinstance(value, Mapping):
-        value = value.items()
-
-    return list(value)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 对象转列表
+</span></span><span class="line"><span class="cl">def to_key_val_list(value):
+</span></span><span class="line"><span class="cl">    if value is None:
+</span></span><span class="line"><span class="cl">        return None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if isinstance(value, (str, bytes, bool, int)):
+</span></span><span class="line"><span class="cl">        raise ValueError(&#39;cannot encode objects that are not 2-tuples&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if isinstance(value, Mapping):
+</span></span><span class="line"><span class="cl">        value = value.items()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return list(value)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>对应的测试用例TestToKeyValList:</p>
+</div><p>对应的测试用例TestToKeyValList:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -955,35 +913,33 @@ def to_key_val_list(value):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestToKeyValList:
-
-    @pytest.mark.parametrize(
-        &#39;value, expected&#39;, (
-            ([(&#39;key&#39;, &#39;val&#39;)], [(&#39;key&#39;, &#39;val&#39;)]),
-            (((&#39;key&#39;, &#39;val&#39;), ), [(&#39;key&#39;, &#39;val&#39;)]),
-            ({&#39;key&#39;: &#39;val&#39;}, [(&#39;key&#39;, &#39;val&#39;)]),
-            (None, None)
-        ))
-    def test_valid(self, value, expected):
-        assert to_key_val_list(value) == expected
-
-    def test_invalid(self):
-        with pytest.raises(ValueError):
-            to_key_val_list(&#39;string&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestToKeyValList:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">        &#39;value, expected&#39;, (
+</span></span><span class="line"><span class="cl">            ([(&#39;key&#39;, &#39;val&#39;)], [(&#39;key&#39;, &#39;val&#39;)]),
+</span></span><span class="line"><span class="cl">            (((&#39;key&#39;, &#39;val&#39;), ), [(&#39;key&#39;, &#39;val&#39;)]),
+</span></span><span class="line"><span class="cl">            ({&#39;key&#39;: &#39;val&#39;}, [(&#39;key&#39;, &#39;val&#39;)]),
+</span></span><span class="line"><span class="cl">            (None, None)
+</span></span><span class="line"><span class="cl">        ))
+</span></span><span class="line"><span class="cl">    def test_valid(self, value, expected):
+</span></span><span class="line"><span class="cl">        assert to_key_val_list(value) == expected
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_invalid(self):
+</span></span><span class="line"><span class="cl">        with pytest.raises(ValueError):
+</span></span><span class="line"><span class="cl">            to_key_val_list(&#39;string&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>重点是test_invalid中使用pytest.raise对异常的处理:</p>
-
-<ol>
+</div><p>重点是test_invalid中使用pytest.raise对异常的处理:</p>
+<ol start="7">
 <li>使用pytest.raises对异常进行捕获处理</li>
 </ol>
-
 <p>TestSuperLen介绍了几种进行IO模拟测试的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1026,67 +982,63 @@ def to_key_val_list(value):
 </span><span class="lnt">41
 </span><span class="lnt">42
 </span><span class="lnt">43
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestSuperLen:
-
-    @pytest.mark.parametrize(
-        &#39;stream, value&#39;, (
-            (StringIO.StringIO, &#39;Test&#39;),
-            (BytesIO, b&#39;Test&#39;),
-            pytest.param(cStringIO, &#39;Test&#39;,
-                         marks=pytest.mark.skipif(&#39;cStringIO is None&#39;)),
-        ))
-    def test_io_streams(self, stream, value):
-        &#34;&#34;&#34;Ensures that we properly deal with different kinds of IO streams.&#34;&#34;&#34;
-        assert super_len(stream()) == 0
-        assert super_len(stream(value)) == 4
-
-    def test_super_len_correctly_calculates_len_of_partially_read_file(self):
-        &#34;&#34;&#34;Ensure that we handle partially consumed file like objects.&#34;&#34;&#34;
-        s = StringIO.StringIO()
-        s.write(&#39;foobarbogus&#39;)
-        assert super_len(s) == 0
-    
-    @pytest.mark.parametrize(
-        &#39;mode, warnings_num&#39;, (
-            (&#39;r&#39;, 1),
-            (&#39;rb&#39;, 0),
-        ))
-    def test_file(self, tmpdir, mode, warnings_num, recwarn):
-        file_obj = tmpdir.join(&#39;test.txt&#39;)
-        file_obj.write(&#39;Test&#39;)
-        with file_obj.open(mode) as fd:
-            assert super_len(fd) == 4
-        assert len(recwarn) == warnings_num
-
-    def test_super_len_with_tell(self):
-        foo = StringIO.StringIO(&#39;12345&#39;)
-        assert super_len(foo) == 5
-        foo.read(2)
-        assert super_len(foo) == 3
-
-    def test_super_len_with_fileno(self):
-        with open(__file__, &#39;rb&#39;) as f:
-            length = super_len(f)
-            file_data = f.read()
-        assert length == len(file_data)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestSuperLen:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">        &#39;stream, value&#39;, (
+</span></span><span class="line"><span class="cl">            (StringIO.StringIO, &#39;Test&#39;),
+</span></span><span class="line"><span class="cl">            (BytesIO, b&#39;Test&#39;),
+</span></span><span class="line"><span class="cl">            pytest.param(cStringIO, &#39;Test&#39;,
+</span></span><span class="line"><span class="cl">                         marks=pytest.mark.skipif(&#39;cStringIO is None&#39;)),
+</span></span><span class="line"><span class="cl">        ))
+</span></span><span class="line"><span class="cl">    def test_io_streams(self, stream, value):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Ensures that we properly deal with different kinds of IO streams.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        assert super_len(stream()) == 0
+</span></span><span class="line"><span class="cl">        assert super_len(stream(value)) == 4
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_super_len_correctly_calculates_len_of_partially_read_file(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Ensure that we handle partially consumed file like objects.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        s = StringIO.StringIO()
+</span></span><span class="line"><span class="cl">        s.write(&#39;foobarbogus&#39;)
+</span></span><span class="line"><span class="cl">        assert super_len(s) == 0
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">        &#39;mode, warnings_num&#39;, (
+</span></span><span class="line"><span class="cl">            (&#39;r&#39;, 1),
+</span></span><span class="line"><span class="cl">            (&#39;rb&#39;, 0),
+</span></span><span class="line"><span class="cl">        ))
+</span></span><span class="line"><span class="cl">    def test_file(self, tmpdir, mode, warnings_num, recwarn):
+</span></span><span class="line"><span class="cl">        file_obj = tmpdir.join(&#39;test.txt&#39;)
+</span></span><span class="line"><span class="cl">        file_obj.write(&#39;Test&#39;)
+</span></span><span class="line"><span class="cl">        with file_obj.open(mode) as fd:
+</span></span><span class="line"><span class="cl">            assert super_len(fd) == 4
+</span></span><span class="line"><span class="cl">        assert len(recwarn) == warnings_num
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_super_len_with_tell(self):
+</span></span><span class="line"><span class="cl">        foo = StringIO.StringIO(&#39;12345&#39;)
+</span></span><span class="line"><span class="cl">        assert super_len(foo) == 5
+</span></span><span class="line"><span class="cl">        foo.read(2)
+</span></span><span class="line"><span class="cl">        assert super_len(foo) == 3
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_super_len_with_fileno(self):
+</span></span><span class="line"><span class="cl">        with open(__file__, &#39;rb&#39;) as f:
+</span></span><span class="line"><span class="cl">            length = super_len(f)
+</span></span><span class="line"><span class="cl">            file_data = f.read()
+</span></span><span class="line"><span class="cl">        assert length == len(file_data)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>使用StringIO来模拟IO操作，可以配置各种IO的测试。当然也可以使用BytesIO/cStringIO, 不过单元测试用例一般不关注性能，StringIO简单够用。</li>
 <li>pytest提供tmpdir的fixture，可以进行文件读写操作测试</li>
-<li>可以使用<strong>file</strong>来进行文件的只读测试，<strong>file</strong>表示当前文件，不会产生副作用。</li>
+<li>可以使用__file__来进行文件的只读测试，__file__表示当前文件，不会产生副作用。</li>
 </ul>
-
-<ol>
+<ol start="8">
 <li>使用IO模拟配合进行单元测试</li>
 </ol>
-
 <h2 id="request-api如何测试">request-api如何测试</h2>
-
 <p>requests的测试需要httpbin和pytest-httpbin，前者会启动一个本地服务，后者会安装一个pytest插件，测试用例中可以得到httpbin的fixture，用来操作这个服务的URL。</p>
-
 <table>
 <thead>
 <tr>
@@ -1094,49 +1046,41 @@ def to_key_val_list(value):
 <th>功能</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>TestRequests</td>
 <td>requests业务测试</td>
 </tr>
-
 <tr>
 <td>TestCaseInsensitiveDict</td>
 <td>大小写不敏感的字典测试</td>
 </tr>
-
 <tr>
 <td>TestMorselToCookieExpires</td>
 <td>cookie过期测试</td>
 </tr>
-
 <tr>
 <td>TestMorselToCookieMaxAge</td>
 <td>cookie大小</td>
 </tr>
-
 <tr>
 <td>TestTimeout</td>
 <td>响应超时的测试</td>
 </tr>
-
 <tr>
 <td>TestPreparingURLs</td>
 <td>URL预处理</td>
 </tr>
-
 <tr>
 <td>&hellip;</td>
 <td>一些零碎的测试用例</td>
 </tr>
 </tbody>
 </table>
-
 <p>坦率的讲：这个测试用例内容庞大，达到2500行。看起来是针对各种业务的零散case，我并没有完全理顺其组织逻辑。我选择一些感兴趣的业务进行介绍, 先看TimeOut的测试:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1158,38 +1102,37 @@ def to_key_val_list(value):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">TARPIT = &#39;http://10.255.255.1&#39;
-
-class TestTimeout:
-
-    def test_stream_timeout(self, httpbin):
-        try:
-            requests.get(httpbin(&#39;delay/10&#39;), timeout=2.0)
-        except requests.exceptions.Timeout as e:
-            assert &#39;Read timed out&#39; in e.args[0].args[0]
-    
-    @pytest.mark.parametrize(
-    &#39;timeout&#39;, (
-        (0.1, None),
-        Urllib3Timeout(connect=0.1, read=None)
-    ))
-    def test_connect_timeout(self, timeout):
-        try:
-            requests.get(TARPIT, timeout=timeout)
-            pytest.fail(&#39;The connect() request should time out.&#39;)
-        except ConnectTimeout as e:
-            assert isinstance(e, ConnectionError)
-            assert isinstance(e, Timeout)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">TARPIT = &#39;http://10.255.255.1&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class TestTimeout:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_stream_timeout(self, httpbin):
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            requests.get(httpbin(&#39;delay/10&#39;), timeout=2.0)
+</span></span><span class="line"><span class="cl">        except requests.exceptions.Timeout as e:
+</span></span><span class="line"><span class="cl">            assert &#39;Read timed out&#39; in e.args[0].args[0]
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @pytest.mark.parametrize(
+</span></span><span class="line"><span class="cl">    &#39;timeout&#39;, (
+</span></span><span class="line"><span class="cl">        (0.1, None),
+</span></span><span class="line"><span class="cl">        Urllib3Timeout(connect=0.1, read=None)
+</span></span><span class="line"><span class="cl">    ))
+</span></span><span class="line"><span class="cl">    def test_connect_timeout(self, timeout):
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            requests.get(TARPIT, timeout=timeout)
+</span></span><span class="line"><span class="cl">            pytest.fail(&#39;The connect() request should time out.&#39;)
+</span></span><span class="line"><span class="cl">        except ConnectTimeout as e:
+</span></span><span class="line"><span class="cl">            assert isinstance(e, ConnectionError)
+</span></span><span class="line"><span class="cl">            assert isinstance(e, Timeout)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>test_stream_timeout利用httpbin创建了一个延迟10s响应的接口，然后请求本身设置成2s，这样可以收到一个本地timeout的错误。test_connect_timeout则是访问一个不存在的服务，捕获连接超时的错误。</p>
-
+</div><p>test_stream_timeout利用httpbin创建了一个延迟10s响应的接口，然后请求本身设置成2s，这样可以收到一个本地timeout的错误。test_connect_timeout则是访问一个不存在的服务，捕获连接超时的错误。</p>
 <p>TestRequests都是对requests的业务进程测试，可以看到至少是2种:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1221,53 +1164,51 @@ class TestTimeout:
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestRequests:
-    
-    def test_basic_building(self):
-        req = requests.Request()
-        req.url = &#39;http://kennethreitz.org/&#39;
-        req.data = {&#39;life&#39;: &#39;42&#39;}
-    
-        pr = req.prepare()
-        assert pr.url == req.url
-        assert pr.body == &#39;life=42&#39;
-        
-    def test_path_is_not_double_encoded(self):
-        request = requests.Request(&#39;GET&#39;, &#34;http://0.0.0.0/get/test case&#34;).prepare()
-    
-        assert request.path_url == &#39;/get/test%20case
-    
-    ...
-    
-    def test_HTTP_200_OK_GET_ALTERNATIVE(self, httpbin):
-        r = requests.Request(&#39;GET&#39;, httpbin(&#39;get&#39;))
-        s = requests.Session()
-        s.proxies = getproxies()
-
-        r = s.send(r.prepare())
-
-        assert r.status_code == 200
-    
-    ef test_set_cookie_on_301(self, httpbin):
-        s = requests.session()
-        url = httpbin(&#39;cookies/set?foo=bar&#39;)
-        s.get(url)
-        assert s.cookies[&#39;foo&#39;] == &#39;bar&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestRequests:
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def test_basic_building(self):
+</span></span><span class="line"><span class="cl">        req = requests.Request()
+</span></span><span class="line"><span class="cl">        req.url = &#39;http://kennethreitz.org/&#39;
+</span></span><span class="line"><span class="cl">        req.data = {&#39;life&#39;: &#39;42&#39;}
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        pr = req.prepare()
+</span></span><span class="line"><span class="cl">        assert pr.url == req.url
+</span></span><span class="line"><span class="cl">        assert pr.body == &#39;life=42&#39;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def test_path_is_not_double_encoded(self):
+</span></span><span class="line"><span class="cl">        request = requests.Request(&#39;GET&#39;, &#34;http://0.0.0.0/get/test case&#34;).prepare()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        assert request.path_url == &#39;/get/test%20case
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def test_HTTP_200_OK_GET_ALTERNATIVE(self, httpbin):
+</span></span><span class="line"><span class="cl">        r = requests.Request(&#39;GET&#39;, httpbin(&#39;get&#39;))
+</span></span><span class="line"><span class="cl">        s = requests.Session()
+</span></span><span class="line"><span class="cl">        s.proxies = getproxies()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        r = s.send(r.prepare())
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        assert r.status_code == 200
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    ef test_set_cookie_on_301(self, httpbin):
+</span></span><span class="line"><span class="cl">        s = requests.session()
+</span></span><span class="line"><span class="cl">        url = httpbin(&#39;cookies/set?foo=bar&#39;)
+</span></span><span class="line"><span class="cl">        s.get(url)
+</span></span><span class="line"><span class="cl">        assert s.cookies[&#39;foo&#39;] == &#39;bar&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>对url进行校验，只需要对request进行prepare，这种情况下，请求并未发送，少了网络传输，测试用例会更迅速</li>
 <li>需要响应数据的情况，需要使用httbin构建真实的请求-响应数据</li>
 </ul>
-
 <h2 id="底层api测试">底层API测试</h2>
-
 <p>testserver构建一个简单的基于线程的tcp服务，这个tcp服务具有<code>__enter__</code>和<code>__exit__</code>方法，还可以当一个上下文环境使用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1301,49 +1242,49 @@ class TestTimeout:
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TestTestServer:
-
-    def test_basic(self):
-        &#34;&#34;&#34;messages are sent and received properly&#34;&#34;&#34;
-        question = b&#34;success?&#34;
-        answer = b&#34;yeah, success&#34;
-
-        def handler(sock):
-            text = sock.recv(1000)
-            assert text == question
-            sock.sendall(answer)
-
-        with Server(handler) as (host, port):
-            sock = socket.socket()
-            sock.connect((host, port))
-            sock.sendall(question)
-            text = sock.recv(1000)
-            assert text == answer
-            sock.close()
-    
-    def test_text_response(self):
-        &#34;&#34;&#34;the text_response_server sends the given text&#34;&#34;&#34;
-        server = Server.text_response_server(
-            &#34;HTTP/1.1 200 OK\r\n&#34; +
-            &#34;Content-Length: 6\r\n&#34; +
-            &#34;\r\nroflol&#34;
-        )
-
-        with server as (host, port):
-            r = requests.get(&#39;http://{}:{}&#39;.format(host, port))
-
-            assert r.status_code == 200
-            assert r.text == u&#39;roflol&#39;
-            assert r.headers[&#39;Content-Length&#39;] == &#39;6&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TestTestServer:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def test_basic(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;messages are sent and received properly&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        question = b&#34;success?&#34;
+</span></span><span class="line"><span class="cl">        answer = b&#34;yeah, success&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        def handler(sock):
+</span></span><span class="line"><span class="cl">            text = sock.recv(1000)
+</span></span><span class="line"><span class="cl">            assert text == question
+</span></span><span class="line"><span class="cl">            sock.sendall(answer)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        with Server(handler) as (host, port):
+</span></span><span class="line"><span class="cl">            sock = socket.socket()
+</span></span><span class="line"><span class="cl">            sock.connect((host, port))
+</span></span><span class="line"><span class="cl">            sock.sendall(question)
+</span></span><span class="line"><span class="cl">            text = sock.recv(1000)
+</span></span><span class="line"><span class="cl">            assert text == answer
+</span></span><span class="line"><span class="cl">            sock.close()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def test_text_response(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;the text_response_server sends the given text&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        server = Server.text_response_server(
+</span></span><span class="line"><span class="cl">            &#34;HTTP/1.1 200 OK\r\n&#34; +
+</span></span><span class="line"><span class="cl">            &#34;Content-Length: 6\r\n&#34; +
+</span></span><span class="line"><span class="cl">            &#34;\r\nroflol&#34;
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        with server as (host, port):
+</span></span><span class="line"><span class="cl">            r = requests.get(&#39;http://{}:{}&#39;.format(host, port))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            assert r.status_code == 200
+</span></span><span class="line"><span class="cl">            assert r.text == u&#39;roflol&#39;
+</span></span><span class="line"><span class="cl">            assert r.headers[&#39;Content-Length&#39;] == &#39;6&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>test_basic方法对Server进行基础校验，确保收发双方可以正确的发送和接收数据。先是客户端的sock发送question，然后服务端在handler中判断收到的数据是question，确认后返回answer，最后客户端再确认可以正确收到answer响应。
+</div><p>test_basic方法对Server进行基础校验，确保收发双方可以正确的发送和接收数据。先是客户端的sock发送question，然后服务端在handler中判断收到的数据是question，确认后返回answer，最后客户端再确认可以正确收到answer响应。
 test_text_response方法则不完整的测试了http协议。按照http协议的规范发送了http请求，Server.text_response_server会回显请求。下面是模拟浏览器的锚点定位不会经过网络传输的testcase:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1371,50 +1312,45 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def test_fragment_not_sent_with_request():
-    &#34;&#34;&#34;Verify that the fragment portion of a URI isn&#39;t sent to the server.&#34;&#34;&#34;
-    def response_handler(sock):
-        req = consume_socket_content(sock, timeout=0.5)
-        sock.send(
-            b&#39;HTTP/1.1 200 OK\r\n&#39;
-            b&#39;Content-Length: &#39;+bytes(len(req))+b&#39;\r\n&#39;
-            b&#39;\r\n&#39;+req
-        )
-
-    close_server = threading.Event()
-    server = Server(response_handler, wait_to_close_event=close_server)
-
-    with server as (host, port):
-        url = &#39;http://{}:{}/path/to/thing/#view=edit&amp;token=hunter2&#39;.format(host, port)
-        r = requests.get(url)
-        raw_request = r.content
-
-        assert r.status_code == 200
-        headers, body = raw_request.split(b&#39;\r\n\r\n&#39;, 1)
-        status_line, headers = headers.split(b&#39;\r\n&#39;, 1)
-
-        assert status_line == b&#39;GET /path/to/thing/ HTTP/1.1&#39;
-        for frag in (b&#39;view&#39;, b&#39;edit&#39;, b&#39;token&#39;, b&#39;hunter2&#39;):
-            assert frag not in headers
-            assert frag not in body
-
-        close_server.set()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def test_fragment_not_sent_with_request():
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Verify that the fragment portion of a URI isn&#39;t sent to the server.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    def response_handler(sock):
+</span></span><span class="line"><span class="cl">        req = consume_socket_content(sock, timeout=0.5)
+</span></span><span class="line"><span class="cl">        sock.send(
+</span></span><span class="line"><span class="cl">            b&#39;HTTP/1.1 200 OK\r\n&#39;
+</span></span><span class="line"><span class="cl">            b&#39;Content-Length: &#39;+bytes(len(req))+b&#39;\r\n&#39;
+</span></span><span class="line"><span class="cl">            b&#39;\r\n&#39;+req
+</span></span><span class="line"><span class="cl">        )
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    close_server = threading.Event()
+</span></span><span class="line"><span class="cl">    server = Server(response_handler, wait_to_close_event=close_server)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    with server as (host, port):
+</span></span><span class="line"><span class="cl">        url = &#39;http://{}:{}/path/to/thing/#view=edit&amp;token=hunter2&#39;.format(host, port)
+</span></span><span class="line"><span class="cl">        r = requests.get(url)
+</span></span><span class="line"><span class="cl">        raw_request = r.content
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        assert r.status_code == 200
+</span></span><span class="line"><span class="cl">        headers, body = raw_request.split(b&#39;\r\n\r\n&#39;, 1)
+</span></span><span class="line"><span class="cl">        status_line, headers = headers.split(b&#39;\r\n&#39;, 1)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        assert status_line == b&#39;GET /path/to/thing/ HTTP/1.1&#39;
+</span></span><span class="line"><span class="cl">        for frag in (b&#39;view&#39;, b&#39;edit&#39;, b&#39;token&#39;, b&#39;hunter2&#39;):
+</span></span><span class="line"><span class="cl">            assert frag not in headers
+</span></span><span class="line"><span class="cl">            assert frag not in body
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        close_server.set()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到请求的path是 <code>/path/to/thing/#view=edit&amp;token=hunter2</code>，其中 <em>#</em> 后面的部分是本地锚点，不应该进行网络传输。上面测试用例中，对接收到的响应进行判断，鉴别响应头和响应body中不包含这些关键字。</p>
-
+</div><p>可以看到请求的path是 <code>/path/to/thing/#view=edit&amp;token=hunter2</code>，其中 <em>#</em> 后面的部分是本地锚点，不应该进行网络传输。上面测试用例中，对接收到的响应进行判断，鉴别响应头和响应body中不包含这些关键字。</p>
 <p>结合requests的两个层面的测试，我们可以得出第9个技巧:</p>
-
-<ol>
+<ol start="9">
 <li>构造模拟服务配合测试</li>
 </ol>
-
 <h2 id="小结">小结</h2>
-
 <p>简单小结一下，从requests的单元测试实践中，可以得到下面9个技巧:</p>
-
 <ol>
 <li>仅对public的接口进行测试</li>
 <li>使用mock辅助单元测试</li>
@@ -1426,9 +1362,7 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
 <li>使用IO模拟配合进行单元测试</li>
 <li>构造模拟服务配合测试</li>
 </ol>
-
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li><a href="https://docs.python-requests.org/en/master/">https://docs.python-requests.org/en/master/</a></li>
 <li><a href="https://httpbin.org">https://httpbin.org</a></li>
@@ -1473,11 +1407,11 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-08-26 19:52:59 \x2b0800 CST',
+        id: '2021-08-26 19:52:59 \u002b0800 CST',
         title: 'requests项目如何使用pytest进行单元测试',
         link: decodeURI(location.href),
         desc: 'pytest是python的单元测试框架，简单易用，在很多知名项目中应用。requests是python知名的http爬虫库，同样简单易用，',
@@ -1491,6 +1425,10 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1518,13 +1456,10 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1535,7 +1470,10 @@ test_text_response方法则不完整的测试了http协议。按照http协议的
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

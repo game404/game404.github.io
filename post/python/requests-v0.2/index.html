@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/requests-v0.2/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Requests源码v0.2阅读" />
 <meta property="og:description" content="前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/requests-v0.2/" />
-<meta property="article:published_time" content="2021-04-08T23:23:38&#43;08:00"/>
-<meta property="article:modified_time" content="2021-04-08T23:23:38&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/requests-v0.2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-04-08T23:23:38+08:00" />
+<meta property="article:modified_time" content="2021-04-08T23:23:38+08:00" />
 
 <meta itemprop="name" content="Requests源码v0.2阅读">
-<meta itemprop="description" content="前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对">
-
-
-<meta itemprop="datePublished" content="2021-04-08T23:23:38&#43;08:00" />
-<meta itemprop="dateModified" content="2021-04-08T23:23:38&#43;08:00" />
+<meta itemprop="description" content="前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对"><meta itemprop="datePublished" content="2021-04-08T23:23:38+08:00" />
+<meta itemprop="dateModified" content="2021-04-08T23:23:38+08:00" />
 <meta itemprop="wordCount" content="2980">
-
-
-
-<meta itemprop="keywords" content="http,源码,阅读方法," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="http,源码,阅读方法," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Requests源码v0.2阅读"/>
 <meta name="twitter:description" content="前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,28 +144,22 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#如何使用vs-code-git历史对比">如何使用vs-code git历史对比</a></li>
-<li><a href="#如何使用pycharm-ce-git历史对比">如何使用pycharm-ce git历史对比</a></li>
-<li><a href="#v0-2-1-文件上传支持">v0.2.1 文件上传支持</a></li>
-<li><a href="#v0-2-2-cookie支持">v0.2.2 cookie支持</a></li>
-<li><a href="#v0-2-3-response优化">v0.2.3 response优化</a></li>
-<li><a href="#v0-2-4-改进request类">v0.2.4 改进request类</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#如何使用vs-code-git历史对比">如何使用vs-code git历史对比</a></li>
+    <li><a href="#如何使用pycharm-ce-git历史对比">如何使用pycharm-ce git历史对比</a></li>
+    <li><a href="#v021-文件上传支持">v0.2.1 文件上传支持</a></li>
+    <li><a href="#v022-cookie支持">v0.2.2 cookie支持</a></li>
+    <li><a href="#v023-response优化">v0.2.3 response优化</a></li>
+    <li><a href="#v024-改进request类">v0.2.4 改进request类</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>前文[一步一步实现web服务器]介绍过 <strong>历史对比法</strong> : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 <strong>requests</strong> 源码开始，使用 <strong>历史对比法</strong>，深入其实现细节，考古一下远古爬虫的实现。本文主要包括下面几个部分:</p>
-
+      <p>前文[一步一步实现web服务器]介绍过 <strong>历史对比法</strong> : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 <strong>requests</strong> 源码开始，使用 <strong>历史对比法</strong>，深入其实现细节，考古一下远古爬虫的实现。本文主要包括下面几个部分:</p>
 <ul>
 <li>如何使用vs-code进行历史对比</li>
 <li>如何使用pycharm-ce进行历史对比</li>
@@ -173,53 +170,41 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-
 <h2 id="如何使用vs-code-git历史对比">如何使用vs-code git历史对比</h2>
-
 <p>工欲善其事，必先利其器，我们先花点时间了解如何使用各种IDE工具进行git历史对比操作。先是vs-code中安装git-history插件:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406101959.png" alt="git-history-plugin" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406101959.png" alt="git-history-plugin"></p>
 <p>对比前，先切换到初始的v0.2.0版本。然后进入插件视图，搜索v0.2.1:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406101841.png" alt="git-history-view" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406101841.png" alt="git-history-view"></p>
 <p>版本代码差异:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406102639.png" alt="code" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210406102639.png" alt="code"></p>
 <h2 id="如何使用pycharm-ce-git历史对比">如何使用pycharm-ce git历史对比</h2>
-
 <p>pycharm的社区版本也支持git历史对比。同样进入git视图:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210405215829.png" alt="git-view" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210405215829.png" alt="git-view"></p>
 <p>对比代码差异:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210405220240.png" alt="compare" /></p>
-
-<h2 id="v0-2-1-文件上传支持">v0.2.1 文件上传支持</h2>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210405220240.png" alt="compare"></p>
+<h2 id="v021-文件上传支持">v0.2.1 文件上传支持</h2>
 <p>我们之前已经阅读过requests的代码，没有看过朋友可以去翻翻前文 <a href="https://game404.github.io/post/python/requests/">requests 源码阅读</a> , 今天我们就略过v0.2.0的初始化版本介绍，直接进入对比分析。</p>
-
 <p>HISTORY文件中介绍了v0.2.1新增的功能:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">0.2.1 (2011-02-14)
-++++++++++++++++++
-
-* Added file attribute to POST and PUT requests for multipart-encode file uploads.
-* Added Request.url attribute for context and redirects</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.2.1 (2011-02-14)
+</span></span><span class="line"><span class="cl">++++++++++++++++++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* Added file attribute to POST and PUT requests for multipart-encode file uploads.
+</span></span><span class="line"><span class="cl">* Added Request.url attribute for context and redirects
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>文件上传功能涉及的代码主要是:</p>
+</div><p>文件上传功能涉及的代码主要是:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -230,25 +215,25 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from .packages.poster.encode import multipart_encode
-from .packages.poster.streaminghttp import register_openers
-
-...
-def send(self, anyway=False)
-    if self.method == &#39;POST&#39;:
-        if self.files:
-            register_openers() # 1
-            datagen, headers = multipart_encode(self.files) # 2
-            req = _Request(self.url, data=datagen, headers=headers, method=&#39;POST&#39;)
-...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from .packages.poster.encode import multipart_encode
+</span></span><span class="line"><span class="cl">from .packages.poster.streaminghttp import register_openers
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">def send(self, anyway=False)
+</span></span><span class="line"><span class="cl">    if self.method == &#39;POST&#39;:
+</span></span><span class="line"><span class="cl">        if self.files:
+</span></span><span class="line"><span class="cl">            register_openers() # 1
+</span></span><span class="line"><span class="cl">            datagen, headers = multipart_encode(self.files) # 2
+</span></span><span class="line"><span class="cl">            req = _Request(self.url, data=datagen, headers=headers, method=&#39;POST&#39;)
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>核心在register_openers和multipart_encode两行代码，一个是支持文件上传的连接，一个是支持文件数据读取。先看register_openers:</p>
+</div><p>核心在register_openers和multipart_encode两行代码，一个是支持文件上传的连接，一个是支持文件数据读取。先看register_openers:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -258,24 +243,24 @@ def send(self, anyway=False)
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def register_openers():
-    handlers = [StreamingHTTPHandler, StreamingHTTPRedirectHandler]
-    if hasattr(httplib, &#34;HTTPS&#34;):
-        handlers.append(StreamingHTTPSHandler)
-
-    opener = urllib2.build_opener(*handlers)
-
-    urllib2.install_opener(opener)
-
-    return opener</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def register_openers():
+</span></span><span class="line"><span class="cl">    handlers = [StreamingHTTPHandler, StreamingHTTPRedirectHandler]
+</span></span><span class="line"><span class="cl">    if hasattr(httplib, &#34;HTTPS&#34;):
+</span></span><span class="line"><span class="cl">        handlers.append(StreamingHTTPSHandler)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    opener = urllib2.build_opener(*handlers)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    urllib2.install_opener(opener)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return opener
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>主要在使用_StreamingHTTPMixin扩展了send方法:</p>
+</div><p>主要在使用_StreamingHTTPMixin扩展了send方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -288,46 +273,46 @@ def send(self, anyway=False)
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class _StreamingHTTPMixin:
-
-    def send(self, value):
-        ...
-        try:
-            if hasattr(value, &#39;next&#39;):
-                for data in value:
-                    self.sock.sendall(data)
-            ...
-        except socket.error, v:
-            if v[0] == 32:      # Broken pipe
-                self.close()
-            raise</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class _StreamingHTTPMixin:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def send(self, value):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            if hasattr(value, &#39;next&#39;):
+</span></span><span class="line"><span class="cl">                for data in value:
+</span></span><span class="line"><span class="cl">                    self.sock.sendall(data)
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">        except socket.error, v:
+</span></span><span class="line"><span class="cl">            if v[0] == 32:      # Broken pipe
+</span></span><span class="line"><span class="cl">                self.close()
+</span></span><span class="line"><span class="cl">            raise
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到send的支持从迭代器中读取并发送到socket。multipart_encode主要是读取本地文件并生成对于的http头:</p>
+</div><p>可以看到send的支持从迭代器中读取并发送到socket。multipart_encode主要是读取本地文件并生成对于的http头:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def multipart_encode(params, boundary=None, cb=None)
-    boundary = gen_boundary()
-    boundary = urllib.quote_plus(boundary)
-    headers = get_headers(params, boundary)
-    params = MultipartParam.from_params(params)
-    return multipart_yielder(params, boundary, cb), headers</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def multipart_encode(params, boundary=None, cb=None)
+</span></span><span class="line"><span class="cl">    boundary = gen_boundary()
+</span></span><span class="line"><span class="cl">    boundary = urllib.quote_plus(boundary)
+</span></span><span class="line"><span class="cl">    headers = get_headers(params, boundary)
+</span></span><span class="line"><span class="cl">    params = MultipartParam.from_params(params)
+</span></span><span class="line"><span class="cl">    return multipart_yielder(params, boundary, cb), headers
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>生成http头的方法:</p>
+</div><p>生成http头的方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -340,31 +325,30 @@ def send(self, anyway=False)
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def get_headers(params, boundary):
-    &#34;&#34;&#34;Returns a dictionary with Content-Type and Content-Length headers
-    for the multipart/form-data encoding of ``params``.&#34;&#34;&#34;
-    # boundary = uuid.uuid4().hex
-    headers = {}
-    boundary = urllib.quote_plus(boundary)
-    headers[&#39;Content-Type&#39;] = &#34;multipart/form-data; boundary=%s&#34; % boundary
-    headers[&#39;Content-Length&#39;] = str(get_body_size(params, boundary))
-    return headers
-
-def get_body_size(params, boundary):
-    size = sum(p.get_size(boundary) for p in MultipartParam.from_params(params))
-    return size + len(boundary) + 6</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">def</span><span class="w"> </span><span class="nf">get_headers</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">boundary</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s2">&#34;&#34;&#34;Returns a dictionary with Content-Type and Content-Length headers
+</span></span></span><span class="line"><span class="cl"><span class="s2">    for the multipart/form-data encoding of ``params``.&#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1"># boundary = uuid.uuid4().hex
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">boundary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">urllib</span><span class="p">.</span><span class="nf">quote_plus</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;multipart/form-data; boundary=%s&#34;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">boundary</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="nf">get_body_size</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">boundary</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">headers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">get_body_size</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">boundary</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="nf">get_size</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">MultipartParam</span><span class="p">.</span><span class="nf">from_params</span><span class="p">(</span><span class="n">params</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">6</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>boundary就是文件分段的分隔符，详情见: <a href="https://stackoverflow.com/questions/3508338/what-is-the-boundary-in-multipart-form-data">https://stackoverflow.com/questions/3508338/what-is-the-boundary-in-multipart-form-data</a></p>
 </blockquote>
-
 <p>本地文件的读取准备主要在下面的iter_encode函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -387,39 +371,38 @@ def get_body_size(params, boundary):
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def iter_encode(self, boundary, blocksize=4096):
-    total = self.get_size(boundary)
-    current = 0
-
-    block = self.encode_hdr(boundary)
-    current += len(block)
-    yield block
-    last_block = &#34;&#34;
-    encoded_boundary = &#34;--%s&#34; % encode_and_quote(boundary)
-    boundary_exp = re.compile(&#34;^%s$&#34; % re.escape(encoded_boundary),
-            re.M)
-    while True:
-        block = self.fileobj.read(blocksize)
-        if not block:
-            current += 2
-            yield &#34;\r\n&#34;
-            break
-        last_block += block
-        if boundary_exp.search(last_block):
-            raise ValueError(&#34;boundary found in file data&#34;)
-        last_block = last_block[-len(encoded_boundary)-2:]
-        current += len(block)
-        yield block</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def iter_encode(self, boundary, blocksize=4096):
+</span></span><span class="line"><span class="cl">    total = self.get_size(boundary)
+</span></span><span class="line"><span class="cl">    current = 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    block = self.encode_hdr(boundary)
+</span></span><span class="line"><span class="cl">    current += len(block)
+</span></span><span class="line"><span class="cl">    yield block
+</span></span><span class="line"><span class="cl">    last_block = &#34;&#34;
+</span></span><span class="line"><span class="cl">    encoded_boundary = &#34;--%s&#34; % encode_and_quote(boundary)
+</span></span><span class="line"><span class="cl">    boundary_exp = re.compile(&#34;^%s$&#34; % re.escape(encoded_boundary),
+</span></span><span class="line"><span class="cl">            re.M)
+</span></span><span class="line"><span class="cl">    while True:
+</span></span><span class="line"><span class="cl">        block = self.fileobj.read(blocksize)
+</span></span><span class="line"><span class="cl">        if not block:
+</span></span><span class="line"><span class="cl">            current += 2
+</span></span><span class="line"><span class="cl">            yield &#34;\r\n&#34;
+</span></span><span class="line"><span class="cl">            break
+</span></span><span class="line"><span class="cl">        last_block += block
+</span></span><span class="line"><span class="cl">        if boundary_exp.search(last_block):
+</span></span><span class="line"><span class="cl">            raise ValueError(&#34;boundary found in file data&#34;)
+</span></span><span class="line"><span class="cl">        last_block = last_block[-len(encoded_boundary)-2:]
+</span></span><span class="line"><span class="cl">        current += len(block)
+</span></span><span class="line"><span class="cl">        yield block
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>iter_encode函数将fileobj包装成一个迭代器返回，结合前面的send方法就实现了文件的http上传。</p>
-
+</div><p>iter_encode函数将fileobj包装成一个迭代器返回，结合前面的send方法就实现了文件的http上传。</p>
 <p>因为代码较少，我们还可以发现一些可以优化的代码, 比如下面的实现中MultipartParam.from_params执行了两次:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -433,49 +416,48 @@ def get_body_size(params, boundary):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def multipart_encode(params, boundary=None, cb=None):
-    ...
-    headers = get_headers(params, boundary)
-    params = MultipartParam.from_params(params)
-    ...
-
-def get_body_size(params, boundary):
-    size = sum(p.get_size(boundary) for p in MultipartParam.from_params(params))
-    return size + len(boundary) + 6
-
-def get_headers(params, boundary):
-    ...
-    headers[&#39;Content-Length&#39;] = str(get_body_size(params, boundary))
-    return headers</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def multipart_encode(params, boundary=None, cb=None):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    headers = get_headers(params, boundary)
+</span></span><span class="line"><span class="cl">    params = MultipartParam.from_params(params)
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def get_body_size(params, boundary):
+</span></span><span class="line"><span class="cl">    size = sum(p.get_size(boundary) for p in MultipartParam.from_params(params))
+</span></span><span class="line"><span class="cl">    return size + len(boundary) + 6
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def get_headers(params, boundary):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    headers[&#39;Content-Length&#39;] = str(get_body_size(params, boundary))
+</span></span><span class="line"><span class="cl">    return headers
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="v0-2-2-cookie支持">v0.2.2 cookie支持</h2>
-
+</div><h2 id="v022-cookie支持">v0.2.2 cookie支持</h2>
 <p>v0.2.2主要功能是支持cookie:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">0.2.2 (2011-02-14)
-++++++++++++++++++
-
-* Still handles request in the event of an HTTPError. (Issue #2)
-* Eventlet and Gevent Monkeypatch support.
-* Cookie Support (Issue #1)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.2.2 (2011-02-14)
+</span></span><span class="line"><span class="cl">++++++++++++++++++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* Still handles request in the event of an HTTPError. (Issue #2)
+</span></span><span class="line"><span class="cl">* Eventlet and Gevent Monkeypatch support.
+</span></span><span class="line"><span class="cl">* Cookie Support (Issue #1)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>比如put-API中，request对象上接收cookiejar</p>
+</div><p>比如put-API中，request对象上接收cookiejar</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -486,25 +468,25 @@ def get_headers(params, boundary):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def put(url, data=&#39;&#39;, headers={}, files={}, cookies=None, auth=None):
-    r = Request()
-    r.url = url
-    r.method = &#39;PUT&#39;
-    r.data = data
-    r.files = files
-    r.headers = headers
-    r.cookiejar = cookies
-    r.auth = _detect_auth(url, auth)
-    r.send()
-    return r.response</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def put(url, data=&#39;&#39;, headers={}, files={}, cookies=None, auth=None):
+</span></span><span class="line"><span class="cl">	r = Request()
+</span></span><span class="line"><span class="cl">	r.url = url
+</span></span><span class="line"><span class="cl">	r.method = &#39;PUT&#39;
+</span></span><span class="line"><span class="cl">	r.data = data
+</span></span><span class="line"><span class="cl">	r.files = files
+</span></span><span class="line"><span class="cl">	r.headers = headers
+</span></span><span class="line"><span class="cl">	r.cookiejar = cookies
+</span></span><span class="line"><span class="cl">	r.auth = _detect_auth(url, auth)
+</span></span><span class="line"><span class="cl">	r.send()
+</span></span><span class="line"><span class="cl">	return r.response
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后使用urllib2的HTTPCookieProcessor封装cookiejar</p>
+</div><p>然后使用urllib2的HTTPCookieProcessor封装cookiejar</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -516,26 +498,26 @@ def get_headers(params, boundary):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _get_opener(self):
-    _handlers = []
-
-    if self.auth or self.cookiejar:
-
-        if self.cookiejar:
-
-            cookie_handler = urllib2.HTTPCookieProcessor(cookiejar)
-            _handlers.append(cookie_handler)
-
-        opener = urllib2.build_opener(*_handlers)
-        return opener.open</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _get_opener(self):
+</span></span><span class="line"><span class="cl">	_handlers = []
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	if self.auth or self.cookiejar:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		if self.cookiejar:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			cookie_handler = urllib2.HTTPCookieProcessor(cookiejar)
+</span></span><span class="line"><span class="cl">			_handlers.append(cookie_handler)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		opener = urllib2.build_opener(*_handlers)
+</span></span><span class="line"><span class="cl">		return opener.open
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>CookieJar的实现，就是在http头上增加Cookie字段,字段的值是一个字典序列化的字符串:</p>
+</div><p>CookieJar的实现，就是在http头上增加Cookie字段,字段的值是一个字典序列化的字符串:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -571,80 +553,80 @@ def get_headers(params, boundary):
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class CookieJar:
-
-    def __init__(self, policy=None):
-        if policy is None:
-            policy = DefaultCookiePolicy()
-        self._policy = policy
-    
-        self._cookies_lock = _threading.RLock()
-        self._cookies = {}
-
-    def add_cookie_header(self, request):
-        self._cookies_lock.acquire()
-        try:
-    
-            self._policy._now = self._now = int(time.time())
-    
-            cookies = self._cookies_for_request(request)
-    
-            attrs = self._cookie_attrs(cookies)
-            if attrs:
-                if not request.has_header(&#34;Cookie&#34;):
-                    request.add_unredirected_header(
-                        &#34;Cookie&#34;, &#34;; &#34;.join(attrs))
-    
-            # if necessary, advertise that we know RFC 2965
-            if (self._policy.rfc2965 and not self._policy.hide_cookie2 and
-                not request.has_header(&#34;Cookie2&#34;)):
-                for cookie in cookies:
-                    if cookie.version != 1:
-                        request.add_unredirected_header(&#34;Cookie2&#34;, &#39;$Version=&#34;1&#34;&#39;)
-                        break
-    
-        finally:
-            self._cookies_lock.release()
-    
-        self.clear_expired_cookies()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class CookieJar:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, policy=None):
+</span></span><span class="line"><span class="cl">        if policy is None:
+</span></span><span class="line"><span class="cl">            policy = DefaultCookiePolicy()
+</span></span><span class="line"><span class="cl">        self._policy = policy
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        self._cookies_lock = _threading.RLock()
+</span></span><span class="line"><span class="cl">        self._cookies = {}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def add_cookie_header(self, request):
+</span></span><span class="line"><span class="cl">        self._cookies_lock.acquire()
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">            self._policy._now = self._now = int(time.time())
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">            cookies = self._cookies_for_request(request)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">            attrs = self._cookie_attrs(cookies)
+</span></span><span class="line"><span class="cl">            if attrs:
+</span></span><span class="line"><span class="cl">                if not request.has_header(&#34;Cookie&#34;):
+</span></span><span class="line"><span class="cl">                    request.add_unredirected_header(
+</span></span><span class="line"><span class="cl">                        &#34;Cookie&#34;, &#34;; &#34;.join(attrs))
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">            # if necessary, advertise that we know RFC 2965
+</span></span><span class="line"><span class="cl">            if (self._policy.rfc2965 and not self._policy.hide_cookie2 and
+</span></span><span class="line"><span class="cl">                not request.has_header(&#34;Cookie2&#34;)):
+</span></span><span class="line"><span class="cl">                for cookie in cookies:
+</span></span><span class="line"><span class="cl">                    if cookie.version != 1:
+</span></span><span class="line"><span class="cl">                        request.add_unredirected_header(&#34;Cookie2&#34;, &#39;$Version=&#34;1&#34;&#39;)
+</span></span><span class="line"><span class="cl">                        break
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        finally:
+</span></span><span class="line"><span class="cl">            self._cookies_lock.release()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        self.clear_expired_cookies()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>配合下面cookie的示例，就很容易理解了:</p>
+</div><p>配合下面cookie的示例，就很容易理解了:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">Cookie: lang=zh-CN; i_like_gogs=a333326706d3bb1c; _csrf=KSQKMtYni1y4Zbi5aRpjYbW32t86MTYxNzY3NjIzNzg5MDg3NDY0MQ%3D%3D</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Cookie: lang=zh-CN; i_like_gogs=a333326706d3bb1c; _csrf=KSQKMtYni1y4Zbi5aRpjYbW32t86MTYxNzY3NjIzNzg5MDg3NDY0MQ%3D%3D
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同时代码进行了优化，增加了<code>_build_response</code>用来构建响应:</p>
+</div><p>同时代码进行了优化，增加了<code>_build_response</code>用来构建响应:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _build_response(self, resp):
-    &#34;&#34;&#34;Build internal Response object from given response.&#34;&#34;&#34;
-    
-    self.response.status_code = resp.code
-    self.response.headers = resp.info().dict
-    self.response.content = resp.read()
-    self.response.url = resp.url</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _build_response(self, resp):
+</span></span><span class="line"><span class="cl">	&#34;&#34;&#34;Build internal Response object from given response.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	self.response.status_code = resp.code
+</span></span><span class="line"><span class="cl">	self.response.headers = resp.info().dict
+</span></span><span class="line"><span class="cl">	self.response.content = resp.read()
+</span></span><span class="line"><span class="cl">	self.response.url = resp.url
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>优化前后对比很明显：</p>
+</div><p>优化前后对比很明显：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -655,29 +637,27 @@ def get_headers(params, boundary):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># before
-resp = opener(req)
-self.response.status_code = resp.code
-self.response.headers = resp.info().dict
-if self.method == &#39;GET&#39;:
-    self.response.content = resp.read()
-self.response.url = resp.url
-
-# after
-resp = opener(req)
-self._build_response(resp)              </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># before
+</span></span><span class="line"><span class="cl">resp = opener(req)
+</span></span><span class="line"><span class="cl">self.response.status_code = resp.code
+</span></span><span class="line"><span class="cl">self.response.headers = resp.info().dict
+</span></span><span class="line"><span class="cl">if self.method == &#39;GET&#39;:
+</span></span><span class="line"><span class="cl">	self.response.content = resp.read()
+</span></span><span class="line"><span class="cl">self.response.url = resp.url
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># after
+</span></span><span class="line"><span class="cl">resp = opener(req)
+</span></span><span class="line"><span class="cl">self._build_response(resp)				
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以认为这个优化符合DRY(Don&rsquo;t repeat yourself)规则和迪米特法则LOD(Law of Demeter)。之前在V0.2.1中response的处理，GET，POST，PUT3个分支中重复；同时send函数还需要关心response的处理细节，重构后很好的解决了这2个问题。</p>
-
-<h2 id="v0-2-3-response优化">v0.2.3 response优化</h2>
-
+</div><p>我们可以认为这个优化符合DRY(Don&rsquo;t repeat yourself)规则和迪米特法则LOD(Law of Demeter)。之前在V0.2.1中response的处理，GET，POST，PUT3个分支中重复；同时send函数还需要关心response的处理细节，重构后很好的解决了这2个问题。</p>
+<h2 id="v023-response优化">v0.2.3 response优化</h2>
 <p>v0.2.3主要功能是response优化:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -685,47 +665,22 @@ self._build_response(resp)              </pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">0.2.3 (2011-02-15)
-++++++++++++++++++
-
-* New HTTPHandling Methods
-    - Reponse.__nonzero__ (false if bad HTTP Status)
-    - Response.ok (True if expected HTTP Status)
-    - Response.error (Logged HTTPError if bad HTTP Status)
-    - Reponse.raise_for_status() (Raises stored HTTPError</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.2.3 (2011-02-15)
+</span></span><span class="line"><span class="cl">++++++++++++++++++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* New HTTPHandling Methods
+</span></span><span class="line"><span class="cl">    - Reponse.__nonzero__ (false if bad HTTP Status)
+</span></span><span class="line"><span class="cl">    - Response.ok (True if expected HTTP Status)
+</span></span><span class="line"><span class="cl">    - Response.error (Logged HTTPError if bad HTTP Status)
+</span></span><span class="line"><span class="cl">    - Reponse.raise_for_status() (Raises stored HTTPError
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>response增加了一个ok状态，用来描述请求成功与否:</p>
+</div><p>response增加了一个ok状态，用来描述请求成功与否:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">class Response(object)
-
-    def __init__(self):
-        self.content = None
-        self.status_code = None
-        self.headers = dict()
-        self.url = None
-        self.ok = False
-        self.error = None</pre></td></tr></table>
-</div>
-</div>
-<p>同样response更加内聚，可以反应出请求的成功和失败:</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -734,82 +689,105 @@ self._build_response(resp)              </pre></td></tr></table>
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># before
-resp = opener(req)
-self._build_response(resp)
-success = True
-                    
-# after         
-resp = opener(req)
-self._build_response(resp)
-self.response.ok = True</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Response(object)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	def __init__(self):
+</span></span><span class="line"><span class="cl">		self.content = None
+</span></span><span class="line"><span class="cl">		self.status_code = None
+</span></span><span class="line"><span class="cl">		self.headers = dict()
+</span></span><span class="line"><span class="cl">		self.url = None
+</span></span><span class="line"><span class="cl">		self.ok = False
+</span></span><span class="line"><span class="cl">		self.error = None
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同时response还支持bool判断</p>
+</div><p>同样response更加内聚，可以反应出请求的成功和失败:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></pre></td>
-<td class="lntd">
-<pre class="chroma">def __nonzero__(self):
-    &#34;&#34;&#34;Returns true if status_code is &#39;OK&#39;.&#34;&#34;&#34;
-    return not self.error</pre></td></tr></table>
-</div>
-</div>
-<p><code>__nonzero__</code>为python的魔法函数</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">object.__nonzero__(self)
-    Called to implement truth value testing and the built-in operation bool();
-    should return False or True, or their integer equivalents 0 or 1. When this
-    method is not defined, __len__() is called, if it is defined, and the object
-    is considered true if its result is nonzero. If a class defines neither
-    __len__() nor __nonzero__(), all its instances are considered true.</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># before
+</span></span><span class="line"><span class="cl">resp = opener(req)
+</span></span><span class="line"><span class="cl">self._build_response(resp)
+</span></span><span class="line"><span class="cl">success = True
+</span></span><span class="line"><span class="cl">					
+</span></span><span class="line"><span class="cl"># after			
+</span></span><span class="line"><span class="cl">resp = opener(req)
+</span></span><span class="line"><span class="cl">self._build_response(resp)
+</span></span><span class="line"><span class="cl">self.response.ok = True
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p>同时response还支持bool判断</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def __nonzero__(self):
+</span></span><span class="line"><span class="cl">	&#34;&#34;&#34;Returns true if status_code is &#39;OK&#39;.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">	return not self.error
+</span></span></code></pre></td></tr></table>
 </div>
-<blockquote>
+</div><p><code>__nonzero__</code>为python的魔法函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">object.__nonzero__(self)
+</span></span><span class="line"><span class="cl">    Called to implement truth value testing and the built-in operation bool();
+</span></span><span class="line"><span class="cl">    should return False or True, or their integer equivalents 0 or 1. When this
+</span></span><span class="line"><span class="cl">    method is not defined, __len__() is called, if it is defined, and the object
+</span></span><span class="line"><span class="cl">    is considered true if its result is nonzero. If a class defines neither
+</span></span><span class="line"><span class="cl">    __len__() nor __nonzero__(), all its instances are considered true.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
 <p>详细链接: <a href="https://docs.python.org/2/reference/datamodel.html">https://docs.python.org/2/reference/datamodel.html</a></p>
 </blockquote>
-
-<h2 id="v0-2-4-改进request类">v0.2.4 改进request类</h2>
-
+<h2 id="v024-改进request类">v0.2.4 改进request类</h2>
 <p>v0.2.4主要工作是改进Request:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">0.2.4 (2011-02-15)
-++++++++++++++++++
-
-* Python 2.5 Support
-* PyPy-c v1.4 Support
-* Auto-Authentication tests
-* Improved Request object constructor</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0.2.4 (2011-02-15)
+</span></span><span class="line"><span class="cl">++++++++++++++++++
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* Python 2.5 Support
+</span></span><span class="line"><span class="cl">* PyPy-c v1.4 Support
+</span></span><span class="line"><span class="cl">* Auto-Authentication tests
+</span></span><span class="line"><span class="cl">* Improved Request object constructor
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>request改进了构造函数，支持更多参数:</p>
+</div><p>request改进了构造函数，支持更多参数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -824,29 +802,29 @@ self.response.ok = True</pre></td></tr></table>
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Request(object):
-
-    def __init__(self, url=None, headers=dict(), files=None, method=None,
-                 params=dict(), data=dict(), auth=None, cookiejar=None):
-        self.url = url
-        self.headers = headers
-        self.files = files
-        self.method = method
-        self.params = params
-        self.data = data
-        self.response = Response()
-        
-        self.auth = auth
-        self.cookiejar = cookiejar
-        self.sent = False</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Request(object):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, url=None, headers=dict(), files=None, method=None,
+</span></span><span class="line"><span class="cl">                 params=dict(), data=dict(), auth=None, cookiejar=None):
+</span></span><span class="line"><span class="cl">        self.url = url
+</span></span><span class="line"><span class="cl">        self.headers = headers
+</span></span><span class="line"><span class="cl">        self.files = files
+</span></span><span class="line"><span class="cl">        self.method = method
+</span></span><span class="line"><span class="cl">        self.params = params
+</span></span><span class="line"><span class="cl">        self.data = data
+</span></span><span class="line"><span class="cl">        self.response = Response()
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        self.auth = auth
+</span></span><span class="line"><span class="cl">        self.cookiejar = cookiejar
+</span></span><span class="line"><span class="cl">        self.sent = False
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这样使用的时候:</p>
+</div><p>这样使用的时候:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -863,31 +841,31 @@ self.response.ok = True</pre></td></tr></table>
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># before
-r = Request()
-    
-r.method = &#39;HEAD&#39;
-r.url = url
-# return response object
-r.params = params
-r.headers = headers
-r.cookiejar = cookies
-r.auth = _detect_auth(url, auth)
-
-r.send()
-
-# after
-r = Request(method=&#39;HEAD&#39;, url=url, params=params, headers=headers,
-                cookiejar=cookies, auth=_detect_auth(url, auth))
-r.send()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># before
+</span></span><span class="line"><span class="cl">r = Request()
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">r.method = &#39;HEAD&#39;
+</span></span><span class="line"><span class="cl">r.url = url
+</span></span><span class="line"><span class="cl"># return response object
+</span></span><span class="line"><span class="cl">r.params = params
+</span></span><span class="line"><span class="cl">r.headers = headers
+</span></span><span class="line"><span class="cl">r.cookiejar = cookies
+</span></span><span class="line"><span class="cl">r.auth = _detect_auth(url, auth)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">r.send()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># after
+</span></span><span class="line"><span class="cl">r = Request(method=&#39;HEAD&#39;, url=url, params=params, headers=headers,
+</span></span><span class="line"><span class="cl">                cookiejar=cookies, auth=_detect_auth(url, auth))
+</span></span><span class="line"><span class="cl">r.send()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>另外重用认证信息，对于同一个url使用缓存中的url</p>
+</div><p>另外重用认证信息，对于同一个url使用缓存中的url</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -905,96 +883,85 @@ r.send()</pre></td></tr></table>
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def add_autoauth(url, authobject):
-
-    global AUTOAUTHS
-    
-    AUTOAUTHS.append((url, authobject))
-
-
-def _detect_auth(url, auth):
-    return _get_autoauth(url) if not auth else auth
-
-    
-def _get_autoauth(url):
-
-    for (autoauth_url, auth) in AUTOAUTHS:
-        if autoauth_url in url: 
-            return auth
-            
-    return None</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def add_autoauth(url, authobject):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    global AUTOAUTHS
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    AUTOAUTHS.append((url, authobject))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def _detect_auth(url, auth):
+</span></span><span class="line"><span class="cl">    return _get_autoauth(url) if not auth else auth
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">def _get_autoauth(url):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for (autoauth_url, auth) in AUTOAUTHS:
+</span></span><span class="line"><span class="cl">        if autoauth_url in url: 
+</span></span><span class="line"><span class="cl">            return auth
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">    return None
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以思考，认证按照url进行处理并不太好，按照domain可能更合适。</p>
-
+</div><p>我们可以思考，认证按照url进行处理并不太好，按照domain可能更合适。</p>
 <h2 id="小结">小结</h2>
-
 <p>通过v0.2.0～v0.2.4四个版本的源码历史对比法阅读，我们可以知道下面2个功能的实现逻辑:</p>
-
 <ul>
 <li>文件上传的功能就是将本地文件读取到流中再通过socket发送出去</li>
 <li>cookie是在http头中的一个特殊序列化的字典</li>
 </ul>
-
 <p>同时也了解了Reqeust和Response两个关键对象的一些优化方法，提高代码可读性的同时，也增加代码稳定性。</p>
-
 <p>历史对比的同时，我们还可以发现一些有趣的题外细节。比如在2011-02-14～2011-02-15日两天，作者Kenneth Reitz完成了4个小版本的提交，果然是单身狗的快乐。</p>
-
 <p>比较一下代码第一个版本的API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; import requests
-&gt;&gt;&gt; r = requests.get(&#39;http://google.com&#39;)
-&gt;&gt;&gt; r.status_code
-    401</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; import requests
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; r = requests.get(&#39;http://google.com&#39;)
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; r.status_code
+</span></span><span class="line"><span class="cl">    401
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是现在的API:</p>
+</div><p>下面是现在的API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; r = requests.get(&#39;https://api.github.com/user&#39;, auth=(&#39;user&#39;, &#39;pass&#39;))
-&gt;&gt;&gt; r.status_code
-200</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; r = requests.get(&#39;https://api.github.com/user&#39;, auth=(&#39;user&#39;, &#39;pass&#39;))
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; r.status_code
+</span></span><span class="line"><span class="cl">200
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到长达10年的时间内，作者最开始设计的API基本没有变化，这个还是挺厉害的。</p>
-
+</div><p>可以看到长达10年的时间内，作者最开始设计的API基本没有变化，这个还是挺厉害的。</p>
 <h2 id="小技巧">小技巧</h2>
-
 <p>应该避免使用硬编码的魔法数字，比如在v0.2.1中的get_body_size:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def get_body_size(params, boundary):
-    size = sum(p.get_size(boundary) for p in MultipartParam.from_params(params))
-    return size + len(boundary) + 6</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def get_body_size(params, boundary):
+</span></span><span class="line"><span class="cl">    size = sum(p.get_size(boundary) for p in MultipartParam.from_params(params))
+</span></span><span class="line"><span class="cl">    return size + len(boundary) + 6
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的数字6就比较难以理解。</p>
-
+</div><p>这里的数字6就比较难以理解。</p>
 <blockquote>
 <p>没错，反例也是技巧 :)</p>
 </blockquote>
-
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li><a href="https://github.com/wangshunping/read_requests">https://github.com/wangshunping/read_requests</a></li>
 </ul>
@@ -1038,11 +1005,11 @@ def _get_autoauth(url):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-04-08 23:23:38 \x2b0800 CST',
+        id: '2021-04-08 23:23:38 \u002b0800 CST',
         title: 'Requests源码v0.2阅读',
         link: decodeURI(location.href),
         desc: '前文[一步一步实现web服务器]介绍过 历史对比法 : 对比代码的需求变化和版本历史，从而学习需求如何被实现。今天我们一起从 requests 源码开始，使用 历史对',
@@ -1056,6 +1023,10 @@ def _get_autoauth(url):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1083,13 +1054,10 @@ def _get_autoauth(url):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1100,7 +1068,10 @@ def _get_autoauth(url):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

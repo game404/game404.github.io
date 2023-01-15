@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/mac-desktop-kubernetes/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="kubernetes 初体验-mac版" />
 <meta property="og:description" content="之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/mac-desktop-kubernetes/" />
-<meta property="article:published_time" content="2021-09-10T00:04:10&#43;08:00"/>
-<meta property="article:modified_time" content="2021-09-10T00:04:10&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/mac-desktop-kubernetes/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-09-10T00:04:10+08:00" />
+<meta property="article:modified_time" content="2021-09-10T00:04:10+08:00" />
 
 <meta itemprop="name" content="kubernetes 初体验-mac版">
-<meta itemprop="description" content="之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。">
-
-
-<meta itemprop="datePublished" content="2021-09-10T00:04:10&#43;08:00" />
-<meta itemprop="dateModified" content="2021-09-10T00:04:10&#43;08:00" />
-<meta itemprop="wordCount" content="2106">
-
-
-
-<meta itemprop="keywords" content="指南," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。"><meta itemprop="datePublished" content="2021-09-10T00:04:10+08:00" />
+<meta itemprop="dateModified" content="2021-09-10T00:04:10+08:00" />
+<meta itemprop="wordCount" content="2097">
+<meta itemprop="keywords" content="指南," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="kubernetes 初体验-mac版"/>
 <meta name="twitter:description" content="之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,38 +144,30 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#docker-desktop安装及kubernetes启用">docker-desktop安装及kubernetes启用</a></li>
-<li><a href="#kubernetes-dashboard-的安装">kubernetes-dashboard 的安装</a>
-<ul>
-<li><a href="#使用proxy访问kubernetes-dashboard">使用proxy访问kubernetes-dashboard</a></li>
-<li><a href="#使用nodeport访问kubernetes-dashboard">使用NodePort访问kubernetes-dashboard</a></li>
-<li><a href="#使用ingress访问kubernetes-dashboard">使用ingress访问kubernetes-dashboard</a></li>
-</ul></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#docker-desktop安装及kubernetes启用">docker-desktop安装及kubernetes启用</a></li>
+    <li><a href="#kubernetes-dashboard-的安装">kubernetes-dashboard 的安装</a>
+      <ul>
+        <li><a href="#使用proxy访问kubernetes-dashboard">使用proxy访问kubernetes-dashboard</a></li>
+        <li><a href="#使用nodeport访问kubernetes-dashboard">使用NodePort访问kubernetes-dashboard</a></li>
+        <li><a href="#使用ingress访问kubernetes-dashboard">使用ingress访问kubernetes-dashboard</a></li>
+      </ul>
+    </li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。</p>
-
+      <p>之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。</p>
 <h2 id="docker-desktop安装及kubernetes启用">docker-desktop安装及kubernetes启用</h2>
-
 <p>如果没有安装docker-desktop，可以先去 <a href="https://www.docker.com/products/docker-desktop">https://www.docker.com/products/docker-desktop</a> 下载和安装。如果已经安装过，请升级到新的版本。我的docker版本是:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210526111019.png" alt="docker-version" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210526111019.png" alt="docker-version"></p>
 <p>然后在Docker-Engine里配置一下国内镜像，这样kubernetes启用会迅速一些:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -186,98 +181,94 @@
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{
-  &#34;debug&#34;: true,
-  &#34;registry-mirrors&#34;: [
-    &#34;https://hub-mirror.c.163.com&#34;,
-    &#34;https://mirror.baidubce.com&#34;
-  ],
-  &#34;builder&#34;: {
-    &#34;gc&#34;: {
-      &#34;defaultKeepStorage&#34;: &#34;20GB&#34;,
-      &#34;enabled&#34;: true
-    }
-  },
-  &#34;experimental&#34;: false
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">  &#34;debug&#34;: true,
+</span></span><span class="line"><span class="cl">  &#34;registry-mirrors&#34;: [
+</span></span><span class="line"><span class="cl">    &#34;https://hub-mirror.c.163.com&#34;,
+</span></span><span class="line"><span class="cl">    &#34;https://mirror.baidubce.com&#34;
+</span></span><span class="line"><span class="cl">  ],
+</span></span><span class="line"><span class="cl">  &#34;builder&#34;: {
+</span></span><span class="line"><span class="cl">    &#34;gc&#34;: {
+</span></span><span class="line"><span class="cl">      &#34;defaultKeepStorage&#34;: &#34;20GB&#34;,
+</span></span><span class="line"><span class="cl">      &#34;enabled&#34;: true
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">  },
+</span></span><span class="line"><span class="cl">  &#34;experimental&#34;: false
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>配置镜像后，可以使用下面命令检查一下:</p>
+</div><p>配置镜像后，可以使用下面命令检查一下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># docker info
-...
- Registry Mirrors:
-  https://hub-mirror.c.163.com/
-  https://mirror.baidubce.com/</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># docker info
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl"> Registry Mirrors:
+</span></span><span class="line"><span class="cl">  https://hub-mirror.c.163.com/
+</span></span><span class="line"><span class="cl">  https://mirror.baidubce.com/
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后在图形界面上启用kubernets：</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210526111124.png" alt="kubernetes" /></p>
-
+</div><p>然后在图形界面上启用kubernets：</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210526111124.png" alt="kubernetes"></p>
 <p>完成后使用kubectl命令检查一下版本:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kubectl version
-Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;19&#34;, GitVersion:&#34;v1.19.7&#34;, GitCommit:&#34;1dd5338295409edcfff11505e7bb246f0d325d15&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2021-01-13T13:23:52Z&#34;, GoVersion:&#34;go1.15.5&#34;, Compiler:&#34;gc&#34;, Platform:&#34;darwin/amd64&#34;}
-Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;19&#34;, GitVersion:&#34;v1.19.7&#34;, GitCommit:&#34;1dd5338295409edcfff11505e7bb246f0d325d15&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2021-01-13T13:15:20Z&#34;, GoVersion:&#34;go1.15.5&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># kubectl version
+</span></span><span class="line"><span class="cl">Client Version: version.Info{Major:&#34;1&#34;, Minor:&#34;19&#34;, GitVersion:&#34;v1.19.7&#34;, GitCommit:&#34;1dd5338295409edcfff11505e7bb246f0d325d15&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2021-01-13T13:23:52Z&#34;, GoVersion:&#34;go1.15.5&#34;, Compiler:&#34;gc&#34;, Platform:&#34;darwin/amd64&#34;}
+</span></span><span class="line"><span class="cl">Server Version: version.Info{Major:&#34;1&#34;, Minor:&#34;19&#34;, GitVersion:&#34;v1.19.7&#34;, GitCommit:&#34;1dd5338295409edcfff11505e7bb246f0d325d15&#34;, GitTreeState:&#34;clean&#34;, BuildDate:&#34;2021-01-13T13:15:20Z&#34;, GoVersion:&#34;go1.15.5&#34;, Compiler:&#34;gc&#34;, Platform:&#34;linux/amd64&#34;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<!--
-> kubectl config get-clusters && kubectl config use-context docker-desktop
--->
-
+</div><!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>查看唯一的master节点:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kubectl get node
-NAME             STATUS   ROLES    AGE   VERSION
-docker-desktop   Ready    master   18h   v1.19.7</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># kubectl get node
+</span></span><span class="line"><span class="cl">NAME             STATUS   ROLES    AGE   VERSION
+</span></span><span class="line"><span class="cl">docker-desktop   Ready    master   18h   v1.19.7
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看默认的名称空间:</p>
+</div><p>查看默认的名称空间:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kubectl get ns(namespace)
-NAME                   STATUS   AGE
-default                Active   18h
-kube-node-lease        Active   18h
-kube-public            Active   18h
-kube-system            Active   18h</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># kubectl get ns(namespace)
+</span></span><span class="line"><span class="cl">NAME                   STATUS   AGE
+</span></span><span class="line"><span class="cl">default                Active   18h
+</span></span><span class="line"><span class="cl">kube-node-lease        Active   18h
+</span></span><span class="line"><span class="cl">kube-public            Active   18h
+</span></span><span class="line"><span class="cl">kube-system            Active   18h
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看默认的pods:</p>
+</div><p>查看默认的pods:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -288,44 +279,40 @@ kube-system            Active   18h</pre></td></tr></table>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl get pods --all-namespaces
-NAMESPACE              NAME                                         READY   STATUS    RESTARTS   AGE
-kube-system            coredns-f9fd979d6-76f9t                      1/1     Running   1          18h
-kube-system            coredns-f9fd979d6-dm469                      1/1     Running   1          18h
-kube-system            etcd-docker-desktop                          1/1     Running   1          18h
-kube-system            kube-apiserver-docker-desktop                1/1     Running   1          18h
-kube-system            kube-controller-manager-docker-desktop       1/1     Running   1          18h
-kube-system            kube-proxy-xvv2f                             1/1     Running   1          18h
-kube-system            kube-scheduler-docker-desktop                1/1     Running   1          18h
-kube-system            storage-provisioner                          1/1     Running   2          18h
-kube-system            vpnkit-controller                            1/1     Running   1          18h</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get pods --all-namespaces
+</span></span><span class="line"><span class="cl">NAMESPACE              NAME                                         READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">kube-system            coredns-f9fd979d6-76f9t                      1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            coredns-f9fd979d6-dm469                      1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            etcd-docker-desktop                          1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            kube-apiserver-docker-desktop                1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            kube-controller-manager-docker-desktop       1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            kube-proxy-xvv2f                             1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            kube-scheduler-docker-desktop                1/1     Running   1          18h
+</span></span><span class="line"><span class="cl">kube-system            storage-provisioner                          1/1     Running   2          18h
+</span></span><span class="line"><span class="cl">kube-system            vpnkit-controller                            1/1     Running   1          18h
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>接下来，我们安装kubernetes-dashboard。安装后可以图形化的管理/查看kubernetes的内部状态，非常方便，同时也可以验证搭建的kubernetes可以正常工作。</p>
-
+</div><p>接下来，我们安装kubernetes-dashboard。安装后可以图形化的管理/查看kubernetes的内部状态，非常方便，同时也可以验证搭建的kubernetes可以正常工作。</p>
 <h2 id="kubernetes-dashboard-的安装">kubernetes-dashboard 的安装</h2>
-
 <p>首先下载kubernetes-dashboard的yaml文件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">curl -LO https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -LO https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用apply子指令安装 <code>kubectl apply -f recommended.yaml</code></p>
-
+</div><p>使用apply子指令安装 <code>kubectl apply -f recommended.yaml</code></p>
 <blockquote>
 <p>所有yaml文件的启用都使用 <code>kubectl apply</code></p>
 </blockquote>
-
 <p>创建rbac权限的配置文件 <code>kubernetes-dashboard-admin.yaml</code> ，然后启用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -346,72 +333,67 @@ kube-system            vpnkit-controller                            1/1     Runn
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: kubernetes-dashboard-admin
-  namespace: kubernetes-dashboard
-  labels:
-    k8s-app: kubernetes-dashboard
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: kubernetes-dashboard-admin
-  namespace: kubernetes-dashboard
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: kubernetes-dashboard-admin
-  namespace: kubernetes-dashboard</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">apiVersion: v1
+</span></span><span class="line"><span class="cl">kind: ServiceAccount
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: kubernetes-dashboard-admin
+</span></span><span class="line"><span class="cl">  namespace: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">  labels:
+</span></span><span class="line"><span class="cl">    k8s-app: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span class="line"><span class="cl">kind: ClusterRoleBinding
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: kubernetes-dashboard-admin
+</span></span><span class="line"><span class="cl">  namespace: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">roleRef:
+</span></span><span class="line"><span class="cl">  apiGroup: rbac.authorization.k8s.io
+</span></span><span class="line"><span class="cl">  kind: ClusterRole
+</span></span><span class="line"><span class="cl">  name: cluster-admin
+</span></span><span class="line"><span class="cl">subjects:
+</span></span><span class="line"><span class="cl">- kind: ServiceAccount
+</span></span><span class="line"><span class="cl">  name: kubernetes-dashboard-admin
+</span></span><span class="line"><span class="cl">  namespace: kubernetes-dashboard
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>命令正常执行就可以完成kubernetes-dashboard的安装。</p>
-
+</div><p>命令正常执行就可以完成kubernetes-dashboard的安装。</p>
 <h3 id="使用proxy访问kubernetes-dashboard">使用proxy访问kubernetes-dashboard</h3>
-
 <p>我们先使用下面的命令，在本地8001端口代理kubernetes的内部服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl proxy</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl proxy
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后使用浏览器访问下面的网页链接:</p>
+</div><p>然后使用浏览器访问下面的网页链接:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/.
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这时候页面会提示需要输入token。可以使用下面命令查看admin的token:</p>
+</div><p>这时候页面会提示需要输入token。可以使用下面命令查看admin的token:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep kubernetes-dashboard-admin | awk &#39;{print $1}&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep kubernetes-dashboard-admin | awk &#39;{print $1}&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>登录后就可以看到kubernetes的所有信息, 如图:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210909143804.png" alt="dashboard" /></p>
-
+</div><p>登录后就可以看到kubernetes的所有信息, 如图:</p>
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20210909143804.png" alt="dashboard"></p>
 <h3 id="使用nodeport访问kubernetes-dashboard">使用NodePort访问kubernetes-dashboard</h3>
-
 <p>使用proxy方式访问，需要先启动proxy服务，不太方便。我们可以更改kubernetes-dashboard服务为NodePort方式，这样可以直接使用ip+port方式访问。修改recommended.yaml的下面部分内容:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -423,96 +405,93 @@ subjects:
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kind: Service # 服务
-apiVersion: v1
-metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard # 名称
-  namespace: kubernetes-dashboard
-spec:
-  type: NodePort # 增加这一行
-  ports:
-    - port: 443
-      targetPort: 8443</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kind: Service # 服务
+</span></span><span class="line"><span class="cl">apiVersion: v1
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  labels:
+</span></span><span class="line"><span class="cl">    k8s-app: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">  name: kubernetes-dashboard # 名称
+</span></span><span class="line"><span class="cl">  namespace: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  type: NodePort # 增加这一行
+</span></span><span class="line"><span class="cl">  ports:
+</span></span><span class="line"><span class="cl">    - port: 443
+</span></span><span class="line"><span class="cl">      targetPort: 8443
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后使用<code>kubectl apply</code>更新dashboard，完成后检查本地端口:</p>
+</div><p>然后使用<code>kubectl apply</code>更新dashboard，完成后检查本地端口:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl get svc -n kubernetes-dashboard
-NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
-dashboard-metrics-scraper   ClusterIP   10.108.2.0       &lt;none&gt;        8000/TCP        106d
-kubernetes-dashboard        NodePort    10.110.204.165   &lt;none&gt;        443:32072/TCP   106d</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get svc -n kubernetes-dashboard
+</span></span><span class="line"><span class="cl">NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+</span></span><span class="line"><span class="cl">dashboard-metrics-scraper   ClusterIP   10.108.2.0       &lt;none&gt;        8000/TCP        106d
+</span></span><span class="line"><span class="cl">kubernetes-dashboard        NodePort    10.110.204.165   &lt;none&gt;        443:32072/TCP   106d
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用firefox访问 <code>https://127.0.0.1:32072/</code>，这里的 <em>32072</em> 是使用NodePort方式部署的随机端口映射。</p>
-
+</div><p>使用firefox访问 <code>https://127.0.0.1:32072/</code>，这里的 <em>32072</em> 是使用NodePort方式部署的随机端口映射。</p>
 <blockquote>
 <p>因为https的证书安全问题，chrome和safari都无法访问。</p>
 </blockquote>
-
 <h3 id="使用ingress访问kubernetes-dashboard">使用ingress访问kubernetes-dashboard</h3>
-
 <p>NodePort方式访问dashboard会有安全证书问题，单机最合适的方式还是部署ingress。先从下面路径下载nginx实现的ingress并安装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">curl -L  https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.46.0/deploy/static/provider/cloud/deploy.yaml -o ingress-nginx.yaml</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -L  https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.46.0/deploy/static/provider/cloud/deploy.yaml -o ingress-nginx.yaml
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>检查安装后的pod，ingress-nginx-controller需要是running状态表示安装完成:</p>
+</div><p>检查安装后的pod，ingress-nginx-controller需要是running状态表示安装完成:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl get pods --all-namespaces
-NAMESPACE              NAME                                         READY   STATUS      RESTARTS   AGE
-ingress-nginx          ingress-nginx-admission-create-p5znr         0/1     Completed   0          17h
-ingress-nginx          ingress-nginx-admission-patch-t9447          0/1     Completed   0          17h
-ingress-nginx          ingress-nginx-controller-57cb5bf694-wc6tv    1/1     Running     0          17h</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get pods --all-namespaces
+</span></span><span class="line"><span class="cl">NAMESPACE              NAME                                         READY   STATUS      RESTARTS   AGE
+</span></span><span class="line"><span class="cl">ingress-nginx          ingress-nginx-admission-create-p5znr         0/1     Completed   0          17h
+</span></span><span class="line"><span class="cl">ingress-nginx          ingress-nginx-admission-patch-t9447          0/1     Completed   0          17h
+</span></span><span class="line"><span class="cl">ingress-nginx          ingress-nginx-controller-57cb5bf694-wc6tv    1/1     Running     0          17h
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>查看ingress-nginx服务的端口，这里https是31212:</p>
+</div><p>查看ingress-nginx服务的端口，这里https是31212:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl get svc --all-namespaces
-NAMESPACE              NAME                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                     AGE
-default                kubernetes                           ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                                     106d
-ingress-nginx          ingress-nginx-controller             NodePort    10.105.160.62    &lt;none&gt;        80:30303/TCP,443:31212/TCP,9000:30835/TCP   80m
-ingress-nginx          ingress-nginx-controller-admission   ClusterIP   10.102.194.29    &lt;none&gt;        443/TCP                                     80m
-kube-system            kube-dns                             ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP                      106d
-kubernetes-dashboard   dashboard-metrics-scraper            ClusterIP   10.108.107.121   &lt;none&gt;        8000/TCP                                    44m</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get svc --all-namespaces
+</span></span><span class="line"><span class="cl">NAMESPACE              NAME                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                     AGE
+</span></span><span class="line"><span class="cl">default                kubernetes                           ClusterIP   10.96.0.1        &lt;none&gt;        443/TCP                                     106d
+</span></span><span class="line"><span class="cl">ingress-nginx          ingress-nginx-controller             NodePort    10.105.160.62    &lt;none&gt;        80:30303/TCP,443:31212/TCP,9000:30835/TCP   80m
+</span></span><span class="line"><span class="cl">ingress-nginx          ingress-nginx-controller-admission   ClusterIP   10.102.194.29    &lt;none&gt;        443/TCP                                     80m
+</span></span><span class="line"><span class="cl">kube-system            kube-dns                             ClusterIP   10.96.0.10       &lt;none&gt;        53/UDP,53/TCP,9153/TCP                      106d
+</span></span><span class="line"><span class="cl">kubernetes-dashboard   dashboard-metrics-scraper            ClusterIP   10.108.107.121   &lt;none&gt;        8000/TCP                                    44m
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>编写我们自定义的ingress <code>dashboard-ingress.yaml</code>:</p>
+</div><p>编写我们自定义的ingress <code>dashboard-ingress.yaml</code>:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -533,68 +512,63 @@ kubernetes-dashboard   dashboard-metrics-scraper            ClusterIP   10.108.1
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: dashboard-ingress
-  namespace: kubernetes-dashboard
-  annotations:
-    kubernetes.io/ingress.class: &#39;nginx&#39;
-    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
-    nginx.ingress.kubernetes.io/backend-protocol: &#39;HTTPS&#39;
-spec:
-  rules:
-    - host: &#39;my-dashboard.com&#39;
-      http:
-        paths:
-          - pathType: Prefix
-            path: &#39;/&#39;
-            backend:
-              service:
-                name: kubernetes-dashboard
-                port:
-                  number: 443</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">apiVersion: networking.k8s.io/v1
+</span></span><span class="line"><span class="cl">kind: Ingress
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: dashboard-ingress
+</span></span><span class="line"><span class="cl">  namespace: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">  annotations:
+</span></span><span class="line"><span class="cl">    kubernetes.io/ingress.class: &#39;nginx&#39;
+</span></span><span class="line"><span class="cl">    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
+</span></span><span class="line"><span class="cl">    nginx.ingress.kubernetes.io/backend-protocol: &#39;HTTPS&#39;
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  rules:
+</span></span><span class="line"><span class="cl">    - host: &#39;my-dashboard.com&#39;
+</span></span><span class="line"><span class="cl">      http:
+</span></span><span class="line"><span class="cl">        paths:
+</span></span><span class="line"><span class="cl">          - pathType: Prefix
+</span></span><span class="line"><span class="cl">            path: &#39;/&#39;
+</span></span><span class="line"><span class="cl">            backend:
+</span></span><span class="line"><span class="cl">              service:
+</span></span><span class="line"><span class="cl">                name: kubernetes-dashboard
+</span></span><span class="line"><span class="cl">                port:
+</span></span><span class="line"><span class="cl">                  number: 443
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>检查ing配置生效:</p>
+</div><p>检查ing配置生效:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">kubectl get ing --all-namespaces
-Warning: extensions/v1beta1 Ingress is deprecated in v1.14+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
-NAMESPACE              NAME                CLASS    HOSTS              ADDRESS     PORTS   AGE
-kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   localhost   80      17h</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">kubectl get ing --all-namespaces
+</span></span><span class="line"><span class="cl">Warning: extensions/v1beta1 Ingress is deprecated in v1.14+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
+</span></span><span class="line"><span class="cl">NAMESPACE              NAME                CLASS    HOSTS              ADDRESS     PORTS   AGE
+</span></span><span class="line"><span class="cl">kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   localhost   80      17h
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在访问前，需要修改一下本地 <code>/etc/hosts</code> 文件把my-dashboard.com指向本地ip。然后使用浏览器访问下面地址：</p>
+</div><p>在访问前，需要修改一下本地 <code>/etc/hosts</code> 文件把my-dashboard.com指向本地ip。然后使用浏览器访问下面地址：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">https://my-dashboard.com:31212/</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://my-dashboard.com:31212/
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
-<p>注意必须使用https访问。如果有其它问题可以看这里:<a href="https://github.com/kubernetes/dashboard/blob/master/docs/user/accessing-dashboard/README.md#login-not-available">https://github.com/kubernetes/dashboard/blob/master/docs/user/accessing-dashboard/README.md#login-not-available</a></p>
+</div><blockquote>
+<p>注意必须使用https访问。如果有其它问题可以看这里:https://github.com/kubernetes/dashboard/blob/master/docs/user/accessing-dashboard/README.md#login-not-available</p>
 </blockquote>
-
 <h2 id="小结">小结</h2>
-
 <p>我们启用mac上docker-desktop自带的kubernetes，安装kubernetes-dashboard用来进行图形化管理。同时介绍了使用proxy，NodePort和Ingress三种方式访问dashboard。</p>
-
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li>在MacOS上搭建Kubernetes <a href="https://xiangflight.github.io/build-kubernetes-on-mac-os/">https://xiangflight.github.io/build-kubernetes-on-mac-os/</a></li>
 <li>镜像加速器 <a href="https://yeasy.gitbook.io/docker_practice/install/mirror">https://yeasy.gitbook.io/docker_practice/install/mirror</a></li>
@@ -639,11 +613,11 @@ kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   loc
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-09-10 00:04:10 \x2b0800 CST',
+        id: '2021-09-10 00:04:10 \u002b0800 CST',
         title: 'kubernetes 初体验-mac版',
         link: decodeURI(location.href),
         desc: '之前在mac上体验kubernetes要使用minikube，最近发现Docker-Desktop自带的k8s更方便，简单记录一下安装过程。',
@@ -657,6 +631,10 @@ kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   loc
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -684,13 +662,10 @@ kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   loc
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -701,7 +676,10 @@ kubernetes-dashboard   dashboard-ingress   &lt;none&gt;   my-dashboard.com   loc
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

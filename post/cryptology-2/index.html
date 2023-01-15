@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/cryptology-2/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="密码学杂谈 - 下" />
 <meta property="og:description" content="经典加密 在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 经典加密 。 凯撒密码 简单的字母替换规则可以通过对" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/cryptology-2/" />
-<meta property="article:published_time" content="2022-02-20T21:48:23&#43;08:00"/>
-<meta property="article:modified_time" content="2022-02-20T21:48:23&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/cryptology-2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-20T21:48:23+08:00" />
+<meta property="article:modified_time" content="2022-02-20T21:48:23+08:00" />
 
 <meta itemprop="name" content="密码学杂谈 - 下">
-<meta itemprop="description" content="经典加密 在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 经典加密 。 凯撒密码 简单的字母替换规则可以通过对">
-
-
-<meta itemprop="datePublished" content="2022-02-20T21:48:23&#43;08:00" />
-<meta itemprop="dateModified" content="2022-02-20T21:48:23&#43;08:00" />
-<meta itemprop="wordCount" content="7462">
-
-
-
-<meta itemprop="keywords" content="笔记," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="经典加密 在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 经典加密 。 凯撒密码 简单的字母替换规则可以通过对"><meta itemprop="datePublished" content="2022-02-20T21:48:23+08:00" />
+<meta itemprop="dateModified" content="2022-02-20T21:48:23+08:00" />
+<meta itemprop="wordCount" content="7406">
+<meta itemprop="keywords" content="笔记," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="密码学杂谈 - 下"/>
 <meta name="twitter:description" content="经典加密 在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 经典加密 。 凯撒密码 简单的字母替换规则可以通过对"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,160 +144,130 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#经典加密">经典加密</a>
-<ul>
-<li><a href="#凯撒密码">凯撒密码</a></li>
-<li><a href="#rot13加密">ROT13加密</a></li>
-<li><a href="#随机单表替换">随机单表替换</a></li>
-<li><a href="#维吉尼亚多表替换密码">维吉尼亚多表替换密码</a></li>
-<li><a href="#恩尼格玛密码机">恩尼格玛密码机</a></li>
-</ul></li>
-<li><a href="#数字加密">数字加密</a>
-<ul>
-<li><a href="#base64">base64</a></li>
-<li><a href="#xor异或">XOR异或</a></li>
-<li><a href="#对称加密算法">对称加密算法</a></li>
-<li><a href="#非对称加密算法">非对称加密算法</a></li>
-<li><a href="#散列算法">散列算法</a></li>
-</ul></li>
-<li><a href="#license实现">license实现</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#经典加密">经典加密</a>
+      <ul>
+        <li><a href="#凯撒密码">凯撒密码</a></li>
+        <li><a href="#rot13加密">ROT13加密</a></li>
+        <li><a href="#随机单表替换">随机单表替换</a></li>
+        <li><a href="#维吉尼亚多表替换密码">维吉尼亚多表替换密码</a></li>
+        <li><a href="#恩尼格玛密码机">恩尼格玛密码机</a></li>
+      </ul>
+    </li>
+    <li><a href="#数字加密">数字加密</a>
+      <ul>
+        <li><a href="#base64">base64</a></li>
+        <li><a href="#xor异或">XOR异或</a></li>
+        <li><a href="#对称加密算法">对称加密算法</a></li>
+        <li><a href="#非对称加密算法">非对称加密算法</a></li>
+        <li><a href="#散列算法">散列算法</a></li>
+      </ul>
+    </li>
+    <li><a href="#license实现">license实现</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h2 id="经典加密">经典加密</h2>
-
+      <h2 id="经典加密">经典加密</h2>
 <p>在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 <em>经典加密</em> 。</p>
-
 <h3 id="凯撒密码">凯撒密码</h3>
-
 <p>简单的字母替换规则可以通过对字母表进行循环移位而来，最早记载的凯撒（Caesar）密码就是采用这种方式。凯撒密码是传说中的凯撒大帝发明，加密时将明文中的每个字母都按照其在字母表中的顺序向后移动固定数目生成密文。例如，当偏移量是右移3(+3)的时候形成下面的字母替换表：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+----+--------------------------+
-|明文|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
-+----+--------------------------+
-|密文|DEFGHIJKLMNOPQRSTUVWXYZABC|
-+----+--------------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+----+--------------------------+
+</span></span><span class="line"><span class="cl">|明文|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
+</span></span><span class="line"><span class="cl">+----+--------------------------+
+</span></span><span class="line"><span class="cl">|密文|DEFGHIJKLMNOPQRSTUVWXYZABC|
+</span></span><span class="line"><span class="cl">+----+--------------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>对应我们的明文 <code>GAME404</code> 就变成了密文 <code>JDPH404</code> 。解密时候再把密文在字母表中左移3(-3)得到明文 <code>GAME404</code>。这种情况下凯撒密码的秘钥就是单个数字3。</p>
-
+</div><p>对应我们的明文 <code>GAME404</code> 就变成了密文 <code>JDPH404</code> 。解密时候再把密文在字母表中左移3(-3)得到明文 <code>GAME404</code>。这种情况下凯撒密码的秘钥就是单个数字3。</p>
 <p>凯撒密码现在看来是比较小儿科，但是在2000多年前，是了不起的发明，为凯撒部队的保密工作做了贡献。即使是到现在，军事上的信息保密需求，任然是密码学前进的最大动力。</p>
-
 <blockquote>
 <p>这里数字忽略加密，采用原文传输</p>
 </blockquote>
-
 <h3 id="rot13加密">ROT13加密</h3>
-
 <p>rot13（rotate by 13 places）也是一种简易的替换式密码，是凯撒密码的变种。rot13将明文偏移13位形成密文，因为英文总共26位，所以密文再偏移13位后会循环回到原文，非常巧妙的设计，加密和解密使用同一个方法。这是公式: <code>rot13(rot13(xxx))=xxx</code>。在python3中默认带rot_13的算法实现, 下面是用例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">➜  ~ echo &#34;game404&#34; | python -m encodings.rot_13
-tnzr404
-➜  ~ echo &#34;tnzr404&#34; | python -m encodings.rot_13
-game404</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">➜  ~ echo &#34;game404&#34; | python -m encodings.rot_13
+</span></span><span class="line"><span class="cl">tnzr404
+</span></span><span class="line"><span class="cl">➜  ~ echo &#34;tnzr404&#34; | python -m encodings.rot_13
+</span></span><span class="line"><span class="cl">game404
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="随机单表替换">随机单表替换</h3>
-
+</div><h3 id="随机单表替换">随机单表替换</h3>
 <p>采用位移形成的字母替换，有明显的规律。加密中最要的一点是 <em>随机</em> ，所以可以使用随机的方式形成字母替换表:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">+----+--------------------------+
-|明文|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
-+----+--------------------------+
-|密文|ZEBRASCDFGHIJKLMNOPQTUVWXY|
-+----+--------------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">+----+--------------------------+
+</span></span><span class="line"><span class="cl">|明文|ABCDEFGHIJKLMNOPQRSTUVWXYZ|
+</span></span><span class="line"><span class="cl">+----+--------------------------+
+</span></span><span class="line"><span class="cl">|密文|ZEBRASCDFGHIJKLMNOPQTUVWXY|
+</span></span><span class="line"><span class="cl">+----+--------------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>这样加密和解密都必须持有 <code>ZEBRASCDFGHIJKLMNOPQTUVWXY</code> 这个完整的密码本，长度为26位，而不是3或者13这样的单位秘钥。</p>
-
+</div><p>这样加密和解密都必须持有 <code>ZEBRASCDFGHIJKLMNOPQTUVWXY</code> 这个完整的密码本，长度为26位，而不是3或者13这样的单位秘钥。</p>
 <p>随机单表替换，初看无法得到具体信息。但是一些密码破译专家，也是数学家就可以看到一些统计规律。比如明文 <code>hello game</code> 加密后的密文 <code>daiil czja</code>。因为在英语中字母e是频率最高的字符，根据前面的密文表现，可以初步推断 <code>e-&gt;a</code>。如果我们再掌握更多的密文，分析其中的统计规律，使用类似求解数独的方式，破译密码。</p>
-
 <h3 id="维吉尼亚多表替换密码">维吉尼亚多表替换密码</h3>
-
 <p>单表替换容易透露统计规律，自然的改进思路就是使用多表替换，每个字母采用不同的替换规则，让规律不好捉摸。比如下面的维吉尼亚多表:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220216215058.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220216215058.png" alt=""></p>
 <blockquote>
 <p>此密码曾被误以为由布莱斯•德•维吉尼亚所创，所以才叫作维吉尼亚密码，实际上最著名的一种为吉奥万•巴蒂斯塔•贝拉索于1585年推出。它于1863年之前一直未被破解。法国人称它作“不能破译的密码”。</p>
-
 <p>维吉尼亚密码中,表格的第一行只需直接填上26个字母,然后以下每一行的字母都是向左偏移一格，形成对称结构。这叫作表格横移,数学上每一列同余26。</p>
-
 <p>这种密码需要使用一个关键字来作为密钥，关键字按字循环使用。</p>
 </blockquote>
-
 <p>假设关键字是<code>CAT</code>,明文的第一个字由<code>C</code>加密,第二个字由<code>A</code>加密,第三个则由<code>T</code>加密,然后再回到C加密,一直重复。加密按照上边的密码表,例如明文BALL用CAT作关键字时会得到密文DAEN,同一个字母<code>L</code>会加密成2个不同字母<code>EN</code>。现实中,维吉尼亚密码的关键字非常长，破解难度提高了很多。</p>
-
 <p>维吉尼亚密码的密码本是规则的，所以破解的关键在于找到关键字。具体破解办法还是要从统计规律入手，进行暴力破解。</p>
-
 <h3 id="恩尼格玛密码机">恩尼格玛密码机</h3>
-
 <p>人为制作的密码本是规则且有限，所以聪明的人想出了制作密码机器。恩尼格玛密码机(德語：Enigma)是第二次世界大战时的纳粹德国使用的密码机。关于恩尼格玛密码机和图灵的故事非常精彩和传奇，也有很多文章介绍。这里我只是简单介绍一小小部分。恩尼格玛密码机大概长这样:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220219154716.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220219154716.png" alt=""></p>
 <p>看起来和一个机械打字机类似，顶部的转子用来旋转设置秘钥，转子内部自动生成不同的密码表，底部的键盘用来键入明文，每个明文经过机器转换加密后输出到中间的灯泡，记录下灯泡的位置就得到密文。解密的时候设置好相同的转子位置，然后输入密文，就得到了明文。</p>
-
 <p>因为恩尼格玛密码机加密非常复杂，不犯错的情况下人肉难以快速破解。所以后来大神图灵登场，设计了“炸弹机”，用机器来破解机器，从此开启了计算机的新时代。</p>
-
 <h2 id="数字加密">数字加密</h2>
-
 <p>在数字世界里，字符不再是不可分割。经典场景中字符A是原子的，没法拆分成左半个A和右半个A。数字世界0和1才是原子的，字符可以分解成不同的0和1组合，比如:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; a = &#34;a&#34;
-&gt;&gt;&gt; print(a, ord(a), bin(ord(a)))
-a 97 0b1100001</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; a = &#34;a&#34;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; print(a, ord(a), bin(ord(a)))
+</span></span><span class="line"><span class="cl">a 97 0b1100001
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>字符a的ASCII码是97，对应的二进制是8位001100001。这样我们就可以把a打散成两部分，比如左边6位0011000，右边2位01，再和别的字符重新排列。</p>
-
+</div><p>字符a的ASCII码是97，对应的二进制是8位001100001。这样我们就可以把a打散成两部分，比如左边6位0011000，右边2位01，再和别的字符重新排列。</p>
 <h3 id="base64">base64</h3>
-
-<p>所谓Base64，就是说选出64个字符&mdash;-小写字母a-z、大写字母A-Z、数字0-9、符号&rdquo;+&ldquo;、&rdquo;/&ldquo;（再加上作为垫字的&rdquo;=&ldquo;，实际上是65个字符）&mdash;-作为一个基本字符集。然后，其他所有符号都转换成这个字符集中的字符。这种加密方式因为密码本公开，所以一般只是称为base64 *编码*，而不叫做base64 *加密*。</p>
-
+<p>所谓Base64，就是说选出64个字符&mdash;-小写字母a-z、大写字母A-Z、数字0-9、符号&quot;+&quot;、&quot;/&quot;（再加上作为垫字的&quot;=&quot;，实际上是65个字符）&mdash;-作为一个基本字符集。然后，其他所有符号都转换成这个字符集中的字符。这种加密方式因为密码本公开，所以一般只是称为base64 <em>编码</em>，而不叫做base64 <em>加密</em>。</p>
 <p>阮一峰老师的Base64笔记介绍的非常好，大家可以通过尾部的参考链接去查看。我偷懒简单整理一下。先是base64的码表:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -311,115 +284,137 @@ a 97 0b1100001</pre></td></tr></table>
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">码值  字符  码值  字符  码值  字符  码值  字符
-0   A   16  Q   32  g   48  w
-1   B   17  R   33  h   49  x
-2   C   18  S   34  i   50  y
-3   D   19  T   35  j   51  z
-4   E   20  U   36  k   52  0
-5   F   21  V   37  l   53  1
-6   G   22  W   38  m   54  2
-7   H   23  X   39  n   55  3
-8   I   24  Y   40  o   56  4
-9   J   25  Z   41  p   57  5
-10  K   26  a   42  q   58  6
-11  L   27  b   43  r   59  7
-12  M   28  c   44  s   60  8
-13  N   29  d   45  t   61  9
-14  O   30  e   46  u   62  +
-15  P   31  f   47  v   63  /</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">码值	字符	码值	字符	码值	字符	码值	字符
+</span></span><span class="line"><span class="cl">0	A	16	Q	32	g	48	w
+</span></span><span class="line"><span class="cl">1	B	17	R	33	h	49	x
+</span></span><span class="line"><span class="cl">2	C	18	S	34	i	50	y
+</span></span><span class="line"><span class="cl">3	D	19	T	35	j	51	z
+</span></span><span class="line"><span class="cl">4	E	20	U	36	k	52	0
+</span></span><span class="line"><span class="cl">5	F	21	V	37	l	53	1
+</span></span><span class="line"><span class="cl">6	G	22	W	38	m	54	2
+</span></span><span class="line"><span class="cl">7	H	23	X	39	n	55	3
+</span></span><span class="line"><span class="cl">8	I	24	Y	40	o	56	4
+</span></span><span class="line"><span class="cl">9	J	25	Z	41	p	57	5
+</span></span><span class="line"><span class="cl">10	K	26	a	42	q	58	6
+</span></span><span class="line"><span class="cl">11	L	27	b	43	r	59	7
+</span></span><span class="line"><span class="cl">12	M	28	c	44	s	60	8
+</span></span><span class="line"><span class="cl">13	N	29	d	45	t	61	9
+</span></span><span class="line"><span class="cl">14	O	30	e	46	u	62	+
+</span></span><span class="line"><span class="cl">15	P	31	f	47	v	63	/
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后部分ASCII码表:</p>
+</div><p>然后部分ASCII码表:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">二进制 十进制 十六进制    图形
-...
-0100 1101   77  4D  M
-...
-0110 0001   97  61  a
-...
-0110 1110   110 6E  n</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">二进制	十进制	十六进制	图形
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">0100 1101	77	4D	M
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">0110 0001	97	61	a
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">0110 1110	110	6E	n
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>那么base64的编码过程如下:
-步骤名称|值
-&mdash;|&mdash;
-明文|Man
-ASCII|77-97-110
-二进制原文|01001101 - 01100001 - 01101110
-二进制密文|010011 - 010110 - 000101 - 101110
-二进制密文补齐|00010011 - 00010110 - 00000101 - 00101110
-Base64-Index|19-22-5-46
-Base64-Encoded| T-W-F-u</p>
-
-<p>步骤说明:
-1. 得到明文Man的ASCII编码十进制
-2. 得到明文Man的ASCII编码二进制，3个字节
-3. 最关键的一步是把明文的3个字节，<code>3*8=24</code>位，重新排列成<code>4*6=24</code>, 变成4段
-4. 进行密文的补齐，也就是把每段6位补齐成8位，变成完整的4个字节
-5. 从二进制还原到十进制得到密文编号
-6. 根据base64码表翻译成密文 TWFu</p>
-
+</div><p>那么base64的编码过程如下:</p>
+<table>
+<thead>
+<tr>
+<th>步骤名称</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>明文</td>
+<td>Man</td>
+</tr>
+<tr>
+<td>ASCII</td>
+<td>77-97-110</td>
+</tr>
+<tr>
+<td>二进制原文</td>
+<td>01001101 - 01100001 - 01101110</td>
+</tr>
+<tr>
+<td>二进制密文</td>
+<td>010011 - 010110 - 000101 - 101110</td>
+</tr>
+<tr>
+<td>二进制密文补齐</td>
+<td>00010011 - 00010110 - 00000101 - 00101110</td>
+</tr>
+<tr>
+<td>Base64-Index</td>
+<td>19-22-5-46</td>
+</tr>
+<tr>
+<td>Base64-Encoded</td>
+<td>T-W-F-u</td>
+</tr>
+</tbody>
+</table>
+<p>步骤说明:</p>
+<ol>
+<li>得到明文Man的ASCII编码十进制</li>
+<li>得到明文Man的ASCII编码二进制，3个字节</li>
+<li>最关键的一步是把明文的3个字节，<code>3*8=24</code>位，重新排列成<code>4*6=24</code>, 变成4段</li>
+<li>进行密文的补齐，也就是把每段6位补齐成8位，变成完整的4个字节</li>
+<li>从二进制还原到十进制得到密文编号</li>
+<li>根据base64码表翻译成密文 TWFu</li>
+</ol>
 <p>所以base64编码是重组了ascii编码的二进制规则。至于为什么重组成6个一组，是因为63的二进制表示刚好是6位，这样保证编码后不会溢出base64的码表。</p>
-
 <h3 id="xor异或">XOR异或</h3>
-
 <p>XOR异或是逻辑运算的一种，当两个值相同时，返回false，否则返回true:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; True ^ False
-True
-&gt;&gt;&gt; True ^ True
-False
-&gt;&gt;&gt; False ^ False
-False</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; True ^ False
+</span></span><span class="line"><span class="cl">True
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; True ^ True
+</span></span><span class="line"><span class="cl">False
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; False ^ False
+</span></span><span class="line"><span class="cl">False
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同时XOR运算有一个很奇妙的特点：如果对一个值连续做两次 XOR，会返回这个值本身:</p>
+</div><p>同时XOR运算有一个很奇妙的特点：如果对一个值连续做两次 XOR，会返回这个值本身:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&gt;&gt;&gt; 2^2022
-2020
-&gt;&gt;&gt; 2020^2022
-2</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;&gt;&gt; 2^2022
+</span></span><span class="line"><span class="cl">2020
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; 2020^2022
+</span></span><span class="line"><span class="cl">2
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>第一次使用2和2022进行异或运算，得到2020，第二次使用2020再和2022进行异或运算，又得到2。我们可以把2看做明文，2022看做密码，那么进行一次异或运算，就是加密过程，得到密文2020。密文2020再进行一次异或运算，就是解密过程，得到明文2。</p>
-
+</div><p>第一次使用2和2022进行异或运算，得到2020，第二次使用2020再和2022进行异或运算，又得到2。我们可以把2看做明文，2022看做密码，那么进行一次异或运算，就是加密过程，得到密文2020。密文2020再进行一次异或运算，就是解密过程，得到明文2。</p>
 <p>因为异或是逻辑运算，是按位进行的，所以我们可以把它理解成二进制上的字母替换，和经典的字符替换一致。</p>
-
 <p>这里大家可以思考一个小问题，要按位运算需要明文和密码长度一致，如果明文非常非常长应该怎么处理呢?</p>
-
 <h3 id="对称加密算法">对称加密算法</h3>
-
 <p>我们在数字加密中可以通过XOR(按位替换)和重组(base64)这样两个基本手段工具，设计出更复杂的，也就是更安全的加密算法。最早登场的是DES加密算法，然后是AES算法，下面是2种算法的对比：</p>
-
 <table>
 <thead>
 <tr>
@@ -427,97 +422,81 @@ False</pre></td></tr></table>
 <th>DES</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>AES 代表高级加密标准Advanced Encryption Standard</td>
 <td>DES代表数据加密标准Data Encryption Standard</td>
 </tr>
-
 <tr>
 <td>创作日期为1999年。</td>
 <td>创作日期为1976年。</td>
 </tr>
-
 <tr>
 <td>面向字节。</td>
 <td>面向位。</td>
 </tr>
-
 <tr>
 <td>密钥长度可以是 128 位、192 位和 256 位。</td>
 <td>DES 中的密钥长度为 56 位。</td>
 </tr>
-
 <tr>
 <td>轮数取决于密钥长度：10（128 位）、12（192 位）或 14（256 位）</td>
 <td>DES涉及16轮相同操作</td>
 </tr>
-
 <tr>
 <td>该结构基于置换-置换(substitution-permutation)网络。</td>
 <td>该结构基于Feistel网络。</td>
 </tr>
-
 <tr>
 <td>AES 的设计原理是开放的。</td>
 <td>DES 的设计原理是封闭的。</td>
 </tr>
-
 <tr>
 <td>对此的选择过程是秘密的，但接受了公开的公众评论。</td>
 <td>选择过程是秘密的。</td>
 </tr>
-
 <tr>
 <td>AES 比 DES 密码更安全，是事实上的世界标准。</td>
 <td>DES 很容易被破解，因为它有已知的漏洞。3DES（三重 DES）是 DES 的一种变体，它比通常的 DES 更安全。</td>
 </tr>
-
 <tr>
 <td>AES 中的轮次是：字节替换、移位行、混合列和密钥加法</td>
 <td>DES 中的轮是：扩展、使用轮密钥的 XOR 操作、替换和置换</td>
 </tr>
-
 <tr>
 <td>AES 可以加密 128 位的明文。</td>
 <td>DES 可以加密 64 位的明文。</td>
 </tr>
-
 <tr>
 <td>AES 密码是从旁通道方密码派生的。</td>
 <td>DES密码源自路西法密码。</td>
 </tr>
-
 <tr>
 <td>AES 由 Vincent Rijmen 和 Joan Daemen 设计。</td>
 <td>DES 由 IBM 设计。</td>
 </tr>
-
 <tr>
 <td>没有已知的针对 AES 的密码分析攻击，但可能会针对 AES 实施进行侧信道攻击。Biclique 攻击比蛮力攻击具有更好的复杂性，但仍然无效。</td>
 <td>针对 DES 的已知攻击包括暴力破解、线性密码分析和差分密码分析。</td>
 </tr>
 </tbody>
 </table>
-
-<p>DES的算法比较复杂，我简单总结一下大概步骤：
-1. 准备64位的明文和64位的密钥
-2. 秘钥经过16次调度，形成16个子秘钥
-3. 每个子秘钥，通过从秘钥64位摘取56位，分成左右各28位的L端和R端。然后L端和R端各自左移指定轮次的位数，然后拼接L端和R端。这个过程是字节的重组。最后对形成的秘钥在进行一次置换。得到48位的子秘钥。
-4. 重复上面的步骤3，直到得到16个48位子秘钥
-5. 明文的64位根据置换表进行一次置换，再拆分成L端和R端各32位
-6. 循环执行L，R = R，F(L，子秘钥)16次，就是把R端复制给L，然后把32位的L和48位的子秘钥使用f函数进行加密。
-7. 最后把L和R拼接后进行再进行一次置换得到密文</p>
-
+<p>DES的算法比较复杂，我简单总结一下大概步骤：</p>
+<ol>
+<li>准备64位的明文和64位的密钥</li>
+<li>秘钥经过16次调度，形成16个子秘钥</li>
+<li>每个子秘钥，通过从秘钥64位摘取56位，分成左右各28位的L端和R端。然后L端和R端各自左移指定轮次的位数，然后拼接L端和R端。这个过程是字节的重组。最后对形成的秘钥在进行一次置换。得到48位的子秘钥。</li>
+<li>重复上面的步骤3，直到得到16个48位子秘钥</li>
+<li>明文的64位根据置换表进行一次置换，再拆分成L端和R端各32位</li>
+<li>循环执行L，R = R，F(L，子秘钥)16次，就是把R端复制给L，然后把32位的L和48位的子秘钥使用f函数进行加密。</li>
+<li>最后把L和R拼接后进行再进行一次置换得到密文</li>
+</ol>
 <p>可以看到算法中关键点, F函数。 Feistel函数重点是把32位的一半明文和48位的子秘钥，混合得出一个32位的等长秘钥。这个过程依赖一个不透明的预制机制S盒，所以其实不收大家信任，怀疑算法留有后门。这个过程，我们可以把它想象成接水管游戏，不同的输入经过内部管道处理，输出特定的结果:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220219212020.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220219212020.png" alt=""></p>
 <p>DES加密的思想，总结起来就是二进制位的重组和替换。DES和AES都是成熟的算法，一般情况下我们不需要实现它。出于安全性考虑，DES已经弃用，现在实际业务中一般直接利用AES的API即可。下面是完整的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -535,29 +514,29 @@ False</pre></td></tr></table>
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from base64 import b64encode, b64decode
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-
-def ase_cbc():
-    data = b&#34;secret&#34;
-    key = b&#34;jSOlan6Co5Ac2HiT&#34;
-    cipher = AES.new(key, AES.MODE_CBC, iv=key[:AES.block_size])
-    ct_bytes = cipher.encrypt(pad(data, AES.block_size))
-    ciphertext = b64encode(ct_bytes).decode(&#39;utf-8&#39;)
-    print(ciphertext)
-    ct = b64decode(b64encode(ct_bytes).decode())
-    cipher = AES.new(key, AES.MODE_CBC, iv=key[:AES.block_size])
-    dat = unpad(cipher.decrypt(ct), AES.block_size)
-    print(dat)
-    
-# svhpgz4vi1AgHDtdt8aaww==
-# b&#39;secret&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from base64 import b64encode, b64decode
+</span></span><span class="line"><span class="cl">from Crypto.Cipher import AES
+</span></span><span class="line"><span class="cl">from Crypto.Util.Padding import pad, unpad
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def ase_cbc():
+</span></span><span class="line"><span class="cl">    data = b&#34;secret&#34;
+</span></span><span class="line"><span class="cl">    key = b&#34;jSOlan6Co5Ac2HiT&#34;
+</span></span><span class="line"><span class="cl">    cipher = AES.new(key, AES.MODE_CBC, iv=key[:AES.block_size])
+</span></span><span class="line"><span class="cl">    ct_bytes = cipher.encrypt(pad(data, AES.block_size))
+</span></span><span class="line"><span class="cl">    ciphertext = b64encode(ct_bytes).decode(&#39;utf-8&#39;)
+</span></span><span class="line"><span class="cl">    print(ciphertext)
+</span></span><span class="line"><span class="cl">    ct = b64decode(b64encode(ct_bytes).decode())
+</span></span><span class="line"><span class="cl">    cipher = AES.new(key, AES.MODE_CBC, iv=key[:AES.block_size])
+</span></span><span class="line"><span class="cl">    dat = unpad(cipher.decrypt(ct), AES.block_size)
+</span></span><span class="line"><span class="cl">    print(dat)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"># svhpgz4vi1AgHDtdt8aaww==
+</span></span><span class="line"><span class="cl"># b&#39;secret&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>明文是6个字节，秘钥是16个字节</li>
 <li>创建一个ase的算法实现，这使用cbc模式</li>
 <li>使用pad方法先对明文数据进行补齐</li>
@@ -565,39 +544,31 @@ def ase_cbc():
 <li>因为二进制密文打印会乱码，所以将其使用base64编码转换成ascii字符</li>
 <li>解密则是加密的逆过程</li>
 </ul>
-
 <h3 id="非对称加密算法">非对称加密算法</h3>
-
 <p>前一篇文章介绍过非对称加密的一些思路，和对称加密不同的是秘钥分成一个秘钥对：私钥+公钥。公钥用于加密，私钥永于解密。在介绍非对称加密的算法实现之前，我们先看看物理世界的非对称加密模拟，有助于我们理解非对称加密的基本逻辑。</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220220103106.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220220103106.png" alt=""></p>
 <p>上面是我简单画的一个非对称加密信箱，分成上下2个盒子，中间是联通的。上方盒子需要使用四角星的钥匙打开，下方盒子需要使用五角星的的钥匙打开。那么一个信息加密传输过程大概如下:</p>
-
 <ol>
 <li>发送方甲用自己的锁把上方盒子用四角星锁锁住，然后把信箱传递给接收方乙。</li>
 <li>接收方乙收到信箱后把下方盒子用五角星锁锁住，然后把信息回传给发送方甲。</li>
 <li>甲用四角星钥匙打开上方盒子，塞入信件，然后把信箱和信件一起传递给乙。</li>
 <li>乙用五角星要死打开下方盒子，取出信件。完成一次信息加密传输。</li>
 </ol>
-
 <p>在这个信息传递过程中，甲乙的钥匙都分别自己保管，没有经过运输。甲用四角星钥匙加锁，乙用五角星钥匙解锁，而且信件都在信箱中。这样保证了信息传递是安全的。</p>
-
-<p>1977年，三位数学家Rivest、Shamir 和 Adleman 设计了一种算法，可以实现非对称加密。这种算法用他们三个人的名字命名，叫做RSA算法，现在是非对称加密的标准。算法主要采用的是质数因式分解这样一个&rdquo;盒子&rdquo;比如下面一个等式:</p>
+<p>1977年，三位数学家Rivest、Shamir 和 Adleman 设计了一种算法，可以实现非对称加密。这种算法用他们三个人的名字命名，叫做RSA算法，现在是非对称加密的标准。算法主要采用的是质数因式分解这样一个&quot;盒子&quot;比如下面一个等式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">n = 61×53 = 3233</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">n = 61×53 = 3233
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>61和53的乘积，大家口算或者笔算有可能可以计算出来，但是反过来求3233是那两个质数的乘积却非常难。在非对称加密情况下，我们选择一个随机数，比如17。使用(3233，17)这样的信息组成公钥，然后使用类似(3233,17*<sup>61</sup>&frasl;<sub>17</sub>*65)这样的信息组成私钥。公钥只是私钥的一部分信息，这样公钥加密的信息，逻辑上私钥肯定可以解密。而且通过公钥的3233，很难推断出私钥中的61*53。当然非对称加密的数学验证比这个举例要严谨和复杂的多，我这里只是尝试举例，帮助理解。</p>
-
+</div><p>61和53的乘积，大家口算或者笔算有可能可以计算出来，但是反过来求3233是那两个质数的乘积却非常难。在非对称加密情况下，我们选择一个随机数，比如17。使用(3233，17)这样的信息组成公钥，然后使用类似(3233,17*61/17*65)这样的信息组成私钥。公钥只是私钥的一部分信息，这样公钥加密的信息，逻辑上私钥肯定可以解密。而且通过公钥的3233，很难推断出私钥中的61*53。当然非对称加密的数学验证比这个举例要严谨和复杂的多，我这里只是尝试举例，帮助理解。</p>
 <p>加密示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -617,42 +588,41 @@ def ase_cbc():
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def rsa_enc():
-    from Crypto.PublicKey import RSA
-    from Crypto.Random import get_random_bytes
-    from Crypto.Cipher import AES, PKCS1_OAEP
-
-    data = &#34;I met aliens in UFO. Here is the map.&#34;.encode(&#34;utf-8&#34;)
-    file_out = open(&#34;encrypted_data.bin&#34;, &#34;wb&#34;)
-
-    recipient_key = RSA.import_key(open(&#34;public.pem&#34;).read())
-    session_key = get_random_bytes(16)
-
-    # Encrypt the session key with the public RSA key
-    cipher_rsa = PKCS1_OAEP.new(recipient_key)
-    enc_session_key = cipher_rsa.encrypt(session_key)
-
-    # Encrypt the data with the AES session key
-    cipher_aes = AES.new(session_key, AES.MODE_EAX)
-    ciphertext, tag = cipher_aes.encrypt_and_digest(data)
-    [file_out.write(x) for x in (enc_session_key, cipher_aes.nonce, tag, ciphertext)]
-    file_out.close()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def rsa_enc():
+</span></span><span class="line"><span class="cl">    from Crypto.PublicKey import RSA
+</span></span><span class="line"><span class="cl">    from Crypto.Random import get_random_bytes
+</span></span><span class="line"><span class="cl">    from Crypto.Cipher import AES, PKCS1_OAEP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    data = &#34;I met aliens in UFO. Here is the map.&#34;.encode(&#34;utf-8&#34;)
+</span></span><span class="line"><span class="cl">    file_out = open(&#34;encrypted_data.bin&#34;, &#34;wb&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    recipient_key = RSA.import_key(open(&#34;public.pem&#34;).read())
+</span></span><span class="line"><span class="cl">    session_key = get_random_bytes(16)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # Encrypt the session key with the public RSA key
+</span></span><span class="line"><span class="cl">    cipher_rsa = PKCS1_OAEP.new(recipient_key)
+</span></span><span class="line"><span class="cl">    enc_session_key = cipher_rsa.encrypt(session_key)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # Encrypt the data with the AES session key
+</span></span><span class="line"><span class="cl">    cipher_aes = AES.new(session_key, AES.MODE_EAX)
+</span></span><span class="line"><span class="cl">    ciphertext, tag = cipher_aes.encrypt_and_digest(data)
+</span></span><span class="line"><span class="cl">    [file_out.write(x) for x in (enc_session_key, cipher_aes.nonce, tag, ciphertext)]
+</span></span><span class="line"><span class="cl">    file_out.close()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>秘钥可以使用代码生成，也可以使用OpenSSL工具生成，这里我使用上一篇文章中的秘钥</li>
 <li>导入rsa公钥</li>
 <li>随机一个AES秘钥，然后使用rsa公钥加密这个秘钥</li>
 <li>使用AES加密信息</li>
 <li>将AES秘钥密文，AES的随机数，iv和密文写入结果</li>
 </ul>
-
 <p>解密示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -670,56 +640,50 @@ def ase_cbc():
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from Crypto.PublicKey import RSA
-from Crypto.Cipher import AES, PKCS1_OAEP
-
-file_in = open(&#34;encrypted_data.bin&#34;, &#34;rb&#34;)
-
-private_key = RSA.import_key(open(&#34;private.pem&#34;).read())
-
-enc_session_key, nonce, tag, ciphertext = \
-   [ file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1) ]
-
-# Decrypt the session key with the private RSA key
-cipher_rsa = PKCS1_OAEP.new(private_key)
-session_key = cipher_rsa.decrypt(enc_session_key)
-
-# Decrypt the data with the AES session key
-cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
-data = cipher_aes.decrypt_and_verify(ciphertext, tag)
-print(data.decode(&#34;utf-8&#34;))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from Crypto.PublicKey import RSA
+</span></span><span class="line"><span class="cl">from Crypto.Cipher import AES, PKCS1_OAEP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">file_in = open(&#34;encrypted_data.bin&#34;, &#34;rb&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">private_key = RSA.import_key(open(&#34;private.pem&#34;).read())
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">enc_session_key, nonce, tag, ciphertext = \
+</span></span><span class="line"><span class="cl">   [ file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1) ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Decrypt the session key with the private RSA key
+</span></span><span class="line"><span class="cl">cipher_rsa = PKCS1_OAEP.new(private_key)
+</span></span><span class="line"><span class="cl">session_key = cipher_rsa.decrypt(enc_session_key)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Decrypt the data with the AES session key
+</span></span><span class="line"><span class="cl">cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+</span></span><span class="line"><span class="cl">data = cipher_aes.decrypt_and_verify(ciphertext, tag)
+</span></span><span class="line"><span class="cl">print(data.decode(&#34;utf-8&#34;))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>导入rsa私钥</li>
 <li>读取结果，并按位从中解析出aes私钥密文，随机数，iv和剩下的密文信息</li>
 <li>使用rsa私钥从aes秘钥的密文中解析出aes密钥明文</li>
 <li>使用aes秘钥解密密文信息</li>
 </ul>
-
 <p>这一对过程的重点是，<em>rsa仅仅加密aes的私钥，私钥的密文进行传输</em> 。encrypted_data.bin是二进制的，直接使用文本方式查看会是乱码，我们可以转换为base64方式查看:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">✗ base64 encrypted_data.bin 
-w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxbUK9ll8LQdM5S0N9eBakM6wzEwnN9PFrJEKN7VdmTqxnzC7go5tS2qNR173xcJKTX3UXKBTLbKXkafj9k2Bk9g93hRh19Uka/S5AqD43dFjIyI2ogxZNkN0v5E6uAyINlhGO8jCHAN0yhu4S5zz0ph7mFAVfXQkNDuotcdmsRfPpEi641BI/fEGE=</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">✗ base64 encrypted_data.bin 
+</span></span><span class="line"><span class="cl">w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxbUK9ll8LQdM5S0N9eBakM6wzEwnN9PFrJEKN7VdmTqxnzC7go5tS2qNR173xcJKTX3UXKBTLbKXkafj9k2Bk9g93hRh19Uka/S5AqD43dFjIyI2ogxZNkN0v5E6uAyINlhGO8jCHAN0yhu4S5zz0ph7mFAVfXQkNDuotcdmsRfPpEi641BI/fEGE=
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="散列算法">散列算法</h3>
-
+</div><h3 id="散列算法">散列算法</h3>
 <p>散列函数（Hash function）又称散列算法、哈希函数，是一种从任何一种数据中创建小的数字“指纹”的方法。散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。该函数将数据打乱混合，重新创建一个叫做散列值（hash values，hash codes，hash sums，或hashes）的指纹。散列值通常用一个短的随机字母和数字组成的字符串来代表，用来表示信息完整性。</p>
-
 <p>散列函数数学逻辑并不难，首先需要一个奇函数，保证每一个输入可以得到一个唯一的输出:</p>
-
-<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220220170838.png" alt="" /></p>
-
+<p><img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/20220220170838.png" alt=""></p>
 <p>然后我们再从输出结果中进行信息摘取部分，这样来保证摘要比原文要短，因为摘要比原文长，那就没有价值。我们可以自己随便设想一个哈希算法:</p>
-
 <ol>
 <li>函数取值 y=2f(x)+3</li>
 <li>将结果转换为二进制后循环左移3位</li>
@@ -727,19 +691,14 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
 <li>使用2个十进制数相乘</li>
 <li>结果再转换为二进制数据，取其前8位转换成16进制得到哈希值</li>
 </ol>
-
 <p>根据抽屉原理，9个苹果放到8个箱子，一定有一个箱子会有2个苹果。信息摘要算法一定会有冲突，只是好的算法信息冲突的概率会非常非常低。我们上面的设想的哈希算法，仅仅8位，冲突的概率非常高。好的散列函数在输入域中很少出现散列冲突，知名的算法有MD5和SHA。</p>
-
 <p>MD5信息摘要演算法5（MD5 Message-Digest Algorithm 5）是散列算法的一种，可以产生出一個128位（16个字节(BYTES)）的散列值（hash value），一般表示为32位十六进制数字。</p>
-
 <p>SHA安全散列算法（Secure Hash Algorithm ）也是一个系列的散列算法。最早SHA-1，正式发布的第一代算法可以生成一个被称为消息摘要的160位（20字节）散列值，散列值通常的呈现形式为40个十六进制数。</p>
-
 <p>这两种算法都被我国的 <em>王小云</em> 教授破解了，所以这2种算法都被认为安全性不足，不再建议使用，目前较多使用sha256算法。sha256是sha-2算法的变种，输出是256位(32字节)的摘要值，同属sha-2的还有SHA-224，SHA-512等。2015年还推出了sha算法的第3个版本，即sha3。</p>
-
 <p>下面是md5和sha256的示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -751,43 +710,42 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def hash_sample():
-    import hashlib
-    plaintext = &#34;game404&#34;
-    result = hashlib.md5(plaintext.encode())
-    md5 = result.hexdigest()
-    print(md5, len(md5))
-    result = hashlib.sha256(plaintext.encode())
-    s256 = result.hexdigest()
-    print(s256, len(s256))
-
-#e935208860777d1584d3586a9e93e160 32
-#c56afda14db3e8b61eb83f17540401ec983e91e92375826d2842e29c8a4db437 64</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def hash_sample():
+</span></span><span class="line"><span class="cl">    import hashlib
+</span></span><span class="line"><span class="cl">    plaintext = &#34;game404&#34;
+</span></span><span class="line"><span class="cl">    result = hashlib.md5(plaintext.encode())
+</span></span><span class="line"><span class="cl">    md5 = result.hexdigest()
+</span></span><span class="line"><span class="cl">    print(md5, len(md5))
+</span></span><span class="line"><span class="cl">    result = hashlib.sha256(plaintext.encode())
+</span></span><span class="line"><span class="cl">    s256 = result.hexdigest()
+</span></span><span class="line"><span class="cl">    print(s256, len(s256))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#e935208860777d1584d3586a9e93e160 32
+</span></span><span class="line"><span class="cl">#c56afda14db3e8b61eb83f17540401ec983e91e92375826d2842e29c8a4db437 64
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="license实现">license实现</h2>
-
+</div><h2 id="license实现">license实现</h2>
 <p>了解完所有算法的模型后，license的实现就非常简单了。我们先设置license信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">{
-    &#34;name&#34;:&#34;game404&#34;，
-    &#34;expiryDate&#34;: 20220220
-}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    &#34;name&#34;:&#34;game404&#34;，
+</span></span><span class="line"><span class="cl">    &#34;expiryDate&#34;: 20220220
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>然后我们将其dump成字符后使用ras签名, 完整代码如下:</p>
+</div><p>然后我们将其dump成字符后使用ras签名, 完整代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -813,49 +771,49 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def rsa_sign():
-    from Crypto.PublicKey import RSA
-    from Crypto.Cipher import AES
-    from Crypto.Signature import PKCS1_v1_5
-    from Crypto.Hash import SHA256
-    import json
-
-    license_object = {
-        &#34;name&#34;: &#34;game404&#34;,
-        &#34;expiryDate&#34;: 20220220
-    }
-    plaintext = json.dumps(license_object)
-    file_out = open(&#34;encrypted_license.bin&#34;, &#34;wb&#34;)
-    private_key = RSA.import_key(open(&#34;private.pem&#34;).read())
-    # rsa签名
-    cipher_rsa = PKCS1_v1_5.new(private_key)
-    digest = SHA256.new()
-    digest.update(plaintext.encode(&#34;utf-8&#34;))
-    signature = cipher_rsa.sign(digest)
-    # aes加密
-    session_key = get_random_bytes(16)
-    cipher_aes = AES.new(session_key, AES.MODE_EAX)
-    ciphertext, tag = cipher_aes.encrypt_and_digest(plaintext.encode(&#34;utf-8&#34;))
-    # 写license
-    file_out.write(b&#34;&#34;.join([session_key, cipher_aes.nonce, tag, signature, ciphertext]))
-    file_out.close()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def rsa_sign():
+</span></span><span class="line"><span class="cl">    from Crypto.PublicKey import RSA
+</span></span><span class="line"><span class="cl">    from Crypto.Cipher import AES
+</span></span><span class="line"><span class="cl">    from Crypto.Signature import PKCS1_v1_5
+</span></span><span class="line"><span class="cl">    from Crypto.Hash import SHA256
+</span></span><span class="line"><span class="cl">    import json
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    license_object = {
+</span></span><span class="line"><span class="cl">        &#34;name&#34;: &#34;game404&#34;,
+</span></span><span class="line"><span class="cl">        &#34;expiryDate&#34;: 20220220
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    plaintext = json.dumps(license_object)
+</span></span><span class="line"><span class="cl">    file_out = open(&#34;encrypted_license.bin&#34;, &#34;wb&#34;)
+</span></span><span class="line"><span class="cl">    private_key = RSA.import_key(open(&#34;private.pem&#34;).read())
+</span></span><span class="line"><span class="cl">    # rsa签名
+</span></span><span class="line"><span class="cl">    cipher_rsa = PKCS1_v1_5.new(private_key)
+</span></span><span class="line"><span class="cl">    digest = SHA256.new()
+</span></span><span class="line"><span class="cl">    digest.update(plaintext.encode(&#34;utf-8&#34;))
+</span></span><span class="line"><span class="cl">    signature = cipher_rsa.sign(digest)
+</span></span><span class="line"><span class="cl">    # aes加密
+</span></span><span class="line"><span class="cl">    session_key = get_random_bytes(16)
+</span></span><span class="line"><span class="cl">    cipher_aes = AES.new(session_key, AES.MODE_EAX)
+</span></span><span class="line"><span class="cl">    ciphertext, tag = cipher_aes.encrypt_and_digest(plaintext.encode(&#34;utf-8&#34;))
+</span></span><span class="line"><span class="cl">    # 写license
+</span></span><span class="line"><span class="cl">    file_out.write(b&#34;&#34;.join([session_key, cipher_aes.nonce, tag, signature, ciphertext]))
+</span></span><span class="line"><span class="cl">    file_out.close()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>证书我们可以base64后发送出去:</p>
+</div><p>证书我们可以base64后发送出去:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">F4IBtZOODAE5XSdluFynrk8e01gSKwVftivMg+eucfD7j5nCdMZhIcjGyLjQ5miV4Y6mAOooajNypWVL+GTVleXoLUQzqf0hLG02ytuIZ3QlCbGXVn3sofePq+IhwDBH5x2CECwHofzuNH0LbQLlW7LbwXxOl8xvGOw1gCvUgGo8Uuqli0cgrijqKO+n72Rb4Is0KW8EMjvPvaaLodbEhUc2iCLDiDDLXpBvcWsMZeW+AVgfpr6jKR9ICyELg4XQ2s84gs3d+EcFjaFjAzwygBuLYdqa40pR4G/e</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">F4IBtZOODAE5XSdluFynrk8e01gSKwVftivMg+eucfD7j5nCdMZhIcjGyLjQ5miV4Y6mAOooajNypWVL+GTVleXoLUQzqf0hLG02ytuIZ3QlCbGXVn3sofePq+IhwDBH5x2CECwHofzuNH0LbQLlW7LbwXxOl8xvGOw1gCvUgGo8Uuqli0cgrijqKO+n72Rb4Is0KW8EMjvPvaaLodbEhUc2iCLDiDDLXpBvcWsMZeW+AVgfpr6jKR9ICyELg4XQ2s84gs3d+EcFjaFjAzwygBuLYdqa40pR4G/e
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>本地验证证书:</p>
+</div><p>本地验证证书:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -880,47 +838,41 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def rsa_verify():
-    from Crypto.PublicKey import RSA
-    from Crypto.Cipher import AES
-    from Crypto.Signature import PKCS1_v1_5
-    from Crypto.Hash import SHA256
-
-    file_in = open(&#34;encrypted_license.bin&#34;, &#34;rb&#34;)
-
-    public_key = RSA.import_key(open(&#34;public.pem&#34;).read())
-    # 读取license
-    session_key, nonce, tag, signature, ciphertext = [file_in.read(x) for x in (16, 16, 16, 128, -1)]
-
-    # aes解密
-    cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
-    data = cipher_aes.decrypt_and_verify(ciphertext, tag)
-    print(data.decode(&#34;utf-8&#34;))
-
-    cipher_rsa = PKCS1_v1_5.new(public_key)
-    digest = SHA256.new()
-    digest.update(data)
-    try:
-        # 验证签名
-        cipher_rsa.verify(digest, signature)
-    except ValueError:
-        pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def rsa_verify():
+</span></span><span class="line"><span class="cl">    from Crypto.PublicKey import RSA
+</span></span><span class="line"><span class="cl">    from Crypto.Cipher import AES
+</span></span><span class="line"><span class="cl">    from Crypto.Signature import PKCS1_v1_5
+</span></span><span class="line"><span class="cl">    from Crypto.Hash import SHA256
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    file_in = open(&#34;encrypted_license.bin&#34;, &#34;rb&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    public_key = RSA.import_key(open(&#34;public.pem&#34;).read())
+</span></span><span class="line"><span class="cl">    # 读取license
+</span></span><span class="line"><span class="cl">    session_key, nonce, tag, signature, ciphertext = [file_in.read(x) for x in (16, 16, 16, 128, -1)]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # aes解密
+</span></span><span class="line"><span class="cl">    cipher_aes = AES.new(session_key, AES.MODE_EAX, nonce)
+</span></span><span class="line"><span class="cl">    data = cipher_aes.decrypt_and_verify(ciphertext, tag)
+</span></span><span class="line"><span class="cl">    print(data.decode(&#34;utf-8&#34;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    cipher_rsa = PKCS1_v1_5.new(public_key)
+</span></span><span class="line"><span class="cl">    digest = SHA256.new()
+</span></span><span class="line"><span class="cl">    digest.update(data)
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        # 验证签名
+</span></span><span class="line"><span class="cl">        cipher_rsa.verify(digest, signature)
+</span></span><span class="line"><span class="cl">    except ValueError:
+</span></span><span class="line"><span class="cl">        pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>证书实际上不需要保密，只需要验证来源的合法性和完整性。所以我们可以看到aes的秘钥是写入到证书文件中的，合法性和完整性使用rsa算法和sha256算法结合来保证。</p>
-
+</div><p>证书实际上不需要保密，只需要验证来源的合法性和完整性。所以我们可以看到aes的秘钥是写入到证书文件中的，合法性和完整性使用rsa算法和sha256算法结合来保证。</p>
 <h2 id="小结">小结</h2>
-
 <p>本文我们一起回顾了经典加密和数字加密的演化过程，学习了使用 <em>随机</em> ，<em>变换</em> 和 <em>重组</em> 等方式构建加密算法。重点了解了aes对称加密算法，rsa非对称加密算法以及sha256摘要算法，并利用它实现了一个商业license的制作。</p>
-
 <p>数字加密的尽头，可能是量子计算。首先是量子通讯的不可观测性让量子加密具有巨大优势，如果通讯被偷听会导致量子叠加的坍缩，这样还可以主动识别是否被偷听。这个主动防窃听就非常厉害了，是上面的经典计算机的加密算法都无法实现的。其次量子计算机，在并行计算上也有巨大优势，经典计算机无法快速破解的算法，对量子计算机可能秒破。保密和破解这一矛和盾，又将迎来新的一轮变更。</p>
-
 <p>最后，最重要的是我国在量子领域处于第一梯队，起步不晚，发展迅速。从md5的破解，再到量子通讯/计算，中国科学家逐渐登场，以后一定会看到更多 <em>中国名字</em> 和 <em>中国标准</em> 。</p>
-
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li>DES算法原理及实现 <a href="https://www.ruanx.net/des/">https://www.ruanx.net/des/</a></li>
 <li>什么是DES加密 <a href="https://www.cxyxiaowu.com/1478.html">https://www.cxyxiaowu.com/1478.html</a></li>
@@ -971,11 +923,11 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2022-02-20 21:48:23 \x2b0800 CST',
+        id: '2022-02-20 21:48:23 \u002b0800 CST',
         title: '密码学杂谈 - 下',
         link: decodeURI(location.href),
         desc: '经典加密 在数字计算机没有发明之前，加密都是对字符进行加密，一般采用的方法是字母替换，我把它称为 经典加密 。 凯撒密码 简单的字母替换规则可以通过对',
@@ -989,6 +941,10 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1016,13 +972,10 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1033,7 +986,10 @@ w+ii4VVphO1ulHjrUy4fcc7CuLxaxJTQuzTtgIqvoot3ivBcRWwxV/1rNqIA2fsddYq8AIRo7jV9xoxb
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

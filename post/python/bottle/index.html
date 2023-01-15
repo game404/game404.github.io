@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/bottle/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Bottle 源码阅读" />
 <meta property="og:description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/bottle/" />
-<meta property="article:published_time" content="2021-01-21T22:46:56&#43;08:00"/>
-<meta property="article:modified_time" content="2021-01-21T22:46:56&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/bottle/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-01-21T22:46:56+08:00" />
+<meta property="article:modified_time" content="2021-01-21T22:46:56+08:00" />
 
 <meta itemprop="name" content="Bottle 源码阅读">
-<meta itemprop="description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限">
-
-
-<meta itemprop="datePublished" content="2021-01-21T22:46:56&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-21T22:46:56&#43;08:00" />
-<meta itemprop="wordCount" content="5195">
-
-
-
-<meta itemprop="keywords" content="bottle,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限"><meta itemprop="datePublished" content="2021-01-21T22:46:56+08:00" />
+<meta itemprop="dateModified" content="2021-01-21T22:46:56+08:00" />
+<meta itemprop="wordCount" content="5186">
+<meta itemprop="keywords" content="bottle,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Bottle 源码阅读"/>
 <meta name="twitter:description" content="bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,31 +144,25 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#项目结构">项目结构</a></li>
-<li><a href="#api设计">api设计</a></li>
-<li><a href="#run-server">run-server</a></li>
-<li><a href="#routing">Routing</a></li>
-<li><a href="#bottle">Bottle</a></li>
-<li><a href="#request-response">request &amp;&amp; response</a></li>
-<li><a href="#plugin">plugin</a></li>
-<li><a href="#hook">hook</a></li>
-<li><a href="#template">Template</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#项目结构">项目结构</a></li>
+    <li><a href="#api设计">api设计</a></li>
+    <li><a href="#run-server">run-server</a></li>
+    <li><a href="#routing">Routing</a></li>
+    <li><a href="#bottle">Bottle</a></li>
+    <li><a href="#request--response">request &amp;&amp; response</a></li>
+    <li><a href="#plugin">plugin</a></li>
+    <li><a href="#hook">hook</a></li>
+    <li><a href="#template">Template</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限制了项目的代码量不会爆炸，同时又仅依赖python标准库，是个不错的学习项目，我们一起来阅读一下吧。整篇文章分下面几个部分:</p>
-
+      <p>bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限制了项目的代码量不会爆炸，同时又仅依赖python标准库，是个不错的学习项目，我们一起来阅读一下吧。整篇文章分下面几个部分:</p>
 <ul>
 <li>项目结构</li>
 <li>api设计</li>
@@ -179,11 +176,8 @@
 <li>小技巧</li>
 <li>小结</li>
 </ul>
-
 <h2 id="项目结构">项目结构</h2>
-
 <p>本次阅读代码版本是 <code>0.11.1</code>, 代码获取方法请看之前的文章[requests 源码阅读], 就不再赘述。大概浏览bottle的3000行代码后，我们可以知道它分下面几个功能部分:</p>
-
 <table>
 <thead>
 <tr>
@@ -191,82 +185,73 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>Routing</td>
 <td>路由部分，包括每个路由规则Route和路由规则的字典Router</td>
 </tr>
-
 <tr>
 <td>Application</td>
 <td>wsgi规范约定框架应用程序，由Bottle实现</td>
 </tr>
-
 <tr>
 <td>Request&amp;&amp;Response</td>
 <td>http和wsgi的请求，响应实现相关</td>
 </tr>
-
 <tr>
 <td>Plugins</td>
 <td>插件，bottle的json，模板，middleware都是使用插件机制实现；包括额外的plugins目录中sqlite3和werkzeug插件</td>
 </tr>
-
 <tr>
 <td>Util&amp;&amp;Helper</td>
 <td>工具和帮助类</td>
 </tr>
-
 <tr>
 <td>Server Adapter</td>
 <td>各种wsgi服务的适配器，默认使用的是WSGIRefServer</td>
 </tr>
-
 <tr>
 <td>Template Adapter</td>
 <td>各种模板引擎的适配器，默认使用自己实现的SimpleTemplate</td>
 </tr>
-
 <tr>
 <td>Control</td>
 <td>全局常量及api等</td>
 </tr>
 </tbody>
 </table>
-
 <h2 id="api设计">api设计</h2>
-
 <p>首先还是从示例开始观察bottle的api，从使用入手逐步往里跟踪探索。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from bottle import route, run, template
-
-@route(&#39;/hello/&lt;name&gt;&#39;)
-def index(name):
-    return template(&#39;&lt;b&gt;Hello {{name}}&lt;/b&gt;!&#39;, name=name)
-
-run(host=&#39;localhost&#39;, port=8080)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from bottle import route, run, template
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@route(&#39;/hello/&lt;name&gt;&#39;)
+</span></span><span class="line"><span class="cl">def index(name):
+</span></span><span class="line"><span class="cl">    return template(&#39;&lt;b&gt;Hello {{name}}&lt;/b&gt;!&#39;, name=name)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">run(host=&#39;localhost&#39;, port=8080)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>示例展示了下面几个内容:
-* 使用route装饰器定义一个路由规则，包装一个响应函数
-* 使用template生成一个模板
-* 使用run函数启动服务</p>
-
+</div><p>示例展示了下面几个内容:</p>
+<ul>
+<li>使用route装饰器定义一个路由规则，包装一个响应函数</li>
+<li>使用template生成一个模板</li>
+<li>使用run函数启动服务</li>
+</ul>
 <p>查看代码可以知道，除了route装饰器API，还有下面的各种API:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -276,45 +261,45 @@ run(host=&#39;localhost&#39;, port=8080)</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">get       = make_default_app_wrapper(&#39;get&#39;)
-post      = make_default_app_wrapper(&#39;post&#39;)
-put       = make_default_app_wrapper(&#39;put&#39;)
-delete    = make_default_app_wrapper(&#39;delete&#39;)
-error     = make_default_app_wrapper(&#39;error&#39;)
-mount     = make_default_app_wrapper(&#39;mount&#39;)
-hook      = make_default_app_wrapper(&#39;hook&#39;)
-install   = make_default_app_wrapper(&#39;install&#39;)
-uninstall = make_default_app_wrapper(&#39;uninstall&#39;)
-url       = make_default_app_wrapper(&#39;get_url&#39;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">get       = make_default_app_wrapper(&#39;get&#39;)
+</span></span><span class="line"><span class="cl">post      = make_default_app_wrapper(&#39;post&#39;)
+</span></span><span class="line"><span class="cl">put       = make_default_app_wrapper(&#39;put&#39;)
+</span></span><span class="line"><span class="cl">delete    = make_default_app_wrapper(&#39;delete&#39;)
+</span></span><span class="line"><span class="cl">error     = make_default_app_wrapper(&#39;error&#39;)
+</span></span><span class="line"><span class="cl">mount     = make_default_app_wrapper(&#39;mount&#39;)
+</span></span><span class="line"><span class="cl">hook      = make_default_app_wrapper(&#39;hook&#39;)
+</span></span><span class="line"><span class="cl">install   = make_default_app_wrapper(&#39;install&#39;)
+</span></span><span class="line"><span class="cl">uninstall = make_default_app_wrapper(&#39;uninstall&#39;)
+</span></span><span class="line"><span class="cl">url       = make_default_app_wrapper(&#39;get_url&#39;)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以使用上面的API定义路由:</p>
+</div><p>可以使用上面的API定义路由:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@get(&#39;/login&#39;)  # or @route(&#39;/login&#39;)
-def login():
-    pass
-    
-@post(&#39;/login&#39;) # or @route(&#39;/login&#39;, method=&#39;POST&#39;)
-def do_login():
-    pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@get(&#39;/login&#39;)  # or @route(&#39;/login&#39;)
+</span></span><span class="line"><span class="cl">def login():
+</span></span><span class="line"><span class="cl">    pass
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">@post(&#39;/login&#39;) # or @route(&#39;/login&#39;, method=&#39;POST&#39;)
+</span></span><span class="line"><span class="cl">def do_login():
+</span></span><span class="line"><span class="cl">    pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>装饰器的具体实现:</p>
+</div><p>装饰器的具体实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -326,31 +311,32 @@ def do_login():
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def make_default_app_wrapper(name):
-    &#39;&#39;&#39; Return a callable that relays calls to the current default app. &#39;&#39;&#39;
-    @functools.wraps(getattr(Bottle, name))
-    def wrapper(*a, **ka):
-        return getattr(Bottle(), name)(*a, **ka)  # 动态获取Bottle对象的方法
-    return wrapper
-
-...
-class Bottle(object)
-    def route(self, path=None, method=&#39;GET&#39;, callback=None, name=None,
-              apply=None, skip=None, **config):
-        pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def make_default_app_wrapper(name):
+</span></span><span class="line"><span class="cl">    &#39;&#39;&#39; Return a callable that relays calls to the current default app. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">    @functools.wraps(getattr(Bottle, name))
+</span></span><span class="line"><span class="cl">    def wrapper(*a, **ka):
+</span></span><span class="line"><span class="cl">        return getattr(Bottle(), name)(*a, **ka)  # 动态获取Bottle对象的方法
+</span></span><span class="line"><span class="cl">    return wrapper
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">class Bottle(object)
+</span></span><span class="line"><span class="cl">    def route(self, path=None, method=&#39;GET&#39;, callback=None, name=None,
+</span></span><span class="line"><span class="cl">              apply=None, skip=None, **config):
+</span></span><span class="line"><span class="cl">        pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>现在我们大概学习了3种API的封装方法：
-* redis-py中使用命令模式封装api
-* requests中使用session.request的api
-* bottle使用装饰器封装路由api</p>
-
+</div><p>现在我们大概学习了3种API的封装方法：</p>
+<ul>
+<li>redis-py中使用命令模式封装api</li>
+<li>requests中使用session.request的api</li>
+<li>bottle使用装饰器封装路由api</li>
+</ul>
 <p>对于模版渲染，也提供<code>view</code>, <code>simpletal_view</code> 等api:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -370,55 +356,54 @@ class Bottle(object)
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def template(*args, **kwargs):
-    pass
-
-def view(tpl_name, **defaults):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            if isinstance(result, (dict, DictMixin)):
-                tplvars = defaults.copy()
-                tplvars.update(result)
-                return template(tpl_name, **tplvars)  # 由tempate具体实现
-            return result
-        return wrapper
-    return decorator
-    
-mako_view = functools.partial(view, template_adapter=MakoTemplate)
-cheetah_view = functools.partial(view, template_adapter=CheetahTemplate)
-jinja2_view = functools.partial(view, template_adapter=Jinja2Template)
-simpletal_view = functools.partial(view, template_adapter=SimpleTALTemplate)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def template(*args, **kwargs):
+</span></span><span class="line"><span class="cl">    pass
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def view(tpl_name, **defaults):
+</span></span><span class="line"><span class="cl">    def decorator(func):
+</span></span><span class="line"><span class="cl">        @functools.wraps(func)
+</span></span><span class="line"><span class="cl">        def wrapper(*args, **kwargs):
+</span></span><span class="line"><span class="cl">            result = func(*args, **kwargs)
+</span></span><span class="line"><span class="cl">            if isinstance(result, (dict, DictMixin)):
+</span></span><span class="line"><span class="cl">                tplvars = defaults.copy()
+</span></span><span class="line"><span class="cl">                tplvars.update(result)
+</span></span><span class="line"><span class="cl">                return template(tpl_name, **tplvars)  # 由tempate具体实现
+</span></span><span class="line"><span class="cl">            return result
+</span></span><span class="line"><span class="cl">        return wrapper
+</span></span><span class="line"><span class="cl">    return decorator
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">mako_view = functools.partial(view, template_adapter=MakoTemplate)
+</span></span><span class="line"><span class="cl">cheetah_view = functools.partial(view, template_adapter=CheetahTemplate)
+</span></span><span class="line"><span class="cl">jinja2_view = functools.partial(view, template_adapter=Jinja2Template)
+</span></span><span class="line"><span class="cl">simpletal_view = functools.partial(view, template_adapter=SimpleTALTemplate)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面2种view的实现方法是等价的:</p>
+</div><p>下面2种view的实现方法是等价的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def hello(name=&#39;World&#39;):
-    return template(&#39;hello_template&#39;, name=name)
-    
-@view(&#39;hello_template&#39;)
-def hello(name=&#39;World&#39;):
-    return dict(name=name)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def hello(name=&#39;World&#39;):
+</span></span><span class="line"><span class="cl">    return template(&#39;hello_template&#39;, name=name)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">@view(&#39;hello_template&#39;)
+</span></span><span class="line"><span class="cl">def hello(name=&#39;World&#39;):
+</span></span><span class="line"><span class="cl">    return dict(name=name)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="run-server">run-server</h2>
-
+</div><h2 id="run-server">run-server</h2>
 <p>run 函数定义了服务启动的模式:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -429,44 +414,44 @@ def hello(name=&#39;World&#39;):
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def run(app=None, server=&#39;wsgiref&#39;, host=&#39;127.0.0.1&#39;, port=8080,
-        interval=1, reloader=False, quiet=False, plugins=None,
-        debug=False, **kargs):
-    app = Bottle()  # 创建一个APP对象
-    for plugin in plugins or []:
-        app.install(plugin)  # 安装所有插件
-    ...
-    if isinstance(server, basestring):
-        server = load(server)  # 根据名称动态加载服务
-    server = server(host=host, port=port, **kargs)  # 创建服务
-    server.run(app)  # 运行服务</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def run(app=None, server=&#39;wsgiref&#39;, host=&#39;127.0.0.1&#39;, port=8080,
+</span></span><span class="line"><span class="cl">        interval=1, reloader=False, quiet=False, plugins=None,
+</span></span><span class="line"><span class="cl">        debug=False, **kargs):
+</span></span><span class="line"><span class="cl">    app = Bottle()  # 创建一个APP对象
+</span></span><span class="line"><span class="cl">    for plugin in plugins or []:
+</span></span><span class="line"><span class="cl">        app.install(plugin)  # 安装所有插件
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    if isinstance(server, basestring):
+</span></span><span class="line"><span class="cl">        server = load(server)  # 根据名称动态加载服务
+</span></span><span class="line"><span class="cl">    server = server(host=host, port=port, **kargs)  # 创建服务
+</span></span><span class="line"><span class="cl">    server.run(app)  # 运行服务
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>默认的 <strong>wsgirefserver</strong> 主要使用系统模块 <strong>wsgiref</strong> ，我们以后再介绍这个模块。</p>
+</div><p>默认的 <strong>wsgirefserver</strong> 主要使用系统模块 <strong>wsgiref</strong> ，我们以后再介绍这个模块。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class WSGIRefServer(ServerAdapter):
-    def run(self, handler): # pragma: no cover
-        from wsgiref.simple_server import make_server, WSGIRequestHandler
-        ....
-        srv = make_server(self.host, self.port, handler, **self.options)
-        srv.serve_forever()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class WSGIRefServer(ServerAdapter):
+</span></span><span class="line"><span class="cl">    def run(self, handler): # pragma: no cover
+</span></span><span class="line"><span class="cl">        from wsgiref.simple_server import make_server, WSGIRequestHandler
+</span></span><span class="line"><span class="cl">        ....
+</span></span><span class="line"><span class="cl">        srv = make_server(self.host, self.port, handler, **self.options)
+</span></span><span class="line"><span class="cl">        srv.serve_forever()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>run函数中可以动态的使用loadClassFromName方式加载服务：</p>
+</div><p>run函数中可以动态的使用loadClassFromName方式加载服务：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -484,45 +469,44 @@ def hello(name=&#39;World&#39;):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def load(target, **namespace):
-    &#34;&#34;&#34; Import a module or fetch an object from a module.
-
-        * ``package.module`` returns `module` as a module object.
-        * ``pack.mod:name`` returns the module variable `name` from `pack.mod`.
-        * ``pack.mod:func()`` calls `pack.mod.func()` and returns the result.
-
-        The last form accepts not only function calls, but any type of
-        expression. Keyword arguments passed to this function are available as
-        local variables. Example: ``import_string(&#39;re:compile(x)&#39;, x=&#39;[a-z]&#39;)``
-    &#34;&#34;&#34;
-    module, target = target.split(&#34;:&#34;, 1) if &#39;:&#39; in target else (target, None)
-    if module not in sys.modules: __import__(module)
-    if not target: return sys.modules[module]
-    if target.isalnum(): return getattr(sys.modules[module], target)
-    package_name = module.split(&#39;.&#39;)[0]
-    namespace[package_name] = sys.modules[package_name]
-    return eval(&#39;%s.%s&#39; % (module, target), namespace)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">def</span><span class="w"> </span><span class="k">load</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">namespace</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s2">&#34;&#34;&#34; Import a module or fetch an object from a module.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">        * ``package.module`` returns `module` as a module object.
+</span></span></span><span class="line"><span class="cl"><span class="s2">        * ``pack.mod:name`` returns the module variable `name` from `pack.mod`.
+</span></span></span><span class="line"><span class="cl"><span class="s2">        * ``pack.mod:func()`` calls `pack.mod.func()` and returns the result.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">        The last form accepts not only function calls, but any type of
+</span></span></span><span class="line"><span class="cl"><span class="s2">        expression. Keyword arguments passed to this function are available as
+</span></span></span><span class="line"><span class="cl"><span class="s2">        local variables. Example: ``import_string(&#39;re:compile(x)&#39;, x=&#39;[a-z]&#39;)``
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">module</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">&#34;:&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="s1">&#39;:&#39;</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">None</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sys</span><span class="p">.</span><span class="n">modules</span><span class="p">:</span><span class="w"> </span><span class="nf">__import__</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">target</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">sys</span><span class="p">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">target</span><span class="p">.</span><span class="nf">isalnum</span><span class="p">():</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nf">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">],</span><span class="w"> </span><span class="n">target</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">package_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">module</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">namespace</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sys</span><span class="p">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">eval</span><span class="p">(</span><span class="s1">&#39;%s.%s&#39;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="n">module</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">),</span><span class="w"> </span><span class="n">namespace</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>更简洁的加载模块的方式，可以用下面代码:</p>
+</div><p>更简洁的加载模块的方式，可以用下面代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from importlib import import_module
-module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="nv">from</span> <span class="nv">importlib</span> <span class="kn">import</span> <span class="nv">import_module</span>
+</span></span><span class="line"><span class="cl"><span class="kn">module</span> <span class="o">=</span> <span class="nf">import_module</span><span class="p">(</span><span class="s2">&#34;module_name_str&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="routing">Routing</h2>
-
+</div><h2 id="routing">Routing</h2>
 <p>在查看Routing之前，需要先了解一下Bottle中路由的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -546,40 +530,39 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Bottle(object):
-    def __init__(self, catchall=True, autojson=True):
-        ...
-        self.routes = [] # List of installed :class:`Route` instances.
-        self.router = Router() # Maps requests to :class:`Route` instances.
-        ....
-        
-    def add_route(self, route):
-        &#39;&#39;&#39; Add a route object, but do not change the :data:`Route.app`
-            attribute.&#39;&#39;&#39;
-        self.routes.append(route)
-        self.router.add(route.rule, route.method, route, name=route.name)
-    ...
-    def route(self, path=None, method=&#39;GET&#39;, callback=None, name=None,
-              apply=None, skip=None, **config):
-        def decorator(callback):
-            for rule in makelist(path) or yieldroutes(callback):  # 可以多个path对应一个callback
-                for verb in makelist(method):  # 一个callback可以支持多个method
-                    verb = verb.upper()
-                    route = Route(self, rule, verb, callback, name=name,
-                                  plugins=plugins, skiplist=skiplist, **config)
-                    self.add_route(route)
-            return callback
-        return decorator(callback) if callback else decorator</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">class</span><span class="w"> </span><span class="nf">Bottle</span><span class="p">(</span><span class="n">object</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">catchall</span><span class="o">=</span><span class="no">True</span><span class="p">,</span><span class="w"> </span><span class="n">autojson</span><span class="o">=</span><span class="no">True</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">routes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="c1"># List of installed :class:`Route` instances.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">Router</span><span class="p">()</span><span class="w"> </span><span class="c1"># Maps requests to :class:`Route` instances.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="p">....</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">add_route</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">route</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s1">&#39;&#39;&#39; Add a route object, but do not change the :data:`Route.app`
+</span></span></span><span class="line"><span class="cl"><span class="s1">            attribute.&#39;&#39;&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">routes</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">route</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">router</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">route</span><span class="p">.</span><span class="n">rule</span><span class="p">,</span><span class="w"> </span><span class="n">route</span><span class="p">.</span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="n">route</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="n">route</span><span class="p">.</span><span class="n">name</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">callback</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">apply</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">skip</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">config</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="n">rule</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">makelist</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="nf">yieldroutes</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span><span class="w">  </span><span class="c1"># 可以多个path对应一个callback
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="n">verb</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">makelist</span><span class="p">(</span><span class="n">method</span><span class="p">):</span><span class="w">  </span><span class="c1"># 一个callback可以支持多个method
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                    </span><span class="n">verb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">verb</span><span class="p">.</span><span class="nf">upper</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">Route</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">rule</span><span class="p">,</span><span class="w"> </span><span class="n">verb</span><span class="p">,</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                  </span><span class="n">plugins</span><span class="o">=</span><span class="n">plugins</span><span class="p">,</span><span class="w"> </span><span class="n">skiplist</span><span class="o">=</span><span class="n">skiplist</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">config</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">self</span><span class="p">.</span><span class="nf">add_route</span><span class="p">(</span><span class="n">route</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">callback</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">callback</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">decorator</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>bottle中每个路由规则都会创建一个Route对象，主要包括了path，method和callback三个部分。所有的路由又使用一个routes数组和一个Router字典集中管理。Router字典用于加速路由的查找，比如一个http请求，使用routes数组查找路由的算法复杂度是O(n)/O(log(n))，使用字典router查找可以是O(1)。</p>
-
+</div><p>bottle中每个路由规则都会创建一个Route对象，主要包括了path，method和callback三个部分。所有的路由又使用一个routes数组和一个Router字典集中管理。Router字典用于加速路由的查找，比如一个http请求，使用routes数组查找路由的算法复杂度是O(n)/O(log(n))，使用字典router查找可以是O(1)。</p>
 <p><code>Route</code>实现比较简单，主要就是对callback的包装，特别点的地方是使用plugin包装callback， 这和django的middleware很类似。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -605,40 +588,40 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Route(object):
-    
-    def __init__(self, app, rule, method, callback, name=None,
-                 plugins=None, skiplist=None, **config):
-        #: The path-rule string (e.g. ``/wiki/:page``).
-        self.rule = rule
-        #: The HTTP method as a string (e.g. ``GET``).
-        self.method = method
-        #: The original callback with no plugins applied. Useful for introspection.
-        self.callback = callback
-        #: The name of the route (if specified) or ``None``.
-        ...
-        self.plugins = plugins or []
-        #: A list of plugins to not apply to this route (see :meth:`Bottle.route`).
-        ...
-    
-    def __call__(self, *a, **ka):
-        return self._make_callback()
-    
-    def _make_callback(self):
-        callback = self.callback
-        for plugin in self.all_plugins():
-                # 使用plugin包装
-                callback = plugin.apply(callback, context)
-            ...
-        return callback</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">class</span><span class="w"> </span><span class="nf">Route</span><span class="p">(</span><span class="n">object</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">rule</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                 </span><span class="n">plugins</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">skiplist</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">config</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">#: The path-rule string (e.g. ``/wiki/:page``).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">rule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rule</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">#: The HTTP method as a string (e.g. ``GET``).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">#: The original callback with no plugins applied. Useful for introspection.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">callback</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">#: The name of the route (if specified) or ``None``.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plugins</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="p">[]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">#: A list of plugins to not apply to this route (see :meth:`Bottle.route`).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__call__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">ka</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">_make_callback</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">_make_callback</span><span class="p">(</span><span class="n">self</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">callback</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">plugin</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">all_plugins</span><span class="p">():</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1"># 使用plugin包装
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">                </span><span class="n">callback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plugin</span><span class="p">.</span><span class="nf">apply</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">callback</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p><code>Router</code>的实现会复杂一些，主要包括创建，添加路由规则和查找路由规则三个部分:</p>
+</div><p><code>Router</code>的实现会复杂一些，主要包括创建，添加路由规则和查找路由规则三个部分:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -656,36 +639,34 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Router(object):
-    ...
-    def __init__(self, strict=False):
-        self.rules    = {} # A {rule: Rule} mapping
-        self.builder  = {} # A rule/name-&gt;build_info mapping
-        self.static   = {} # Cache for static routes: {path: {method: target}}
-        self.dynamic  = [] # Cache for dynamic routes. See _compile()
-        #: If true, static routes are no longer checked first.
-        self.strict_order = strict
-        self.filters = {&#39;re&#39;: self.re_filter, &#39;int&#39;: self.int_filter,
-                        &#39;float&#39;: self.float_filter, &#39;path&#39;: self.path_filter}
-    ...
-    def add(self, rule, method, target, name=None):
-        ...
-    
-    def match(self, environ):
-        ...
-    </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Router(object):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    def __init__(self, strict=False):
+</span></span><span class="line"><span class="cl">        self.rules    = {} # A {rule: Rule} mapping
+</span></span><span class="line"><span class="cl">        self.builder  = {} # A rule/name-&gt;build_info mapping
+</span></span><span class="line"><span class="cl">        self.static   = {} # Cache for static routes: {path: {method: target}}
+</span></span><span class="line"><span class="cl">        self.dynamic  = [] # Cache for dynamic routes. See _compile()
+</span></span><span class="line"><span class="cl">        #: If true, static routes are no longer checked first.
+</span></span><span class="line"><span class="cl">        self.strict_order = strict
+</span></span><span class="line"><span class="cl">        self.filters = {&#39;re&#39;: self.re_filter, &#39;int&#39;: self.int_filter,
+</span></span><span class="line"><span class="cl">                        &#39;float&#39;: self.float_filter, &#39;path&#39;: self.path_filter}
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    def add(self, rule, method, target, name=None):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def match(self, environ):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Router的查找实现是http服务的核心，关系到服务的效率，需要精读。本期文章我们暂不进行介绍，只需要了解Router的功能是接受路由添加，根据请求查找路由即可。</p>
-
+</div><p>Router的查找实现是http服务的核心，关系到服务的效率，需要精读。本期文章我们暂不进行介绍，只需要了解Router的功能是接受路由添加，根据请求查找路由即可。</p>
 <h2 id="bottle">Bottle</h2>
-
 <p><code>Bottle</code> 的核心并不复杂，主要代码如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -707,41 +688,42 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Bottle(object):
-    def __init__(self, catchall=True, autojson=True):
-        ...
-        # Core plugins
-        self.plugins = [] # List of installed plugins.
-        self.hooks = HooksPlugin()
-        # 安装默认插件
-        self.install(self.hooks)
-        if self.config.autojson:
-            self.install(JSONPlugin())
-        self.install(TemplatePlugin())
-    
-    ...
-    
-    def wsgi(self, environ, start_response):
-        out = self._cast(self._handle(environ)) # 处理请求，返回响应
-        start_response(response._status_line, response.headerlist)
-        return out
-    
-    def __call__(self, environ, start_response):
-        &#39;&#39;&#39; Each instance of :class:&#39;Bottle&#39; is a WSGI application. &#39;&#39;&#39;
-        return self.wsgi(environ, start_response)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Bottle(object):
+</span></span><span class="line"><span class="cl">    def __init__(self, catchall=True, autojson=True):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        # Core plugins
+</span></span><span class="line"><span class="cl">        self.plugins = [] # List of installed plugins.
+</span></span><span class="line"><span class="cl">        self.hooks = HooksPlugin()
+</span></span><span class="line"><span class="cl">        # 安装默认插件
+</span></span><span class="line"><span class="cl">        self.install(self.hooks)
+</span></span><span class="line"><span class="cl">        if self.config.autojson:
+</span></span><span class="line"><span class="cl">            self.install(JSONPlugin())
+</span></span><span class="line"><span class="cl">        self.install(TemplatePlugin())
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def wsgi(self, environ, start_response):
+</span></span><span class="line"><span class="cl">        out = self._cast(self._handle(environ)) # 处理请求，返回响应
+</span></span><span class="line"><span class="cl">        start_response(response._status_line, response.headerlist)
+</span></span><span class="line"><span class="cl">        return out
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __call__(self, environ, start_response):
+</span></span><span class="line"><span class="cl">        &#39;&#39;&#39; Each instance of :class:&#39;Bottle&#39; is a WSGI application. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">        return self.wsgi(environ, start_response)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Bottle是wsgi规范的application，接受wsgi-server的call。这块涉及wsgi的实现，以后我们在flask和django中也会看到，后续我们再行了解，现在只需要记住实现的语法:
-* 请求的环境environ，也可以理解为context
-* 创建http响应头的方法回调用方法
-* 返回二进制流</p>
-
+</div><p>Bottle是wsgi规范的application，接受wsgi-server的call。这块涉及wsgi的实现，以后我们在flask和django中也会看到，后续我们再行了解，现在只需要记住实现的语法:</p>
+<ul>
+<li>请求的环境environ，也可以理解为context</li>
+<li>创建http响应头的方法回调用方法</li>
+<li>返回二进制流</li>
+</ul>
 <p>URL的响应函数_handle处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -752,25 +734,25 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _handle(self, environ):
-    ...
-    environ[&#39;bottle.app&#39;] = self
-    request.bind(environ)  # 创建绑定到线程的request对象
-    response.bind()  # 创建绑定到线程的response对象
-    route, args = self.router.match(environ)  # 查找route
-    environ[&#39;route.handle&#39;] = route
-    environ[&#39;bottle.route&#39;] = route
-    environ[&#39;route.url_args&#39;] = args
-    return route.call(**args)  # 执行route
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _handle(self, environ):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    environ[&#39;bottle.app&#39;] = self
+</span></span><span class="line"><span class="cl">    request.bind(environ)  # 创建绑定到线程的request对象
+</span></span><span class="line"><span class="cl">    response.bind()  # 创建绑定到线程的response对象
+</span></span><span class="line"><span class="cl">    route, args = self.router.match(environ)  # 查找route
+</span></span><span class="line"><span class="cl">    environ[&#39;route.handle&#39;] = route
+</span></span><span class="line"><span class="cl">    environ[&#39;bottle.route&#39;] = route
+</span></span><span class="line"><span class="cl">    environ[&#39;route.url_args&#39;] = args
+</span></span><span class="line"><span class="cl">    return route.call(**args)  # 执行route
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>业务返回的数据还需要使用_cast序列化为二进制数据:</p>
+</div><p>业务返回的数据还需要使用_cast序列化为二进制数据:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -786,32 +768,31 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _cast(self, out, peek=None):
-    ...
-    # Join lists of byte or unicode strings. Mixed lists are NOT supported
-        # 转换为二进制数据
-        if isinstance(out, (tuple, list))\
-        and isinstance(out[0], (bytes, unicode)):
-            out = out[0][0:0].join(out) # b&#39;abc&#39;[0:0] -&gt; b&#39;&#39;
-        # Encode unicode strings
-        if isinstance(out, unicode):
-            out = out.encode(response.charset) 
-        # Byte Strings are just returned
-        if isinstance(out, bytes):  
-            if &#39;Content-Length&#39; not in response:
-                response[&#39;Content-Length&#39;] = len(out)  # 处理http头的的Content-Length
-            return [out]
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _cast(self, out, peek=None):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # Join lists of byte or unicode strings. Mixed lists are NOT supported
+</span></span><span class="line"><span class="cl">        # 转换为二进制数据
+</span></span><span class="line"><span class="cl">        if isinstance(out, (tuple, list))\
+</span></span><span class="line"><span class="cl">        and isinstance(out[0], (bytes, unicode)):
+</span></span><span class="line"><span class="cl">            out = out[0][0:0].join(out) # b&#39;abc&#39;[0:0] -&gt; b&#39;&#39;
+</span></span><span class="line"><span class="cl">        # Encode unicode strings
+</span></span><span class="line"><span class="cl">        if isinstance(out, unicode):
+</span></span><span class="line"><span class="cl">            out = out.encode(response.charset) 
+</span></span><span class="line"><span class="cl">        # Byte Strings are just returned
+</span></span><span class="line"><span class="cl">        if isinstance(out, bytes):  
+</span></span><span class="line"><span class="cl">            if &#39;Content-Length&#39; not in response:
+</span></span><span class="line"><span class="cl">                response[&#39;Content-Length&#39;] = len(out)  # 处理http头的的Content-Length
+</span></span><span class="line"><span class="cl">            return [out]
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="request-response">request &amp;&amp; response</h2>
-
+</div><h2 id="request--response">request &amp;&amp; response</h2>
 <p>request和response的处理，是把一些数据绑定到了线程变量上，这样可以支持多线程并发。比如 <strong>request</strong> 代码主要有:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -840,43 +821,43 @@ module = import_module(&#34;module_name_str&#34;)</pre></td></tr></table>
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">#: Thread-local storage for :class:`LocalRequest` and :class:`LocalResponse`
-#: attributes.
-_lctx = threading.local()
-
-def local_property(name):
-    def fget(self):
-        try:
-            return getattr(_lctx, name)
-        except AttributeError:
-            raise RuntimeError(&#34;Request context not initialized.&#34;)
-    def fset(self, value): setattr(_lctx, name, value)
-    def fdel(self): delattr(_lctx, name)
-    return property(fget, fset, fdel,
-        &#39;Thread-local property stored in :data:`_lctx.%s`&#39; % name) ## 
-        
-class LocalRequest(BaseRequest):
-    &#39;&#39;&#39; A thread-local subclass of :class:`BaseRequest` with a different
-        set of attribues for each thread. There is usually only one global
-        instance of this class (:data:`request`). If accessed during a
-        request/response cycle, this instance always refers to the *current*
-        request (even on a multithreaded server). &#39;&#39;&#39;
-    bind = BaseRequest.__init__
-    environ = local_property(&#39;request_environ&#39;)
-
-
-#: A thread-safe instance of :class:`LocalRequest`. If accessed from within a
-#: request callback, this instance always refers to the *current* request
-#: (even on a multithreaded server).
-request = LocalRequest()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="c1">#: Thread-local storage for :class:`LocalRequest` and :class:`LocalResponse`
+</span></span></span><span class="line"><span class="cl"><span class="c1">#: attributes.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">_lctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">threading</span><span class="p">.</span><span class="nf">local</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">local_property</span><span class="p">(</span><span class="n">name</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">self</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">try</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nf">getattr</span><span class="p">(</span><span class="n">_lctx</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">except</span><span class="w"> </span><span class="n">AttributeError</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">raise</span><span class="w"> </span><span class="nf">RuntimeError</span><span class="p">(</span><span class="s2">&#34;Request context not initialized.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">):</span><span class="w"> </span><span class="nf">setattr</span><span class="p">(</span><span class="n">_lctx</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">fdel</span><span class="p">(</span><span class="n">self</span><span class="p">):</span><span class="w"> </span><span class="nf">delattr</span><span class="p">(</span><span class="n">_lctx</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nf">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span><span class="w"> </span><span class="n">fset</span><span class="p">,</span><span class="w"> </span><span class="n">fdel</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s1">&#39;Thread-local property stored in :data:`_lctx.%s`&#39;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="c1">## 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">class</span><span class="w"> </span><span class="nf">LocalRequest</span><span class="p">(</span><span class="n">BaseRequest</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s1">&#39;&#39;&#39; A thread-local subclass of :class:`BaseRequest` with a different
+</span></span></span><span class="line"><span class="cl"><span class="s1">        set of attribues for each thread. There is usually only one global
+</span></span></span><span class="line"><span class="cl"><span class="s1">        instance of this class (:data:`request`). If accessed during a
+</span></span></span><span class="line"><span class="cl"><span class="s1">        request/response cycle, this instance always refers to the *current*
+</span></span></span><span class="line"><span class="cl"><span class="s1">        request (even on a multithreaded server). &#39;&#39;&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">bind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BaseRequest</span><span class="p">.</span><span class="n">__init__</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">environ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">local_property</span><span class="p">(</span><span class="s1">&#39;request_environ&#39;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">#: A thread-safe instance of :class:`LocalRequest`. If accessed from within a
+</span></span></span><span class="line"><span class="cl"><span class="c1">#: request callback, this instance always refers to the *current* request
+</span></span></span><span class="line"><span class="cl"><span class="c1">#: (even on a multithreaded server).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">LocalRequest</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>上面的代码，如果不了解wsgiref的代码，比较难理顺， 我们暂时跳过。可以看看对象属性和线程绑定的封装方法，先看下面的代码：</p>
+</div><p>上面的代码，如果不了解wsgiref的代码，比较难理顺， 我们暂时跳过。可以看看对象属性和线程绑定的封装方法，先看下面的代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -899,60 +880,58 @@ request = LocalRequest()</pre></td></tr></table>
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class P:
-
-   def __init__(self,x):
-       self.__set_x(x)
-
-   def __get_x(self):
-       return self.__x
-
-   def __set_x(self, x):  # 对写入值进行额外控制
-       if x &lt; 0:
-           self.__x = 0
-       elif x &gt; 1000:
-           self.__x = 1000
-       else:
-           self.__x = x
-
-   x = property(__get_x, __set_x)  # 使用property装饰器封装getter/setter方法
-
-p1 = P(1001)
-p1.x  # 1000
-
-p1.x = -12
-p1.x  # 0</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class P:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   def __init__(self,x):
+</span></span><span class="line"><span class="cl">       self.__set_x(x)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   def __get_x(self):
+</span></span><span class="line"><span class="cl">       return self.__x
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   def __set_x(self, x):  # 对写入值进行额外控制
+</span></span><span class="line"><span class="cl">       if x &lt; 0:
+</span></span><span class="line"><span class="cl">           self.__x = 0
+</span></span><span class="line"><span class="cl">       elif x &gt; 1000:
+</span></span><span class="line"><span class="cl">           self.__x = 1000
+</span></span><span class="line"><span class="cl">       else:
+</span></span><span class="line"><span class="cl">           self.__x = x
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   x = property(__get_x, __set_x)  # 使用property装饰器封装getter/setter方法
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">p1 = P(1001)
+</span></span><span class="line"><span class="cl">p1.x  # 1000
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">p1.x = -12
+</span></span><span class="line"><span class="cl">p1.x  # 0
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>示例来自参考链接的 Properties vs. Getters and Setters</p>
 </blockquote>
-
 <p>理解property后，再看environ的实现就比较容易了：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">_lctx = threading.local()
-def fset(self, value): setattr(_lctx, name, value)  # 设置到线程上
-def fget(self): return getattr(_lctx, name)  # 从线程上获取
-...
-environ = local_property(&#39;request_environ&#39;)   </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">_lctx = threading.local()
+</span></span><span class="line"><span class="cl">def fset(self, value): setattr(_lctx, name, value)  # 设置到线程上
+</span></span><span class="line"><span class="cl">def fget(self): return getattr(_lctx, name)  # 从线程上获取
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">environ = local_property(&#39;request_environ&#39;)   
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="plugin">plugin</h2>
-
+</div><h2 id="plugin">plugin</h2>
 <p>bottle的插件并未定义接口，这里也体现了python的鸭子模型：当看到一只鸟走起来像鸭子，游泳起来也像鸭子，叫起来也像鸭子，那么这只鸟就可以被称为鸭子。插件只需要具有<code>setup</code>,<code>apply</code>和<code>close</code>等方法，就可以被bottle使用。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -962,24 +941,24 @@ environ = local_property(&#39;request_environ&#39;)   </pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def install(self, plugin):
-    &#39;&#39;&#39; Add a plugin to the list of plugins and prepare it for being
-        applied to all routes of this application. A plugin may be a simple
-        decorator or an object that implements the :class:`Plugin` API.
-    &#39;&#39;&#39;
-    if hasattr(plugin, &#39;setup&#39;): plugin.setup(self) 
-    if hasattr(plugin, &#39;apply&#39;):  # 使用apply函数装饰路由的callback
-
-def uninstall(self, plugin):
-    if hasattr(plugin, &#39;close&#39;): plugin.close()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">plugin</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s1">&#39;&#39;&#39; Add a plugin to the list of plugins and prepare it for being
+</span></span></span><span class="line"><span class="cl"><span class="s1">        applied to all routes of this application. A plugin may be a simple
+</span></span></span><span class="line"><span class="cl"><span class="s1">        decorator or an object that implements the :class:`Plugin` API.
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#39;&#39;&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">hasattr</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;setup&#39;</span><span class="p">):</span><span class="w"> </span><span class="n">plugin</span><span class="p">.</span><span class="nf">setup</span><span class="p">(</span><span class="n">self</span><span class="p">)</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">hasattr</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;apply&#39;</span><span class="p">):</span><span class="w">  </span><span class="c1"># 使用apply函数装饰路由的callback
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">uninstall</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">plugin</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nf">hasattr</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;close&#39;</span><span class="p">):</span><span class="w"> </span><span class="n">plugin</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是一个将response返回值序列化为JSON的插件:</p>
+</div><p>下面是一个将response返回值序列化为JSON的插件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -997,34 +976,33 @@ def uninstall(self, plugin):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class JSONPlugin(object):
-    name = &#39;json&#39;
-
-    def __init__(self, json_dumps=json_dumps):
-        self.json_dumps = json_dumps
-
-    def apply(self, callback, route):
-        dumps = self.json_dumps
-        def wrapper(*a, **ka):
-            rv = callback(*a, **ka)
-            if isinstance(rv, dict):
-                #Attempt to serialize, raises exception on failure
-                json_response = dumps(rv)
-                #Set content type only if serialization succesful
-                response.content_type = &#39;application/json&#39;
-                return json_response
-            return rv
-        return wrapper</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class JSONPlugin(object):
+</span></span><span class="line"><span class="cl">    name = &#39;json&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, json_dumps=json_dumps):
+</span></span><span class="line"><span class="cl">        self.json_dumps = json_dumps
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def apply(self, callback, route):
+</span></span><span class="line"><span class="cl">        dumps = self.json_dumps
+</span></span><span class="line"><span class="cl">        def wrapper(*a, **ka):
+</span></span><span class="line"><span class="cl">            rv = callback(*a, **ka)
+</span></span><span class="line"><span class="cl">            if isinstance(rv, dict):
+</span></span><span class="line"><span class="cl">                #Attempt to serialize, raises exception on failure
+</span></span><span class="line"><span class="cl">                json_response = dumps(rv)
+</span></span><span class="line"><span class="cl">                #Set content type only if serialization succesful
+</span></span><span class="line"><span class="cl">                response.content_type = &#39;application/json&#39;
+</span></span><span class="line"><span class="cl">                return json_response
+</span></span><span class="line"><span class="cl">            return rv
+</span></span><span class="line"><span class="cl">        return wrapper
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到apply实际上是一个装饰器，对callback结果进行判断，如果返回的是一个字典，则序列化为json，并设置对应的http头。</p>
-
+</div><p>可以看到apply实际上是一个装饰器，对callback结果进行判断，如果返回的是一个字典，则序列化为json，并设置对应的http头。</p>
 <p>我们再看看插件模块中的SQLitePlugin:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1056,51 +1034,50 @@ def uninstall(self, plugin):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SQLitePlugin(object):
-    
-    name = &#39;sqlite&#39;
-    api  = 2
-
-    def __init__(self, dbfile=&#39;:memory:&#39;, autocommit=True, dictrows=True,
-                 keyword=&#39;db&#39;):
-         ...
-   
-    def apply(self, callback, route):
-        ...
-
-        def wrapper(*args, **kwargs):
-            # Connect to the database
-            db = sqlite3.connect(dbfile)
-            # This enables column access by name: row[&#39;column_name&#39;]
-            if dictrows: db.row_factory = sqlite3.Row
-            # Add the connection handle as a keyword argument.
-            kwargs[keyword] = db
-
-            try:
-                rv = callback(*args, **kwargs)
-                if autocommit: db.commit()
-            except sqlite3.IntegrityError, e:
-                db.rollback()
-                raise HTTPError(500, &#34;Database Error&#34;, e)
-            finally:
-                db.close()
-            return rv
-
-        # Replace the route callback with the wrapped one.
-        return wrapper</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SQLitePlugin(object):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    name = &#39;sqlite&#39;
+</span></span><span class="line"><span class="cl">    api  = 2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, dbfile=&#39;:memory:&#39;, autocommit=True, dictrows=True,
+</span></span><span class="line"><span class="cl">                 keyword=&#39;db&#39;):
+</span></span><span class="line"><span class="cl">         ...
+</span></span><span class="line"><span class="cl">   
+</span></span><span class="line"><span class="cl">    def apply(self, callback, route):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        def wrapper(*args, **kwargs):
+</span></span><span class="line"><span class="cl">            # Connect to the database
+</span></span><span class="line"><span class="cl">            db = sqlite3.connect(dbfile)
+</span></span><span class="line"><span class="cl">            # This enables column access by name: row[&#39;column_name&#39;]
+</span></span><span class="line"><span class="cl">            if dictrows: db.row_factory = sqlite3.Row
+</span></span><span class="line"><span class="cl">            # Add the connection handle as a keyword argument.
+</span></span><span class="line"><span class="cl">            kwargs[keyword] = db
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            try:
+</span></span><span class="line"><span class="cl">                rv = callback(*args, **kwargs)
+</span></span><span class="line"><span class="cl">                if autocommit: db.commit()
+</span></span><span class="line"><span class="cl">            except sqlite3.IntegrityError, e:
+</span></span><span class="line"><span class="cl">                db.rollback()
+</span></span><span class="line"><span class="cl">                raise HTTPError(500, &#34;Database Error&#34;, e)
+</span></span><span class="line"><span class="cl">            finally:
+</span></span><span class="line"><span class="cl">                db.close()
+</span></span><span class="line"><span class="cl">            return rv
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        # Replace the route callback with the wrapped one.
+</span></span><span class="line"><span class="cl">        return wrapper
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>查找callback的参数中是否有db关键字参数，如果有db，则注入一个sqlite的连接</li>
 <li>业务完成后，自动进行db的事务操作和连接关闭</li>
 </ul>
-
 <p>下面是一个使用sqlite持久数据的示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1110,28 +1087,26 @@ def uninstall(self, plugin):
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from bottle import route, install, template
-from bottle_sqlite import SQLitePlugin
-
-install(SQLitePlugin(dbfile=&#39;/tmp/test.db&#39;))
-
-@route(&#39;/show/&lt;post_id:int&gt;&#39;)
-def show(db, post_id):
-    c = db.execute(&#39;SELECT title, content FROM posts WHERE id = ?&#39;, (post_id,))
-    row = c.fetchone()
-    return template(&#39;show_post&#39;, title=row[&#39;title&#39;], text=row[&#39;content&#39;])</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from bottle import route, install, template
+</span></span><span class="line"><span class="cl">from bottle_sqlite import SQLitePlugin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">install(SQLitePlugin(dbfile=&#39;/tmp/test.db&#39;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@route(&#39;/show/&lt;post_id:int&gt;&#39;)
+</span></span><span class="line"><span class="cl">def show(db, post_id):
+</span></span><span class="line"><span class="cl">    c = db.execute(&#39;SELECT title, content FROM posts WHERE id = ?&#39;, (post_id,))
+</span></span><span class="line"><span class="cl">    row = c.fetchone()
+</span></span><span class="line"><span class="cl">    return template(&#39;show_post&#39;, title=row[&#39;title&#39;], text=row[&#39;content&#39;])
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>参考这个机制，我们可以给bottle添加mysql插件，redis插件等。</p>
-
+</div><p>参考这个机制，我们可以给bottle添加mysql插件，redis插件等。</p>
 <h2 id="hook">hook</h2>
-
 <p>HooksPlugin是bottle的默认插件, 可以对请求和响应进行一些额外的处理：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1160,43 +1135,43 @@ def show(db, post_id):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class HooksPlugin(object):
-    
-    _names = &#39;before_request&#39;, &#39;after_request&#39;, &#39;app_reset&#39;
-
-    def __init__(self):
-        self.hooks = dict((name, []) for name in self._names)
-        self.app = None
-
-    def add(self, name, func):
-        &#39;&#39;&#39; Attach a callback to a hook. &#39;&#39;&#39;
-        was_empty = self._empty()
-        self.hooks.setdefault(name, []).append(func)  # 注入钩子
-
-    ...
-
-    def trigger(self, name, *a, **ka):
-        &#39;&#39;&#39; Trigger a hook and return a list of results. &#39;&#39;&#39;
-        hooks = self.hooks[name]
-        if ka.pop(&#39;reversed&#39;, False): hooks = hooks[::-1]
-        return [hook(*a, **ka) for hook in hooks]
-
-    def apply(self, callback, route):
-        if self._empty(): return callback
-        def wrapper(*a, **ka):
-            self.trigger(&#39;before_request&#39;)  # 额外处理请求
-            rv = callback(*a, **ka)
-            self.trigger(&#39;after_request&#39;, reversed=True)  # 额外处理响应
-            return rv
-        return wrapper</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class HooksPlugin(object):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    _names = &#39;before_request&#39;, &#39;after_request&#39;, &#39;app_reset&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self):
+</span></span><span class="line"><span class="cl">        self.hooks = dict((name, []) for name in self._names)
+</span></span><span class="line"><span class="cl">        self.app = None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def add(self, name, func):
+</span></span><span class="line"><span class="cl">        &#39;&#39;&#39; Attach a callback to a hook. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">        was_empty = self._empty()
+</span></span><span class="line"><span class="cl">        self.hooks.setdefault(name, []).append(func)  # 注入钩子
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def trigger(self, name, *a, **ka):
+</span></span><span class="line"><span class="cl">        &#39;&#39;&#39; Trigger a hook and return a list of results. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">        hooks = self.hooks[name]
+</span></span><span class="line"><span class="cl">        if ka.pop(&#39;reversed&#39;, False): hooks = hooks[::-1]
+</span></span><span class="line"><span class="cl">        return [hook(*a, **ka) for hook in hooks]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def apply(self, callback, route):
+</span></span><span class="line"><span class="cl">        if self._empty(): return callback
+</span></span><span class="line"><span class="cl">        def wrapper(*a, **ka):
+</span></span><span class="line"><span class="cl">            self.trigger(&#39;before_request&#39;)  # 额外处理请求
+</span></span><span class="line"><span class="cl">            rv = callback(*a, **ka)
+</span></span><span class="line"><span class="cl">            self.trigger(&#39;after_request&#39;, reversed=True)  # 额外处理响应
+</span></span><span class="line"><span class="cl">            return rv
+</span></span><span class="line"><span class="cl">        return wrapper
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>hook的使用示例:</p>
+</div><p>hook的使用示例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1209,31 +1184,29 @@ def show(db, post_id):
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from bottle import hook, response, route
-
-@hook(&#39;after_request&#39;)
-def enable_cors():
-    response.headers[&#39;Access-Control-Allow-Origin&#39;] = &#39;*&#39;  # 资源支持跨域访问
-
-@route(&#39;/foo&#39;)
-def say_foo():
-    return &#39;foo!&#39;
-
-@route(&#39;/bar&#39;)
-def say_bar():
-    return {&#39;type&#39;: &#39;friendly&#39;, &#39;content&#39;: &#39;Hi!&#39;}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from bottle import hook, response, route
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@hook(&#39;after_request&#39;)
+</span></span><span class="line"><span class="cl">def enable_cors():
+</span></span><span class="line"><span class="cl">    response.headers[&#39;Access-Control-Allow-Origin&#39;] = &#39;*&#39;  # 资源支持跨域访问
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@route(&#39;/foo&#39;)
+</span></span><span class="line"><span class="cl">def say_foo():
+</span></span><span class="line"><span class="cl">    return &#39;foo!&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@route(&#39;/bar&#39;)
+</span></span><span class="line"><span class="cl">def say_bar():
+</span></span><span class="line"><span class="cl">    return {&#39;type&#39;: &#39;friendly&#39;, &#39;content&#39;: &#39;Hi!&#39;}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到要对request&amp;&amp;response进行额外处理，即可以自已定义插件，也可以直接使用hook插件的before_request和after_request钩子。</p>
-
+</div><p>可以看到要对request&amp;&amp;response进行额外处理，即可以自已定义插件，也可以直接使用hook插件的before_request和after_request钩子。</p>
 <h2 id="template">Template</h2>
-
 <p>TemplatePlugin也是bottle默认插件, 用来实现模版功能。主要代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1259,67 +1232,63 @@ def say_bar():
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TemplatePlugin(object):
-    ...
-
-    def apply(self, callback, route):
-        conf = route.config.get(&#39;template&#39;)
-        if isinstance(conf, (tuple, list)) and len(conf) == 2:
-            return view(conf[0], **conf[1])(callback)
-...
-
-def view(tpl_name, **defaults):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            if isinstance(result, (dict, DictMixin)):
-                tplvars = defaults.copy()
-                tplvars.update(result)
-                return template(tpl_name, **tplvars)  # 由tempate具体实现
-            return result
-        return wrapper
-    return decorator
-
-def template(*args, **kwargs):
-    adapter = kwargs.pop(&#39;template_adapter&#39;, SimpleTemplate)
-    return TEMPLATES[tplid].render(kwargs)
-    </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TemplatePlugin(object):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def apply(self, callback, route):
+</span></span><span class="line"><span class="cl">        conf = route.config.get(&#39;template&#39;)
+</span></span><span class="line"><span class="cl">        if isinstance(conf, (tuple, list)) and len(conf) == 2:
+</span></span><span class="line"><span class="cl">            return view(conf[0], **conf[1])(callback)
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def view(tpl_name, **defaults):
+</span></span><span class="line"><span class="cl">    def decorator(func):
+</span></span><span class="line"><span class="cl">        @functools.wraps(func)
+</span></span><span class="line"><span class="cl">        def wrapper(*args, **kwargs):
+</span></span><span class="line"><span class="cl">            result = func(*args, **kwargs)
+</span></span><span class="line"><span class="cl">            if isinstance(result, (dict, DictMixin)):
+</span></span><span class="line"><span class="cl">                tplvars = defaults.copy()
+</span></span><span class="line"><span class="cl">                tplvars.update(result)
+</span></span><span class="line"><span class="cl">                return template(tpl_name, **tplvars)  # 由tempate具体实现
+</span></span><span class="line"><span class="cl">            return result
+</span></span><span class="line"><span class="cl">        return wrapper
+</span></span><span class="line"><span class="cl">    return decorator
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def template(*args, **kwargs):
+</span></span><span class="line"><span class="cl">    adapter = kwargs.pop(&#39;template_adapter&#39;, SimpleTemplate)
+</span></span><span class="line"><span class="cl">    return TEMPLATES[tplid].render(kwargs)
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>模版的实现是传统web服务的重要点。传统web服务一般前后端一体，由类似jsp等语法渲染html；新型web服务多前后端分离，后端只需输出json数据。这里模版的具体实现，我们也先跳过，以后再研究。</p>
-
+</div><p>模版的实现是传统web服务的重要点。传统web服务一般前后端一体，由类似jsp等语法渲染html；新型web服务多前后端分离，后端只需输出json数据。这里模版的具体实现，我们也先跳过，以后再研究。</p>
 <h2 id="小技巧">小技巧</h2>
-
 <p>从bottle代码中，我们还可以看到一些有用的小技巧。</p>
-
 <p>使用 <strong>__slots__</strong> 优化对象属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseRequest(object):
-   ...
-    __slots__ = (&#39;environ&#39;)
-    
-    def __init__(self, environ=None):
-        self.environ = {} if environ is None else environ</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class BaseRequest(object):
+</span></span><span class="line"><span class="cl">   ...
+</span></span><span class="line"><span class="cl">    __slots__ = (&#39;environ&#39;)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self, environ=None):
+</span></span><span class="line"><span class="cl">        self.environ = {} if environ is None else environ
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>关于 __slots__ 的使用，这里 <a href="https://stackoverflow.com/questions/472000/usage-of-slots">stackoverflow</a> 有非常详细的介绍。</p>
-
+</div><p>关于 __slots__ 的使用，这里 <a href="https://stackoverflow.com/questions/472000/usage-of-slots">stackoverflow</a> 有非常详细的介绍。</p>
 <p>使用 <strong>cached_property</strong> 装饰器缓存复杂属性:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1348,43 +1317,43 @@ def template(*args, **kwargs):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class cached_property(object):
-    &#39;&#39;&#39; A property that is only computed once per instance and then replaces
-        itself with an ordinary attribute. Deleting the attribute resets the
-        property. &#39;&#39;&#39;
-
-    def __init__(self, func):
-        self.func = func
-
-    def __get__(self, obj, cls):
-        if obj is None: return self
-        value = obj.__dict__[self.func.__name__] = self.func(obj)
-        return value
-
-
-class Route(object):
-    
-    @cached_property
-    def call(self):
-        &#39;&#39;&#39; The route callback with all plugins applied. This property is
-            created on demand and then cached to speed up subsequent requests.&#39;&#39;&#39;
-        return self._make_callback()
-    
-    def _make_callback(self):  # 给callback增加插件的的操作对路由的所有对象一致，只需要执行一次
-        callback = self.callback
-        for plugin in self.all_plugins():
-            callback = plugin.apply(callback, context)
-        return callback
-    
-# route.call(**args)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class cached_property(object):
+</span></span><span class="line"><span class="cl">    &#39;&#39;&#39; A property that is only computed once per instance and then replaces
+</span></span><span class="line"><span class="cl">        itself with an ordinary attribute. Deleting the attribute resets the
+</span></span><span class="line"><span class="cl">        property. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, func):
+</span></span><span class="line"><span class="cl">        self.func = func
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __get__(self, obj, cls):
+</span></span><span class="line"><span class="cl">        if obj is None: return self
+</span></span><span class="line"><span class="cl">        value = obj.__dict__[self.func.__name__] = self.func(obj)
+</span></span><span class="line"><span class="cl">        return value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Route(object):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @cached_property
+</span></span><span class="line"><span class="cl">    def call(self):
+</span></span><span class="line"><span class="cl">        &#39;&#39;&#39; The route callback with all plugins applied. This property is
+</span></span><span class="line"><span class="cl">            created on demand and then cached to speed up subsequent requests.&#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">        return self._make_callback()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def _make_callback(self):  # 给callback增加插件的的操作对路由的所有对象一致，只需要执行一次
+</span></span><span class="line"><span class="cl">        callback = self.callback
+</span></span><span class="line"><span class="cl">        for plugin in self.all_plugins():
+</span></span><span class="line"><span class="cl">            callback = plugin.apply(callback, context)
+</span></span><span class="line"><span class="cl">        return callback
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"># route.call(**args)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <strong>lazy_attribute</strong> 装饰器延迟属性计算:</p>
+</div><p>使用 <strong>lazy_attribute</strong> 装饰器延迟属性计算:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1408,38 +1377,38 @@ class Route(object):
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class lazy_attribute(object):
-    &#39;&#39;&#39; A property that caches itself to the class object. &#39;&#39;&#39;
-    def __init__(self, func):
-        functools.update_wrapper(self, func, updated=[])
-        self.getter = func
-
-    def __get__(self, obj, cls):
-        value = self.getter(cls)
-        setattr(cls, self.__name__, value)
-        return value
-
-
-class SimpleTemplate(BaseTemplate)
-    
-    @lazy_attribute  # 正则的编译到时候的时候才进行处理，不用模版就不需要编译
-    def re_pytokens(cls):
-        return re.compile(r&#39;&#39;&#39;
-            (&#39;&#39;(?!&#39;)|&#34;&#34;(?!&#34;)|&#39;{6}|&#34;{6}    # Empty strings (all 4 types)
-             |&#39;(?:[^\\&#39;]|\\.)+?&#39;          # Single quotes (&#39;)
-             |&#34;(?:[^\\&#34;]|\\.)+?&#34;          # Double quotes (&#34;)
-             |&#39;{3}(?:[^\\]|\\.|\n)+?&#39;{3}  # Triple-quoted strings (&#39;)
-             |&#34;{3}(?:[^\\]|\\.|\n)+?&#34;{3}  # Triple-quoted strings (&#34;)
-             |\#.*                        # Comments
-            )&#39;&#39;&#39;, re.VERBOSE)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class lazy_attribute(object):
+</span></span><span class="line"><span class="cl">    &#39;&#39;&#39; A property that caches itself to the class object. &#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">    def __init__(self, func):
+</span></span><span class="line"><span class="cl">        functools.update_wrapper(self, func, updated=[])
+</span></span><span class="line"><span class="cl">        self.getter = func
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __get__(self, obj, cls):
+</span></span><span class="line"><span class="cl">        value = self.getter(cls)
+</span></span><span class="line"><span class="cl">        setattr(cls, self.__name__, value)
+</span></span><span class="line"><span class="cl">        return value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class SimpleTemplate(BaseTemplate)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @lazy_attribute  # 正则的编译到时候的时候才进行处理，不用模版就不需要编译
+</span></span><span class="line"><span class="cl">    def re_pytokens(cls):
+</span></span><span class="line"><span class="cl">        return re.compile(r&#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">            (&#39;&#39;(?!&#39;)|&#34;&#34;(?!&#34;)|&#39;{6}|&#34;{6}    # Empty strings (all 4 types)
+</span></span><span class="line"><span class="cl">             |&#39;(?:[^\\&#39;]|\\.)+?&#39;          # Single quotes (&#39;)
+</span></span><span class="line"><span class="cl">             |&#34;(?:[^\\&#34;]|\\.)+?&#34;          # Double quotes (&#34;)
+</span></span><span class="line"><span class="cl">             |&#39;{3}(?:[^\\]|\\.|\n)+?&#39;{3}  # Triple-quoted strings (&#39;)
+</span></span><span class="line"><span class="cl">             |&#34;{3}(?:[^\\]|\\.|\n)+?&#34;{3}  # Triple-quoted strings (&#34;)
+</span></span><span class="line"><span class="cl">             |\#.*                        # Comments
+</span></span><span class="line"><span class="cl">            )&#39;&#39;&#39;, re.VERBOSE)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <strong>DictProperty</strong> 装饰器控制属性只读:</p>
+</div><p>使用 <strong>DictProperty</strong> 装饰器控制属性只读:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1467,60 +1436,55 @@ class SimpleTemplate(BaseTemplate)
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class DictProperty(object):
-    &#39;&#39;&#39; Property that maps to a key in a local dict-like attribute. &#39;&#39;&#39;
-    def __init__(self, attr, key=None, read_only=False):
-        self.attr, self.key, self.read_only = attr, key, read_only
-
-    def __call__(self, func):
-        functools.update_wrapper(self, func, updated=[])
-        self.getter, self.key = func, self.key or func.__name__
-        return self
-
-    ...
-
-    def __set__(self, obj, value):
-        if self.read_only: raise AttributeError(&#34;Read-Only property.&#34;)  # 只读控制 
-        getattr(obj, self.attr)[self.key] = value
-
-    def __delete__(self, obj):
-        if self.read_only: raise AttributeError(&#34;Read-Only property.&#34;)
-        del getattr(obj, self.attr)[self.key]
-
-
-class BaseRequest(object):
-    
-    @DictProperty(&#39;environ&#39;, &#39;bottle.request.headers&#39;, read_only=True)  # 不允许修改request的headers
-    def headers(self):
-        &#39;&#39;&#39; A :class:`WSGIHeaderDict` that provides case-insensitive access to
-            HTTP request headers. &#39;&#39;&#39;
-        return WSGIHeaderDict(self.environ)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">class</span><span class="w"> </span><span class="nf">DictProperty</span><span class="p">(</span><span class="n">object</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s1">&#39;&#39;&#39; Property that maps to a key in a local dict-like attribute. &#39;&#39;&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">read_only</span><span class="o">=</span><span class="no">False</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">read_only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">read_only</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__call__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">func</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">functools</span><span class="p">.</span><span class="nf">update_wrapper</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="o">=</span><span class="p">[])</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">getter</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="k">key</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">func</span><span class="p">.</span><span class="n">__name__</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">self</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__set__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">read_only</span><span class="p">:</span><span class="w"> </span><span class="n">raise</span><span class="w"> </span><span class="nf">AttributeError</span><span class="p">(</span><span class="s2">&#34;Read-Only property.&#34;</span><span class="p">)</span><span class="w">  </span><span class="c1"># 只读控制 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">        </span><span class="nf">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">attr</span><span class="p">)[</span><span class="n">self</span><span class="p">.</span><span class="k">key</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">__delete__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">obj</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">read_only</span><span class="p">:</span><span class="w"> </span><span class="n">raise</span><span class="w"> </span><span class="nf">AttributeError</span><span class="p">(</span><span class="s2">&#34;Read-Only property.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">del</span><span class="w"> </span><span class="nf">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">attr</span><span class="p">)[</span><span class="n">self</span><span class="p">.</span><span class="k">key</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">class</span><span class="w"> </span><span class="nf">BaseRequest</span><span class="p">(</span><span class="n">object</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">@</span><span class="nf">DictProperty</span><span class="p">(</span><span class="s1">&#39;environ&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;bottle.request.headers&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">read_only</span><span class="o">=</span><span class="no">True</span><span class="p">)</span><span class="w">  </span><span class="c1"># 不允许修改request的headers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="nf">headers</span><span class="p">(</span><span class="n">self</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s1">&#39;&#39;&#39; A :class:`WSGIHeaderDict` that provides case-insensitive access to
+</span></span></span><span class="line"><span class="cl"><span class="s1">            HTTP request headers. &#39;&#39;&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nf">WSGIHeaderDict</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">environ</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>以上三种装饰器的需求，在日常研发中都很常见，我们可以把它加入自己的工具类。</p>
-
+</div><p>以上三种装饰器的需求，在日常研发中都很常见，我们可以把它加入自己的工具类。</p>
 <h2 id="小结">小结</h2>
-
 <p>最后我们来简单小结一下bottle的源码，也就是python的wsgi-application大概是如何实现的：</p>
-
 <ul>
 <li>可以注入业务自定义的路由规则及路由管理</li>
 <li>适配wsgi的规范启动Application，接受并响应http请求</li>
 <li>每个http请求，根据路由规则查找对应的callback，进行业务处理</li>
 <li>可以使用插件机制扩展需求
-
 <ul>
 <li>请求拦截和响应拦截</li>
 <li>数据库操作</li>
 <li>模版操作</li>
 <li>&hellip;</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li><a href="http://bottlepy.org/docs/dev/">http://bottlepy.org/docs/dev/</a></li>
 <li><a href="https://wsgi.readthedocs.io/en/latest/index.html">https://wsgi.readthedocs.io/en/latest/index.html</a></li>
@@ -1565,11 +1529,11 @@ class BaseRequest(object):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-01-21 22:46:56 \x2b0800 CST',
+        id: '2021-01-21 22:46:56 \u002b0800 CST',
         title: 'Bottle 源码阅读',
         link: decodeURI(location.href),
         desc: 'bottle是一个简单的python-web服务框架，可以和其它WSGI服务组合提供web服务。它最大的特色是所有代码都在单个文件中，这样限',
@@ -1583,6 +1547,10 @@ class BaseRequest(object):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1610,13 +1578,10 @@ class BaseRequest(object):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1627,7 +1592,10 @@ class BaseRequest(object):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/http/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="python http 源码阅读" />
 <meta property="og:description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/http/" />
-<meta property="article:published_time" content="2021-01-28T22:13:45&#43;08:00"/>
-<meta property="article:modified_time" content="2021-01-28T22:13:45&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/http/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-01-28T22:13:45+08:00" />
+<meta property="article:modified_time" content="2021-01-28T22:13:45+08:00" />
 
 <meta itemprop="name" content="python http 源码阅读">
-<meta itemprop="description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p">
-
-
-<meta itemprop="datePublished" content="2021-01-28T22:13:45&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-28T22:13:45&#43;08:00" />
+<meta itemprop="description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p"><meta itemprop="datePublished" content="2021-01-28T22:13:45+08:00" />
+<meta itemprop="dateModified" content="2021-01-28T22:13:45+08:00" />
 <meta itemprop="wordCount" content="6280">
-
-
-
-<meta itemprop="keywords" content="http,源码," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="http,源码," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="python http 源码阅读"/>
 <meta name="twitter:description" content="上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,41 +144,39 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#1-http-server-相关代码结构">1. http-server 相关代码结构</a></li>
-<li><a href="#2-socket">2. socket</a>
-<ul>
-<li><a href="#2-1-socket示例">2.1 socket示例</a></li>
-</ul></li>
-<li><a href="#3-selector">3. selector</a>
-<ul>
-<li><a href="#3-1-selector的实现">3.1 selector的实现</a></li>
-<li><a href="#3-2-selecotr示例">3.2 selecotr示例</a></li>
-</ul></li>
-<li><a href="#4-socketserver">4. socketserver</a>
-<ul>
-<li><a href="#4-1-tcpserver">4.1 TCPServer</a></li>
-<li><a href="#4-2-threadingmixin">4.2 ThreadingMixIn</a></li>
-<li><a href="#4-3-requesthandler">4.3 RequestHandler</a></li>
-</ul></li>
-<li><a href="#5-http-server">5. http-server</a>
-<ul>
-<li><a href="#5-1-httprequesthandler">5.1 HTTPRequestHandler</a></li>
-</ul></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接:</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#1-http-server-相关代码结构">1. http-server 相关代码结构</a></li>
+    <li><a href="#2-socket">2. socket</a>
+      <ul>
+        <li><a href="#21-socket示例">2.1 socket示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-selector">3. selector</a>
+      <ul>
+        <li><a href="#31-selector的实现">3.1 selector的实现</a></li>
+        <li><a href="#32-selecotr示例">3.2 selecotr示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-socketserver">4. socketserver</a>
+      <ul>
+        <li><a href="#41-tcpserver">4.1 TCPServer</a></li>
+        <li><a href="#42-threadingmixin">4.2 ThreadingMixIn</a></li>
+        <li><a href="#43-requesthandler">4.3 RequestHandler</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-http-server">5. http-server</a>
+      <ul>
+        <li><a href="#51-httprequesthandler">5.1 HTTPRequestHandler</a></li>
+      </ul>
+    </li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接:</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看python-http的源码，了解python构建http服务，响应http请求，把这一部分基础补充上。本文会分下面几个部分:</p>
-
+      <p>上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看python-http的源码，了解python构建http服务，响应http请求，把这一部分基础补充上。本文会分下面几个部分:</p>
 <ul>
 <li>http相关代码结构</li>
 <li>socket</li>
@@ -183,11 +184,8 @@
 <li>socketserver</li>
 <li>http-server</li>
 </ul>
-
 <h2 id="1-http-server-相关代码结构">1. http-server 相关代码结构</h2>
-
 <p>本次代码阅读使用的python <strong>3.6.5</strong> 以上版本，有python环境即可（winddows和mac等系统在select部分会有差异），涉及的代码有:</p>
-
 <table>
 <thead>
 <tr>
@@ -195,46 +193,38 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>socket.py</td>
 <td>socket的API</td>
 </tr>
-
 <tr>
 <td>select.py</td>
 <td>select.py是stub文件，提供多路复用的异步IO的底层实现</td>
 </tr>
-
 <tr>
 <td>selectors.py</td>
 <td>对select的高层实现，推荐使用</td>
 </tr>
-
 <tr>
 <td>socketserver.py</td>
 <td>tcpserver/udpserver等默认实现</td>
 </tr>
-
 <tr>
 <td>http/server.py</td>
 <td>一个简单的http服务实现</td>
 </tr>
-
 <tr>
 <td>http/client.py</td>
 <td>简单的http客户端</td>
 </tr>
 </tbody>
 </table>
-
 <h2 id="2-socket">2. socket</h2>
-
 <p>socket部分的基础知识，推荐直接查看参考链接1，介绍的非常详细。本文还是按照源码阅读的主题来进行解读，先是socket对象的创建:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -251,64 +241,60 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class socket(_socket.socket):
-
-    &#34;&#34;&#34;A subclass of _socket.socket adding the makefile() method.&#34;&#34;&#34;
-
-    __slots__ = [&#34;__weakref__&#34;, &#34;_io_refs&#34;, &#34;_closed&#34;]
-
-    def __init__(self, family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None):
-        _socket.socket.__init__(self, family, type, proto, fileno)
-        self._io_refs = 0
-        self._closed = False
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        if not self._closed:
-            self.close()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class socket(_socket.socket):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;A subclass of _socket.socket adding the makefile() method.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    __slots__ = [&#34;__weakref__&#34;, &#34;_io_refs&#34;, &#34;_closed&#34;]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None):
+</span></span><span class="line"><span class="cl">        _socket.socket.__init__(self, family, type, proto, fileno)
+</span></span><span class="line"><span class="cl">        self._io_refs = 0
+</span></span><span class="line"><span class="cl">        self._closed = False
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __enter__(self):
+</span></span><span class="line"><span class="cl">        return self
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __exit__(self, *args):
+</span></span><span class="line"><span class="cl">        if not self._closed:
+</span></span><span class="line"><span class="cl">            self.close()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>从socket类可以看到:</p>
-
+</div><p>从socket类可以看到:</p>
 <ul>
 <li>__slots__ 可以优化对象</li>
 <li>__enter__ 和 __exit__ 可以让socket对象当上下文使用</li>
 <li>family和type是两个非常重要的参数，决定了socket的资源类型。family常见有：AF_INET IPV4的协议，AF_INET6 IPV6协议；type常见有TCP协议的SOCK_STREAM和UPD协议的SOCK_DGRAM可用。</li>
 </ul>
-
 <p>socket的api比较多，可以从socket.pyi或者_socket.py看到，我们重点关注下图中TCP Socket Flow涉及到的api。</p>
-
-<p><img src="https://files.realpython.com/media/sockets-tcp-flow.1da426797e37.jpg" alt="TCP Socket Flow" /></p>
-
+<p><img src="https://files.realpython.com/media/sockets-tcp-flow.1da426797e37.jpg" alt="TCP Socket Flow"></p>
 <p>其它的api都由底层实现，除了accept。acecept函数是运行在服务端，接受一个新的进来新生成一个socket对象，用来代表这个新的连接。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def accept(self):
-    fd, addr = self._accept  # 获取到本地的文件描述符和远程连接的地址
-    type = self.type &amp; ~globals().get(&#34;SOCK_NONBLOCK&#34;, 0)
-    sock = socket(self.family, type, self.proto, fileno=fd)  # 封装新的socket并返回
-    if getdefaulttimeout() is None and self.gettimeout():
-        sock.setblocking(True)
-    return sock, addr</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def accept(self):
+</span></span><span class="line"><span class="cl">    fd, addr = self._accept  # 获取到本地的文件描述符和远程连接的地址
+</span></span><span class="line"><span class="cl">    type = self.type &amp; ~globals().get(&#34;SOCK_NONBLOCK&#34;, 0)
+</span></span><span class="line"><span class="cl">    sock = socket(self.family, type, self.proto, fileno=fd)  # 封装新的socket并返回
+</span></span><span class="line"><span class="cl">    if getdefaulttimeout() is None and self.gettimeout():
+</span></span><span class="line"><span class="cl">        sock.setblocking(True)
+</span></span><span class="line"><span class="cl">    return sock, addr
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>socket代码中还提供了SocketIO类，示例如何包装socket进行读写操作:</p>
+</div><p>socket代码中还提供了SocketIO类，示例如何包装socket进行读写操作:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -325,33 +311,32 @@
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SocketIO(io.RawIOBase):
-    def __init__(self, sock, mode):
-        if mode not in (&#34;r&#34;, &#34;w&#34;, &#34;rw&#34;, &#34;rb&#34;, &#34;wb&#34;, &#34;rwb&#34;):  # socket也是文件，有读写等模式
-            raise ValueError(&#34;invalid mode: %r&#34; % mode)
-        io.RawIOBase.__init__(self)
-        self._sock = sock
-        if &#34;b&#34; not in mode:
-            mode += &#34;b&#34;  # socket是基于二进制
-        self._mode = mode
-        self._reading = &#34;r&#34; in mode  # 读判定 
-        self._writing = &#34;w&#34; in mode  # 写判定
-        
-    def readinto(self, b):  # 从socket读取数据到指定的buffer
-        return self._sock.recv_into(b)
-            
-    def write(self, b): # 写入数据到socket
-        return self._sock.send(b)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SocketIO(io.RawIOBase):
+</span></span><span class="line"><span class="cl">    def __init__(self, sock, mode):
+</span></span><span class="line"><span class="cl">        if mode not in (&#34;r&#34;, &#34;w&#34;, &#34;rw&#34;, &#34;rb&#34;, &#34;wb&#34;, &#34;rwb&#34;):  # socket也是文件，有读写等模式
+</span></span><span class="line"><span class="cl">            raise ValueError(&#34;invalid mode: %r&#34; % mode)
+</span></span><span class="line"><span class="cl">        io.RawIOBase.__init__(self)
+</span></span><span class="line"><span class="cl">        self._sock = sock
+</span></span><span class="line"><span class="cl">        if &#34;b&#34; not in mode:
+</span></span><span class="line"><span class="cl">            mode += &#34;b&#34;  # socket是基于二进制
+</span></span><span class="line"><span class="cl">        self._mode = mode
+</span></span><span class="line"><span class="cl">        self._reading = &#34;r&#34; in mode  # 读判定 
+</span></span><span class="line"><span class="cl">        self._writing = &#34;w&#34; in mode  # 写判定
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def readinto(self, b):  # 从socket读取数据到指定的buffer
+</span></span><span class="line"><span class="cl">        return self._sock.recv_into(b)
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">    def write(self, b): # 写入数据到socket
+</span></span><span class="line"><span class="cl">        return self._sock.send(b)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="2-1-socket示例">2.1 socket示例</h3>
-
+</div><h3 id="21-socket示例">2.1 socket示例</h3>
 <p>这是2组示例，分别演示了使用socket实现tcp和udp协议收发数据。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -370,33 +355,33 @@
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-server
-
-import socket
-
-HOST = &#39;127.0.0.1&#39;
-PORT = 65432
-
-with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(&#39;Connected by&#39;, addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            print(&#34;recv data&#34;, data, len(data))
-            conn.sendall(data)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># tcp-server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HOST = &#39;127.0.0.1&#39;
+</span></span><span class="line"><span class="cl">PORT = 65432
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as s:
+</span></span><span class="line"><span class="cl">    s.bind((HOST, PORT))
+</span></span><span class="line"><span class="cl">    s.listen()
+</span></span><span class="line"><span class="cl">    conn, addr = s.accept()
+</span></span><span class="line"><span class="cl">    with conn:
+</span></span><span class="line"><span class="cl">        print(&#39;Connected by&#39;, addr)
+</span></span><span class="line"><span class="cl">        while True:
+</span></span><span class="line"><span class="cl">            data = conn.recv(1024)
+</span></span><span class="line"><span class="cl">            if not data:
+</span></span><span class="line"><span class="cl">                break
+</span></span><span class="line"><span class="cl">            print(&#34;recv data&#34;, data, len(data))
+</span></span><span class="line"><span class="cl">            conn.sendall(data)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp-server的socket有bind，listen和accept三个过程，使用recv接收数据，使用sendall发送数据。tcp-client需要connect到服务端。</p>
+</div><p>tcp-server的socket有bind，listen和accept三个过程，使用recv接收数据，使用sendall发送数据。tcp-client需要connect到服务端。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -408,45 +393,45 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as s:
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-client
-
-import socket
-
-HOST = &#39;127.0.0.1&#39;  # The server&#39;s hostname or IP address
-PORT = 65432  # The port used by the server
-
-with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
-    sock.connect((HOST, PORT))
-    sock.sendall(b&#39;Hello, world&#39;)
-    data = sock.recv(1024)
-    print(&#39;Received&#39;, repr(data))</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># tcp-client
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HOST = &#39;127.0.0.1&#39;  # The server&#39;s hostname or IP address
+</span></span><span class="line"><span class="cl">PORT = 65432  # The port used by the server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
+</span></span><span class="line"><span class="cl">    sock.connect((HOST, PORT))
+</span></span><span class="line"><span class="cl">    sock.sendall(b&#39;Hello, world&#39;)
+</span></span><span class="line"><span class="cl">    data = sock.recv(1024)
+</span></span><span class="line"><span class="cl">    print(&#39;Received&#39;, repr(data))
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp示例的输出日志：</p>
+</div><p>tcp示例的输出日志：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># tcp-server
-Connected by (&#39;127.0.0.1&#39;, 64203)
-recv data b&#39;Hello, world&#39; 12
-
-# tcp-client
-Received b&#39;Hello, world&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># tcp-server
+</span></span><span class="line"><span class="cl">Connected by (&#39;127.0.0.1&#39;, 64203)
+</span></span><span class="line"><span class="cl">recv data b&#39;Hello, world&#39; 12
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># tcp-client
+</span></span><span class="line"><span class="cl">Received b&#39;Hello, world&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>udp协议下server和client都简单一些，没有listen和accept的过程:</p>
+</div><p>udp协议下server和client都简单一些，没有listen和accept的过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -475,62 +460,61 @@ Received b&#39;Hello, world&#39;</pre></td></tr></table>
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># udp-sever
-
-import socket
-
-HOST = &#39;localhost&#39;
-PORT = 65432
-
-with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as sock:  # type不一样
-    # Bind the socket to the port
-    sock.bind((HOST, PORT))
-    while True:
-        data, address = sock.recvfrom(4096)  # 直接接收数据
-        print(&#34;recv data&#34;, data, address)
-        if data:
-            sock.sendto(data, address)  #  sendto 发送到制定地址
-
-# udp-client
-import socket
-
-HOST = &#39;127.0.0.1&#39;  # Standard loopback interface address (localhost)
-PORT = 65432  # Port to listen on (non-privileged ports are &gt; 1023)
-
-# Create a UDP socket
-with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as sock:
-    # Send data
-    sock.sendto(b&#39;Hello, world&#39;, (HOST, PORT))
-    # Receive response
-    data, server = sock.recvfrom(4096)
-    print(&#34;recv data&#34;, data, server)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># udp-sever
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HOST = &#39;localhost&#39;
+</span></span><span class="line"><span class="cl">PORT = 65432
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as sock:  # type不一样
+</span></span><span class="line"><span class="cl">    # Bind the socket to the port
+</span></span><span class="line"><span class="cl">    sock.bind((HOST, PORT))
+</span></span><span class="line"><span class="cl">    while True:
+</span></span><span class="line"><span class="cl">        data, address = sock.recvfrom(4096)  # 直接接收数据
+</span></span><span class="line"><span class="cl">        print(&#34;recv data&#34;, data, address)
+</span></span><span class="line"><span class="cl">        if data:
+</span></span><span class="line"><span class="cl">            sock.sendto(data, address)  #  sendto 发送到制定地址
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># udp-client
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HOST = &#39;127.0.0.1&#39;  # Standard loopback interface address (localhost)
+</span></span><span class="line"><span class="cl">PORT = 65432  # Port to listen on (non-privileged ports are &gt; 1023)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Create a UDP socket
+</span></span><span class="line"><span class="cl">with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as sock:
+</span></span><span class="line"><span class="cl">    # Send data
+</span></span><span class="line"><span class="cl">    sock.sendto(b&#39;Hello, world&#39;, (HOST, PORT))
+</span></span><span class="line"><span class="cl">    # Receive response
+</span></span><span class="line"><span class="cl">    data, server = sock.recvfrom(4096)
+</span></span><span class="line"><span class="cl">    print(&#34;recv data&#34;, data, server)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>udp示例的日志:</p>
+</div><p>udp示例的日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># udp-server
-recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 55429)
-
-# udp-client
-recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># udp-server
+</span></span><span class="line"><span class="cl">recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 55429)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># udp-client
+</span></span><span class="line"><span class="cl">recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="3-selector">3. selector</h2>
-
+</div><h2 id="3-selector">3. selector</h2>
 <p>前面示例中，服务端只能够处理一个连接的读写，不满足同时服务多个连接的需求。同时多个客户端连接，要在客户端连接之间切换，这就需要select。下面内容来自官方的中文文档:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -544,43 +528,41 @@ recv data b&#39;Hello, world&#39; (&#39;127.0.0.1&#39;, 65432)</pre></td></tr></
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">select.select(rlist, wlist, xlist[, timeout])
-这是一个明白直观的 Unix select() 系统调用接口。 前三个参数是由‘可等待对象’组成的序列：可以是代表文件描述符的整数，或是带有名为 fileno() 的返回这样的整数的无形参方法的对象:
-
-rlist：等待，直到可以开始读取
-
-wlist：等待，直到可以开始写入
-
-xlist：等待“异常情况”（请参阅当前系统的手册，以获取哪些情况称为异常情况）
-
-允许空的可迭代对象，但是否接受三个空的可迭代对象则取决于具体平台。 （已知在 Unix 上可行但在 Windows 上不可行。） 可选的 timeout 参数以一个浮点数表示超时秒数。 当省略 timeout 参数时该函数将阻塞直到至少有一个文件描述符准备就绪。 超时值为零表示执行轮询且永不阻塞。
-
-返回值是三个列表，包含已就绪对象，返回的三个列表是前三个参数的子集。当超时时间已到且没有文件描述符就绪时，返回三个空列表。
-
-可迭代对象中可接受的对象类型有 Python 文件对象 (例如 sys.stdin 以及 open() 或 os.popen() 所返回的对象)，由 socket.socket() 返回的套接字对象等。 你也可以自定义一个 wrapper 类，只要它具有适当的 fileno() 方法（该方法要确实返回一个文件描述符，而不能只是一个随机整数）。</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">select.select(rlist, wlist, xlist[, timeout])
+</span></span><span class="line"><span class="cl">这是一个明白直观的 Unix select() 系统调用接口。 前三个参数是由‘可等待对象’组成的序列：可以是代表文件描述符的整数，或是带有名为 fileno() 的返回这样的整数的无形参方法的对象:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">rlist：等待，直到可以开始读取
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">wlist：等待，直到可以开始写入
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">xlist：等待“异常情况”（请参阅当前系统的手册，以获取哪些情况称为异常情况）
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">允许空的可迭代对象，但是否接受三个空的可迭代对象则取决于具体平台。 （已知在 Unix 上可行但在 Windows 上不可行。） 可选的 timeout 参数以一个浮点数表示超时秒数。 当省略 timeout 参数时该函数将阻塞直到至少有一个文件描述符准备就绪。 超时值为零表示执行轮询且永不阻塞。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">返回值是三个列表，包含已就绪对象，返回的三个列表是前三个参数的子集。当超时时间已到且没有文件描述符就绪时，返回三个空列表。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">可迭代对象中可接受的对象类型有 Python 文件对象 (例如 sys.stdin 以及 open() 或 os.popen() 所返回的对象)，由 socket.socket() 返回的套接字对象等。 你也可以自定义一个 wrapper 类，只要它具有适当的 fileno() 方法（该方法要确实返回一个文件描述符，而不能只是一个随机整数）。
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我们可以简单理解为select是个事件中心，管理多个连接，接受系统网络调用，派发不同的读写事件通知应用程序。select具体的应用还是看selector中的高层次API。</p>
-
-<h3 id="3-1-selector的实现">3.1 selector的实现</h3>
-
+</div><p>我们可以简单理解为select是个事件中心，管理多个连接，接受系统网络调用，派发不同的读写事件通知应用程序。select具体的应用还是看selector中的高层次API。</p>
+<h3 id="31-selector的实现">3.1 selector的实现</h3>
 <p>selector定义的读和写事件:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">EVENT_READ = (1 &lt;&lt; 0)
-EVENT_WRITE = (1 &lt;&lt; 1)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">EVENT_READ = (1 &lt;&lt; 0)
+</span></span><span class="line"><span class="cl">EVENT_WRITE = (1 &lt;&lt; 1)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用可命名元祖定义SelectorKey：</p>
+</div><p>使用可命名元祖定义SelectorKey：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -594,28 +576,28 @@ EVENT_WRITE = (1 &lt;&lt; 1)</pre></td></tr></table>
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def _fileobj_to_fd(fileobj):
-    if isinstance(fileobj, int):
-        fd = fileobj
-    else:
-        try:
-            fd = int(fileobj.fileno())  # 获取文件描述符
-        except (AttributeError, TypeError, ValueError):
-            raise ValueError(&#34;Invalid file object: &#34;
-                             &#34;{!r}&#34;.format(fileobj)) from None
-    if fd &lt; 0:
-        raise ValueError(&#34;Invalid file descriptor: {}&#34;.format(fd))
-    return fd
-
-SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;, &#39;events&#39;, &#39;data&#39;])</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def _fileobj_to_fd(fileobj):
+</span></span><span class="line"><span class="cl">    if isinstance(fileobj, int):
+</span></span><span class="line"><span class="cl">        fd = fileobj
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            fd = int(fileobj.fileno())  # 获取文件描述符
+</span></span><span class="line"><span class="cl">        except (AttributeError, TypeError, ValueError):
+</span></span><span class="line"><span class="cl">            raise ValueError(&#34;Invalid file object: &#34;
+</span></span><span class="line"><span class="cl">                             &#34;{!r}&#34;.format(fileobj)) from None
+</span></span><span class="line"><span class="cl">    if fd &lt; 0:
+</span></span><span class="line"><span class="cl">        raise ValueError(&#34;Invalid file descriptor: {}&#34;.format(fd))
+</span></span><span class="line"><span class="cl">    return fd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;, &#39;events&#39;, &#39;data&#39;])
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p><code>BaseSelector</code>是元类，要求所有子类必须实现register,unregister和select方法:</p>
+</div><p><code>BaseSelector</code>是元类，要求所有子类必须实现register,unregister和select方法:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -628,27 +610,27 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseSelector(metaclass=ABCMeta):
-    @abstractmethod
-    def register(self, fileobj, events, data=None):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def unregister(self, fileobj):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def select(self, timeout=None):
-        raise NotImplementedError
-    ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class BaseSelector(metaclass=ABCMeta):
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def register(self, fileobj, events, data=None):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def unregister(self, fileobj):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def select(self, timeout=None):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>register和unregister的实现看起来也比较简单，就是使用字典管理对应的SelectorKey对象。</p>
+</div><p>register和unregister的实现看起来也比较简单，就是使用字典管理对应的SelectorKey对象。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -666,32 +648,32 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class _BaseSelectorImpl(BaseSelector):
-    
-    def __init__(self):
-        # this maps file descriptors to keys
-        self._fd_to_key = {}
-        # read-only mapping returned by get_map()
-        self._map = _SelectorMapping(self)
-        
-    def register(self, fileobj, events, data=None):
-
-        key = SelectorKey(fileobj, self._fileobj_lookup(fileobj), events, data)
-
-        self._fd_to_key[key.fd] = key
-        return key
-    
-    def unregister(self, fileobj):
-        key = self._fd_to_key.pop(self._fileobj_lookup(fileobj))
-        return key</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class _BaseSelectorImpl(BaseSelector):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(self):
+</span></span><span class="line"><span class="cl">        # this maps file descriptors to keys
+</span></span><span class="line"><span class="cl">        self._fd_to_key = {}
+</span></span><span class="line"><span class="cl">        # read-only mapping returned by get_map()
+</span></span><span class="line"><span class="cl">        self._map = _SelectorMapping(self)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def register(self, fileobj, events, data=None):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        key = SelectorKey(fileobj, self._fileobj_lookup(fileobj), events, data)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        self._fd_to_key[key.fd] = key
+</span></span><span class="line"><span class="cl">        return key
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def unregister(self, fileobj):
+</span></span><span class="line"><span class="cl">        key = self._fd_to_key.pop(self._fileobj_lookup(fileobj))
+</span></span><span class="line"><span class="cl">        return key
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>不同的操作系统有不同的select实现 ：</p>
+</div><p>不同的操作系统有不同的select实现 ：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -725,48 +707,48 @@ SelectorKey = namedtuple(&#39;SelectorKey&#39;, [&#39;fileobj&#39;, &#39;fd&#39;
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SelectSelector(_BaseSelectorImpl):
-    &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
-    
-if hasattr(select, &#39;poll&#39;):
-
-    class PollSelector(_BaseSelectorImpl):
-        &#34;&#34;&#34;Poll-based selector.&#34;&#34;&#34;
-        
-if hasattr(select, &#39;epoll&#39;):
-
-    class EpollSelector(_BaseSelectorImpl):
-        &#34;&#34;&#34;Epoll-based selector.&#34;&#34;&#34;
-        
-if hasattr(select, &#39;devpoll&#39;):
-
-    class DevpollSelector(_BaseSelectorImpl):
-        &#34;&#34;&#34;Solaris /dev/poll selector.&#34;&#34;&#34;
-        
-if hasattr(select, &#39;kqueue&#39;):
-    class KqueueSelector(_BaseSelectorImpl):
-        &#34;&#34;&#34;Kqueue-based selector.&#34;&#34;&#34;
-
-# Choose the best implementation, roughly:
-#    epoll|kqueue|devpoll &gt; poll &gt; select.
-if &#39;KqueueSelector&#39; in globals():
-    DefaultSelector = KqueueSelector
-elif &#39;EpollSelector&#39; in globals():
-    DefaultSelector = EpollSelector
-elif &#39;DevpollSelector&#39; in globals():
-    DefaultSelector = DevpollSelector
-elif &#39;PollSelector&#39; in globals():
-    DefaultSelector = PollSelector
-else:
-    DefaultSelector = SelectSelector</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SelectSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">if hasattr(select, &#39;poll&#39;):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class PollSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Poll-based selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">if hasattr(select, &#39;epoll&#39;):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class EpollSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Epoll-based selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">if hasattr(select, &#39;devpoll&#39;):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class DevpollSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Solaris /dev/poll selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">if hasattr(select, &#39;kqueue&#39;):
+</span></span><span class="line"><span class="cl">    class KqueueSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Kqueue-based selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Choose the best implementation, roughly:
+</span></span><span class="line"><span class="cl">#    epoll|kqueue|devpoll &gt; poll &gt; select.
+</span></span><span class="line"><span class="cl">if &#39;KqueueSelector&#39; in globals():
+</span></span><span class="line"><span class="cl">    DefaultSelector = KqueueSelector
+</span></span><span class="line"><span class="cl">elif &#39;EpollSelector&#39; in globals():
+</span></span><span class="line"><span class="cl">    DefaultSelector = EpollSelector
+</span></span><span class="line"><span class="cl">elif &#39;DevpollSelector&#39; in globals():
+</span></span><span class="line"><span class="cl">    DefaultSelector = DevpollSelector
+</span></span><span class="line"><span class="cl">elif &#39;PollSelector&#39; in globals():
+</span></span><span class="line"><span class="cl">    DefaultSelector = PollSelector
+</span></span><span class="line"><span class="cl">else:
+</span></span><span class="line"><span class="cl">    DefaultSelector = SelectSelector
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>注释中给出了效率高低排序 epoll|kqueue|devpoll &gt; poll &gt; select 。我们学习一下最简单的SelectSelector，额外使用了2个集合管理所持有的fileobj：</p>
+</div><p>注释中给出了效率高低排序 epoll|kqueue|devpoll &gt; poll &gt; select 。我们学习一下最简单的SelectSelector，额外使用了2个集合管理所持有的fileobj：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -787,35 +769,35 @@ else:
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class SelectSelector(_BaseSelectorImpl):
-    &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
-
-    def __init__(self):
-        super().__init__()
-        self._readers = set()
-        self._writers = set()
-
-    def register(self, fileobj, events, data=None):
-        key = super().register(fileobj, events, data)
-        if events &amp; EVENT_READ:
-            self._readers.add(key.fd)
-        if events &amp; EVENT_WRITE:
-            self._writers.add(key.fd)
-        return key
-
-    def unregister(self, fileobj):
-        key = super().unregister(fileobj)
-        self._readers.discard(key.fd)
-        self._writers.discard(key.fd)
-        return key</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SelectSelector(_BaseSelectorImpl):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Select-based selector.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self):
+</span></span><span class="line"><span class="cl">        super().__init__()
+</span></span><span class="line"><span class="cl">        self._readers = set()
+</span></span><span class="line"><span class="cl">        self._writers = set()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def register(self, fileobj, events, data=None):
+</span></span><span class="line"><span class="cl">        key = super().register(fileobj, events, data)
+</span></span><span class="line"><span class="cl">        if events &amp; EVENT_READ:
+</span></span><span class="line"><span class="cl">            self._readers.add(key.fd)
+</span></span><span class="line"><span class="cl">        if events &amp; EVENT_WRITE:
+</span></span><span class="line"><span class="cl">            self._writers.add(key.fd)
+</span></span><span class="line"><span class="cl">        return key
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def unregister(self, fileobj):
+</span></span><span class="line"><span class="cl">        key = super().unregister(fileobj)
+</span></span><span class="line"><span class="cl">        self._readers.discard(key.fd)
+</span></span><span class="line"><span class="cl">        self._writers.discard(key.fd)
+</span></span><span class="line"><span class="cl">        return key
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>重点是select函数对_select的封装:</p>
+</div><p>重点是select函数对_select的封装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -837,40 +819,38 @@ else:
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    _select = select.select
-    
-    def select(self, timeout=None):
-        timeout = None if timeout is None else max(timeout, 0)
-        ready = []
-        try:
-            r, w, _ = self._select(self._readers, self._writers, [], timeout)
-        except InterruptedError:
-            return ready
-        r = set(r)
-        w = set(w)
-        for fd in r | w:
-            events = 0
-            if fd in r:
-                events |= EVENT_READ
-            if fd in w:
-                events |= EVENT_WRITE
-
-            key = self._fd_to_key[fd]
-            if key:
-                ready.append((key, events &amp; key.events))
-        return ready  # 就绪的对象</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    _select = select.select
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def select(self, timeout=None):
+</span></span><span class="line"><span class="cl">        timeout = None if timeout is None else max(timeout, 0)
+</span></span><span class="line"><span class="cl">        ready = []
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            r, w, _ = self._select(self._readers, self._writers, [], timeout)
+</span></span><span class="line"><span class="cl">        except InterruptedError:
+</span></span><span class="line"><span class="cl">            return ready
+</span></span><span class="line"><span class="cl">        r = set(r)
+</span></span><span class="line"><span class="cl">        w = set(w)
+</span></span><span class="line"><span class="cl">        for fd in r | w:
+</span></span><span class="line"><span class="cl">            events = 0
+</span></span><span class="line"><span class="cl">            if fd in r:
+</span></span><span class="line"><span class="cl">                events |= EVENT_READ
+</span></span><span class="line"><span class="cl">            if fd in w:
+</span></span><span class="line"><span class="cl">                events |= EVENT_WRITE
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            key = self._fd_to_key[fd]
+</span></span><span class="line"><span class="cl">            if key:
+</span></span><span class="line"><span class="cl">                ready.append((key, events &amp; key.events))
+</span></span><span class="line"><span class="cl">        return ready  # 就绪的对象
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>至于更高效的epoll，pool的实现，只是内部实现有区别，可以以后再理解，一般情况下应用使用DefaultSelector的API，由系统自动选择最高效的方式。</p>
-
-<h3 id="3-2-selecotr示例">3.2 selecotr示例</h3>
-
+</div><p>至于更高效的epoll，pool的实现，只是内部实现有区别，可以以后再理解，一般情况下应用使用DefaultSelector的API，由系统自动选择最高效的方式。</p>
+<h3 id="32-selecotr示例">3.2 selecotr示例</h3>
 <p>使用selector实现的可以支持多个客户端链接的server:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -906,50 +886,50 @@ else:
 </span><span class="lnt">34
 </span><span class="lnt">35
 </span><span class="lnt">36
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># multi-server
-
-import socket
-import selectors
-HOST = &#39;127.0.0.1&#39;
-PORT = 65432
-
-sel = selectors.DefaultSelector()
-
-def accept(sock, mask):  # 接受新连接
-    conn, addr = sock.accept()  # Should be ready
-    print(&#39;accepted&#39;, conn, &#39;from&#39;, addr)
-    conn.setblocking(False)
-    sel.register(conn, selectors.EVENT_READ, read)  # 继续加入selector
-
-def read(conn, mask):  # 读取数据
-    data = conn.recv(1000)  # Should be ready
-    if data:
-        print(&#39;echoing&#39;, repr(data), &#39;to&#39;, conn)
-        conn.send(data)  # Hope it won&#39;t block
-    else:
-        print(&#39;closing&#39;, conn)
-        sel.unregister(conn)
-        conn.close()
-
-serverd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serverd.bind((HOST, PORT))
-serverd.listen(100)
-serverd.setblocking(False)  # 非阻塞
-sel.register(serverd, selectors.EVENT_READ, accept)  # 只注册read事件
-
-while True:  # 无限循环持续监听
-    events = sel.select()
-    for key, mask in events:
-        callback = key.data
-        callback(key.fileobj, mask)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># multi-server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">import selectors
+</span></span><span class="line"><span class="cl">HOST = &#39;127.0.0.1&#39;
+</span></span><span class="line"><span class="cl">PORT = 65432
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sel = selectors.DefaultSelector()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def accept(sock, mask):  # 接受新连接
+</span></span><span class="line"><span class="cl">    conn, addr = sock.accept()  # Should be ready
+</span></span><span class="line"><span class="cl">    print(&#39;accepted&#39;, conn, &#39;from&#39;, addr)
+</span></span><span class="line"><span class="cl">    conn.setblocking(False)
+</span></span><span class="line"><span class="cl">    sel.register(conn, selectors.EVENT_READ, read)  # 继续加入selector
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def read(conn, mask):  # 读取数据
+</span></span><span class="line"><span class="cl">    data = conn.recv(1000)  # Should be ready
+</span></span><span class="line"><span class="cl">    if data:
+</span></span><span class="line"><span class="cl">        print(&#39;echoing&#39;, repr(data), &#39;to&#39;, conn)
+</span></span><span class="line"><span class="cl">        conn.send(data)  # Hope it won&#39;t block
+</span></span><span class="line"><span class="cl">    else:
+</span></span><span class="line"><span class="cl">        print(&#39;closing&#39;, conn)
+</span></span><span class="line"><span class="cl">        sel.unregister(conn)
+</span></span><span class="line"><span class="cl">        conn.close()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">serverd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+</span></span><span class="line"><span class="cl">serverd.bind((HOST, PORT))
+</span></span><span class="line"><span class="cl">serverd.listen(100)
+</span></span><span class="line"><span class="cl">serverd.setblocking(False)  # 非阻塞
+</span></span><span class="line"><span class="cl">sel.register(serverd, selectors.EVENT_READ, accept)  # 只注册read事件
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">while True:  # 无限循环持续监听
+</span></span><span class="line"><span class="cl">    events = sel.select()
+</span></span><span class="line"><span class="cl">    for key, mask in events:
+</span></span><span class="line"><span class="cl">        callback = key.data
+</span></span><span class="line"><span class="cl">        callback(key.fileobj, mask)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>客户端和之前的tcp-client类似，只是为了方便手动操作多开，增加了休眠时间:</p>
+</div><p>客户端和之前的tcp-client类似，只是为了方便手动操作多开，增加了休眠时间:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -964,29 +944,29 @@ while True:  # 无限循环持续监听
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># multi-client
-
-import socket
-import time
-
-HOST = &#39;127.0.0.1&#39;  # The server&#39;s hostname or IP address
-PORT = 65432  # The port used by the server
-
-with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
-    sock.connect((HOST, PORT))
-    for x in range(10):
-        sock.sendall(b&#39;Hello, world&#39;)
-        data = sock.recv(1024)
-        print(&#39;Received&#39;, repr(data))
-        time.sleep(1)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># multi-client
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">import socket
+</span></span><span class="line"><span class="cl">import time
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HOST = &#39;127.0.0.1&#39;  # The server&#39;s hostname or IP address
+</span></span><span class="line"><span class="cl">PORT = 65432  # The port used by the server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
+</span></span><span class="line"><span class="cl">    sock.connect((HOST, PORT))
+</span></span><span class="line"><span class="cl">    for x in range(10):
+</span></span><span class="line"><span class="cl">        sock.sendall(b&#39;Hello, world&#39;)
+</span></span><span class="line"><span class="cl">        data = sock.recv(1024)
+</span></span><span class="line"><span class="cl">        print(&#39;Received&#39;, repr(data))
+</span></span><span class="line"><span class="cl">        time.sleep(1)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>开启服务端后，可以开多个客户端，观察服务端的日志:</p>
+</div><p>开启服务端后，可以开多个客户端，观察服务端的日志:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -997,29 +977,27 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM) as sock:
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">accepted &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt; from (&#39;127.0.0.1&#39;, 63288)
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
-accepted &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt; from (&#39;127.0.0.1&#39;, 63295)
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
-...
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
-closing &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
-echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
-closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">accepted &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt; from (&#39;127.0.0.1&#39;, 63288)
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
+</span></span><span class="line"><span class="cl">accepted &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt; from (&#39;127.0.0.1&#39;, 63295)
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
+</span></span><span class="line"><span class="cl">closing &lt;socket.socket fd=5, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63288)&gt;
+</span></span><span class="line"><span class="cl">echoing b&#39;Hello, world&#39; to &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
+</span></span><span class="line"><span class="cl">closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=(&#39;127.0.0.1&#39;, 65432), raddr=(&#39;127.0.0.1&#39;, 63295)&gt;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>日志清晰的展示2个客户端接入，收发数据和关闭离开的过程。</p>
-
+</div><p>日志清晰的展示2个客户端接入，收发数据和关闭离开的过程。</p>
 <h2 id="4-socketserver">4. socketserver</h2>
-
 <p>socketserver注释非常的详尽，是理解socketserver代码的最好帮助。比如下面这段，直观的介绍了socketserver的结构，我们重点关注TCPServer的实现。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1032,29 +1010,28 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">        +------------+
-        | BaseServer |
-        +------------+
-              |
-              v
-        +-----------+        +------------------+
-        | TCPServer |-------&gt;| UnixStreamServer |
-        +-----------+        +------------------+
-              |
-              v
-        +-----------+        +--------------------+
-        | UDPServer |-------&gt;| UnixDatagramServer |
-        +-----------+        +--------------------+</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        +------------+
+</span></span><span class="line"><span class="cl">        | BaseServer |
+</span></span><span class="line"><span class="cl">        +------------+
+</span></span><span class="line"><span class="cl">              |
+</span></span><span class="line"><span class="cl">              v
+</span></span><span class="line"><span class="cl">        +-----------+        +------------------+
+</span></span><span class="line"><span class="cl">        | TCPServer |-------&gt;| UnixStreamServer |
+</span></span><span class="line"><span class="cl">        +-----------+        +------------------+
+</span></span><span class="line"><span class="cl">              |
+</span></span><span class="line"><span class="cl">              v
+</span></span><span class="line"><span class="cl">        +-----------+        +--------------------+
+</span></span><span class="line"><span class="cl">        | UDPServer |-------&gt;| UnixDatagramServer |
+</span></span><span class="line"><span class="cl">        +-----------+        +--------------------+
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-1-tcpserver">4.1 TCPServer</h3>
-
+</div><h3 id="41-tcpserver">4.1 TCPServer</h3>
 <p>BaseServer定义了一个基础的socket服务模型, 接收服务参数和客户端类后初始化对象，使用serve_forever持续的监听连接，约定对请求的处理流程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1077,37 +1054,37 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseServer:
-    def __init__(self, server_address, RequestHandlerClass):
-        self.server_address = server_address
-        self.RequestHandlerClass = RequestHandlerClass
-        ...
-    
-    def serve_forever(self, poll_interval=0.5):
-        with selectors.SelectSelector() as selector:
-            selector.register(self, selectors.EVENT_READ)
-
-            while not self.__shutdown_request:
-                ready = selector.select(poll_interval)
-                if ready:
-                    self._handle_request_noblock()
-
-    def _handle_request_noblock(self):
-        try:
-            request, client_address = self.get_request()  # 子类实现
-        except OSError:
-            return
-        
-        self.RequestHandlerClass(request, client_address, self)  # 分层由客户端请求类实现具体需求
-        self.close_request(request)  # 子类实现</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class BaseServer:
+</span></span><span class="line"><span class="cl">    def __init__(self, server_address, RequestHandlerClass):
+</span></span><span class="line"><span class="cl">        self.server_address = server_address
+</span></span><span class="line"><span class="cl">        self.RequestHandlerClass = RequestHandlerClass
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def serve_forever(self, poll_interval=0.5):
+</span></span><span class="line"><span class="cl">        with selectors.SelectSelector() as selector:
+</span></span><span class="line"><span class="cl">            selector.register(self, selectors.EVENT_READ)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            while not self.__shutdown_request:
+</span></span><span class="line"><span class="cl">                ready = selector.select(poll_interval)
+</span></span><span class="line"><span class="cl">                if ready:
+</span></span><span class="line"><span class="cl">                    self._handle_request_noblock()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def _handle_request_noblock(self):
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            request, client_address = self.get_request()  # 子类实现
+</span></span><span class="line"><span class="cl">        except OSError:
+</span></span><span class="line"><span class="cl">            return
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        self.RequestHandlerClass(request, client_address, self)  # 分层由客户端请求类实现具体需求
+</span></span><span class="line"><span class="cl">        self.close_request(request)  # 子类实现
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>TCPServer就是按TCP协议实现bind，listen和accept：</p>
+</div><p>TCPServer就是按TCP协议实现bind，listen和accept：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1137,46 +1114,45 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class TCPServer(BaseServer):
-    
-    address_family = socket.AF_INET
-
-    socket_type = socket.SOCK_STREAM
-    
-    request_queue_size = 5
-
-    def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True):
-        &#34;&#34;&#34;Constructor.  May be extended, do not override.&#34;&#34;&#34;
-        BaseServer.__init__(self, server_address, RequestHandlerClass)
-        self.socket = socket.socket(self.address_family,
-                                    self.socket_type)
-        if bind_and_activate:
-            try:
-                self.server_bind()
-                self.server_activate()
-            except:
-                self.server_close()
-                raise
-                
-    def server_bind(self):
-        self.socket.bind(self.server_address)
-        self.server_address = self.socket.getsockname()
-
-    def server_activate(self):
-        self.socket.listen(self.request_queue_size)
-    
-    def get_request(self):
-        return self.socket.accept()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class TCPServer(BaseServer):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    address_family = socket.AF_INET
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    socket_type = socket.SOCK_STREAM
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    request_queue_size = 5
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Constructor.  May be extended, do not override.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        BaseServer.__init__(self, server_address, RequestHandlerClass)
+</span></span><span class="line"><span class="cl">        self.socket = socket.socket(self.address_family,
+</span></span><span class="line"><span class="cl">                                    self.socket_type)
+</span></span><span class="line"><span class="cl">        if bind_and_activate:
+</span></span><span class="line"><span class="cl">            try:
+</span></span><span class="line"><span class="cl">                self.server_bind()
+</span></span><span class="line"><span class="cl">                self.server_activate()
+</span></span><span class="line"><span class="cl">            except:
+</span></span><span class="line"><span class="cl">                self.server_close()
+</span></span><span class="line"><span class="cl">                raise
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">    def server_bind(self):
+</span></span><span class="line"><span class="cl">        self.socket.bind(self.server_address)
+</span></span><span class="line"><span class="cl">        self.server_address = self.socket.getsockname()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def server_activate(self):
+</span></span><span class="line"><span class="cl">        self.socket.listen(self.request_queue_size)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def get_request(self):
+</span></span><span class="line"><span class="cl">        return self.socket.accept()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-2-threadingmixin">4.2 ThreadingMixIn</h3>
-
+</div><h3 id="42-threadingmixin">4.2 ThreadingMixIn</h3>
 <p>ThreadingMixIn也很重要，展示了使用多线程方式提供服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1193,33 +1169,32 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class ThreadingMixIn:
-    &#34;&#34;&#34;Mix-in class to handle each request in a new thread.&#34;&#34;&#34;
-
-    def process_request_thread(self, request, client_address):
-        try:
-            self.finish_request(request, client_address) # 回到父类的标准实现
-        except Exception:
-            self.handle_error(request, client_address)
-        finally:
-            self.shutdown_request(request)
-
-    def process_request(self, request, client_address):
-        &#34;&#34;&#34;Start a new thread to process the request.&#34;&#34;&#34;
-        t = threading.Thread(target = self.process_request_thread,
-                             args = (request, client_address))  # 使用新线程处理请求
-        t.daemon = self.daemon_threads
-        t.start()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class ThreadingMixIn:
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Mix-in class to handle each request in a new thread.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def process_request_thread(self, request, client_address):
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            self.finish_request(request, client_address) # 回到父类的标准实现
+</span></span><span class="line"><span class="cl">        except Exception:
+</span></span><span class="line"><span class="cl">            self.handle_error(request, client_address)
+</span></span><span class="line"><span class="cl">        finally:
+</span></span><span class="line"><span class="cl">            self.shutdown_request(request)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def process_request(self, request, client_address):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Start a new thread to process the request.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        t = threading.Thread(target = self.process_request_thread,
+</span></span><span class="line"><span class="cl">                             args = (request, client_address))  # 使用新线程处理请求
+</span></span><span class="line"><span class="cl">        t.daemon = self.daemon_threads
+</span></span><span class="line"><span class="cl">        t.start()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="4-3-requesthandler">4.3 RequestHandler</h3>
-
+</div><h3 id="43-requesthandler">4.3 RequestHandler</h3>
 <p>请求逻辑由RequestHandler处理，基础类是BaseRequestHandler，定义了请求处理的主要流程 setup -&gt; handler -&gt; finish :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1229,24 +1204,24 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseRequestHandler:
-    def __init__(self, request, client_address, server):
-        self.request = request
-        self.client_address = client_address
-        self.server = server
-        self.setup()  # 子类实现
-        try:
-            self.handle()  # 子类实现
-        finally:
-            self.finish()  # 子类实现</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class BaseRequestHandler:
+</span></span><span class="line"><span class="cl">    def __init__(self, request, client_address, server):
+</span></span><span class="line"><span class="cl">        self.request = request
+</span></span><span class="line"><span class="cl">        self.client_address = client_address
+</span></span><span class="line"><span class="cl">        self.server = server
+</span></span><span class="line"><span class="cl">        self.setup()  # 子类实现
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            self.handle()  # 子类实现
+</span></span><span class="line"><span class="cl">        finally:
+</span></span><span class="line"><span class="cl">            self.finish()  # 子类实现
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>tcp方式的处理StreamRequestHandler， 主要就是对connection(socket)进行了包装:</p>
+</div><p>tcp方式的处理StreamRequestHandler， 主要就是对connection(socket)进行了包装:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1272,55 +1247,53 @@ closing &lt;socket.socket fd=6, family=AddressFamily.AF_INET, type=SocketKind.SO
 </span><span class="lnt">24
 </span><span class="lnt">25
 </span><span class="lnt">26
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class StreamRequestHandler(BaseRequestHandler):
-    rbufsize = -1
-    wbufsize = 0 
-    
-    def setup(self):
-        self.connection = self.request
-        self.rfile = self.connection.makefile(&#39;rb&#39;, self.rbufsize)  # 包装读
-        if self.wbufsize == 0:
-            self.wfile = _SocketWriter(self.connection)  # 包装写
-        ...
-
-    def finish(self):
-        if not self.wfile.closed:
-            self.wfile.flush()
-        self.wfile.close()
-        self.rfile.close()
-
-class _SocketWriter(BufferedIOBase):
-
-    def __init__(self, sock):
-        self._sock = sock
-
-    def write(self, b):  # 写入数据
-        self._sock.sendall(b)
-        with memoryview(b) as view:
-            return view.nbytes</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class StreamRequestHandler(BaseRequestHandler):
+</span></span><span class="line"><span class="cl">    rbufsize = -1
+</span></span><span class="line"><span class="cl">    wbufsize = 0 
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def setup(self):
+</span></span><span class="line"><span class="cl">        self.connection = self.request
+</span></span><span class="line"><span class="cl">        self.rfile = self.connection.makefile(&#39;rb&#39;, self.rbufsize)  # 包装读
+</span></span><span class="line"><span class="cl">        if self.wbufsize == 0:
+</span></span><span class="line"><span class="cl">            self.wfile = _SocketWriter(self.connection)  # 包装写
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def finish(self):
+</span></span><span class="line"><span class="cl">        if not self.wfile.closed:
+</span></span><span class="line"><span class="cl">            self.wfile.flush()
+</span></span><span class="line"><span class="cl">        self.wfile.close()
+</span></span><span class="line"><span class="cl">        self.rfile.close()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class _SocketWriter(BufferedIOBase):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, sock):
+</span></span><span class="line"><span class="cl">        self._sock = sock
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def write(self, b):  # 写入数据
+</span></span><span class="line"><span class="cl">        self._sock.sendall(b)
+</span></span><span class="line"><span class="cl">        with memoryview(b) as view:
+</span></span><span class="line"><span class="cl">            return view.nbytes
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>最重要的handler却留白了，等待应用程序的实现。</p>
-
+</div><p>最重要的handler却留白了，等待应用程序的实现。</p>
 <h2 id="5-http-server">5. http-server</h2>
-
 <p>经过socket， selector和tcpserver三关，总算进入了我们的主题 <code>http-server</code>, 可以使用下面方式启动一个简单的http服务:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">python3 -m http.server
-Serving HTTP on :: port 8000 (http://[::]:8000/) ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python3 -m http.server
+</span></span><span class="line"><span class="cl">Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>我把启动过程梳理成下面代码:</p>
+</div><p>我把启动过程梳理成下面代码:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1330,24 +1303,24 @@ Serving HTTP on :: port 8000 (http://[::]:8000/) ...</pre></td></tr></table>
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">HandlerClass = SimpleHTTPRequestHandler  # 定义RequestHandler类
-HandlerClass.protocol_version = &#34;HTTP/1.0&#34;  # http协议版本
-with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
-    host, port = httpd.socket.getsockname()[:2]
-    url_host = f&#39;[{host}]&#39; if &#39;:&#39; in host else host
-    print(
-        f&#34;Serving HTTP on {host} port {port} &#34;
-        f&#34;(http://{url_host}:{port}/) ...&#34;
-    )
-    httpd.serve_forever()  # 启动服务</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">HandlerClass = SimpleHTTPRequestHandler  # 定义RequestHandler类
+</span></span><span class="line"><span class="cl">HandlerClass.protocol_version = &#34;HTTP/1.0&#34;  # http协议版本
+</span></span><span class="line"><span class="cl">with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
+</span></span><span class="line"><span class="cl">    host, port = httpd.socket.getsockname()[:2]
+</span></span><span class="line"><span class="cl">    url_host = f&#39;[{host}]&#39; if &#39;:&#39; in host else host
+</span></span><span class="line"><span class="cl">    print(
+</span></span><span class="line"><span class="cl">        f&#34;Serving HTTP on {host} port {port} &#34;
+</span></span><span class="line"><span class="cl">        f&#34;(http://{url_host}:{port}/) ...&#34;
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    httpd.serve_forever()  # 启动服务
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>得益于之前良好的封装ThreadingHTTPServer的实现非常简单，不用再介绍:</p>
+</div><p>得益于之前良好的封装ThreadingHTTPServer的实现非常简单，不用再介绍:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1359,28 +1332,27 @@ with ThreadingHTTPServer(addr, HandlerClass) as httpd:  # 创建http服务
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class HTTPServer(socketserver.TCPServer):
-
-    def server_bind(self):
-        &#34;&#34;&#34;Override server_bind to store the server name.&#34;&#34;&#34;
-        socketserver.TCPServer.server_bind(self)
-        host, port = self.server_address[:2]
-        self.server_name = socket.getfqdn(host)
-        self.server_port = port
-
-class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
-    daemon_threads = True  # 守护进程方式
-    </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class HTTPServer(socketserver.TCPServer):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def server_bind(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Override server_bind to store the server name.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        socketserver.TCPServer.server_bind(self)
+</span></span><span class="line"><span class="cl">        host, port = self.server_address[:2]
+</span></span><span class="line"><span class="cl">        self.server_name = socket.getfqdn(host)
+</span></span><span class="line"><span class="cl">        self.server_port = port
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
+</span></span><span class="line"><span class="cl">    daemon_threads = True  # 守护进程方式
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="5-1-httprequesthandler">5.1 HTTPRequestHandler</h3>
-
+</div><h3 id="51-httprequesthandler">5.1 HTTPRequestHandler</h3>
 <p>从HTTPServer可以知道http服务的实现主要在SimpleHTTPRequestHandler中。首先看其父类BaseHTTPRequestHandler：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -1389,44 +1361,44 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):  # 继承自StreamRequestHandler，这不奇怪http服务是tcp服务的子集，对应的请求实现也应该是基于stream的。
-    
-    def handle(self):
-        &#34;&#34;&#34;Handle multiple requests if necessary.&#34;&#34;&#34;
-        self.close_connection = True
-
-        self.handle_one_request()  # 处理一个请求
-        while not self.close_connection:  # 用于keep-alive等场景
-            self.handle_one_request()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> class BaseHTTPRequestHandler(socketserver.StreamRequestHandler):  # 继承自StreamRequestHandler，这不奇怪http服务是tcp服务的子集，对应的请求实现也应该是基于stream的。
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def handle(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Handle multiple requests if necessary.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        self.close_connection = True
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        self.handle_one_request()  # 处理一个请求
+</span></span><span class="line"><span class="cl">        while not self.close_connection:  # 用于keep-alive等场景
+</span></span><span class="line"><span class="cl">            self.handle_one_request()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>BaseHTTPRequestHandler重点在实现StreamRequestHandler留白的handler方法(从名称上看就体现了http服务的特点，每个请求都是一次性的)。</p>
+</div><p>BaseHTTPRequestHandler重点在实现StreamRequestHandler留白的handler方法(从名称上看就体现了http服务的特点，每个请求都是一次性的)。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def handle_one_request(self):
-    self.raw_requestline = self.rfile.readline(65537)  # 处理http协议头
-    self.parse_request()  # 处理http头
-    mname = &#39;do_&#39; + self.command
-    method = getattr(self, mname)
-    method()  # 处理http协议方法
-    self.wfile.flush()  # 响应请求 </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def handle_one_request(self):
+</span></span><span class="line"><span class="cl">    self.raw_requestline = self.rfile.readline(65537)  # 处理http协议头
+</span></span><span class="line"><span class="cl">    self.parse_request()  # 处理http头
+</span></span><span class="line"><span class="cl">    mname = &#39;do_&#39; + self.command
+</span></span><span class="line"><span class="cl">    method = getattr(self, mname)
+</span></span><span class="line"><span class="cl">    method()  # 处理http协议方法
+</span></span><span class="line"><span class="cl">    self.wfile.flush()  # 响应请求 
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在继续阅读代码之前，可以先简单了解一下http协议，使用curl访问一下我们的http服务：</p>
+</div><p>在继续阅读代码之前，可以先简单了解一下http协议，使用curl访问一下我们的http服务：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1458,50 +1430,48 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">curl -v http://127.0.0.1:8000
-*   Trying 127.0.0.1...
-* TCP_NODELAY set
-* Connected to 127.0.0.1 (127.0.0.1) port 8000 (#0)
-&gt; GET / HTTP/1.1
-&gt; Host: 127.0.0.1:8000
-&gt; User-Agent: curl/7.64.1
-&gt; Accept: */*
-&gt;
-* HTTP 1.0, assume close after body
-&lt; HTTP/1.0 200 OK
-&lt; Server: SimpleHTTP/0.6 Python/3.8.5
-&lt; Date: Wed, 27 Jan 2021 11:03:08 GMT
-&lt; Content-type: text/html; charset=utf-8
-&lt; Content-Length: 1570
-&lt;
-&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=utf-8&#34;&gt;
-&lt;title&gt;Directory listing for /&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;h1&gt;Directory listing for /&lt;/h1&gt;
-&lt;hr&gt;
-&lt;ul&gt;
-...
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-* Closing connection 0</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -v http://127.0.0.1:8000
+</span></span><span class="line"><span class="cl">*   Trying 127.0.0.1...
+</span></span><span class="line"><span class="cl">* TCP_NODELAY set
+</span></span><span class="line"><span class="cl">* Connected to 127.0.0.1 (127.0.0.1) port 8000 (#0)
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Host: 127.0.0.1:8000
+</span></span><span class="line"><span class="cl">&gt; User-Agent: curl/7.64.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">* HTTP 1.0, assume close after body
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.0 200 OK
+</span></span><span class="line"><span class="cl">&lt; Server: SimpleHTTP/0.6 Python/3.8.5
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 27 Jan 2021 11:03:08 GMT
+</span></span><span class="line"><span class="cl">&lt; Content-type: text/html; charset=utf-8
+</span></span><span class="line"><span class="cl">&lt; Content-Length: 1570
+</span></span><span class="line"><span class="cl">&lt;
+</span></span><span class="line"><span class="cl">&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;
+</span></span><span class="line"><span class="cl">&lt;html&gt;
+</span></span><span class="line"><span class="cl">&lt;head&gt;
+</span></span><span class="line"><span class="cl">&lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=utf-8&#34;&gt;
+</span></span><span class="line"><span class="cl">&lt;title&gt;Directory listing for /&lt;/title&gt;
+</span></span><span class="line"><span class="cl">&lt;/head&gt;
+</span></span><span class="line"><span class="cl">&lt;body&gt;
+</span></span><span class="line"><span class="cl">&lt;h1&gt;Directory listing for /&lt;/h1&gt;
+</span></span><span class="line"><span class="cl">&lt;hr&gt;
+</span></span><span class="line"><span class="cl">&lt;ul&gt;
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">&lt;/ul&gt;
+</span></span><span class="line"><span class="cl">&lt;hr&gt;
+</span></span><span class="line"><span class="cl">&lt;/body&gt;
+</span></span><span class="line"><span class="cl">&lt;/html&gt;
+</span></span><span class="line"><span class="cl">* Closing connection 0
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>日志中<code>&gt;</code>开头的部分是请求，<code>&lt;</code>开头的部分是响应，关于http协议的详解建议查看参考连接2。http请求的图示：</p>
-
-<p><img src="https://mdn.mozillademos.org/files/13687/HTTP_Request.png" alt="HTTP_Request" /></p>
-
+</div><p>日志中<code>&gt;</code>开头的部分是请求，<code>&lt;</code>开头的部分是响应，关于http协议的详解建议查看参考连接2。http请求的图示：</p>
+<p><img src="https://mdn.mozillademos.org/files/13687/HTTP_Request.png" alt="HTTP_Request"></p>
 <p>结合上图，我们可以知道我们的请求首行是 <code>GET / HTTP/1.1</code>, 下面还有一些header信息。回到代码parse_request的实现</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1529,42 +1499,42 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def parse_request(self):
-    self.raw_requestline = self.rfile.readline(65537)
-    
-    # 协议校验
-    requestline = str(self.raw_requestline, &#39;iso-8859-1&#39;)
-    requestline = requestline.rstrip(&#39;\r\n&#39;)  
-    self.requestline = requestline
-    words = requestline.split()  # 分割
-    if len(words) == 0 or len(words) &gt;= 3: # 长度校验
-        return False
-
-    if len(words) &gt;= 3:  # Enough to determine protocol version
-        version = words[-1]
-        if not version.startswith(&#39;HTTP/&#39;):
-            raise ValueError
-                    
-        base_version_number = version.split(&#39;/&#39;, 1)[1]
-        version_number = base_version_number.split(&#34;.&#34;)
-        if len(version_number) != 2:
-            raise ValueError
-            ...
-    
-    # 分离方法和路径
-    command, path = words[:2]
-    self.command, self.path = command, path
-    
-    # 解析http头
-    self.headers = http.client.parse_headers(self.rfile, _class=self.MessageClass)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def parse_request(self):
+</span></span><span class="line"><span class="cl">    self.raw_requestline = self.rfile.readline(65537)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    # 协议校验
+</span></span><span class="line"><span class="cl">    requestline = str(self.raw_requestline, &#39;iso-8859-1&#39;)
+</span></span><span class="line"><span class="cl">    requestline = requestline.rstrip(&#39;\r\n&#39;)  
+</span></span><span class="line"><span class="cl">    self.requestline = requestline
+</span></span><span class="line"><span class="cl">    words = requestline.split()  # 分割
+</span></span><span class="line"><span class="cl">    if len(words) == 0 or len(words) &gt;= 3: # 长度校验
+</span></span><span class="line"><span class="cl">        return False
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if len(words) &gt;= 3:  # Enough to determine protocol version
+</span></span><span class="line"><span class="cl">        version = words[-1]
+</span></span><span class="line"><span class="cl">        if not version.startswith(&#39;HTTP/&#39;):
+</span></span><span class="line"><span class="cl">            raise ValueError
+</span></span><span class="line"><span class="cl">                    
+</span></span><span class="line"><span class="cl">        base_version_number = version.split(&#39;/&#39;, 1)[1]
+</span></span><span class="line"><span class="cl">        version_number = base_version_number.split(&#34;.&#34;)
+</span></span><span class="line"><span class="cl">        if len(version_number) != 2:
+</span></span><span class="line"><span class="cl">            raise ValueError
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    # 分离方法和路径
+</span></span><span class="line"><span class="cl">    command, path = words[:2]
+</span></span><span class="line"><span class="cl">    self.command, self.path = command, path
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    # 解析http头
+</span></span><span class="line"><span class="cl">    self.headers = http.client.parse_headers(self.rfile, _class=self.MessageClass)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>根据代码可以反推http协议的首行要求：使用空格分割的三元组，分别对应http方法，路径和http协议版本，其中http协议版本又需要使用HTTP关键字前缀和协议版本组成。继续解析剩下的http请求头:</p>
+</div><p>根据代码可以反推http协议的首行要求：使用空格分割的三元组，分别对应http方法，路径和http协议版本，其中http协议版本又需要使用HTTP关键字前缀和协议版本组成。继续解析剩下的http请求头:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1579,29 +1549,29 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># http/client.py
-
-def parse_headers(fp, _class=HTTPMessage):
-    headers = []
-    while True:
-        line = fp.readline(_MAXLINE + 1) # 持续读取行数据
-        if len(line) &gt; _MAXLINE:
-            raise LineTooLong(&#34;header line&#34;)
-        headers.append(line)
-        if len(headers) &gt; _MAXHEADERS:
-            raise HTTPException(&#34;got more than %d headers&#34; % _MAXHEADERS)
-        if line in (b&#39;\r\n&#39;, b&#39;\n&#39;, b&#39;&#39;):  # 遇到空行完成读取
-            break
-    hstring = b&#39;&#39;.join(headers).decode(&#39;iso-8859-1&#39;)
-    return email.parser.Parser(_class=_class).parsestr(hstring)  # 解析封装头</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># http/client.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def parse_headers(fp, _class=HTTPMessage):
+</span></span><span class="line"><span class="cl">    headers = []
+</span></span><span class="line"><span class="cl">    while True:
+</span></span><span class="line"><span class="cl">        line = fp.readline(_MAXLINE + 1) # 持续读取行数据
+</span></span><span class="line"><span class="cl">        if len(line) &gt; _MAXLINE:
+</span></span><span class="line"><span class="cl">            raise LineTooLong(&#34;header line&#34;)
+</span></span><span class="line"><span class="cl">        headers.append(line)
+</span></span><span class="line"><span class="cl">        if len(headers) &gt; _MAXHEADERS:
+</span></span><span class="line"><span class="cl">            raise HTTPException(&#34;got more than %d headers&#34; % _MAXHEADERS)
+</span></span><span class="line"><span class="cl">        if line in (b&#39;\r\n&#39;, b&#39;\n&#39;, b&#39;&#39;):  # 遇到空行完成读取
+</span></span><span class="line"><span class="cl">            break
+</span></span><span class="line"><span class="cl">    hstring = b&#39;&#39;.join(headers).decode(&#39;iso-8859-1&#39;)
+</span></span><span class="line"><span class="cl">    return email.parser.Parser(_class=_class).parsestr(hstring)  # 解析封装头
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>http方法的实现逻辑在子类SimpleHTTPRequestHandler中：</p>
+</div><p>http方法的实现逻辑在子类SimpleHTTPRequestHandler中：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1618,31 +1588,31 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    def do_GET(self):
-        &#34;&#34;&#34;Serve a GET request.&#34;&#34;&#34;
-        f = self.send_head()
-        if f:
-            try:
-                self.copyfile(f, self.wfile)  # copy结果到socket的输出
-            finally:
-                f.close()
-    
-    def send_head(self):
-        ...
-        path = self.translate_path(self.path)
-        f = None
-        if os.path.isdir(path):
-            ...
-            return self.list_directory(path)
-        ...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    def do_GET(self):
+</span></span><span class="line"><span class="cl">        &#34;&#34;&#34;Serve a GET request.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">        f = self.send_head()
+</span></span><span class="line"><span class="cl">        if f:
+</span></span><span class="line"><span class="cl">            try:
+</span></span><span class="line"><span class="cl">                self.copyfile(f, self.wfile)  # copy结果到socket的输出
+</span></span><span class="line"><span class="cl">            finally:
+</span></span><span class="line"><span class="cl">                f.close()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def send_head(self):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        path = self.translate_path(self.path)
+</span></span><span class="line"><span class="cl">        f = None
+</span></span><span class="line"><span class="cl">        if os.path.isdir(path):
+</span></span><span class="line"><span class="cl">            ...
+</span></span><span class="line"><span class="cl">            return self.list_directory(path)
+</span></span><span class="line"><span class="cl">        ...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>展示目录的输出:</p>
+</div><p>展示目录的输出:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1681,53 +1651,53 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">37
 </span><span class="lnt">38
 </span><span class="lnt">39
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">    def list_directory(self, path):
-        list = os.listdir(path)
-        displaypath = urllib.parse.unquote(self.path,
-                                               errors=&#39;surrogatepass&#39;)
-        enc = sys.getfilesystemencoding()
-        title = &#39;Directory listing for %s&#39; % displaypath
-        r.append(&#39;&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#39;
-                 &#39;&#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;&#39;)
-        r.append(&#39;&lt;html&gt;\n&lt;head&gt;&#39;)
-        r.append(&#39;&lt;meta http-equiv=&#34;Content-Type&#34; &#39;
-                 &#39;content=&#34;text/html; charset=%s&#34;&gt;&#39; % enc)
-        r.append(&#39;&lt;title&gt;%s&lt;/title&gt;\n&lt;/head&gt;&#39; % title)
-        r.append(&#39;&lt;body&gt;\n&lt;h1&gt;%s&lt;/h1&gt;&#39; % title)
-        r.append(&#39;&lt;hr&gt;\n&lt;ul&gt;&#39;)
-        for name in list:
-            fullname = os.path.join(path, name)
-            displayname = linkname = name
-            # Append / for directories or @ for symbolic links
-            if os.path.isdir(fullname):
-                displayname = name + &#34;/&#34;
-                linkname = name + &#34;/&#34;
-            if os.path.islink(fullname):
-                displayname = name + &#34;@&#34;
-                # Note: a link to a directory displays with @ and links with /
-            r.append(&#39;&lt;li&gt;&lt;a href=&#34;%s&#34;&gt;%s&lt;/a&gt;&lt;/li&gt;&#39;
-                    % (urllib.parse.quote(linkname,
-                                          errors=&#39;surrogatepass&#39;),
-                       html.escape(displayname, quote=False)))
-        r.append(&#39;&lt;/ul&gt;\n&lt;hr&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n&#39;)
-        encoded = &#39;\n&#39;.join(r).encode(enc, &#39;surrogateescape&#39;)
-        
-        f = io.BytesIO()
-        f.write(encoded)
-        f.seek(0)
-        self.send_response(HTTPStatus.OK)
-        self.send_header(&#34;Content-type&#34;, &#34;text/html; charset=%s&#34; % enc)
-        self.send_header(&#34;Content-Length&#34;, str(len(encoded)))
-        self.end_headers()
-        return f</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    def list_directory(self, path):
+</span></span><span class="line"><span class="cl">        list = os.listdir(path)
+</span></span><span class="line"><span class="cl">        displaypath = urllib.parse.unquote(self.path,
+</span></span><span class="line"><span class="cl">                                               errors=&#39;surrogatepass&#39;)
+</span></span><span class="line"><span class="cl">        enc = sys.getfilesystemencoding()
+</span></span><span class="line"><span class="cl">        title = &#39;Directory listing for %s&#39; % displaypath
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;!DOCTYPE HTML PUBLIC &#34;-//W3C//DTD HTML 4.01//EN&#34; &#39;
+</span></span><span class="line"><span class="cl">                 &#39;&#34;http://www.w3.org/TR/html4/strict.dtd&#34;&gt;&#39;)
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;html&gt;\n&lt;head&gt;&#39;)
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;meta http-equiv=&#34;Content-Type&#34; &#39;
+</span></span><span class="line"><span class="cl">                 &#39;content=&#34;text/html; charset=%s&#34;&gt;&#39; % enc)
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;title&gt;%s&lt;/title&gt;\n&lt;/head&gt;&#39; % title)
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;body&gt;\n&lt;h1&gt;%s&lt;/h1&gt;&#39; % title)
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;hr&gt;\n&lt;ul&gt;&#39;)
+</span></span><span class="line"><span class="cl">        for name in list:
+</span></span><span class="line"><span class="cl">            fullname = os.path.join(path, name)
+</span></span><span class="line"><span class="cl">            displayname = linkname = name
+</span></span><span class="line"><span class="cl">            # Append / for directories or @ for symbolic links
+</span></span><span class="line"><span class="cl">            if os.path.isdir(fullname):
+</span></span><span class="line"><span class="cl">                displayname = name + &#34;/&#34;
+</span></span><span class="line"><span class="cl">                linkname = name + &#34;/&#34;
+</span></span><span class="line"><span class="cl">            if os.path.islink(fullname):
+</span></span><span class="line"><span class="cl">                displayname = name + &#34;@&#34;
+</span></span><span class="line"><span class="cl">                # Note: a link to a directory displays with @ and links with /
+</span></span><span class="line"><span class="cl">            r.append(&#39;&lt;li&gt;&lt;a href=&#34;%s&#34;&gt;%s&lt;/a&gt;&lt;/li&gt;&#39;
+</span></span><span class="line"><span class="cl">                    % (urllib.parse.quote(linkname,
+</span></span><span class="line"><span class="cl">                                          errors=&#39;surrogatepass&#39;),
+</span></span><span class="line"><span class="cl">                       html.escape(displayname, quote=False)))
+</span></span><span class="line"><span class="cl">        r.append(&#39;&lt;/ul&gt;\n&lt;hr&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n&#39;)
+</span></span><span class="line"><span class="cl">        encoded = &#39;\n&#39;.join(r).encode(enc, &#39;surrogateescape&#39;)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        f = io.BytesIO()
+</span></span><span class="line"><span class="cl">        f.write(encoded)
+</span></span><span class="line"><span class="cl">        f.seek(0)
+</span></span><span class="line"><span class="cl">        self.send_response(HTTPStatus.OK)
+</span></span><span class="line"><span class="cl">        self.send_header(&#34;Content-type&#34;, &#34;text/html; charset=%s&#34; % enc)
+</span></span><span class="line"><span class="cl">        self.send_header(&#34;Content-Length&#34;, str(len(encoded)))
+</span></span><span class="line"><span class="cl">        self.end_headers()
+</span></span><span class="line"><span class="cl">        return f
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到list_directory进行了文件目录的操作，转换成html的文本后输出。同时设置http头及响应的处理:</p>
+</div><p>可以看到list_directory进行了文件目录的操作，转换成html的文本后输出。同时设置http头及响应的处理:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1757,44 +1727,44 @@ def parse_headers(fp, _class=HTTPMessage):
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def send_response(self, code, message=None):
-    self.send_response_only(code, message)
-    self.send_header(&#39;Server&#39;, self.version_string())
-    self.send_header(&#39;Date&#39;, self.date_time_string())
-
-def send_response_only(self, code, message=None):
-    &#34;&#34;&#34;Send the response header only.&#34;&#34;&#34;
-    message = self.responses[code][0]
-    self._headers_buffer.append((&#34;%s %d %s\r\n&#34; %
-                (self.protocol_version, code, message)).encode(
-                    &#39;latin-1&#39;, &#39;strict&#39;))  # 三段式回应 HTTP/1.0 200 OK
-                        
-def send_header(self, keyword, value):
-    &#34;&#34;&#34;Send a MIME header to the headers buffer.&#34;&#34;&#34;
-    if self.request_version != &#39;HTTP/0.9&#39;:
-        if not hasattr(self, &#39;_headers_buffer&#39;):
-            self._headers_buffer = []
-        self._headers_buffer.append(
-            (&#34;%s: %s\r\n&#34; % (keyword, value)).encode(&#39;latin-1&#39;, &#39;strict&#39;))
-
-def end_headers(self):
-    &#34;&#34;&#34;Send the blank line ending the MIME headers.&#34;&#34;&#34;
-    if self.request_version != &#39;HTTP/0.9&#39;:
-        self._headers_buffer.append(b&#34;\r\n&#34;)  # 隔开header和html
-        self.flush_headers()
-
-def flush_headers(self):
-    if hasattr(self, &#39;_headers_buffer&#39;):
-        self.wfile.write(b&#34;&#34;.join(self._headers_buffer))  # 写入head信息
-        self._headers_buffer = []</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def send_response(self, code, message=None):
+</span></span><span class="line"><span class="cl">    self.send_response_only(code, message)
+</span></span><span class="line"><span class="cl">    self.send_header(&#39;Server&#39;, self.version_string())
+</span></span><span class="line"><span class="cl">    self.send_header(&#39;Date&#39;, self.date_time_string())
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def send_response_only(self, code, message=None):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Send the response header only.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    message = self.responses[code][0]
+</span></span><span class="line"><span class="cl">    self._headers_buffer.append((&#34;%s %d %s\r\n&#34; %
+</span></span><span class="line"><span class="cl">                (self.protocol_version, code, message)).encode(
+</span></span><span class="line"><span class="cl">                    &#39;latin-1&#39;, &#39;strict&#39;))  # 三段式回应 HTTP/1.0 200 OK
+</span></span><span class="line"><span class="cl">                        
+</span></span><span class="line"><span class="cl">def send_header(self, keyword, value):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Send a MIME header to the headers buffer.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    if self.request_version != &#39;HTTP/0.9&#39;:
+</span></span><span class="line"><span class="cl">        if not hasattr(self, &#39;_headers_buffer&#39;):
+</span></span><span class="line"><span class="cl">            self._headers_buffer = []
+</span></span><span class="line"><span class="cl">        self._headers_buffer.append(
+</span></span><span class="line"><span class="cl">            (&#34;%s: %s\r\n&#34; % (keyword, value)).encode(&#39;latin-1&#39;, &#39;strict&#39;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def end_headers(self):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Send the blank line ending the MIME headers.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    if self.request_version != &#39;HTTP/0.9&#39;:
+</span></span><span class="line"><span class="cl">        self._headers_buffer.append(b&#34;\r\n&#34;)  # 隔开header和html
+</span></span><span class="line"><span class="cl">        self.flush_headers()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def flush_headers(self):
+</span></span><span class="line"><span class="cl">    if hasattr(self, &#39;_headers_buffer&#39;):
+</span></span><span class="line"><span class="cl">        self.wfile.write(b&#34;&#34;.join(self._headers_buffer))  # 写入head信息
+</span></span><span class="line"><span class="cl">        self._headers_buffer = []
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>http状态的生成如下:</p>
+</div><p>http状态的生成如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1810,34 +1780,32 @@ def flush_headers(self):
 </span><span class="lnt">14
 </span><span class="lnt">15
 </span><span class="lnt">16
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">responses = {
-        v: (v.phrase, v.description)
-        for v in HTTPStatus.__members__.values()
-    }  # 列表推导式
-
-class HTTPStatus(IntEnum):
-    
-    def __new__(cls, value, phrase, description=&#39;&#39;):
-        obj = int.__new__(cls, value)
-        obj._value_ = value
-
-        obj.phrase = phrase
-        obj.description = description
-        return obj
-    
-    OK = 200, &#39;OK&#39;, &#39;Request fulfilled, document follows&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">responses = {
+</span></span><span class="line"><span class="cl">        v: (v.phrase, v.description)
+</span></span><span class="line"><span class="cl">        for v in HTTPStatus.__members__.values()
+</span></span><span class="line"><span class="cl">    }  # 列表推导式
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class HTTPStatus(IntEnum):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __new__(cls, value, phrase, description=&#39;&#39;):
+</span></span><span class="line"><span class="cl">        obj = int.__new__(cls, value)
+</span></span><span class="line"><span class="cl">        obj._value_ = value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        obj.phrase = phrase
+</span></span><span class="line"><span class="cl">        obj.description = description
+</span></span><span class="line"><span class="cl">        return obj
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    OK = 200, &#39;OK&#39;, &#39;Request fulfilled, document follows&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>http-server的主要流程已经梳理完成，还有很多实现的细节可以留到具体问题时候再进行研究。</p>
-
+</div><p>http-server的主要流程已经梳理完成，还有很多实现的细节可以留到具体问题时候再进行研究。</p>
 <h2 id="小技巧">小技巧</h2>
-
 <p>使用Mixin模式，可以很好的组织实现类，下面22组合形成了6个实现类:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1855,32 +1823,32 @@ class HTTPStatus(IntEnum):
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">if hasattr(os, &#34;fork&#34;):
-    class ForkingUDPServer(ForkingMixIn, UDPServer): pass
-    class ForkingTCPServer(ForkingMixIn, TCPServer): pass
-
-class ThreadingUDPServer(ThreadingMixIn, UDPServer): pass
-class ThreadingTCPServer(ThreadingMixIn, TCPServer): pass
-
-if hasattr(socket, &#39;AF_UNIX&#39;):
-
-    class UnixStreamServer(TCPServer):
-        address_family = socket.AF_UNIX
-
-    class UnixDatagramServer(UDPServer):
-        address_family = socket.AF_UNIX
-
-    class ThreadingUnixStreamServer(ThreadingMixIn, UnixStreamServer): pass
-
-    class ThreadingUnixDatagramServer(ThreadingMixIn, UnixDatagramServer): pass</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">if hasattr(os, &#34;fork&#34;):
+</span></span><span class="line"><span class="cl">    class ForkingUDPServer(ForkingMixIn, UDPServer): pass
+</span></span><span class="line"><span class="cl">    class ForkingTCPServer(ForkingMixIn, TCPServer): pass
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class ThreadingUDPServer(ThreadingMixIn, UDPServer): pass
+</span></span><span class="line"><span class="cl">class ThreadingTCPServer(ThreadingMixIn, TCPServer): pass
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if hasattr(socket, &#39;AF_UNIX&#39;):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class UnixStreamServer(TCPServer):
+</span></span><span class="line"><span class="cl">        address_family = socket.AF_UNIX
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class UnixDatagramServer(UDPServer):
+</span></span><span class="line"><span class="cl">        address_family = socket.AF_UNIX
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class ThreadingUnixStreamServer(ThreadingMixIn, UnixStreamServer): pass
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    class ThreadingUnixDatagramServer(ThreadingMixIn, UnixDatagramServer): pass
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用元类来强制子类的创建过程:</p>
+</div><p>使用元类来强制子类的创建过程:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1892,24 +1860,23 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseSelector(metaclass=ABCMeta): # 元类
-    @abstractmethod
-    def register(self, fileobj, events, data=None):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def unregister(self, fileobj):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def select(self, timeout=None):
-        raise NotImplementedError</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class BaseSelector(metaclass=ABCMeta): # 元类
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def register(self, fileobj, events, data=None):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def unregister(self, fileobj):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    @abstractmethod
+</span></span><span class="line"><span class="cl">    def select(self, timeout=None):
+</span></span><span class="line"><span class="cl">        raise NotImplementedError
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接:</h2>
-
+</div><h2 id="参考链接">参考链接:</h2>
 <ol>
 <li><a href="https://realpython.com/python-sockets/">https://realpython.com/python-sockets/</a></li>
 <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview</a></li>
@@ -1953,11 +1920,11 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-01-28 22:13:45 \x2b0800 CST',
+        id: '2021-01-28 22:13:45 \u002b0800 CST',
         title: 'python http 源码阅读',
         link: decodeURI(location.href),
         desc: '上篇文章在阅读bottle源码时候，没有详细介绍bottle如何处理http请求，这需要先阅读python-http源码。本周我们一起看看p',
@@ -1971,6 +1938,10 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1998,13 +1969,10 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -2015,7 +1983,10 @@ if hasattr(socket, &#39;AF_UNIX&#39;):
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

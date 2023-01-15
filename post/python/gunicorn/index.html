@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/gunicorn/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Gunicorn 源码阅读" />
 <meta property="og:description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/gunicorn/" />
-<meta property="article:published_time" content="2021-02-24T20:01:29&#43;08:00"/>
-<meta property="article:modified_time" content="2021-02-24T20:01:29&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/gunicorn/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-02-24T20:01:29+08:00" />
+<meta property="article:modified_time" content="2021-02-24T20:01:29+08:00" />
 
 <meta itemprop="name" content="Gunicorn 源码阅读">
-<meta itemprop="description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正">
-
-
-<meta itemprop="datePublished" content="2021-02-24T20:01:29&#43;08:00" />
-<meta itemprop="dateModified" content="2021-02-24T20:01:29&#43;08:00" />
+<meta itemprop="description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正"><meta itemprop="datePublished" content="2021-02-24T20:01:29+08:00" />
+<meta itemprop="dateModified" content="2021-02-24T20:01:29+08:00" />
 <meta itemprop="wordCount" content="3474">
-
-
-
-<meta itemprop="keywords" content="源码,gunicorn," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="源码,gunicorn," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Gunicorn 源码阅读"/>
 <meta name="twitter:description" content="gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,27 +144,21 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#gunicorn-项目结构简介">gunicorn 项目结构简介</a></li>
-<li><a href="#gunicorn-使用">gunicorn 使用</a></li>
-<li><a href="#gunicorn-application-实现">gunicorn-application 实现</a></li>
-<li><a href="#arbiter实现">arbiter实现</a></li>
-<li><a href="#sync-worker实现">sync-worker实现</a></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#小技巧">小技巧</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#gunicorn-项目结构简介">gunicorn 项目结构简介</a></li>
+    <li><a href="#gunicorn-使用">gunicorn 使用</a></li>
+    <li><a href="#gunicorn-application-实现">gunicorn-application 实现</a></li>
+    <li><a href="#arbiter实现">arbiter实现</a></li>
+    <li><a href="#sync-worker实现">sync-worker实现</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#小技巧">小技巧</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 <strong>WSGI</strong>  HTTP Server。学习gunicorn后，我们可以把之前的 <strong>Bottle</strong> 程序正式部署起来。老规矩，本文分下面几个部分:</p>
-
+      <p>gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 <strong>WSGI</strong>  HTTP Server。学习gunicorn后，我们可以把之前的 <strong>Bottle</strong> 程序正式部署起来。老规矩，本文分下面几个部分:</p>
 <ul>
 <li>gunicorn 项目结构简介</li>
 <li>gunicorn 使用</li>
@@ -171,11 +168,8 @@
 <li>小结</li>
 <li>小技巧</li>
 </ul>
-
 <h2 id="gunicorn-项目结构简介">gunicorn 项目结构简介</h2>
-
 <p>gunicorn 源码选择的版本是 <code>20.0.0</code>，主要的文件及包如下:</p>
-
 <table>
 <thead>
 <tr>
@@ -183,46 +177,36 @@
 <th>描述</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>app包</td>
 <td>guincorn  的 Application （不是wsgi定义的applicaton）</td>
 </tr>
-
 <tr>
 <td>http包</td>
 <td>gunicorn 对 http协议的一些处理</td>
 </tr>
-
 <tr>
 <td>workers包</td>
 <td>gunicorn 的工作类实现 ，包括同步sync实现，线程池版本实现gthread，以及异步版本实现 geventlet，gevent等</td>
 </tr>
-
 <tr>
 <td>arbiter.py</td>
 <td>guicorn  的master实现</td>
 </tr>
 </tbody>
 </table>
-
 <p>根据gunicorn的设计特点：</p>
-
 <blockquote>
 <p>Gunicorn is based on the pre-fork worker model. This means that there is a central master process that manages a set of worker processes. The master never knows anything about individual clients. All requests and responses are handled completely by worker processes.</p>
-
 <p>gunicorn使用pre-fork 工作模型，也就是master提前fork出预定数量的work，管理worker集合。所有的request和response都由worker进程处理。</p>
 </blockquote>
-
 <p>我们重点放在：gunicorn的服务实现，master-worker如何实现和协作上。</p>
-
 <h2 id="gunicorn-使用">gunicorn 使用</h2>
-
 <p>编写测试app，可以看到这是一个符合wsgi规范的application：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -231,23 +215,23 @@
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># myapp.py
-
-def app(environ, start_response):  # env 和 http 状态及头设定回调
-    data = b&#34;Hello, World!\n&#34;
-    start_response(&#34;200 OK&#34;, [
-            (&#34;Content-Type&#34;, &#34;text/plain&#34;),
-            (&#34;Content-Length&#34;, str(len(data)))
-    ])
-    return iter([data])  # 返回数据</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># myapp.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def app(environ, start_response):  # env 和 http 状态及头设定回调
+</span></span><span class="line"><span class="cl">    data = b&#34;Hello, World!\n&#34;
+</span></span><span class="line"><span class="cl">    start_response(&#34;200 OK&#34;, [
+</span></span><span class="line"><span class="cl">            (&#34;Content-Type&#34;, &#34;text/plain&#34;),
+</span></span><span class="line"><span class="cl">            (&#34;Content-Length&#34;, str(len(data)))
+</span></span><span class="line"><span class="cl">    ])
+</span></span><span class="line"><span class="cl">    return iter([data])  # 返回数据
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用4个work节点，日志级别debug的方式启动服务，加载 myapp:app</p>
+</div><p>使用4个work节点，日志级别debug的方式启动服务，加载 myapp:app</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -259,91 +243,91 @@ def app(environ, start_response):  # env 和 http 状态及头设定回调
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># gunicorn -w 4 --log-level debug  myapp:app
-[2021-02-23 17:58:57 +0800] [50258] [DEBUG] Current configuration:  # 准备配置
-...
-[2021-02-23 18:01:12 +0800] [50462] [INFO] Starting gunicorn 20.0.0  # 启动gunicorn
-[2021-02-23 18:01:12 +0800] [50462] [DEBUG] Arbiter booted  # 启动master
-[2021-02-23 18:01:12 +0800] [50462] [INFO] Listening at: http://127.0.0.1:8000 (50462)  # 监听端口
-[2021-02-23 18:01:12 +0800] [50462] [INFO] Using worker: sync
-[2021-02-23 18:01:12 +0800] [50464] [INFO] Booting worker with pid: 50464 # 启动worker
-[2021-02-23 18:01:12 +0800] [50465] [INFO] Booting worker with pid: 50465
-[2021-02-23 18:01:12 +0800] [50466] [INFO] Booting worker with pid: 50466
-[2021-02-23 18:01:12 +0800] [50467] [INFO] Booting worker with pid: 50467
-[2021-02-23 18:01:12 +0800] [50462] [DEBUG] 4 workers</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># gunicorn -w 4 --log-level debug  myapp:app
+</span></span><span class="line"><span class="cl">[2021-02-23 17:58:57 +0800] [50258] [DEBUG] Current configuration:  # 准备配置
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50462] [INFO] Starting gunicorn 20.0.0  # 启动gunicorn
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50462] [DEBUG] Arbiter booted  # 启动master
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50462] [INFO] Listening at: http://127.0.0.1:8000 (50462)  # 监听端口
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50462] [INFO] Using worker: sync
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50464] [INFO] Booting worker with pid: 50464 # 启动worker
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50465] [INFO] Booting worker with pid: 50465
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50466] [INFO] Booting worker with pid: 50466
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50467] [INFO] Booting worker with pid: 50467
+</span></span><span class="line"><span class="cl">[2021-02-23 18:01:12 +0800] [50462] [DEBUG] 4 workers
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>curl</code> 测试服务</p>
+</div><p>使用 <code>curl</code> 测试服务</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># curl http://127.0.0.1:8000
-Hello, World!</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># curl http://127.0.0.1:8000
+</span></span><span class="line"><span class="cl">Hello, World!
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>同时gunicorn中可以看到 <strong>worker=50465</strong> 处理了这个http请求</p>
+</div><p>同时gunicorn中可以看到 <strong>worker=50465</strong> 处理了这个http请求</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">[2021-02-24 16:09:39 +0800] [50465] [DEBUG] GET /</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[2021-02-24 16:09:39 +0800] [50465] [DEBUG] GET /
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>运行时候，还可以通过发送信号，手动扩充work节点数</p>
+</div><p>运行时候，还可以通过发送信号，手动扩充work节点数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span></pre></td>
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kill -TTIN 50462</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># kill -TTIN 50462
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>观察服务日志，会发现 <strong>master=50462</strong> 进程处理了 <code>ttin</code> 信号，并且扩展worker节点数到5</p>
+</div><p>观察服务日志，会发现 <strong>master=50462</strong> 进程处理了 <code>ttin</code> 信号，并且扩展worker节点数到5</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">...
-[2021-02-24 18:02:56 +0800] [50462] [INFO] Handling signal: ttin
-[2021-02-24 18:02:56 +0800] [75918] [INFO] Booting worker with pid: 75918
-[2021-02-24 18:02:56 +0800] [50462] [DEBUG] 5 workers</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">[2021-02-24 18:02:56 +0800] [50462] [INFO] Handling signal: ttin
+</span></span><span class="line"><span class="cl">[2021-02-24 18:02:56 +0800] [75918] [INFO] Booting worker with pid: 75918
+</span></span><span class="line"><span class="cl">[2021-02-24 18:02:56 +0800] [50462] [DEBUG] 5 workers
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>使用 <code>Ctrl+C</code>  关闭服务，可以看到也是 <strong>master=50462</strong> 进程处理了 <code>int</code> 信号，并且在关闭worker节点后关闭自己</p>
+</div><p>使用 <code>Ctrl+C</code>  关闭服务，可以看到也是 <strong>master=50462</strong> 进程处理了 <code>int</code> 信号，并且在关闭worker节点后关闭自己</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">^C[2021-02-25 15:06:54 +0800] [50462] [INFO] Handling signal: int
-[2021-02-25 15:06:54 +0800] [50464] [INFO] Worker exiting (pid: 50464)
-[2021-02-25 15:06:54 +0800] [50465] [INFO] Worker exiting (pid: 50465)
-[2021-02-25 15:06:54 +0800] [50466] [INFO] Worker exiting (pid: 50466)
-[2021-02-25 15:06:54 +0800] [50467] [INFO] Worker exiting (pid: 50467)
-[2021-02-25 15:06:54 +0800] [75918] [INFO] Worker exiting (pid: 75918)
-[2021-02-25 15:06:54 +0800] [50462] [INFO] Shutting down: Master</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">^C[2021-02-25 15:06:54 +0800] [50462] [INFO] Handling signal: int
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [50464] [INFO] Worker exiting (pid: 50464)
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [50465] [INFO] Worker exiting (pid: 50465)
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [50466] [INFO] Worker exiting (pid: 50466)
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [50467] [INFO] Worker exiting (pid: 50467)
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [75918] [INFO] Worker exiting (pid: 75918)
+</span></span><span class="line"><span class="cl">[2021-02-25 15:06:54 +0800] [50462] [INFO] Shutting down: Master
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>如果对gunicon的参数不了解，可以使用下面命令查看帮助</p>
+</div><p>如果对gunicon的参数不了解，可以使用下面命令查看帮助</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -351,22 +335,22 @@ Hello, World!</pre></td></tr></table>
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># gunicorn -h
-usage: gunicorn [OPTIONS] [APP_MODULE]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  ...
-  -w INT, --workers INT
-                        The number of worker processes for handling requests. [1]</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># gunicorn -h
+</span></span><span class="line"><span class="cl">usage: gunicorn [OPTIONS] [APP_MODULE]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">optional arguments:
+</span></span><span class="line"><span class="cl">  -h, --help            show this help message and exit
+</span></span><span class="line"><span class="cl">  ...
+</span></span><span class="line"><span class="cl">  -w INT, --workers INT
+</span></span><span class="line"><span class="cl">                        The number of worker processes for handling requests. [1]
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>帮助使用我们熟悉的 <strong>argparse</strong> 实现。</p>
+</div><p>帮助使用我们熟悉的 <strong>argparse</strong> 实现。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -420,81 +404,81 @@ optional arguments:
 </span><span class="lnt">52
 </span><span class="lnt">53
 </span><span class="lnt">54
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Setting(object):
-            
-    def add_option(self, parser):
-        args = tuple(self.cli)
-
-        help_txt = &#34;%s [%s]&#34; % (self.short, self.default)
-        help_txt = help_txt.replace(&#34;%&#34;, &#34;%%&#34;)
-
-        kwargs = {
-            &#34;dest&#34;: self.name,
-            &#34;action&#34;: self.action or &#34;store&#34;,
-            &#34;type&#34;: self.type or str,
-            &#34;default&#34;: None,
-            &#34;help&#34;: help_txt
-        }
-        ...
-        parser.add_argument(*args, **kwargs)  # 添加选项
-
-class Workers(Setting):  # --workers 的选项类
-    name = &#34;workers&#34;
-    section = &#34;Worker Processes&#34;
-    cli = [&#34;-w&#34;, &#34;--workers&#34;]
-    meta = &#34;INT&#34;
-    validator = validate_pos_int
-    type = int
-    default = int(os.environ.get(&#34;WEB_CONCURRENCY&#34;, 1))
-    desc = &#34;&#34;&#34;\
-        The number of worker processes for handling requests.
-
-        A positive integer generally in the ``2-4 x $(NUM_CORES)`` range.
-        You&#39;ll want to vary this a bit to find the best for your particular
-        application&#39;s work load.
-
-        By default, the value of the ``WEB_CONCURRENCY`` environment variable.
-        If it is not defined, the default is ``1``.
-        &#34;&#34;&#34;
-
-def parser(self):
-    kwargs = {
-        &#34;usage&#34;: self.usage,
-        &#34;prog&#34;: self.prog
-    }
-    parser = argparse.ArgumentParser(**kwargs)
-    parser.add_argument(&#34;-v&#34;, &#34;--version&#34;,
-            action=&#34;version&#34;, default=argparse.SUPPRESS,
-            version=&#34;%(prog)s (version &#34; + __version__ + &#34;)\n&#34;,
-            help=&#34;show program&#39;s version number and exit&#34;)
-    parser.add_argument(&#34;args&#34;, nargs=&#34;*&#34;, help=argparse.SUPPRESS)
-
-    keys = sorted(self.settings, key=self.settings.__getitem__)  # 动态添加参数选项
-    for k in keys:
-        self.settings[k].add_option(parser)
-
-    return parser</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">class</span><span class="w"> </span><span class="nf">Setting</span><span class="p">(</span><span class="n">object</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">def</span><span class="w"> </span><span class="nf">add_option</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">parser</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">tuple</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">cli</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">help_txt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;%s [%s]&#34;</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">short</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="k">default</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">help_txt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">help_txt</span><span class="p">.</span><span class="k">replace</span><span class="p">(</span><span class="s2">&#34;%&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;%%&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">kwargs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s2">&#34;dest&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s2">&#34;action&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">action</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="s2">&#34;store&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s2">&#34;type&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s2">&#34;default&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">None</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s2">&#34;help&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">help_txt</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="err">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">parser</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="w">  </span><span class="c1"># 添加选项
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">class</span><span class="w"> </span><span class="nf">Workers</span><span class="p">(</span><span class="n">Setting</span><span class="p">):</span><span class="w">  </span><span class="c1"># --workers 的选项类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;workers&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">section</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;Worker Processes&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">cli</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-w&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;--workers&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">meta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;INT&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">validator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">validate_pos_int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s2">&#34;WEB_CONCURRENCY&#34;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;&#34;&#34;\
+</span></span></span><span class="line"><span class="cl"><span class="s2">        The number of worker processes for handling requests.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">        A positive integer generally in the ``2-4 x $(NUM_CORES)`` range.
+</span></span></span><span class="line"><span class="cl"><span class="s2">        You&#39;ll want to vary this a bit to find the best for your particular
+</span></span></span><span class="line"><span class="cl"><span class="s2">        application&#39;s work load.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">        By default, the value of the ``WEB_CONCURRENCY`` environment variable.
+</span></span></span><span class="line"><span class="cl"><span class="s2">        If it is not defined, the default is ``1``.
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">parser</span><span class="p">(</span><span class="n">self</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">kwargs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s2">&#34;usage&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="k">usage</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s2">&#34;prog&#34;</span><span class="p">:</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">prog</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">argparse</span><span class="p">.</span><span class="nf">ArgumentParser</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="s2">&#34;-v&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;--version&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">action</span><span class="o">=</span><span class="s2">&#34;version&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">default</span><span class="o">=</span><span class="n">argparse</span><span class="p">.</span><span class="n">SUPPRESS</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">version</span><span class="o">=</span><span class="s2">&#34;%(prog)s (version &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">__version__</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&#34;)\n&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">help</span><span class="o">=</span><span class="s2">&#34;show program&#39;s version number and exit&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="s2">&#34;args&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">nargs</span><span class="o">=</span><span class="s2">&#34;*&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">help</span><span class="o">=</span><span class="n">argparse</span><span class="p">.</span><span class="n">SUPPRESS</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sorted</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">settings</span><span class="p">,</span><span class="w"> </span><span class="k">key</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">settings</span><span class="p">.</span><span class="n">__getitem__</span><span class="p">)</span><span class="w">  </span><span class="c1"># 动态添加参数选项
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">keys</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">self</span><span class="p">.</span><span class="n">settings</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="nf">add_option</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">parser</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="gunicorn-application-实现">gunicorn-application 实现</h2>
-
+</div><h2 id="gunicorn-application-实现">gunicorn-application 实现</h2>
 <p>gunicorn的application主要是下面三个类实现。需要注意的是这里的application可以理解为web-server的application；bottle/flask/django等实现的是web-framework的applicaiton。前者动态加载后者，前者处理http服务，后者处理单次的http请求。</p>
-
 <ul>
 <li>BaseApplication
-
 <ul>
-<li>Application</li>
+<li>Application
+<ul>
 <li>WSGIApplication</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
+</li>
+</ul>
 <p>3个Application梳理后，大概的代码模版如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -526,50 +510,48 @@ def parser(self):
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class WSGIApplication(Application)
-    
-    def __init__(self, usage=None, prog=None):
-        self.do_load_config()  # 加载配置
-            
-    def do_load_config():
-        ...
-        cfg = self.init(parser, args, args.args)  # 初始化配置
-        ...
-    
-    def init(...):
-        ...
-        self.app_uri = args[0]  # 获取wsgi-application参数
-    
-  def load(...):
-        util.import_app(self.app_uri)  # 动态加载wsgi-application
-        ...
-    
-    def run(...):
-        self.load()
-        Arbiter(self).run()  # 启动master，也就是Arbiter
-
-def run():  # 运行服务
-    &#34;&#34;&#34;\
-    The ``gunicorn`` command line runner for launching Gunicorn with
-    generic WSGI applications.
-    &#34;&#34;&#34;
-    from gunicorn.app.wsgiapp import WSGIApplication
-    WSGIApplication(&#34;%(prog)s [OPTIONS] [APP_MODULE]&#34;).run()
-
-if __name__ == &#39;__main__&#39;:
-    run()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">class</span><span class="w"> </span><span class="nf">WSGIApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">def</span><span class="w"> </span><span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">usage</span><span class="o">=</span><span class="n">None</span><span class="p">,</span><span class="w"> </span><span class="n">prog</span><span class="o">=</span><span class="n">None</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">self</span><span class="p">.</span><span class="nf">do_load_config</span><span class="p">()</span><span class="w">  </span><span class="c1"># 加载配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">			
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">def</span><span class="w"> </span><span class="nf">do_load_config</span><span class="p">():</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="nf">init</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">.</span><span class="n">args</span><span class="p">)</span><span class="w">  </span><span class="c1"># 初始化配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">		</span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(...):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	    </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	    </span><span class="n">self</span><span class="p">.</span><span class="n">app_uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w">  </span><span class="c1"># 获取wsgi-application参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">	
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">def</span><span class="w"> </span><span class="k">load</span><span class="p">(...):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  		</span><span class="n">util</span><span class="p">.</span><span class="nf">import_app</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">app_uri</span><span class="p">)</span><span class="w">  </span><span class="c1"># 动态加载wsgi-application
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  		</span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(...):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">self</span><span class="p">.</span><span class="k">load</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="nf">Arbiter</span><span class="p">(</span><span class="n">self</span><span class="p">).</span><span class="nf">run</span><span class="p">()</span><span class="w">  </span><span class="c1"># 启动master，也就是Arbiter
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">def</span><span class="w"> </span><span class="nf">run</span><span class="p">():</span><span class="w">  </span><span class="c1"># 运行服务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="s2">&#34;&#34;&#34;\
+</span></span></span><span class="line"><span class="cl"><span class="s2">    The ``gunicorn`` command line runner for launching Gunicorn with
+</span></span></span><span class="line"><span class="cl"><span class="s2">    generic WSGI applications.
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">from</span><span class="w"> </span><span class="n">gunicorn</span><span class="p">.</span><span class="n">app</span><span class="p">.</span><span class="n">wsgiapp</span><span class="w"> </span><span class="n">import</span><span class="w"> </span><span class="n">WSGIApplication</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">WSGIApplication</span><span class="p">(</span><span class="s2">&#34;%(prog)s [OPTIONS] [APP_MODULE]&#34;</span><span class="p">).</span><span class="nf">run</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="w"> </span><span class="n">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">run</span><span class="p">()</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>application部分的实现，相对比较简单，就不再赘述。</p>
-
+</div><p>application部分的实现，相对比较简单，就不再赘述。</p>
 <h2 id="arbiter实现">arbiter实现</h2>
-
 <p>Arbiter 仲裁者，事实上的master进程核心，整理后代码模版如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -606,65 +588,65 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class Arbiter(object):
-    def __init__(self, app):
-        self.worker_class = self.cfg.worker_class  # worker类
-        self.num_workers = self.cfg.worker  # worker数量
-        ...
-    
-    def start():
-        self.init_signals()  # 初始化信号监听
-        ...
-        sock.create_socket(...) # 创建socket服务
-    
-    def run(self):  
-        self.start()
-        try:
-            self.manage_workers() # 启动节点
-
-            while True: #  无限循环
-                ...
-                sig = self.SIG_QUEUE.pop(0) if self.SIG_QUEUE else None
-                if sig is None:
-                    self.sleep()  # 持续休眠
-                    self.murder_workers()
-                    self.manage_workers()
-                    continue
-
-                if sig not in self.SIG_NAMES:
-                    self.log.info(&#34;Ignoring unknown signal: %s&#34;, sig)
-                    continue
-                                # 处理信号
-                signame = self.SIG_NAMES.get(sig)
-                handler = getattr(self, &#34;handle_%s&#34; % signame, None)
-                ...
-                handler()
-                self.wakeup()  # 唤醒
-        except (StopIteration, KeyboardInterrupt):
-           ...
-            </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Arbiter(object):
+</span></span><span class="line"><span class="cl">	def __init__(self, app):
+</span></span><span class="line"><span class="cl">		self.worker_class = self.cfg.worker_class  # worker类
+</span></span><span class="line"><span class="cl">		self.num_workers = self.cfg.worker  # worker数量
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def start():
+</span></span><span class="line"><span class="cl">		self.init_signals()  # 初始化信号监听
+</span></span><span class="line"><span class="cl">		...
+</span></span><span class="line"><span class="cl">		sock.create_socket(...) # 创建socket服务
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def run(self):  
+</span></span><span class="line"><span class="cl">		self.start()
+</span></span><span class="line"><span class="cl">		try:
+</span></span><span class="line"><span class="cl">            self.manage_workers() # 启动节点
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            while True: #  无限循环
+</span></span><span class="line"><span class="cl">                ...
+</span></span><span class="line"><span class="cl">                sig = self.SIG_QUEUE.pop(0) if self.SIG_QUEUE else None
+</span></span><span class="line"><span class="cl">                if sig is None:
+</span></span><span class="line"><span class="cl">                    self.sleep()  # 持续休眠
+</span></span><span class="line"><span class="cl">                    self.murder_workers()
+</span></span><span class="line"><span class="cl">                    self.manage_workers()
+</span></span><span class="line"><span class="cl">                    continue
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                if sig not in self.SIG_NAMES:
+</span></span><span class="line"><span class="cl">                    self.log.info(&#34;Ignoring unknown signal: %s&#34;, sig)
+</span></span><span class="line"><span class="cl">                    continue
+</span></span><span class="line"><span class="cl">    							# 处理信号
+</span></span><span class="line"><span class="cl">                signame = self.SIG_NAMES.get(sig)
+</span></span><span class="line"><span class="cl">                handler = getattr(self, &#34;handle_%s&#34; % signame, None)
+</span></span><span class="line"><span class="cl">                ...
+</span></span><span class="line"><span class="cl">                handler()
+</span></span><span class="line"><span class="cl">                self.wakeup()  # 唤醒
+</span></span><span class="line"><span class="cl">        except (StopIteration, KeyboardInterrupt):
+</span></span><span class="line"><span class="cl">           ...
+</span></span><span class="line"><span class="cl">    		
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在了解Arbiter工作前先了解一下信号,  <strong>linux</strong> 系统可以使用下面命令查看信号清单</p>
+</div><p>在了解Arbiter工作前先了解一下信号,  <strong>linux</strong> 系统可以使用下面命令查看信号清单</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># kill -l
- 1) SIGHUP   2) SIGINT   3) SIGQUIT  4) SIGILL   5) SIGTRAP
- 6) SIGABRT  7) SIGBUS   8) SIGFPE   9) SIGKILL 10) SIGUSR1
- 11) SIGSEGV    12) SIGUSR2 13) SIGPIPE 14) SIGALRM 15) SIGTERM
-...</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># kill -l
+</span></span><span class="line"><span class="cl"> 1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
+</span></span><span class="line"><span class="cl"> 6) SIGABRT	 7) SIGBUS	 8) SIGFPE	 9) SIGKILL	10) SIGUSR1
+</span></span><span class="line"><span class="cl"> 11) SIGSEGV	12) SIGUSR2	13) SIGPIPE	14) SIGALRM	15) SIGTERM
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>1 (SIGHUP): terminate a connection, or reload the configuration for daemons</li>
 <li>2 (SIGINT): interrupt the session from the dialogue station</li>
 <li>3 (SIGQUIT): terminate the session from the dialogue station</li>
@@ -681,11 +663,10 @@ if __name__ == &#39;__main__&#39;:
 <li>14 (SIGALRM): the timer terminated (alarm)</li>
 <li>15 (SIGTERM): terminate the process in a soft way</li>
 </ul>
-
 <p>信号是操作系统提供的事件，可以用来进行跨进程的通信。Arbiter.init_signals 做的工作如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -700,50 +681,50 @@ if __name__ == &#39;__main__&#39;:
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
-               for x in &#34;HUP QUIT INT TERM TTIN TTOU USR1 USR2 WINCH&#34;.split()]
-               
-def init_signals(self):
-    ...
-
-    # initialize all signals
-    for s in self.SIGNALS:
-        signal.signal(s, self.signal)
-    signal.signal(signal.SIGCHLD, self.handle_chld)  # 添加信号监听器
-
-def signal(self, sig, frame):
-    if len(self.SIG_QUEUE) &lt; 5:
-            self.SIG_QUEUE.append(sig)
-            self.wakeup()</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
+</span></span><span class="line"><span class="cl">               for x in &#34;HUP QUIT INT TERM TTIN TTOU USR1 USR2 WINCH&#34;.split()]
+</span></span><span class="line"><span class="cl">               
+</span></span><span class="line"><span class="cl">def init_signals(self):
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # initialize all signals
+</span></span><span class="line"><span class="cl">    for s in self.SIGNALS:
+</span></span><span class="line"><span class="cl">        signal.signal(s, self.signal)
+</span></span><span class="line"><span class="cl">    signal.signal(signal.SIGCHLD, self.handle_chld)  # 添加信号监听器
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def signal(self, sig, frame):
+</span></span><span class="line"><span class="cl">	if len(self.SIG_QUEUE) &lt; 5:
+</span></span><span class="line"><span class="cl">			self.SIG_QUEUE.append(sig)
+</span></span><span class="line"><span class="cl">			self.wakeup()
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>之前演示的扩容信号 <code>TTIN</code> 是这样处理的 :</p>
+</div><p>之前演示的扩容信号 <code>TTIN</code> 是这样处理的 :</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def handle_ttin(self):
-    &#34;&#34;&#34;\
-    SIGTTIN handling.
-    Increases the number of workers by one.
-    &#34;&#34;&#34;
-    self.num_workers += 1  # 扩容 
-    self.manage_workers()  # 管理worker </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def handle_ttin(self):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;\
+</span></span><span class="line"><span class="cl">    SIGTTIN handling.
+</span></span><span class="line"><span class="cl">    Increases the number of workers by one.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    self.num_workers += 1  # 扩容 
+</span></span><span class="line"><span class="cl">    self.manage_workers()  # 管理worker 
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>Arbiter的sleep和warkeup是这样实现的:</p>
+</div><p>Arbiter的sleep和warkeup是这样实现的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -768,39 +749,39 @@ def signal(self, sig, frame):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">self.PIPE = pair = os.pipe()  # 创建管道
-    
-def sleep(self):
-    &#34;&#34;&#34;\
-    Sleep until PIPE is readable or we timeout.
-    A readable PIPE means a signal occurred.
-    &#34;&#34;&#34;
-    try:
-        ready = select.select([self.PIPE[0]], [], [], 1.0)  # 使用select监听管道的数据变化
-        if not ready[0]:
-            return
-        while os.read(self.PIPE[0], 1):  # 读取管道数据
-            pass
-    except (select.error, OSError) as e:
-        ...
-        
-def wakeup(self):
-    &#34;&#34;&#34;\
-    Wake up the arbiter by writing to the PIPE
-    &#34;&#34;&#34;
-    try:
-        os.write(self.PIPE[1], b&#39;.&#39;)  # 管道写入
-    except IOError as e:
-        ...
-    </pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">self.PIPE = pair = os.pipe()  # 创建管道
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">def sleep(self):
+</span></span><span class="line"><span class="cl">	&#34;&#34;&#34;\
+</span></span><span class="line"><span class="cl">    Sleep until PIPE is readable or we timeout.
+</span></span><span class="line"><span class="cl">    A readable PIPE means a signal occurred.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        ready = select.select([self.PIPE[0]], [], [], 1.0)  # 使用select监听管道的数据变化
+</span></span><span class="line"><span class="cl">        if not ready[0]:
+</span></span><span class="line"><span class="cl">            return
+</span></span><span class="line"><span class="cl">        while os.read(self.PIPE[0], 1):  # 读取管道数据
+</span></span><span class="line"><span class="cl">            pass
+</span></span><span class="line"><span class="cl">    except (select.error, OSError) as e:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">def wakeup(self):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;\
+</span></span><span class="line"><span class="cl">    Wake up the arbiter by writing to the PIPE
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        os.write(self.PIPE[1], b&#39;.&#39;)  # 管道写入
+</span></span><span class="line"><span class="cl">    except IOError as e:
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">    
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>需要说明的是Arbiter通过 <code>sock.create_sockets</code> 创建了socket，并绑定端口和监听，然后在fork-worker的时候，将socket传递给了子进程。</p>
+</div><p>需要说明的是Arbiter通过 <code>sock.create_sockets</code> 创建了socket，并绑定端口和监听，然后在fork-worker的时候，将socket传递给了子进程。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -809,23 +790,23 @@ def wakeup(self):
 </span><span class="lnt">7
 </span><span class="lnt">8
 </span><span class="lnt">9
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">worker = self.worker_class(self.worker_age, self.pid, self.LISTENERS,
-                                   self.app, self.timeout / 2.0,
-                                   self.cfg, self.log)
-self.cfg.pre_fork(self, worker)
-pid = os.fork()
-if pid != 0:
-        worker.pid = pid  # 记录worker的pid
-    self.WORKERS[pid] = worker # 添加到worker集合
-    return pid</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">worker = self.worker_class(self.worker_age, self.pid, self.LISTENERS,
+</span></span><span class="line"><span class="cl">                                   self.app, self.timeout / 2.0,
+</span></span><span class="line"><span class="cl">                                   self.cfg, self.log)
+</span></span><span class="line"><span class="cl">self.cfg.pre_fork(self, worker)
+</span></span><span class="line"><span class="cl">pid = os.fork()
+</span></span><span class="line"><span class="cl">if pid != 0:
+</span></span><span class="line"><span class="cl">		worker.pid = pid  # 记录worker的pid
+</span></span><span class="line"><span class="cl">    self.WORKERS[pid] = worker # 添加到worker集合
+</span></span><span class="line"><span class="cl">    return pid
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>销毁worker是使用信号:</p>
+</div><p>销毁worker是使用信号:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -833,35 +814,32 @@ if pid != 0:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def kill_workers(self, sig):
-    &#34;&#34;&#34;\
-    Kill all workers with the signal `sig`
-    :attr sig: `signal.SIG*` value
-    &#34;&#34;&#34;
-    worker_pids = list(self.WORKERS.keys())
-    for pid in worker_pids:
-        os.kill(pid, sig)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">def</span><span class="w"> </span><span class="nf">kill_workers</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">sig</span><span class="p">):</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="s2">&#34;&#34;&#34;\
+</span></span></span><span class="line"><span class="cl"><span class="s2">    Kill all workers with the signal `sig`
+</span></span></span><span class="line"><span class="cl"><span class="s2">    :attr sig: `signal.SIG*` value
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">worker_pids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">WORKERS</span><span class="p">.</span><span class="k">keys</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">worker_pids</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">os</span><span class="p">.</span><span class="k">kill</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">sig</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="sync-worker实现">sync-worker实现</h2>
-
+</div><h2 id="sync-worker实现">sync-worker实现</h2>
 <p>接下来，我们看看worker，主要是sync-worker的实现。worker的关系主要如下:</p>
-
 <ul>
 <li>Worker 处理信号
-
 <ul>
 <li>SyncWorker 同步处理http请求</li>
 <li>ThreadWorker 使用线程处理http请求</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>接之前Arbiter中fork-worker的代码，创建完成的work进入 <strong>init_process</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -869,22 +847,22 @@ if pid != 0:
 </span><span class="lnt">6
 </span><span class="lnt">7
 </span><span class="lnt">8
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># Process Child
-worker.pid = os.getpid()
-try:
-    util._setproctitle(&#34;worker [%s]&#34; % self.proc_name)
-    self.log.info(&#34;Booting worker with pid: %s&#34;, worker.pid)
-    self.cfg.post_fork(self, worker)
-    worker.init_process()
-    sys.exit(0)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># Process Child
+</span></span><span class="line"><span class="cl">worker.pid = os.getpid()
+</span></span><span class="line"><span class="cl">try:
+</span></span><span class="line"><span class="cl">    util._setproctitle(&#34;worker [%s]&#34; % self.proc_name)
+</span></span><span class="line"><span class="cl">    self.log.info(&#34;Booting worker with pid: %s&#34;, worker.pid)
+</span></span><span class="line"><span class="cl">    self.cfg.post_fork(self, worker)
+</span></span><span class="line"><span class="cl">    worker.init_process()
+</span></span><span class="line"><span class="cl">    sys.exit(0)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>work的init_process模版如下:</p>
+</div><p>work的init_process模版如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -902,32 +880,32 @@ try:
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def init_process(self):
-    &#34;&#34;&#34;\
-    If you override this method in a subclass, the last statement
-    in the function should be to call this method with
-    super().init_process() so that the ``run()`` loop is initiated.
-    &#34;&#34;&#34;
-    # For waking ourselves up
-    self.PIPE = os.pipe()  # 创建管道
-    ...
-    self.wait_fds = self.sockets + [self.PIPE[0]]  # 监听管道和socket
-            ...
-    self.init_signals()  # 初始化信号监听
-            ...
-    self.load_wsgi()  # 加载wsgi的应用
-    ...
-    # Enter main run loop
-    self.booted = True
-    self.run()  # 工作循环</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def init_process(self):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;\
+</span></span><span class="line"><span class="cl">    If you override this method in a subclass, the last statement
+</span></span><span class="line"><span class="cl">    in the function should be to call this method with
+</span></span><span class="line"><span class="cl">    super().init_process() so that the ``run()`` loop is initiated.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    # For waking ourselves up
+</span></span><span class="line"><span class="cl">    self.PIPE = os.pipe()  # 创建管道
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    self.wait_fds = self.sockets + [self.PIPE[0]]  # 监听管道和socket
+</span></span><span class="line"><span class="cl">			...
+</span></span><span class="line"><span class="cl">    self.init_signals()  # 初始化信号监听
+</span></span><span class="line"><span class="cl">			...
+</span></span><span class="line"><span class="cl">    self.load_wsgi()  # 加载wsgi的应用
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # Enter main run loop
+</span></span><span class="line"><span class="cl">    self.booted = True
+</span></span><span class="line"><span class="cl">    self.run()  # 工作循环
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>work一样的进行信号监听:</p>
+</div><p>work一样的进行信号监听:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -941,28 +919,28 @@ try:
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
-            for x in &#34;ABRT HUP QUIT INT TERM USR1 USR2 WINCH CHLD&#34;.split()]
-def init_signals(self):
-    # reset signaling
-    for s in self.SIGNALS:
-            signal.signal(s, signal.SIG_DFL)
-    # init new signaling
-    signal.signal(signal.SIGQUIT, self.handle_quit)
-    signal.signal(signal.SIGTERM, self.handle_exit)
-    signal.signal(signal.SIGINT, self.handle_quit)
-    ...
-
-    if hasattr(signal, &#39;set_wakeup_fd&#39;):
-            signal.set_wakeup_fd(self.PIPE[1])  # 等待select唤醒</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">SIGNALS = [getattr(signal, &#34;SIG%s&#34; % x)
+</span></span><span class="line"><span class="cl">            for x in &#34;ABRT HUP QUIT INT TERM USR1 USR2 WINCH CHLD&#34;.split()]
+</span></span><span class="line"><span class="cl">def init_signals(self):
+</span></span><span class="line"><span class="cl">    # reset signaling
+</span></span><span class="line"><span class="cl">    for s in self.SIGNALS:
+</span></span><span class="line"><span class="cl">    		signal.signal(s, signal.SIG_DFL)
+</span></span><span class="line"><span class="cl">    # init new signaling
+</span></span><span class="line"><span class="cl">    signal.signal(signal.SIGQUIT, self.handle_quit)
+</span></span><span class="line"><span class="cl">    signal.signal(signal.SIGTERM, self.handle_exit)
+</span></span><span class="line"><span class="cl">    signal.signal(signal.SIGINT, self.handle_quit)
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if hasattr(signal, &#39;set_wakeup_fd&#39;):
+</span></span><span class="line"><span class="cl">    		signal.set_wakeup_fd(self.PIPE[1])  # 等待select唤醒
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>work最重要的run循环:</p>
+</div><p>work最重要的run循环:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -984,53 +962,53 @@ def init_signals(self):
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> def run(self, timeout):
-    listener = self.sockets[0]
-    while self.alive:
-                    ...
-        # Accept a connection. If we get an error telling us
-        # that no connection is waiting we fall down to the
-        # select which is where we&#39;ll wait for a bit for new
-        # workers to come give us some love.
-        try:
-            self.accept(listener)  # 接受客户端链接
-            # Keep processing clients until no one is waiting. This
-            # prevents the need to select() for every client that we
-            # process.
-            continue
-
-        except EnvironmentError as e:
-              ...
-
-        try:
-            self.wait(timeout)  # 休眠等待 
-        except StopWaiting:
-            return</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> def run(self, timeout):
+</span></span><span class="line"><span class="cl">    listener = self.sockets[0]
+</span></span><span class="line"><span class="cl">    while self.alive:
+</span></span><span class="line"><span class="cl">					...
+</span></span><span class="line"><span class="cl">        # Accept a connection. If we get an error telling us
+</span></span><span class="line"><span class="cl">        # that no connection is waiting we fall down to the
+</span></span><span class="line"><span class="cl">        # select which is where we&#39;ll wait for a bit for new
+</span></span><span class="line"><span class="cl">        # workers to come give us some love.
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            self.accept(listener)  # 接受客户端链接
+</span></span><span class="line"><span class="cl">            # Keep processing clients until no one is waiting. This
+</span></span><span class="line"><span class="cl">            # prevents the need to select() for every client that we
+</span></span><span class="line"><span class="cl">            # process.
+</span></span><span class="line"><span class="cl">            continue
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        except EnvironmentError as e:
+</span></span><span class="line"><span class="cl">              ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            self.wait(timeout)  # 休眠等待 
+</span></span><span class="line"><span class="cl">        except StopWaiting:
+</span></span><span class="line"><span class="cl">            return
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>处理客户端连接，这一部分和之前介绍http比较类似，也不再赘述。</p>
+</div><p>处理客户端连接，这一部分和之前介绍http比较类似，也不再赘述。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def accept(self, listener):
-    client, addr = listener.accept()
-    client.setblocking(1)
-    util.close_on_exec(client)
-    self.handle(listener, client, addr)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def accept(self, listener):
+</span></span><span class="line"><span class="cl">    client, addr = listener.accept()
+</span></span><span class="line"><span class="cl">    client.setblocking(1)
+</span></span><span class="line"><span class="cl">    util.close_on_exec(client)
+</span></span><span class="line"><span class="cl">    self.handle(listener, client, addr)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>work处理完成请求后进入等待</p>
+</div><p>work处理完成请求后进入等待</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1047,39 +1025,35 @@ def init_signals(self):
 </span><span class="lnt">15
 </span><span class="lnt">16
 </span><span class="lnt">17
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def wait(self, timeout):
-    try:
-        ret = select.select(self.wait_fds, [], [], timeout)
-        if ret[0]:
-            if self.PIPE[0] in ret[0]:
-                os.read(self.PIPE[0], 1)
-            return ret[0]
-
-    except select.error as e:
-        if e.args[0] == errno.EINTR:
-            return self.sockets
-        if e.args[0] == errno.EBADF:
-            if self.nr &lt; 0:
-                return self.sockets
-            else:
-                raise StopWaiting
-        raise</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def wait(self, timeout):
+</span></span><span class="line"><span class="cl">    try:
+</span></span><span class="line"><span class="cl">        ret = select.select(self.wait_fds, [], [], timeout)
+</span></span><span class="line"><span class="cl">        if ret[0]:
+</span></span><span class="line"><span class="cl">            if self.PIPE[0] in ret[0]:
+</span></span><span class="line"><span class="cl">                os.read(self.PIPE[0], 1)
+</span></span><span class="line"><span class="cl">            return ret[0]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    except select.error as e:
+</span></span><span class="line"><span class="cl">        if e.args[0] == errno.EINTR:
+</span></span><span class="line"><span class="cl">            return self.sockets
+</span></span><span class="line"><span class="cl">        if e.args[0] == errno.EBADF:
+</span></span><span class="line"><span class="cl">            if self.nr &lt; 0:
+</span></span><span class="line"><span class="cl">                return self.sockets
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                raise StopWaiting
+</span></span><span class="line"><span class="cl">        raise
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="小结">小结</h2>
-
+</div><h2 id="小结">小结</h2>
 <p>可以用下面一张图展示gunicorn的工作流程，作为我们的小结论</p>
-
-<p><img src="https://miro.medium.com/max/3763/1*rYdZRYct2FKHiGxlJIvORg.png" alt="Request flow of Django with Gunicorn and Nginx as a reverse proxy." /></p>
-
+<p><img src="https://miro.medium.com/max/3763/1*rYdZRYct2FKHiGxlJIvORg.png" alt="Request flow of Django with Gunicorn and Nginx as a reverse proxy."></p>
 <h2 id="小技巧">小技巧</h2>
-
 <p>可以使用thread，实现一个定时器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -1104,58 +1078,57 @@ def init_signals(self):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># reloader.py
-
-class Reloader(threading.Thread):
-    def __init__(self, extra_files=None, interval=1, callback=None):
-        super().__init__()
-        self.setDaemon(True)
-        self._interval = interval
-        self._callback = callback
-
-    def run(self):
-        mtimes = {}
-        while True:
-            for filename in self.get_files():
-                try:
-                    mtime = os.stat(filename).st_mtime
-                except OSError:
-                    continue
-                old_time = mtimes.get(filename)
-                if old_time is None:
-                    mtimes[filename] = mtime
-                    continue
-                elif mtime &gt; old_time:
-                    if self._callback:
-                        self._callback(filename)
-            time.sleep(self._interval)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># reloader.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Reloader(threading.Thread):
+</span></span><span class="line"><span class="cl">    def __init__(self, extra_files=None, interval=1, callback=None):
+</span></span><span class="line"><span class="cl">        super().__init__()
+</span></span><span class="line"><span class="cl">        self.setDaemon(True)
+</span></span><span class="line"><span class="cl">        self._interval = interval
+</span></span><span class="line"><span class="cl">        self._callback = callback
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def run(self):
+</span></span><span class="line"><span class="cl">        mtimes = {}
+</span></span><span class="line"><span class="cl">        while True:
+</span></span><span class="line"><span class="cl">            for filename in self.get_files():
+</span></span><span class="line"><span class="cl">                try:
+</span></span><span class="line"><span class="cl">                    mtime = os.stat(filename).st_mtime
+</span></span><span class="line"><span class="cl">                except OSError:
+</span></span><span class="line"><span class="cl">                    continue
+</span></span><span class="line"><span class="cl">                old_time = mtimes.get(filename)
+</span></span><span class="line"><span class="cl">                if old_time is None:
+</span></span><span class="line"><span class="cl">                    mtimes[filename] = mtime
+</span></span><span class="line"><span class="cl">                    continue
+</span></span><span class="line"><span class="cl">                elif mtime &gt; old_time:
+</span></span><span class="line"><span class="cl">                    if self._callback:
+</span></span><span class="line"><span class="cl">                        self._callback(filename)
+</span></span><span class="line"><span class="cl">            time.sleep(self._interval)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在使用 <code>gunicorn myapp:app</code>  命令的时候， <strong>myapp:app</strong> 没有静态的 <strong>import</strong> ，而是这样动态加载的:</p>
+</div><p>在使用 <code>gunicorn myapp:app</code>  命令的时候， <strong>myapp:app</strong> 没有静态的 <strong>import</strong> ，而是这样动态加载的:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># util.py
-
-klass = components.pop(-1)
-
-mod = importlib.import_module(&#39;.&#39;.join(components))
-
-return getattr(mod, klass)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># util.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">klass = components.pop(-1)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mod = importlib.import_module(&#39;.&#39;.join(components))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">return getattr(mod, klass)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h2 id="参考链接">参考链接</h2>
-
+</div><h2 id="参考链接">参考链接</h2>
 <ul>
 <li>Gunicorn Design <a href="https://docs.gunicorn.org/en/stable/design.html">https://docs.gunicorn.org/en/stable/design.html</a></li>
 <li>阅读gunicorn 代码文档 <a href="https://gunicorn.readthedocs.io/en/latest/index.html">https://gunicorn.readthedocs.io/en/latest/index.html</a></li>
@@ -1202,11 +1175,11 @@ return getattr(mod, klass)</pre></td></tr></table>
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-02-24 20:01:29 \x2b0800 CST',
+        id: '2021-02-24 20:01:29 \u002b0800 CST',
         title: 'Gunicorn 源码阅读',
         link: decodeURI(location.href),
         desc: 'gunicorn “Green Unicorn”，脱胎于ruby社区的Unicorn，是一个 WSGI HTTP Server。学习gunicorn后，我们可以把之前的 Bottle 程序正',
@@ -1220,6 +1193,10 @@ return getattr(mod, klass)</pre></td></tr></table>
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1247,13 +1224,10 @@ return getattr(mod, klass)</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1264,7 +1238,10 @@ return getattr(mod, klass)</pre></td></tr></table>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">

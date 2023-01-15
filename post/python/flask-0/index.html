@@ -23,8 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
-<meta name="google-site-verification" content="Qzk5S1WaeGv-bmDYA5rCo0HemniTpED_o5PAvmPp-yo" />
+<meta name="generator" content="Hugo 0.101.0 with theme even" />
 
 
 <link rel="canonical" href="https://game404.github.io/post/python/flask-0/" />
@@ -35,29 +34,23 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 
-<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+
+<link href="/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="Flask 源码阅读-开胃菜" />
 <meta property="og:description" content="flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://game404.github.io/post/python/flask-0/" />
-<meta property="article:published_time" content="2021-06-24T23:37:06&#43;08:00"/>
-<meta property="article:modified_time" content="2021-06-24T23:37:06&#43;08:00"/>
+<meta property="og:url" content="https://game404.github.io/post/python/flask-0/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-06-24T23:37:06+08:00" />
+<meta property="article:modified_time" content="2021-06-24T23:37:06+08:00" />
 
 <meta itemprop="name" content="Flask 源码阅读-开胃菜">
-<meta itemprop="description" content="flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰">
-
-
-<meta itemprop="datePublished" content="2021-06-24T23:37:06&#43;08:00" />
-<meta itemprop="dateModified" content="2021-06-24T23:37:06&#43;08:00" />
-<meta itemprop="wordCount" content="3524">
-
-
-
-<meta itemprop="keywords" content="源码,flask," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="description" content="flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰"><meta itemprop="datePublished" content="2021-06-24T23:37:06+08:00" />
+<meta itemprop="dateModified" content="2021-06-24T23:37:06+08:00" />
+<meta itemprop="wordCount" content="3520">
+<meta itemprop="keywords" content="源码,flask," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Flask 源码阅读-开胃菜"/>
 <meta name="twitter:description" content="flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰"/>
 
@@ -96,12 +89,21 @@
         <li class="mobile-menu-item">关于</li>
       </a>
   </ul>
+
+  
+
+
 </nav>
+
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
   <a href="/" class="logo">游戏不存在</a>
 </div>
+
+
+
+
 
 <nav class="site-navbar">
   <ul id="menu" class="menu">
@@ -118,6 +120,7 @@
       </li>
   </ul>
 </nav>
+
     </header>
 
     <main id="main" class="main">
@@ -141,98 +144,89 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#flask-示例">flask 示例</a></li>
-<li><a href="#flask-命令行工具">flask 命令行工具</a>
-<ul>
-<li><a href="#find-best-app">find_best_app</a></li>
-<li><a href="#routes-command">routes-command</a></li>
-<li><a href="#shell-command">shell-command</a></li>
-<li><a href="#run-command">run-command</a></li>
-</ul></li>
-<li><a href="#小结">小结</a></li>
-<li><a href="#参考链接">参考链接</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#flask-示例">flask 示例</a></li>
+    <li><a href="#flask-命令行工具">flask 命令行工具</a>
+      <ul>
+        <li><a href="#find_best_app">find_best_app</a></li>
+        <li><a href="#routes-command">routes-command</a></li>
+        <li><a href="#shell-command">shell-command</a></li>
+        <li><a href="#run-command">run-command</a></li>
+      </ul>
+    </li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<p>flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰劣，我的观点是各有千秋，各自应用于不同的场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是开胃菜，主要分析flask的命令行工具的实现。</p>
-
+      <p>flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰劣，我的观点是各有千秋，各自应用于不同的场景，都需要深入理解，熟练掌握。本次源码选择的版本是 <code>1.1.2</code>，我会采用慢读法，尽自己最大努力把它讲透。本篇是开胃菜，主要分析flask的命令行工具的实现。</p>
 <blockquote>
-<p>在正式开篇之前，和大家唠叨一点题外话，不喜欢废话的朋友可以直接跳过本段。网上，码农圈经常有各种对比讨论，最经典的梗是: *“php是最好的语言！”*。我没有嘲笑php的意思，我也用过一段时间的php，做个几个项目。对于这类问题， <em>“小孩才做选择题，成年人都是我都要”</em>  这是开玩笑了，我们重点应该是放在精通上，不应该关闭自己的视野。学习好flask，对精通django有帮助；精通了django，对flask也能够举一反三。如果把自己限定到某一个框架上，有些可惜，毕竟没有一个职业叫做Django/flask-web开发。精力允许的情况下，还是都掌握更好。</p>
+<p>在正式开篇之前，和大家唠叨一点题外话，不喜欢废话的朋友可以直接跳过本段。网上，码农圈经常有各种对比讨论，最经典的梗是: <em>“php是最好的语言！”</em>。我没有嘲笑php的意思，我也用过一段时间的php，做个几个项目。对于这类问题， <em>“小孩才做选择题，成年人都是我都要”</em>  这是开玩笑了，我们重点应该是放在精通上，不应该关闭自己的视野。学习好flask，对精通django有帮助；精通了django，对flask也能够举一反三。如果把自己限定到某一个框架上，有些可惜，毕竟没有一个职业叫做Django/flask-web开发。精力允许的情况下，还是都掌握更好。</p>
 </blockquote>
-
 <h2 id="flask-示例">flask 示例</h2>
-
 <p>示例 <code>hello.py</code> 如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">from flask import Flask
-
-app = Flask(__name__)
-
-@app.route(&#39;/&#39;)
-def hello():
-    return &#39;Hello, World!&#39;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">from flask import Flask
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">app = Flask(__name__)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@app.route(&#39;/&#39;)
+</span></span><span class="line"><span class="cl">def hello():
+</span></span><span class="line"><span class="cl">    return &#39;Hello, World!&#39;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>flask模块可以自启动，启动前需要设置FLASK_APP和FLASK_ENV两个环境变量，然后使用 <code>run</code> 命令:</p>
+</div><p>flask模块可以自启动，启动前需要设置FLASK_APP和FLASK_ENV两个环境变量，然后使用 <code>run</code> 命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ export FLASK_APP=hello.py
-$ export FLASK_ENV=development
-$ python -m flask run</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ export FLASK_APP=hello.py
+</span></span><span class="line"><span class="cl">$ export FLASK_ENV=development
+</span></span><span class="line"><span class="cl">$ python -m flask run
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>控制台会显示启动成功信息:</p>
+</div><p>控制台会显示启动成功信息:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"> * Serving Flask app &#34;hello.py&#34; (lazy loading)
- * Environment: development
- * Debug mode: on
- * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 986-558-971</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> * Serving Flask app &#34;hello.py&#34; (lazy loading)
+</span></span><span class="line"><span class="cl"> * Environment: development
+</span></span><span class="line"><span class="cl"> * Debug mode: on
+</span></span><span class="line"><span class="cl"> * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+</span></span><span class="line"><span class="cl"> * Restarting with stat
+</span></span><span class="line"><span class="cl"> * Debugger is active!
+</span></span><span class="line"><span class="cl"> * Debugger PIN: 986-558-971
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>眼尖的朋友会发现，这和werkzeug的run_simple一样。没错，flask的cli就是使用werkzegu的run_simple实现的。</p>
-
+</div><p>眼尖的朋友会发现，这和werkzeug的run_simple一样。没错，flask的cli就是使用werkzegu的run_simple实现的。</p>
 <h2 id="flask-命令行工具">flask 命令行工具</h2>
-
 <p>模块的启动入口是 <code>__main__.py</code> ，关于 <code>__main__.py</code> 的介绍可以查看附录的参考链接。在<code>__main__.py</code>主要是主要调用了 <code>cli.py</code> 的main函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -256,44 +250,42 @@ $ python -m flask run</pre></td></tr></table>
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># cli.py
-
-cli = FlaskGroup(
-    help=&#34;&#34;&#34;\
-A general utility script for Flask applications.
-
-Provides commands from Flask, extensions, and the application. Loads the
-application defined in the FLASK_APP environment variable, or from a wsgi.py
-file. Setting the FLASK_ENV environment variable to &#39;development&#39; will enable
-debug mode.
-
-\b
-  {prefix}{cmd} FLASK_APP=hello.py
-  {prefix}{cmd} FLASK_ENV=development
-  {prefix}flask run
-&#34;&#34;&#34;.format(
-        cmd=&#34;export&#34; if os.name == &#34;posix&#34; else &#34;set&#34;,
-        prefix=&#34;$ &#34; if os.name == &#34;posix&#34; else &#34;&gt; &#34;,
-    )
-)
-
-def main(as_module=False):
-    # TODO omit sys.argv once https://github.com/pallets/click/issues/536 is fixed
-    cli.main(args=sys.argv[1:], prog_name=&#34;python -m flask&#34; if as_module else None)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="o">#</span> <span class="nv">cli</span><span class="p">.</span><span class="nv">py</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">cli</span> <span class="o">=</span> <span class="nc">FlaskGroup</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">help</span><span class="o">=</span><span class="s2">&#34;&#34;&#34;\
+</span></span></span><span class="line"><span class="cl"><span class="s2">A general utility script for Flask applications.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">Provides commands from Flask, extensions, and the application. Loads the
+</span></span></span><span class="line"><span class="cl"><span class="s2">application defined in the FLASK_APP environment variable, or from a wsgi.py
+</span></span></span><span class="line"><span class="cl"><span class="s2">file. Setting the FLASK_ENV environment variable to &#39;development&#39; will enable
+</span></span></span><span class="line"><span class="cl"><span class="s2">debug mode.
+</span></span></span><span class="line"><span class="cl"><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2"></span><span class="se">\b</span><span class="s2">
+</span></span></span><span class="line"><span class="cl"><span class="s2">  {prefix}{cmd} FLASK_APP=hello.py
+</span></span></span><span class="line"><span class="cl"><span class="s2">  {prefix}{cmd} FLASK_ENV=development
+</span></span></span><span class="line"><span class="cl"><span class="s2">  {prefix}flask run
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">cmd</span><span class="o">=</span><span class="s2">&#34;export&#34;</span> <span class="k">if</span> <span class="nv">os</span><span class="p">.</span><span class="nv">name</span> <span class="o">==</span> <span class="s2">&#34;posix&#34;</span> <span class="k">else</span> <span class="s2">&#34;set&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">prefix</span><span class="o">=</span><span class="s2">&#34;</span><span class="o">$</span><span class="s2"> &#34;</span> <span class="k">if</span> <span class="nv">os</span><span class="p">.</span><span class="nv">name</span> <span class="o">==</span> <span class="s2">&#34;posix&#34;</span> <span class="k">else</span> <span class="s2">&#34;&gt; &#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">def</span> <span class="nf">main</span><span class="p">(</span><span class="nv">as_module</span><span class="o">=</span><span class="nc">False</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="o">#</span> <span class="nc">TODO</span> <span class="nv">omit</span> <span class="nv">sys</span><span class="p">.</span><span class="nv">argv</span> <span class="nv">once</span> <span class="nv">https</span><span class="p">:</span><span class="c1">//github.com/pallets/click/issues/536 is fixed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nv">cli</span><span class="p">.</span><span class="nf">main</span><span class="p">(</span><span class="nv">args</span><span class="o">=</span><span class="nv">sys</span><span class="p">.</span><span class="nv">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="nv">prog_name</span><span class="o">=</span><span class="s2">&#34;python -m flask&#34;</span> <span class="k">if</span> <span class="nv">as_module</span> <span class="k">else</span> <span class="nc">None</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>cli工具的继承关系是: <code>FlaskGroup-&gt;AppGroup-&gt;click.Group</code>, 使用 <code>click</code> 模块构建的命令行工具。</p>
-
+</div><p>cli工具的继承关系是: <code>FlaskGroup-&gt;AppGroup-&gt;click.Group</code>, 使用 <code>click</code> 模块构建的命令行工具。</p>
 <blockquote>
 <p><em>Click 是一个 Python 包，用于以可组合的方式使用尽可能少的代码创建漂亮的命令行界面。它是“命令行界面创建工具包”，开箱即用同时高度可配置的。</em></p>
 </blockquote>
-
 <p>基类AppGroup主要扩展了command方法，使用app_context来装饰所有命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -313,36 +305,35 @@ def main(as_module=False):
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># AppGroup
-def with_appcontext(f):
-
-    @click.pass_context
-    def decorator(__ctx, *args, **kwargs):
-        with __ctx.ensure_object(ScriptInfo).load_app().app_context():
-            return __ctx.invoke(f, *args, **kwargs)
-
-    return update_wrapper(decorator, f)
-
-class AppGroup(click.Group):
-    def command(self, *args, **kwargs):
-        wrap_for_ctx = kwargs.pop(&#34;with_appcontext&#34;, True)
-    
-        def decorator(f):
-            if wrap_for_ctx:
-                f = with_appcontext(f)
-            return click.Group.command(self, *args, **kwargs)(f)
-    
-        return decorator</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># AppGroup
+</span></span><span class="line"><span class="cl">def with_appcontext(f):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    @click.pass_context
+</span></span><span class="line"><span class="cl">    def decorator(__ctx, *args, **kwargs):
+</span></span><span class="line"><span class="cl">        with __ctx.ensure_object(ScriptInfo).load_app().app_context():
+</span></span><span class="line"><span class="cl">            return __ctx.invoke(f, *args, **kwargs)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return update_wrapper(decorator, f)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class AppGroup(click.Group):
+</span></span><span class="line"><span class="cl">    def command(self, *args, **kwargs):
+</span></span><span class="line"><span class="cl">        wrap_for_ctx = kwargs.pop(&#34;with_appcontext&#34;, True)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        def decorator(f):
+</span></span><span class="line"><span class="cl">            if wrap_for_ctx:
+</span></span><span class="line"><span class="cl">                f = with_appcontext(f)
+</span></span><span class="line"><span class="cl">            return click.Group.command(self, *args, **kwargs)(f)
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">        return decorator
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>app_context是flask非常重要的特性，我们以后再详细分析，现在先记住所有的cmd都在app_context的上下文环境中。</p>
-
+</div><p>app_context是flask非常重要的特性，我们以后再详细分析，现在先记住所有的cmd都在app_context的上下文环境中。</p>
 <p>FlaskGroup主要收集扩展命令，代码可以看到总共收集了3个命令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -363,47 +354,44 @@ class AppGroup(click.Group):
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class FlaskGroup(AppGroup):
-    
-    def __init__(
-        self,
-        add_default_commands=True,
-        create_app=None,
-        add_version_option=True,
-        load_dotenv=True,
-        set_debug_flag=True,
-        **extra
-    ):
-        ...
-        AppGroup.__init__(self, params=params, **extra)
-        ...
-
-        if add_default_commands:
-            self.add_command(run_command)
-            self.add_command(shell_command)
-            self.add_command(routes_command)
-
-        self._loaded_plugin_commands = False</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class FlaskGroup(AppGroup):
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def __init__(
+</span></span><span class="line"><span class="cl">        self,
+</span></span><span class="line"><span class="cl">        add_default_commands=True,
+</span></span><span class="line"><span class="cl">        create_app=None,
+</span></span><span class="line"><span class="cl">        add_version_option=True,
+</span></span><span class="line"><span class="cl">        load_dotenv=True,
+</span></span><span class="line"><span class="cl">        set_debug_flag=True,
+</span></span><span class="line"><span class="cl">        **extra
+</span></span><span class="line"><span class="cl">    ):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        AppGroup.__init__(self, params=params, **extra)
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if add_default_commands:
+</span></span><span class="line"><span class="cl">            self.add_command(run_command)
+</span></span><span class="line"><span class="cl">            self.add_command(shell_command)
+</span></span><span class="line"><span class="cl">            self.add_command(routes_command)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        self._loaded_plugin_commands = False
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>run_command 启动flask应用程序</li>
 <li>shell_command 使用shell环境方式调试flask应用程序</li>
 <li>routes_command 查看flask应用程序的路由注册信息</li>
 </ul>
-
 <p>在FlaskGroup中，如果安装了 <code>dotenv</code> 可以使用 <code>.env</code> 文件来控制开发环境/正式环境, 比如数据库配置之类，会非常方便。</p>
-
 <blockquote>
 <p><em>Python-dotenv 从.env文件中读取键值对，并可以将它们设置为环境变量。它有助于遵循12要素原则开发应用程序 。</em></p>
 </blockquote>
-
 <p>FlaskGroup的main函数中会加载flask-app，主要使用ScriptInfo实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -432,43 +420,43 @@ class AppGroup(click.Group):
 </span><span class="lnt">27
 </span><span class="lnt">28
 </span><span class="lnt">29
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class ScriptInfo(object):
-
-    def __init__(self, app_import_path=None, create_app=None, set_debug_flag=True):
-        #: Optionally the import path for the Flask application.
-        self.app_import_path = app_import_path or os.environ.get(&#34;FLASK_APP&#34;)
-        ...
-
-    def load_app(self):
-        ...
-
-        if self.create_app is not None:
-            app = call_factory(self, self.create_app)
-        else:
-            if self.app_import_path:
-                path, name = (
-                    re.split(r&#34;:(?![\\/])&#34;, self.app_import_path, 1) + [None]
-                )[:2]
-                import_name = prepare_import(path)
-                app = locate_app(self, import_name, name)
-            else:
-                for path in (&#34;wsgi.py&#34;, &#34;app.py&#34;):
-                    import_name = prepare_import(path)
-                    app = locate_app(self, import_name, None, raise_if_not_found=False)
-
-                    if app:
-                        break
-        ...
-        self._loaded_app = app
-        return app</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class ScriptInfo(object):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, app_import_path=None, create_app=None, set_debug_flag=True):
+</span></span><span class="line"><span class="cl">        #: Optionally the import path for the Flask application.
+</span></span><span class="line"><span class="cl">        self.app_import_path = app_import_path or os.environ.get(&#34;FLASK_APP&#34;)
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def load_app(self):
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if self.create_app is not None:
+</span></span><span class="line"><span class="cl">            app = call_factory(self, self.create_app)
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            if self.app_import_path:
+</span></span><span class="line"><span class="cl">                path, name = (
+</span></span><span class="line"><span class="cl">                    re.split(r&#34;:(?![\\/])&#34;, self.app_import_path, 1) + [None]
+</span></span><span class="line"><span class="cl">                )[:2]
+</span></span><span class="line"><span class="cl">                import_name = prepare_import(path)
+</span></span><span class="line"><span class="cl">                app = locate_app(self, import_name, name)
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                for path in (&#34;wsgi.py&#34;, &#34;app.py&#34;):
+</span></span><span class="line"><span class="cl">                    import_name = prepare_import(path)
+</span></span><span class="line"><span class="cl">                    app = locate_app(self, import_name, None, raise_if_not_found=False)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                    if app:
+</span></span><span class="line"><span class="cl">                        break
+</span></span><span class="line"><span class="cl">        ...
+</span></span><span class="line"><span class="cl">        self._loaded_app = app
+</span></span><span class="line"><span class="cl">        return app
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>在ScriptInfo中会读取FLASK_APP的环境变量，然后会导入类文件，定位app, 然后加载app:</p>
+</div><p>在ScriptInfo中会读取FLASK_APP的环境变量，然后会导入类文件，定位app, 然后加载app:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -482,37 +470,34 @@ class AppGroup(click.Group):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def locate_app(script_info, module_name, app_name, raise_if_not_found=True):
-    __traceback_hide__ = True  # noqa: F841
-
-    try:
-        __import__(module_name)
-    except ImportError:
-        ...
-
-    module = sys.modules[module_name]
-
-    if app_name is None:
-        return find_best_app(script_info, module)
-    else:
-        return find_app_by_string(script_info, module, app_name)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-v" data-lang="v"><span class="line"><span class="cl"><span class="nv">def</span> <span class="nf">locate_app</span><span class="p">(</span><span class="nv">script_info</span><span class="p">,</span> <span class="nv">module_name</span><span class="p">,</span> <span class="nv">app_name</span><span class="p">,</span> <span class="nv">raise_if_not_found</span><span class="o">=</span><span class="nc">True</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">__traceback_hide__</span> <span class="o">=</span> <span class="nc">True</span>  <span class="o">#</span> <span class="nv">noqa</span><span class="p">:</span> <span class="nc">F841</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nl">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__import__</span><span class="p">(</span><span class="nv">module_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">except</span> <span class="nc">ImportError</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="o">...</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kn">module</span> <span class="o">=</span> <span class="nv">sys</span><span class="p">.</span><span class="nv">modules</span><span class="p">[</span><span class="nv">module_name</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nv">app_name</span> <span class="k">is</span> <span class="nc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">find_best_app</span><span class="p">(</span><span class="nv">script_info</span><span class="p">,</span> <span class="kn">module</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nf">find_app_by_string</span><span class="p">(</span><span class="nv">script_info</span><span class="p">,</span> <span class="kn">module</span><span class="p">,</span> <span class="nv">app_name</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>使用 <code>__import__</code> 动态加载模块</li>
 <li>使用 <code>sys.modules[module_name]</code> 获取加载后的模块</li>
 </ul>
-
 <p>app加载有find_best_app和find_app_by_string两种方法, 默认使用的是find_best_app方法。</p>
-
-<h3 id="find-best-app">find_best_app</h3>
-
+<h3 id="find_best_app">find_best_app</h3>
 <p>由于app的script模块已经导入，优先在这个模块中查找名字为 <em>app</em> 或者 <em>application</em> 的变量，这是一种约定:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -537,81 +522,78 @@ class AppGroup(click.Group):
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def find_best_app(script_info, module):
-    from . import Flask
-
-    # Search for the most common names first.
-    for attr_name in (&#34;app&#34;, &#34;application&#34;):
-        app = getattr(module, attr_name, None)
-
-        if isinstance(app, Flask):
-            return app
-    ...
-    # Otherwise find the only object that is a Flask instance.
-    matches = [v for v in itervalues(module.__dict__) if isinstance(v, Flask)]
-
-    if len(matches) == 1:
-        return matches[0]
-    ...
-    for attr_name in (&#34;create_app&#34;, &#34;make_app&#34;):
-    app_factory = getattr(module, attr_name, None)
-
-    if inspect.isfunction(app_factory):
-        try:
-            app = call_factory(script_info, app_factory)
-
-            if isinstance(app, Flask):
-                return app</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def find_best_app(script_info, module):
+</span></span><span class="line"><span class="cl">    from . import Flask
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # Search for the most common names first.
+</span></span><span class="line"><span class="cl">    for attr_name in (&#34;app&#34;, &#34;application&#34;):
+</span></span><span class="line"><span class="cl">        app = getattr(module, attr_name, None)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        if isinstance(app, Flask):
+</span></span><span class="line"><span class="cl">            return app
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    # Otherwise find the only object that is a Flask instance.
+</span></span><span class="line"><span class="cl">    matches = [v for v in itervalues(module.__dict__) if isinstance(v, Flask)]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if len(matches) == 1:
+</span></span><span class="line"><span class="cl">        return matches[0]
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    for attr_name in (&#34;create_app&#34;, &#34;make_app&#34;):
+</span></span><span class="line"><span class="cl">    app_factory = getattr(module, attr_name, None)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if inspect.isfunction(app_factory):
+</span></span><span class="line"><span class="cl">        try:
+</span></span><span class="line"><span class="cl">            app = call_factory(script_info, app_factory)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            if isinstance(app, Flask):
+</span></span><span class="line"><span class="cl">                return app
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>如果没有app或者application的变量定义，则转而寻找其它是flask对象的变量。</p>
-
+</div><p>如果没有app或者application的变量定义，则转而寻找其它是flask对象的变量。</p>
 <p>如果上述两种方法都找不到app变量，最后查找名字为create_app和make_app的工厂函数, 使用工厂函数创建flask-app。</p>
-
 <p>比如flask示例的flaskr项目中，就提供的是create_app的工厂函数:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"># flaskr/__init__.py
-
-def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
-    ....
-    return app</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># flaskr/__init__.py
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def create_app(test_config=None):
+</span></span><span class="line"><span class="cl">    app = Flask(__name__, instance_relative_config=True)
+</span></span><span class="line"><span class="cl">    ....
+</span></span><span class="line"><span class="cl">    return app
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="routes-command">routes-command</h3>
-
+</div><h3 id="routes-command">routes-command</h3>
 <p>routes命令最简单，使用方法如下:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ flask routes --all-methods
-Endpoint  Methods             Rule
---------  ------------------  -----------------------
-hello     GET, HEAD, OPTIONS  /
-static    GET, HEAD, OPTIONS  /static/&lt;path:filename&gt;</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ flask routes --all-methods
+</span></span><span class="line"><span class="cl">Endpoint  Methods             Rule
+</span></span><span class="line"><span class="cl">--------  ------------------  -----------------------
+</span></span><span class="line"><span class="cl">hello     GET, HEAD, OPTIONS  /
+</span></span><span class="line"><span class="cl">static    GET, HEAD, OPTIONS  /static/&lt;path:filename&gt;
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>routes_command函数实现routers指令:</p>
+</div><p>routes_command函数实现routers指令:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -641,51 +623,49 @@ static    GET, HEAD, OPTIONS  /static/&lt;path:filename&gt;</pre></td></tr></tab
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@with_appcontext
-def routes_command(sort, all_methods):
-    &#34;&#34;&#34;Show all registered routes with endpoints and methods.&#34;&#34;&#34;
-
-    rules = list(current_app.url_map.iter_rules())
-    
-
-    ignored_methods = set(() if all_methods else (&#34;HEAD&#34;, &#34;OPTIONS&#34;))
-
-    if sort in (&#34;endpoint&#34;, &#34;rule&#34;):
-        rules = sorted(rules, key=attrgetter(sort))
-    elif sort == &#34;methods&#34;:
-        rules = sorted(rules, key=lambda rule: sorted(rule.methods))
-
-    rule_methods = [&#34;, &#34;.join(sorted(rule.methods - ignored_methods)) for rule in rules]
-
-    headers = (&#34;Endpoint&#34;, &#34;Methods&#34;, &#34;Rule&#34;)
-    widths = (
-        max(len(rule.endpoint) for rule in rules),
-        max(len(methods) for methods in rule_methods),
-        max(len(rule.rule) for rule in rules),
-    )
-    widths = [max(len(h), w) for h, w in zip(headers, widths)]
-    row = &#34;{{0:&lt;{0}}}  {{1:&lt;{1}}}  {{2:&lt;{2}}}&#34;.format(*widths)
-
-    click.echo(row.format(*headers).strip())
-    click.echo(row.format(*(&#34;-&#34; * width for width in widths)))
-
-    for rule, methods in zip(rules, rule_methods):
-        click.echo(row.format(rule.endpoint, methods, rule.rule).rstrip())</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@with_appcontext
+</span></span><span class="line"><span class="cl">def routes_command(sort, all_methods):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Show all registered routes with endpoints and methods.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    rules = list(current_app.url_map.iter_rules())
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ignored_methods = set(() if all_methods else (&#34;HEAD&#34;, &#34;OPTIONS&#34;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if sort in (&#34;endpoint&#34;, &#34;rule&#34;):
+</span></span><span class="line"><span class="cl">        rules = sorted(rules, key=attrgetter(sort))
+</span></span><span class="line"><span class="cl">    elif sort == &#34;methods&#34;:
+</span></span><span class="line"><span class="cl">        rules = sorted(rules, key=lambda rule: sorted(rule.methods))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    rule_methods = [&#34;, &#34;.join(sorted(rule.methods - ignored_methods)) for rule in rules]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    headers = (&#34;Endpoint&#34;, &#34;Methods&#34;, &#34;Rule&#34;)
+</span></span><span class="line"><span class="cl">    widths = (
+</span></span><span class="line"><span class="cl">        max(len(rule.endpoint) for rule in rules),
+</span></span><span class="line"><span class="cl">        max(len(methods) for methods in rule_methods),
+</span></span><span class="line"><span class="cl">        max(len(rule.rule) for rule in rules),
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    widths = [max(len(h), w) for h, w in zip(headers, widths)]
+</span></span><span class="line"><span class="cl">    row = &#34;{{0:&lt;{0}}}  {{1:&lt;{1}}}  {{2:&lt;{2}}}&#34;.format(*widths)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    click.echo(row.format(*headers).strip())
+</span></span><span class="line"><span class="cl">    click.echo(row.format(*(&#34;-&#34; * width for width in widths)))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for rule, methods in zip(rules, rule_methods):
+</span></span><span class="line"><span class="cl">        click.echo(row.format(rule.endpoint, methods, rule.rule).rstrip())
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>确保执行with_appcontext，在前文有介绍with_appcontext。可见appcontext的重要性。</li>
 <li>代码整体就做了一件事，收集app的url_map</li>
 </ul>
-
 <h3 id="shell-command">shell-command</h3>
-
 <p>shell指令提供一个命令行方式运行app:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -699,30 +679,29 @@ def routes_command(sort, all_methods):
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">$ flask shell                                                                        
-Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27) 
-[Clang 6.0 (clang-600.0.57)] on darwin
-App: ch21-flask.hello [development]
-Instance: /Users/yoo/work/yuanmahui/python/instance
-&gt;&gt;&gt; app
-&lt;Flask &#39;ch21-flask.hello&#39;&gt;
-&gt;&gt;&gt; dir(app)
-[&#39;__call__&#39;, &#39;__class__&#39;, &#39;__delattr__&#39;, &#39;__dict__&#39;, &#39;__dir__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__format__&#39;, &#39;__ge__&#39;, &#39;__getattribute__&#39;, ... ,&#39;update_template_context&#39;, &#39;url_build_error_handlers&#39;, &#39;url_default_functions&#39;, &#39;url_defaults&#39;, &#39;url_map&#39;, &#39;url_map_class&#39;, &#39;url_rule_class&#39;, &#39;url_value_preprocessor&#39;, &#39;url_value_preprocessors&#39;, &#39;use_x_sendfile&#39;, &#39;view_functions&#39;, &#39;wsgi_app&#39;]
-&gt;&gt;&gt; app.url_map
-Map([&lt;Rule &#39;/&#39; (OPTIONS, HEAD, GET) -&gt; hello&gt;,
- &lt;Rule &#39;/static/&lt;filename&gt;&#39; (OPTIONS, HEAD, GET) -&gt; static&gt;])
-&gt;&gt;&gt; locals()
-{&#39;app&#39;: &lt;Flask &#39;ch21-flask.hello&#39;&gt;, &#39;g&#39;: &lt;flask.g of &#39;ch21-flask.hello&#39;&gt;,...}</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ flask shell                                                                        
+</span></span><span class="line"><span class="cl">Python 3.8.5 (v3.8.5:580fbb018f, Jul 20 2020, 12:11:27) 
+</span></span><span class="line"><span class="cl">[Clang 6.0 (clang-600.0.57)] on darwin
+</span></span><span class="line"><span class="cl">App: ch21-flask.hello [development]
+</span></span><span class="line"><span class="cl">Instance: /Users/yoo/work/yuanmahui/python/instance
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; app
+</span></span><span class="line"><span class="cl">&lt;Flask &#39;ch21-flask.hello&#39;&gt;
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; dir(app)
+</span></span><span class="line"><span class="cl">[&#39;__call__&#39;, &#39;__class__&#39;, &#39;__delattr__&#39;, &#39;__dict__&#39;, &#39;__dir__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__format__&#39;, &#39;__ge__&#39;, &#39;__getattribute__&#39;, ... ,&#39;update_template_context&#39;, &#39;url_build_error_handlers&#39;, &#39;url_default_functions&#39;, &#39;url_defaults&#39;, &#39;url_map&#39;, &#39;url_map_class&#39;, &#39;url_rule_class&#39;, &#39;url_value_preprocessor&#39;, &#39;url_value_preprocessors&#39;, &#39;use_x_sendfile&#39;, &#39;view_functions&#39;, &#39;wsgi_app&#39;]
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; app.url_map
+</span></span><span class="line"><span class="cl">Map([&lt;Rule &#39;/&#39; (OPTIONS, HEAD, GET) -&gt; hello&gt;,
+</span></span><span class="line"><span class="cl"> &lt;Rule &#39;/static/&lt;filename&gt;&#39; (OPTIONS, HEAD, GET) -&gt; static&gt;])
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt; locals()
+</span></span><span class="line"><span class="cl">{&#39;app&#39;: &lt;Flask &#39;ch21-flask.hello&#39;&gt;, &#39;g&#39;: &lt;flask.g of &#39;ch21-flask.hello&#39;&gt;,...}
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可以看到，在交互式终端中可以查看 *app*， <em>url_map</em> 。 locals变量中带有app和g两个属性，协助进行调试程序。</p>
-
+</div><p>可以看到，在交互式终端中可以查看 <em>app</em>， <em>url_map</em> 。 locals变量中带有app和g两个属性，协助进行调试程序。</p>
 <p>shell_command的实现:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -754,71 +733,68 @@ Map([&lt;Rule &#39;/&#39; (OPTIONS, HEAD, GET) -&gt; hello&gt;,
 </span><span class="lnt">30
 </span><span class="lnt">31
 </span><span class="lnt">32
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@with_appcontext
-def shell_command():
-    &#34;&#34;&#34;Run an interactive Python shell in the context of a given
-    Flask application.  The application will populate the default
-    namespace of this shell according to it&#39;s configuration.
-
-    This is useful for executing small snippets of management code
-    without having to manually configure the application.
-    &#34;&#34;&#34;
-    import code
-    from .globals import _app_ctx_stack
-
-    app = _app_ctx_stack.top.app
-    banner = &#34;Python %s on %s\nApp: %s [%s]\nInstance: %s&#34; % (
-        sys.version,
-        sys.platform,
-        app.import_name,
-        app.env,
-        app.instance_path,
-    )
-    ctx = {}
-
-    # Support the regular Python interpreter startup script if someone
-    # is using it.
-    startup = os.environ.get(&#34;PYTHONSTARTUP&#34;)
-    if startup and os.path.isfile(startup):
-        with open(startup, &#34;r&#34;) as f:
-            eval(compile(f.read(), startup, &#34;exec&#34;), ctx)
-
-    ctx.update(app.make_shell_context())
-
-    code.interact(banner=banner, local=ctx)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@with_appcontext
+</span></span><span class="line"><span class="cl">def shell_command():
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Run an interactive Python shell in the context of a given
+</span></span><span class="line"><span class="cl">    Flask application.  The application will populate the default
+</span></span><span class="line"><span class="cl">    namespace of this shell according to it&#39;s configuration.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    This is useful for executing small snippets of management code
+</span></span><span class="line"><span class="cl">    without having to manually configure the application.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    import code
+</span></span><span class="line"><span class="cl">    from .globals import _app_ctx_stack
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    app = _app_ctx_stack.top.app
+</span></span><span class="line"><span class="cl">    banner = &#34;Python %s on %s\nApp: %s [%s]\nInstance: %s&#34; % (
+</span></span><span class="line"><span class="cl">        sys.version,
+</span></span><span class="line"><span class="cl">        sys.platform,
+</span></span><span class="line"><span class="cl">        app.import_name,
+</span></span><span class="line"><span class="cl">        app.env,
+</span></span><span class="line"><span class="cl">        app.instance_path,
+</span></span><span class="line"><span class="cl">    )
+</span></span><span class="line"><span class="cl">    ctx = {}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    # Support the regular Python interpreter startup script if someone
+</span></span><span class="line"><span class="cl">    # is using it.
+</span></span><span class="line"><span class="cl">    startup = os.environ.get(&#34;PYTHONSTARTUP&#34;)
+</span></span><span class="line"><span class="cl">    if startup and os.path.isfile(startup):
+</span></span><span class="line"><span class="cl">        with open(startup, &#34;r&#34;) as f:
+</span></span><span class="line"><span class="cl">            eval(compile(f.read(), startup, &#34;exec&#34;), ctx)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ctx.update(app.make_shell_context())
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    code.interact(banner=banner, local=ctx)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<p>shell主要利用code模块的 <em>interact</em> 实现，在之前介绍德国锤子werkzeug时也有过介绍。</p>
-
+</div><p>shell主要利用code模块的 <em>interact</em> 实现，在之前介绍德国锤子werkzeug时也有过介绍。</p>
 <p>在make_shell_context中可以看到app和g两个属性设置:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">def make_shell_context(self):
-    rv = {&#34;app&#34;: self, &#34;g&#34;: g}
-    for processor in self.shell_context_processors:
-        rv.update(processor())
-    return rv</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def make_shell_context(self):
+</span></span><span class="line"><span class="cl">    rv = {&#34;app&#34;: self, &#34;g&#34;: g}
+</span></span><span class="line"><span class="cl">    for processor in self.shell_context_processors:
+</span></span><span class="line"><span class="cl">        rv.update(processor())
+</span></span><span class="line"><span class="cl">    return rv
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<blockquote>
+</div><blockquote>
 <p>利用参考shell命令可以实现程序热更功能，以后有机会再详细介绍。</p>
 </blockquote>
-
 <h3 id="run-command">run-command</h3>
-
 <p>最复杂和重要的就是run命令了, run_command的注释很清晰的介绍了功能:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -846,48 +822,47 @@ def shell_command():
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">@pass_script_info
-def run_command(
-    info, host, port, reload, debugger, eager_loading, with_threads, cert, extra_files
-):
-    &#34;&#34;&#34;Run a local development server.
-
-    This server is for development purposes only. It does not provide
-    the stability, security, or performance of production WSGI servers.
-
-    The reloader and debugger are enabled by default if
-    FLASK_ENV=development or FLASK_DEBUG=1.
-    &#34;&#34;&#34;
-    ...
-    show_server_banner(get_env(), debug, info.app_import_path, eager_loading)
-    app = DispatchingApp(info.load_app, use_eager_loading=eager_loading)
-
-    from werkzeug.serving import run_simple
-
-    run_simple(
-        host,
-        port,
-        app,
-        use_reloader=reload,
-        use_debugger=debugger,
-        threaded=with_threads,
-        ssl_context=cert,
-        extra_files=extra_files,
-    )</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@pass_script_info
+</span></span><span class="line"><span class="cl">def run_command(
+</span></span><span class="line"><span class="cl">    info, host, port, reload, debugger, eager_loading, with_threads, cert, extra_files
+</span></span><span class="line"><span class="cl">):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Run a local development server.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    This server is for development purposes only. It does not provide
+</span></span><span class="line"><span class="cl">    the stability, security, or performance of production WSGI servers.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    The reloader and debugger are enabled by default if
+</span></span><span class="line"><span class="cl">    FLASK_ENV=development or FLASK_DEBUG=1.
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">    show_server_banner(get_env(), debug, info.app_import_path, eager_loading)
+</span></span><span class="line"><span class="cl">    app = DispatchingApp(info.load_app, use_eager_loading=eager_loading)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    from werkzeug.serving import run_simple
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    run_simple(
+</span></span><span class="line"><span class="cl">        host,
+</span></span><span class="line"><span class="cl">        port,
+</span></span><span class="line"><span class="cl">        app,
+</span></span><span class="line"><span class="cl">        use_reloader=reload,
+</span></span><span class="line"><span class="cl">        use_debugger=debugger,
+</span></span><span class="line"><span class="cl">        threaded=with_threads,
+</span></span><span class="line"><span class="cl">        ssl_context=cert,
+</span></span><span class="line"><span class="cl">        extra_files=extra_files,
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>show_server_banner展示启动服务的banner信息</li>
 <li>使用DispatchingApp包装业务app</li>
 <li>使用werkzeug的run_simple启动app，证实了前面我们通过banner的猜测</li>
 </ul>
-
 <p>DispatchingApp实现也不复杂:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -930,73 +905,67 @@ def run_command(
 </span><span class="lnt">41
 </span><span class="lnt">42
 </span><span class="lnt">43
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class DispatchingApp(object):
-
-    def __init__(self, loader, use_eager_loading=False):
-        self.loader = loader
-        self._app = None
-        self._lock = Lock()
-        self._bg_loading_exc_info = None
-        if use_eager_loading:
-            self._load_unlocked()
-        else:
-            self._load_in_background()
-
-    def _load_in_background(self):
-        def _load_app():
-            __traceback_hide__ = True  # noqa: F841
-            with self._lock:
-                try:
-                    self._load_unlocked()
-                except Exception:
-                    self._bg_loading_exc_info = sys.exc_info()
-
-        t = Thread(target=_load_app, args=())
-        t.start()
-    
-    def _load_unlocked(self):
-        __traceback_hide__ = True  # noqa: F841
-        self._app = rv = self.loader()
-        self._bg_loading_exc_info = None
-        return rv
-    
-    ...
-
-    def __call__(self, environ, start_response):
-        __traceback_hide__ = True  # noqa: F841
-        if self._app is not None:
-            return self._app(environ, start_response)
-        self._flush_bg_loading_exception()
-        with self._lock:
-            if self._app is not None:
-                rv = self._app
-            else:
-                rv = self._load_unlocked()
-            return rv(environ, start_response)</pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class DispatchingApp(object):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __init__(self, loader, use_eager_loading=False):
+</span></span><span class="line"><span class="cl">        self.loader = loader
+</span></span><span class="line"><span class="cl">        self._app = None
+</span></span><span class="line"><span class="cl">        self._lock = Lock()
+</span></span><span class="line"><span class="cl">        self._bg_loading_exc_info = None
+</span></span><span class="line"><span class="cl">        if use_eager_loading:
+</span></span><span class="line"><span class="cl">            self._load_unlocked()
+</span></span><span class="line"><span class="cl">        else:
+</span></span><span class="line"><span class="cl">            self._load_in_background()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def _load_in_background(self):
+</span></span><span class="line"><span class="cl">        def _load_app():
+</span></span><span class="line"><span class="cl">            __traceback_hide__ = True  # noqa: F841
+</span></span><span class="line"><span class="cl">            with self._lock:
+</span></span><span class="line"><span class="cl">                try:
+</span></span><span class="line"><span class="cl">                    self._load_unlocked()
+</span></span><span class="line"><span class="cl">                except Exception:
+</span></span><span class="line"><span class="cl">                    self._bg_loading_exc_info = sys.exc_info()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        t = Thread(target=_load_app, args=())
+</span></span><span class="line"><span class="cl">        t.start()
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    def _load_unlocked(self):
+</span></span><span class="line"><span class="cl">        __traceback_hide__ = True  # noqa: F841
+</span></span><span class="line"><span class="cl">        self._app = rv = self.loader()
+</span></span><span class="line"><span class="cl">        self._bg_loading_exc_info = None
+</span></span><span class="line"><span class="cl">        return rv
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __call__(self, environ, start_response):
+</span></span><span class="line"><span class="cl">        __traceback_hide__ = True  # noqa: F841
+</span></span><span class="line"><span class="cl">        if self._app is not None:
+</span></span><span class="line"><span class="cl">            return self._app(environ, start_response)
+</span></span><span class="line"><span class="cl">        self._flush_bg_loading_exception()
+</span></span><span class="line"><span class="cl">        with self._lock:
+</span></span><span class="line"><span class="cl">            if self._app is not None:
+</span></span><span class="line"><span class="cl">                rv = self._app
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                rv = self._load_unlocked()
+</span></span><span class="line"><span class="cl">            return rv(environ, start_response)
+</span></span></code></pre></td></tr></table>
 </div>
-</div>
-<ul>
+</div><ul>
 <li>使用线程方式加载app或者直接加载app，这个功能会和reload配合使用，一种是饥渴加载一种是懒加载。</li>
 <li>call函数是flask-app的wsgi接口，接收environ和start_response两个核心参数，是请求响应的入口。</li>
 </ul>
-
 <h2 id="小结">小结</h2>
-
 <p>本文我们主要理解了flask-cli的实现逻辑，当然要完全弄懂flask-cli，还需要深入理解click和dotenv的实现，不过掌握到这个程序，我个人认为已经够用了。我们简单小结一下flask-cli的功能:</p>
-
 <ol>
 <li>提供shell，routes和run三个命令帮助开发flask应用程序</li>
 <li>用户应用程序使用动态加载的方式导入</li>
 <li>flask推荐创建flask-app或者提供create_app方式提供应用程序入口</li>
 </ol>
-
 <p>原创不易，欢迎加下面的微信和我互动交流，一起进阶:
-<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx" /></p>
-
+<img src="https://game404-1251284600.cos.ap-beijing.myqcloud.com/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E7%99%BD%E8%89%B2%E7%89%88.png" alt="wx"></p>
 <h2 id="参考链接">参考链接</h2>
-
 <ul>
 <li><a href="https://dormousehole.readthedocs.io/en/latest/">https://dormousehole.readthedocs.io/en/latest/</a></li>
 <li>python-main <a href="https://stackoverflow.com/questions/4042905/what-is-main-py">https://stackoverflow.com/questions/4042905/what-is-main-py</a></li>
@@ -1042,11 +1011,11 @@ def run_command(
   </article>
         </div>
         <div id="comments-gitment"></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
       var gitment = new Gitment({
-        id: '2021-06-24 23:37:06 \x2b0800 CST',
+        id: '2021-06-24 23:37:06 \u002b0800 CST',
         title: 'Flask 源码阅读-开胃菜',
         link: decodeURI(location.href),
         desc: 'flask项目大名鼎鼎，应该不需要多做介绍了吧。我把它称之为python服务开发的TOP2项目，另外一个就是django了，不需要比较孰优孰',
@@ -1060,6 +1029,10 @@ def run_command(
       gitment.render('comments-gitment');
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://github.com/imsun/gitment">comments powered by gitment.</a></noscript>
+
+  
+
+  
 
       </div>
     </main>
@@ -1087,13 +1060,10 @@ def run_command(
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2023
-    <span class="heart">
-      <i class="iconfont icon-heart"></i>
-    </span>
-    <span class="author">game404</span>
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>game404</span>
   </span>
 </div>
+
     </footer>
 
     <div class="back-to-top" id="back-to-top">
@@ -1104,7 +1074,10 @@ def run_command(
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
 
 
 <script type="application/javascript">
