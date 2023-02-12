@@ -10,7 +10,49 @@
   
   <url>
     <loc>https://game404.github.io/categories/</loc>
-    <lastmod>2023-01-15T23:10:04+08:00</lastmod>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/pandas/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/quant/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/quant/pandas_why/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/</loc>
+    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -23,35 +65,7 @@
   </url>
   
   <url>
-    <loc>https://game404.github.io/post/</loc>
-    <lastmod>2023-01-15T23:10:04+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/categories/quant/</loc>
-    <lastmod>2023-01-15T23:10:04+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/tags/</loc>
-    <lastmod>2023-01-15T23:10:04+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://game404.github.io/post/quant/numpy_why/</loc>
-    <lastmod>2023-01-15T23:10:04+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/</loc>
     <lastmod>2023-01-15T23:10:04+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

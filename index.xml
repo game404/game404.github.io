@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 15 Jan 2023 23:10:04 +0800</lastBuildDate><atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 12 Feb 2023 18:38:08 +0800</lastBuildDate><atom:link href="https://game404.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>关于</title>
       <link>https://game404.github.io/about/</link>
@@ -15,6 +15,15 @@
       
       <guid>https://game404.github.io/about/</guid>
       <description>肖恩的博客，技术分享，同步更新微信公众号«游戏不存在»，觉得博文有用欢迎点个关注, 及时更新不迷路: 肖恩：码农，40+，全栈，游戏从业者。 关注</description>
+    </item>
+    
+    <item>
+      <title>为什么使用Pandas</title>
+      <link>https://game404.github.io/post/quant/pandas_why/</link>
+      <pubDate>Sun, 12 Feb 2023 18:38:08 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/quant/pandas_why/</guid>
+      <description>Pandas是一个开源的，BSD许可的库，为Python编程语言提供高性能，易于使用的数据结构和数据分析工具。和Numpy，Matplotl</description>
     </item>
     
     <item>
