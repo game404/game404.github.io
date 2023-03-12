@@ -126,6 +126,27 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/docker/uid_gosu/">容器安全漏洞实验</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2021-12-19 </span>
+      <div class="post-category">
+          <a href="/categories/docker/"> Docker </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      漏洞演示 使用 root 账号创建一个临时文件 a.txt: 1 2 3 [root@localhost ~]# echo &#34;aaa&#34; &gt; /root/tmp/a.txt [root@localhost ~]# cat /root/tmp/a.txt aaa 确认 work 账号没有 a.txt 的权限: 1 2 [work@localhost ~]$ cat /root/tmp/a.txt cat: /root/tmp/a.txt: Permission denied 使用下面命令启动一个redis容
+    </div>
+    <div class="read-more">
+      <a href="/post/docker/uid_gosu/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/python/celery-7/">Celery 源码解析 - 7</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2021-12-12 </span>
@@ -204,27 +225,6 @@
     </div>
     <div class="read-more">
       <a href="/post/python/celery-5/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/python/celery-4/">Celery 源码解析 - 4</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2021-11-07 </span>
-      <div class="post-category">
-          <a href="/categories/python/"> python </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      本篇我们继续聊聊kombu这个python实现的消息库中的一些高级算法实现。 Celery是一款非常简单、灵活、可靠的分布式系统，可用于处理大
-    </div>
-    <div class="read-more">
-      <a href="/post/python/celery-4/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

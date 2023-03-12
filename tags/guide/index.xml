@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>guide on 游戏不存在</title>
+    <link>https://game404.github.io/tags/guide/</link>
+    <description>Recent content in guide on 游戏不存在</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>game404</copyright>
+    <lastBuildDate>Sun, 12 Mar 2023 22:23:30 +0800</lastBuildDate><atom:link href="https://game404.github.io/tags/guide/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从零开始机器学习 - 白话机器学习</title>
+      <link>https://game404.github.io/post/quant/machine_learning_1/</link>
+      <pubDate>Sun, 12 Mar 2023 22:23:30 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/quant/machine_learning_1/</guid>
+      <description>ChatGPT大火，大家都在跟踪这个热点。概念股在市场大火，相关不相关的公司都宣称要做AI；全网都在发布教程教你如何注册账号，如何利用Cha</description>
+    </item>
+    
+  </channel>
+</rss>
