@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>game404</copyright>
-    <lastBuildDate>Sun, 12 Feb 2023 18:38:08 +0800</lastBuildDate><atom:link href="https://game404.github.io/tags/pandas/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Apr 2023 21:18:19 +0800</lastBuildDate><atom:link href="https://game404.github.io/tags/pandas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>像Excel一样使用Pandas</title>
+      <link>https://game404.github.io/post/quant/pandas_as_excel/</link>
+      <pubDate>Sun, 16 Apr 2023 21:18:19 +0800</pubDate>
+      
+      <guid>https://game404.github.io/post/quant/pandas_as_excel/</guid>
+      <description>像Excel一样使用Pandas Pandas功能非常强大，API非常多。这次我们按照Excel的功能来探索Pandas的使用。同时为了更好的</description>
+    </item>
+    
     <item>
       <title>为什么使用Pandas</title>
       <link>https://game404.github.io/post/quant/pandas_why/</link>

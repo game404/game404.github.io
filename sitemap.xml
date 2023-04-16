@@ -10,7 +10,49 @@
   
   <url>
     <loc>https://game404.github.io/categories/</loc>
-    <lastmod>2023-03-12T22:23:30+08:00</lastmod>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/pandas/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/categories/quant/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/tags/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/post/quant/pandas_as_excel/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://game404.github.io/</loc>
+    <lastmod>2023-04-16T21:18:19+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -30,43 +72,8 @@
   </url>
   
   <url>
-    <loc>https://game404.github.io/post/</loc>
-    <lastmod>2023-03-12T22:23:30+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/categories/quant/</loc>
-    <lastmod>2023-03-12T22:23:30+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/tags/</loc>
-    <lastmod>2023-03-12T22:23:30+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://game404.github.io/post/quant/machine_learning_1/</loc>
     <lastmod>2023-03-12T22:23:30+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/</loc>
-    <lastmod>2023-03-12T22:23:30+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://game404.github.io/tags/pandas/</loc>
-    <lastmod>2023-02-12T18:38:08+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
